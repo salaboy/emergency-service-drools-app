@@ -1,0 +1,11 @@
+This is Drools Demo Application.
+This application was created to show the Drools Platform Capabilities including:
+Business Process Management
+Business Rules
+Complex Event Processing
+
+This is a generic application that can be customized to work of different domains changing only the Domain Object, the Sprites for the Graphical UI, the UI for Human Tasks, the Business Rules and the Business Processes.
+
+We will try to clean and improve the demo application in order to reflect the best practicies to use Drools.
+
+www.drools.org

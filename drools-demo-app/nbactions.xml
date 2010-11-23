@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2:exec</goal>
+            </goals>
+            <properties>
+                <exec.classpathScope>runtime</exec.classpathScope>
+                <exec.args>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ -classpath %classpath com.wordpress.salaboy.ui.SlickBasicGame</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2:exec</goal>
+            </goals>
+            <properties>
+                <exec.classpathScope>runtime</exec.classpathScope>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ -classpath %classpath com.wordpress.salaboy.ui.SlickBasicGame</exec.args>
+                <jpda.listen>true</jpda.listen>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.1.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>${profiler.args} -Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ -classpath %classpath com.wordpress.salaboy.ui.SlickBasicGame</exec.args>
+                <profiler.action>profile</profiler.action>
+                <exec.executable>${profiler.java}</exec.executable>
+            </properties>
+        </action>
+    </actions>

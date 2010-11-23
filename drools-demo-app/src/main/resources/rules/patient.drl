@@ -1,0 +1,31 @@
+package com.wordpress.salaboy.wiimote.drools;
+
+import motej.event.AccelerometerEvent;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import com.wordpress.salaboy.events.WiiMoteEvent;
+import com.wordpress.salaboy.msgs.HornetQClientService;
+
+declare WiiMoteEvent
+    @role ( event )
+    @expires ( 20s )
+end
+
+rule "Patient with no vital sign"
+    when
+        
+        $nextEvents : Number(doubleValue == 235 ) from accumulate( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(5s) from entry-point "patientHeartbeats",
+        												average($y)) 
+    then
+        System.out.println("Warning, patient without vital signs " + $nextEvents);
+        HornetQClientService.getInstance().sendMessage("Warning, patient without vital signs");
+end
+
+rule "Patient heart attack"
+    when
+        
+        $nextEvents : ArrayList(size > 10 ) from collect( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(1s) from entry-point "patientHeartbeats") 
+    then
+        System.out.println("Warning, patient suffering a heart attack " + $nextEvents.size());
+        HornetQClientService.getInstance().sendMessage("Warning, patient suffering a heart attack");
+end

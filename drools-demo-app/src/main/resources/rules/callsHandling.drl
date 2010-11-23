@@ -1,0 +1,25 @@
+package org.plugtree.emergencyservice.callsHandling;
+
+import org.plugtree.training.model.Call;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
+import org.drools.workflow.instance.node.WorkItemNodeInstance;
+
+global java.util.Map calls;
+
+rule "Handling Single Emergency Call"
+    when
+       $call:  Call()
+    
+    then
+        ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.plugtree.training.EmergencyService", null);
+        System.out.println("Pi = "+pI);
+        
+        Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
+        System.out.println("WiID = "+id);
+        $call.setProcessId(pI.getId());
+        calls.put(id, $call);
+        insert(pI);
+end
+    

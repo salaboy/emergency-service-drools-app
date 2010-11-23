@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_ambulanceLeftItem" structureRef="org.plugtree.training.model.events.AmbulanceLeftEvent" />
+  <itemDefinition id="_patientPickUpItem" structureRef="org.plugtree.training.model.events.PatientPickUpEvent" />
+  <itemDefinition id="_patientAtHospitalItem" structureRef="org.plugtree.training.model.events.PatientAtTheHospitalEvent" />
+  <itemDefinition id="_emergency.nameItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationItem" structureRef="String" />
+  <itemDefinition id="_emergency.typeItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.genderItem" structureRef="String" />
+  <itemDefinition id="_emergency.ageItem" structureRef="String" />
+
+  <resource id="Actor" name="Human Actor" />
+
+  <itemDefinition id="ickUpEventType" structureRef="null"/>
+  <message id="ickUpEvent" structureRef="ickUpEventType" />
+
+  <itemDefinition id="tHospitalType" structureRef="null"/>
+  <message id="tHospital" structureRef="tHospitalType" />
+
+  <itemDefinition id="eLeftEventType" structureRef="null"/>
+  <message id="eLeftEvent" structureRef="eLeftEventType" />
+
+  <process processType="executable" id="org.plugtree.training.EmergencyService" name="EmergencyService" tns:packageName="org.plugtree.training" >
+
+    <!-- process variables -->
+    <property id="ambulanceLeft" itemSubjectRef="_ambulanceLeftItem"/>
+    <property id="patientPickUp" itemSubjectRef="_patientPickUpItem"/>
+    <property id="patientAtHospital" itemSubjectRef="_patientAtHospitalItem"/>
+    <property id="emergency.name" itemSubjectRef="_emergency.nameItem"/>
+    <property id="emergency.location" itemSubjectRef="_emergency.locationItem"/>
+    <property id="emergency.type" itemSubjectRef="_emergency.typeItem"/>
+    <property id="emergency.gender" itemSubjectRef="_emergency.genderItem"/>
+    <property id="emergency.age" itemSubjectRef="_emergency.ageItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" g:x="16" g:y="56" g:width="48" g:height="48" />
+    <userTask id="_2" name="Emergency Information" g:x="96" g:y="56" g:width="156" g:height="48" implementation="humanTaskWebService" >
+      <ioSpecification>
+        <dataInput id="_2_emergency.typeInput" name="emergency.type" />
+        <dataInput id="_2_emergency.ageInput" name="emergency.age" />
+        <dataInput id="_2_emergency.genderInput" name="emergency.gender" />
+        <dataInput id="_2_emergency.locationInput" name="emergency.location" />
+        <dataInput id="_2_emergency.nameInput" name="emergency.name" />
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_ContentInput" name="Content" />
+        <dataOutput id="_2_emergency.typeOutput" name="emergency.type" />
+        <dataOutput id="_2_emergency.ageOutput" name="emergency.age" />
+        <dataOutput id="_2_emergency.genderOutput" name="emergency.gender" />
+        <dataOutput id="_2_emergency.locationOutput" name="emergency.location" />
+        <dataOutput id="_2_emergency.nameOutput" name="emergency.name" />
+        <inputSet>
+          <dataInputRefs>_2_emergency.typeInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.ageInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.genderInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.locationInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.nameInput</dataInputRefs>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_2_ContentInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_emergency.typeOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.ageOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.genderOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.locationOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.nameOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <property id="_2_Comment" />
+      <property id="_2_TaskName" />
+      <property id="_2_Content" />
+      <dataInputAssociation>
+        <sourceRef>_2_emergency.type</sourceRef>
+        <targetRef>emergency.type</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>_2_emergency.age</sourceRef>
+        <targetRef>emergency.age</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>_2_emergency.gender</sourceRef>
+        <targetRef>emergency.gender</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>_2_emergency.location</sourceRef>
+        <targetRef>emergency.location</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>_2_emergency.name</sourceRef>
+        <targetRef>emergency.name</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+        <sourceRef>_2_Comment</sourceRef>
+        <targetRef>_2_CommentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">emergencyInformationTask</from>
+          <to xs:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+        <sourceRef>_2_TaskName</sourceRef>
+        <targetRef>_2_TaskNameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_2_ContentInput</to>
+        </assignment>
+        <sourceRef>_2_Content</sourceRef>
+        <targetRef>_2_ContentInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.type</sourceRef>
+        <targetRef>emergency.type</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.age</sourceRef>
+        <targetRef>emergency.age</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.gender</sourceRef>
+        <targetRef>emergency.gender</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.location</sourceRef>
+        <targetRef>emergency.location</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.name</sourceRef>
+        <targetRef>emergency.name</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner resourceRef="tns:Actor" >
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="_3" name="Dispatch Ambulance" g:x="427" g:y="56" g:width="164" g:height="48" implementation="humanTaskWebService" >
+      <ioSpecification>
+        <dataInput id="_3_nullInput" name="null" />
+        <dataInput id="_3_CommentInput" name="Comment" />
+        <dataInput id="_3_TaskNameInput" name="TaskName" />
+        <dataInput id="_3_ContentInput" name="Content" />
+        <inputSet>
+          <dataInputRefs>_3_nullInput</dataInputRefs>
+          <dataInputRefs>_3_CommentInput</dataInputRefs>
+          <dataInputRefs>_3_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_3_ContentInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <property id="_3_Comment" />
+      <property id="_3_TaskName" />
+      <property id="_3_Content" />
+      <dataInputAssociation>
+        <sourceRef>_3__3_emergency.name</sourceRef>
+        <targetRef>_3_null</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_3_CommentInput</to>
+        </assignment>
+        <sourceRef>_3_Comment</sourceRef>
+        <targetRef>_3_CommentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">dispatchAmbulanceTask</from>
+          <to xs:type="tFormalExpression">_3_TaskNameInput</to>
+        </assignment>
+        <sourceRef>_3_TaskName</sourceRef>
+        <targetRef>_3_TaskNameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_3_ContentInput</to>
+        </assignment>
+        <sourceRef>_3_Content</sourceRef>
+        <targetRef>_3_ContentInput</targetRef>
+      </dataInputAssociation>
+      <potentialOwner resourceRef="tns:Actor" >
+        <resourceAssignmentExpression>
+          <formalExpression>salaboy</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <intermediateCatchEvent id="_5" name="PickUp" g:x="623" g:y="16" g:width="164" g:height="48" >
+      <dataOutput id="_5_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_5_Output</sourceRef>
+      <targetRef>patientPickUp</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_5_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="PatientPickUpEvent"/>
+    </intermediateCatchEvent>
+    <businessRuleTask id="_7" name="Select Hospital" g:x="900" g:y="56" g:width="100" g:height="48" g:ruleFlowGroup="hospital_selection" />
+    <scriptTask id="_10" name="Service Report" g:x="1113" g:y="96" g:width="106" g:height="48" >
+      <script>System.out.println("Reporting......");</script>
+    </scriptTask>
+    <endEvent id="_11" name="End" g:x="1251" g:y="96" g:width="100" g:height="48" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <intermediateCatchEvent id="_12" name="atHospital" g:x="900" g:y="136" g:width="100" g:height="48" >
+      <dataOutput id="_12_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_12_Output</sourceRef>
+      <targetRef>patientAtHospital</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_12_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="PatientAtHospital"/>
+    </intermediateCatchEvent>
+    <parallelGateway id="_13" name="Gateway" g:x="819" g:y="56" g:width="49" g:height="49" gatewayDirection="converging" />
+    <parallelGateway id="_14" name="Gateway" g:x="1032" g:y="96" g:width="49" g:height="49" gatewayDirection="converging" />
+    <businessRuleTask id="_15" name="Equip Ambulance" g:x="284" g:y="56" g:width="111" g:height="48" g:ruleFlowGroup="equip_ambulance" />
+    <parallelGateway id="_17" name="Gateway" g:x="623" g:y="96" g:width="164" g:height="49" gatewayDirection="converging" />
+    <intermediateCatchEvent id="_16" name="AmbulanceLeft" g:x="453" g:y="137" g:width="164" g:height="48" >
+      <dataOutput id="_16_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_16_Output</sourceRef>
+      <targetRef>ambulanceLeft</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_16_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="AmbulanceLeftEvent"/>
+    </intermediateCatchEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_15-_3" sourceRef="_15" targetRef="_3" />
+    <sequenceFlow id="_13-_7" sourceRef="_13" targetRef="_7" />
+    <sequenceFlow id="_14-_10" sourceRef="_14" targetRef="_10" />
+    <sequenceFlow id="_10-_11" sourceRef="_10" targetRef="_11" />
+    <sequenceFlow id="_5-_13" sourceRef="_5" targetRef="_13" />
+    <sequenceFlow id="_17-_13" sourceRef="_17" targetRef="_13" />
+    <sequenceFlow id="_12-_14" sourceRef="_12" targetRef="_14" />
+    <sequenceFlow id="_7-_14" sourceRef="_7" targetRef="_14" />
+    <sequenceFlow id="_2-_15" sourceRef="_2" targetRef="_15" />
+    <sequenceFlow id="_3-_17" sourceRef="_3" targetRef="_17" />
+    <sequenceFlow id="_16-_17" sourceRef="_16" targetRef="_17" />
+
+  </process>
+
+</definitions>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="org.drools.process.audit.ProcessInstanceLog">
+    <id name="id">
+      <generator class="native"/>
+    </id>
+    <property name="processInstanceId"/>
+    <property name="processId"/>
+    <property column="START_DATE" name="start" type="timestamp"/>
+    <property column="END_DATE" name="end" type="timestamp"/>
+  </class>
+  <class name="org.drools.process.audit.NodeInstanceLog">
+    <id name="id">
+      <generator class="native"/>
+    </id>
+    <property name="type"/>
+    <property name="nodeInstanceId"/>
+    <property name="nodeId"/>
+    <property name="processInstanceId"/>
+    <property name="processId"/>
+    <property column="DATE" name="date" type="timestamp"/>
+  </class>
+</hibernate-mapping>

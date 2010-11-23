@@ -1,0 +1,49 @@
+package org.plugtree.emergencyservice.hospitalselection;
+
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Emergency;
+import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Medic;
+import org.plugtree.training.model.Medic.MedicSpeciality;
+import org.plugtree.training.model.MedicalKit;
+import org.plugtree.training.model.Location;
+import org.plugtree.training.model.Hospital;
+
+
+
+rule "Rank Hospital Speciality that matches EmergencyType"
+    lock-on-active true
+    ruleflow-group "hospital_selection"
+    when
+        $emergency: Emergency($type: type.name)
+        $hospital: Hospital($specialities: specialities) 
+        EmergencyType(name == $type) from $specialities
+    then
+        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
+        $hospital.setRank($hospital.getRank() + 10);
+        update($hospital);
+end
+
+rule "Rank with 5 Hospital without the Emergency Speciality but with available beds"
+    salience -500
+    lock-on-active true
+    ruleflow-group "hospital_selection"
+    when
+        $hospital: Hospital(availableBeds >= 0)
+    then
+        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
+        $hospital.setRank($hospital.getRank() + 5);
+        update($hospital);
+end
+
+rule "Rank with 0 Hospital without available beds"
+    salience -999
+    lock-on-active true
+    ruleflow-group "hospital_selection"
+    when
+        $hospital: Hospital(availableBeds == 0)
+    then
+        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
+        $hospital.setRank(0);
+        update($hospital);
+end

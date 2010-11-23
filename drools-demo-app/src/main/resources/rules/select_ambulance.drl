@@ -1,0 +1,82 @@
+package org.plugtree.emergencyservice.ambulance;
+
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Call;
+import org.plugtree.training.model.Patient;
+import org.plugtree.training.model.Emergency;
+import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Medic;
+import org.plugtree.training.model.Medic.MedicSpeciality;
+import org.plugtree.training.model.MedicalKit;
+import org.plugtree.training.model.Location;
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+
+rule "Initialize Emergency"
+    ruleflow-group "select_ambulance"
+    when
+       $processInstance: WorkflowProcessInstance()
+       $call: Call( )
+       not(Emergency())
+    then
+       Emergency emergency  = new Emergency();
+       System.out.println("age = "+$processInstance.getVariable("emergency.age")+
+                        "name = "+$processInstance.getVariable("emergency.name")+
+                        "gender = "+$processInstance.getVariable("emergency.gender")+
+                        "type = "+$processInstance.getVariable("emergency.type")+
+                        "location = "+$processInstance.getVariable("emergency.location")
+                        );
+       Patient patient = new Patient(Patient.incrementalId.getAndIncrement(),
+                                (String)$processInstance.getVariable("emergency.name"),
+                                Integer.valueOf((String)$processInstance.getVariable("emergency.age")),
+                                (String)$processInstance.getVariable("emergency.gender") );
+       emergency.setPatient(patient);
+       emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+       emergency.setCall($call);
+       insert(emergency); 
+       
+end
+
+rule "Fire Emergency"
+    ruleflow-group "select_ambulance"
+    when
+        $emergency: Emergency($type : type == EmergencyType.FIRE)
+    then
+    	System.out.println("\t\tEMERGENCY = FIRE");
+        Medic medic = new Medic(MedicSpeciality.BURNS);
+        MedicalKit kit = new MedicalKit("Fire Medical Kit");
+        Ambulance ambulance = new Ambulance();
+        ambulance.addKit(kit);
+        ambulance.setMedicOnBoard(medic);
+        $emergency.setAmbulance(ambulance);
+end
+
+rule "Car Crash Emergency"
+     ruleflow-group "select_ambulance"
+    when
+        $emergency: Emergency(type == EmergencyType.CAR_CRASH)
+    then
+    	System.out.println("\t\tEMERGENCY = CAR CRASH");
+        Medic medic = new Medic(MedicSpeciality.BONES);
+        MedicalKit kit1 = new MedicalKit("Bones Medical Kit");
+        MedicalKit kit2 = new MedicalKit("Fire Medical Kit");
+        Ambulance ambulance = new Ambulance();
+        ambulance.addKit(kit1);
+        ambulance.addKit(kit2);
+        ambulance.setMedicOnBoard(medic);
+        $emergency.setAmbulance(ambulance);
+end
+
+rule "Heart Attack Emergency"
+     ruleflow-group "select_ambulance"
+    when
+        $emergency: Emergency(type == EmergencyType.HEART_ATTACK)
+    then
+    	System.out.println("\t\tEMERGENCY = HEART ATTACK");
+        Medic medic = new Medic(MedicSpeciality.REANIMATION);
+        MedicalKit kit = new MedicalKit("Heart Attack Medical Kit");
+        Ambulance ambulance = new Ambulance();
+        ambulance.addKit(kit);
+        ambulance.setMedicOnBoard(medic);
+        $emergency.setAmbulance(ambulance);
+end
