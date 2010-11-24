@@ -12,16 +12,9 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.TaskServerDaemon;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
 import org.drools.SystemEventListenerFactory;
-import org.drools.task.AccessType;
 import org.drools.task.Task;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.TaskClient;
@@ -29,25 +22,39 @@ import org.drools.task.service.mina.MinaTaskClientConnector;
 import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.plugtree.training.model.Call;
 
 /**
  *
  * @author salaboy
  */
-public class UserUI extends javax.swing.JFrame {
+public class UserUI extends javax.swing.JFrame{
     
-    
-    public static Map<Long, Call> calls = new HashMap<Long, Call>();
     private TaskClient client;
     private static final long DEFAULT_WAIT_TIME = 5000;
     private Task currentTask;
     private SlickBasicGame game;
+    
+    
+    //Panels
+    private PhoneCallsPanel phoneCallsPanel;
+    private EmergencyInfoPanel emergencyInfoPanel;
+    private AmbulancePanel ambulancePanel;
+    
     /** Creates new form UserUI */
     public UserUI() {
         initComponents();
         initTaskServer();
         initTaskClient();
+        
+        phoneCallsPanel = new PhoneCallsPanel(this);
+        emergencyInfoPanel = new EmergencyInfoPanel(this);
+        ambulancePanel = new AmbulancePanel(this);
+        
+        this.mainJTabbedPane.add(this.phoneCallsPanel,0);
+        this.mainJTabbedPane.add(this.emergencyInfoPanel,1);
+        this.mainJTabbedPane.add(this.ambulancePanel,2);
+        
+        this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
     }
 
     /** This method is called from within the constructor to
@@ -60,35 +67,6 @@ public class UserUI extends javax.swing.JFrame {
     private void initComponents() {
 
         mainJTabbedPane = new javax.swing.JTabbedPane();
-        phoneCallsjPanel = new javax.swing.JPanel();
-        phoneCallsJScrollPane = new javax.swing.JScrollPane();
-        phoneCallsJTable = new javax.swing.JTable();
-        newEmergencyPhoneCallJButton = new javax.swing.JButton();
-        jLabel11 = new javax.swing.JLabel();
-        refreshJButton = new javax.swing.JButton();
-        emergencyInfo = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        nameJTextField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        genderjComboBox = new javax.swing.JComboBox();
-        emergencyTypeJComboBox = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        ageJTextField = new javax.swing.JTextField();
-        chooseAmbuelanceJButton = new javax.swing.JButton();
-        locationjTextField = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        ambulancejPanel = new javax.swing.JPanel();
-        sendAmbulancejButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        ambulancejList = new javax.swing.JList();
-        jLabel6 = new javax.swing.JLabel();
-        medicalKitsJInternalFrame = new javax.swing.JInternalFrame();
-        jLabel8 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        doctorsjList = new javax.swing.JList();
-        jLabel7 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -125,269 +103,6 @@ public class UserUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        phoneCallsJTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Alert"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        phoneCallsJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                rowClick(evt);
-            }
-        });
-        phoneCallsJScrollPane.setViewportView(phoneCallsJTable);
-
-        newEmergencyPhoneCallJButton.setText("New Emergency Phone Call");
-        newEmergencyPhoneCallJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newEmergencyPhoneCallJButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel11.setText("Incoming Calls");
-
-        refreshJButton.setText("Refresh");
-        refreshJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshJButtonActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout phoneCallsjPanelLayout = new org.jdesktop.layout.GroupLayout(phoneCallsjPanel);
-        phoneCallsjPanel.setLayout(phoneCallsjPanelLayout);
-        phoneCallsjPanelLayout.setHorizontalGroup(
-            phoneCallsjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(phoneCallsjPanelLayout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(phoneCallsjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(phoneCallsjPanelLayout.createSequentialGroup()
-                        .add(229, 229, 229)
-                        .add(jLabel11))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, phoneCallsjPanelLayout.createSequentialGroup()
-                        .add(refreshJButton)
-                        .add(260, 260, 260))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, phoneCallsJScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE))
-                .add(83, 83, 83))
-            .add(phoneCallsjPanelLayout.createSequentialGroup()
-                .add(171, 171, 171)
-                .add(newEmergencyPhoneCallJButton)
-                .addContainerGap(131, Short.MAX_VALUE))
-        );
-        phoneCallsjPanelLayout.setVerticalGroup(
-            phoneCallsjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(phoneCallsjPanelLayout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .add(jLabel11)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(phoneCallsJScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 355, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(28, 28, 28)
-                .add(refreshJButton)
-                .add(18, 18, 18)
-                .add(newEmergencyPhoneCallJButton)
-                .add(48, 48, 48))
-        );
-
-        mainJTabbedPane.addTab("Phone Calls", phoneCallsjPanel);
-
-        jLabel1.setText("Name: ");
-
-        nameJTextField.setEnabled(false);
-
-        jLabel2.setText("Gender:");
-
-        genderjComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MALE", "FEMALE" }));
-        genderjComboBox.setEnabled(false);
-
-        emergencyTypeJComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FIRE", "CAR CRASH", "STROKE", "ASSAULT" }));
-        emergencyTypeJComboBox.setEnabled(false);
-
-        jLabel3.setText("Emergency Type:");
-
-        jLabel5.setText("Age:");
-
-        ageJTextField.setEnabled(false);
-
-        chooseAmbuelanceJButton.setText("Choose Ambulance");
-        chooseAmbuelanceJButton.setEnabled(false);
-        chooseAmbuelanceJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseAmbuelanceJButtonActionPerformed(evt);
-            }
-        });
-
-        locationjTextField.setEnabled(false);
-
-        jLabel12.setText("Location:");
-
-        org.jdesktop.layout.GroupLayout emergencyInfoLayout = new org.jdesktop.layout.GroupLayout(emergencyInfo);
-        emergencyInfo.setLayout(emergencyInfoLayout);
-        emergencyInfoLayout.setHorizontalGroup(
-            emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(emergencyInfoLayout.createSequentialGroup()
-                .add(72, 72, 72)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jLabel1)
-                    .add(jLabel2)
-                    .add(jLabel3)
-                    .add(jLabel5)
-                    .add(jLabel12))
-                .add(18, 18, 18)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(ageJTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 48, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, genderjComboBox, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, emergencyTypeJComboBox, 0, 144, Short.MAX_VALUE)
-                        .add(chooseAmbuelanceJButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 213, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, locationjTextField)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, nameJTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
-                .addContainerGap(106, Short.MAX_VALUE))
-        );
-        emergencyInfoLayout.setVerticalGroup(
-            emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(emergencyInfoLayout.createSequentialGroup()
-                .add(75, 75, 75)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(locationjTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel12))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(nameJTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(genderjComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(15, 15, 15)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel3)
-                    .add(emergencyTypeJComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(emergencyInfoLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel5)
-                    .add(ageJTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(chooseAmbuelanceJButton)
-                .addContainerGap(271, Short.MAX_VALUE))
-        );
-
-        mainJTabbedPane.addTab("Emergency Info", emergencyInfo);
-
-        sendAmbulancejButton.setText("Send Ambulance");
-        sendAmbulancejButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendAmbulancejButtonActionPerformed(evt);
-            }
-        });
-
-        ambulancejList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Ambulance S00001", "Ambulance S00002", "Ambulance S00003", "Ambulance S00004" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        ambulancejList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                selectedAmbulance(evt);
-            }
-        });
-        jScrollPane2.setViewportView(ambulancejList);
-
-        jLabel6.setText("Available Ambulances");
-
-        medicalKitsJInternalFrame.setTitle("Medical Kits");
-        medicalKitsJInternalFrame.setVisible(true);
-
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/older/collision.png"))); // NOI18N
-
-        org.jdesktop.layout.GroupLayout medicalKitsJInternalFrameLayout = new org.jdesktop.layout.GroupLayout(medicalKitsJInternalFrame.getContentPane());
-        medicalKitsJInternalFrame.getContentPane().setLayout(medicalKitsJInternalFrameLayout);
-        medicalKitsJInternalFrameLayout.setHorizontalGroup(
-            medicalKitsJInternalFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(medicalKitsJInternalFrameLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 26, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(413, Short.MAX_VALUE))
-        );
-        medicalKitsJInternalFrameLayout.setVerticalGroup(
-            medicalKitsJInternalFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(medicalKitsJInternalFrameLayout.createSequentialGroup()
-                .add(34, 34, 34)
-                .add(jLabel8)
-                .addContainerGap(61, Short.MAX_VALUE))
-        );
-
-        doctorsjList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Doctor D0001", "Doctor D0002" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(doctorsjList);
-
-        jLabel7.setText("Available Doctors");
-
-        jButton3.setText("Refresh");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout ambulancejPanelLayout = new org.jdesktop.layout.GroupLayout(ambulancejPanel);
-        ambulancejPanel.setLayout(ambulancejPanelLayout);
-        ambulancejPanelLayout.setHorizontalGroup(
-            ambulancejPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(ambulancejPanelLayout.createSequentialGroup()
-                .add(ambulancejPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(ambulancejPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(sendAmbulancejButton))
-                    .add(ambulancejPanelLayout.createSequentialGroup()
-                        .add(12, 12, 12)
-                        .add(ambulancejPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel6)
-                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                            .add(medicalKitsJInternalFrame)
-                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 370, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel7)))
-                    .add(ambulancejPanelLayout.createSequentialGroup()
-                        .add(171, 171, 171)
-                        .add(jButton3)))
-                .addContainerGap())
-        );
-        ambulancejPanelLayout.setVerticalGroup(
-            ambulancejPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, ambulancejPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jButton3)
-                .add(22, 22, 22)
-                .add(jLabel6)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 67, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
-                .add(medicalKitsJInternalFrame, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(14, 14, 14)
-                .add(jLabel7)
-                .add(18, 18, 18)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(sendAmbulancejButton)
-                .addContainerGap())
-        );
-
-        mainJTabbedPane.addTab("Ambulance", ambulancejPanel);
-
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setText("Go to A8 and D8");
@@ -413,11 +128,11 @@ public class UserUI extends javax.swing.JFrame {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(pickUpPatientjButton)
-                .addContainerGap(360, Short.MAX_VALUE))
+                .addContainerGap(399, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -428,7 +143,7 @@ public class UserUI extends javax.swing.JFrame {
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
                 .add(pickUpPatientjButton)
-                .addContainerGap(384, Short.MAX_VALUE))
+                .addContainerGap(383, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Driver", jPanel2);
@@ -466,7 +181,7 @@ public class UserUI extends javax.swing.JFrame {
                     .add(jPanel3Layout.createSequentialGroup()
                         .add(29, 29, 29)
                         .add(jButton1)))
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addContainerGap(281, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -481,7 +196,7 @@ public class UserUI extends javax.swing.JFrame {
                     .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(136, 136, 136)
                 .add(jButton1)
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addContainerGap(305, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Doctor", jPanel3);
@@ -524,12 +239,12 @@ public class UserUI extends javax.swing.JFrame {
         hospitalJPanelLayout.setHorizontalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, hospitalJPanelLayout.createSequentialGroup()
-                .addContainerGap(111, Short.MAX_VALUE)
+                .addContainerGap(133, Short.MAX_VALUE)
                 .add(jButton2)
                 .add(214, 214, 214))
             .add(hospitalJPanelLayout.createSequentialGroup()
                 .add(200, 200, 200)
-                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addContainerGap())
         );
         hospitalJPanelLayout.setVerticalGroup(
@@ -539,7 +254,7 @@ public class UserUI extends javax.swing.JFrame {
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
                 .add(jButton2)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(221, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
@@ -548,11 +263,11 @@ public class UserUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 468, Short.MAX_VALUE)
+            .add(0, 496, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 495, Short.MAX_VALUE)
+            .add(0, 507, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Reports", jPanel1);
@@ -561,11 +276,11 @@ public class UserUI extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 468, Short.MAX_VALUE)
+            .add(0, 496, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 495, Short.MAX_VALUE)
+            .add(0, 507, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Activity Console", jPanel4);
@@ -576,14 +291,14 @@ public class UserUI extends javax.swing.JFrame {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -651,7 +366,7 @@ public class UserUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                 .addContainerGap())
@@ -663,87 +378,6 @@ public class UserUI extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
-
-    private void newEmergencyPhoneCallJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmergencyPhoneCallJButtonActionPerformed
-        //Start Emergency Business Process
-        
-        
-    }//GEN-LAST:event_newEmergencyPhoneCallJButtonActionPerformed
-
-    private void rowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rowClick
-        
-        mainJTabbedPane.setSelectedIndex(1);
-        locationjTextField.setEnabled(true);
-        nameJTextField.setEnabled(true);
-        emergencyTypeJComboBox.setEnabled(true);
-        ageJTextField.setEnabled(true);
-        chooseAmbuelanceJButton.setEnabled(true);
-        genderjComboBox.setEnabled(true);
-        System.out.println("ID from EVT"+evt.getID());
-        int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
-        
-        currentTask = getTask(Long.parseLong(phoneCallsJTable.getModel().getValueAt(selected, 0).toString()));
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start(currentTask.getId(), "operator", responseHandler); 
-        
-        
-    }//GEN-LAST:event_rowClick
-
-    private void chooseAmbuelanceJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseAmbuelanceJButtonActionPerformed
-        ObjectOutputStream out = null;
-        try {
-            
-            // data.setCon
-            Map<String, Object> info = new HashMap<String, Object>();
-            System.out.println("LocationUI = "+locationjTextField.getText());
-            System.out.println("ageUI = "+ageJTextField.getText());
-            System.out.println("nameUI = "+nameJTextField.getText());
-            System.out.println("genderUI = "+genderjComboBox.getModel().getSelectedItem());
-            System.out.println("typeUI = "+emergencyTypeJComboBox.getModel().getSelectedItem());
-            info.put("emergency.location",locationjTextField.getText());
-            info.put("emergency.name",nameJTextField.getText());
-            info.put("emergency.type",emergencyTypeJComboBox.getModel().getSelectedItem()) ; // emergencyTypeJComboBox.getSelectedIndex())
-            info.put("emergency.age",ageJTextField.getText());
-            info.put("emergency.gender",genderjComboBox.getModel().getSelectedItem());
-            
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            out.close();
-            result.setContent(bos.toByteArray());
-            //Complete human Task
-            client.complete(currentTask.getId(), "operator", result, null);
-            //Show ambulance tab.. with all the selected items
-            mainJTabbedPane.setSelectedIndex(2);
-        } catch (IOException ex) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        
-    }//GEN-LAST:event_chooseAmbuelanceJButtonActionPerformed
-
-    private void selectedAmbulance(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectedAmbulance
-        // TODO add your handling code here:
-        //From the list of selected ambulance show the ambulance details
-        
-    }//GEN-LAST:event_selectedAmbulance
-
-    private void sendAmbulancejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAmbulancejButtonActionPerformed
-        // TODO add your handling code here:
-        //PUT the ambulance in the map
-        mainJTabbedPane.setSelectedIndex(2);
-        
-        
-    }//GEN-LAST:event_sendAmbulancejButtonActionPerformed
 
     private void pickUpPatientjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickUpPatientjButtonActionPerformed
         // TODO add your handling code here:
@@ -769,19 +403,6 @@ public class UserUI extends javax.swing.JFrame {
         mainJTabbedPane.setSelectedIndex(4);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
-        phoneCallsJTable.removeAll();
-        for(Long key : calls.keySet()){
-            ((DefaultTableModel)phoneCallsJTable.getModel()).addRow(new String[]{key.toString(), calls.get(key).getDate().toString()});
-        }
-         
-    }//GEN-LAST:event_refreshJButtonActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        updateUIMap();
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     /**
     * @param args the command line arguments
     */
@@ -795,68 +416,39 @@ public class UserUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JTextField ageJTextField;
-    private javax.swing.JList ambulancejList;
-    private javax.swing.JPanel ambulancejPanel;
-    private javax.swing.JButton chooseAmbuelanceJButton;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JList doctorsjList;
     private javax.swing.JMenu editMenu;
-    private javax.swing.JPanel emergencyInfo;
-    private javax.swing.JComboBox emergencyTypeJComboBox;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JComboBox genderjComboBox;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel hospitalJPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField locationjTextField;
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JPanel managerjPanel;
-    private javax.swing.JInternalFrame medicalKitsJInternalFrame;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JTextField nameJTextField;
-    private javax.swing.JButton newEmergencyPhoneCallJButton;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JScrollPane phoneCallsJScrollPane;
-    private javax.swing.JTable phoneCallsJTable;
-    private javax.swing.JPanel phoneCallsjPanel;
     private javax.swing.JButton pickUpPatientjButton;
-    private javax.swing.JButton refreshJButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
-    private javax.swing.JButton sendAmbulancejButton;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
@@ -904,11 +496,30 @@ public class UserUI extends javax.swing.JFrame {
         this.game = game;
     }
 
-    private void updateUIMap() {
+    public void updateUIMap() {
         System.out.println("Firing all the rules!!!");
         this.game.ksession.fireAllRules();
     }
-
     
+    public void callSelected(Long id){
+        
+        this.emergencyInfoPanel.enableComponents();
+        mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
+        
+        currentTask = getTask(id);
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        client.start(currentTask.getId(), "operator", responseHandler);
+    }
+    
+    public void callHandled(ContentData data){
+        //Complete human Task
+        client.complete(currentTask.getId(), "operator", data, null);
+        //Show ambulance tab.. with all the selected items
+        mainJTabbedPane.setSelectedComponent(ambulancePanel);
+    }
+    
+    public void sendAmbulance(){
+        mainJTabbedPane.setSelectedIndex(2);
+    }
 
 }

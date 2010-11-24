@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.ui.UserUI;
+import com.wordpress.salaboy.call.CallManager;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
@@ -14,7 +14,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.process.audit.WorkingMemoryDbLogger;
 import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 
 /**
@@ -47,7 +46,7 @@ public class MyDroolsService {
         return ksession;
     } 
     public static void setGlobals(StatefulKnowledgeSession ksession){
-        ksession.setGlobal("calls", UserUI.calls);
+        ksession.setGlobal("callManager", CallManager.getInstance());
     
     }   
 
