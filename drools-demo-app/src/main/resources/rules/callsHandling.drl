@@ -6,7 +6,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
-global java.util.Map calls;
+global com.wordpress.salaboy.call.CallManager callManager;
 
 rule "Handling Single Emergency Call"
     when
@@ -19,7 +19,7 @@ rule "Handling Single Emergency Call"
         Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
         System.out.println("WiID = "+id);
         $call.setProcessId(pI.getId());
-        calls.put(id, $call);
+        callManager.incomingCall(id, $call);
         insert(pI);
 end
     
