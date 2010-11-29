@@ -11,15 +11,11 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.MyDroolsService;
 import com.wordpress.salaboy.TaskServerDaemon;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.drools.SystemEventListenerFactory;
 import org.drools.task.Task;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.TaskClient;
-import org.drools.task.service.mina.MinaTaskClientConnector;
-import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
@@ -452,43 +448,14 @@ public class UserUI extends javax.swing.JFrame{
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
-        final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
-        
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() { 
-                System.out.println("\n");
-                taskServerDaemon.stopServer();
-                System.out.println("server stoped...");
-            }
-         });
-
-        taskServerDaemon.startServer();
-        System.out.println("server started... (ctrl-c to stop it)");
+        MyDroolsService.initTaskServer();
     }
 
     private void initTaskClient() {
-        client = new TaskClient(new MinaTaskClientConnector("client 1",
-        new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-        boolean connected = client.connect("127.0.0.1", 9123);
-        
-        
-        while(!connected){
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            connected = client.connect("127.0.0.1", 9123);
-            
-        }
+        client = MyDroolsService.initTaskClient();
     }
     
-    public Task getTask(Long workItemId) {
-		BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-                client.getTaskByWorkItemId(workItemId, getTaskResponseHandler);
-		Task task = getTaskResponseHandler.getTask();
-		return task;
-    }
+    
 
    
 
@@ -496,17 +463,13 @@ public class UserUI extends javax.swing.JFrame{
         this.game = game;
     }
 
-    public void updateUIMap() {
-        System.out.println("Firing all the rules!!!");
-        this.game.ksession.fireAllRules();
-    }
     
     public void callSelected(Long id){
         
         this.emergencyInfoPanel.enableComponents();
         mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
         
-        currentTask = getTask(id);
+        currentTask = MyDroolsService.getTask(client, id);
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start(currentTask.getId(), "operator", responseHandler);
     }

@@ -162,7 +162,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO add your handling code here:
-        parent.updateUIMap();
+        //parent.updateUIMap();
 }//GEN-LAST:event_refreshButtonActionPerformed
 
 

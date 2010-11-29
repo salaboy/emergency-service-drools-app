@@ -5,11 +5,13 @@
 
 package org.plugtree.training.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author salaboy
  */
-public class Medic {
+public class Medic implements Serializable {
     public enum MedicSpeciality{BURNS, BONES, REANIMATION};
     private Long id;
     

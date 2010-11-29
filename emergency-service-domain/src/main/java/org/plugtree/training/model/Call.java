@@ -1,12 +1,13 @@
 package org.plugtree.training.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author salaboy
  */
-public class Call {
+public class Call implements Serializable{
 
     private Long id;
     private Date date;
@@ -51,4 +52,10 @@ public class Call {
     public void setProcessId(Long processId) {
         this.processId = processId;
     }
+
+    @Override
+    public String toString() {
+        return "Call{" + "id=" + id + ", date=" + date + ", emergency=" + emergency + ", processId=" + processId + '}';
+    }
+    
 }

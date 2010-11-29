@@ -21,6 +21,12 @@ public class PatientPickUpEvent implements Serializable {
     public PatientPickUpEvent() {
     }
 
+    public PatientPickUpEvent(Date time) {
+        this.time = time;
+    }
+
+    
+    
     public PatientPickUpEvent(Ambulance ambulance, Date time) {
         this.ambulance = ambulance;
         this.time = time;

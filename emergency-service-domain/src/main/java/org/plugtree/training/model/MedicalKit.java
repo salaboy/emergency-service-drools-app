@@ -5,11 +5,13 @@
 
 package org.plugtree.training.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author salaboy
  */
-public class MedicalKit {
+public class MedicalKit implements Serializable{
     private Long id;
     private String name;
 

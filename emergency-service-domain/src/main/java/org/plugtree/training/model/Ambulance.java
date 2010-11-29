@@ -1,5 +1,6 @@
 package org.plugtree.training.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class Ambulance {
+public class Ambulance implements Serializable{
 
 	private String id;
 	private Medic medicOnBoard;

@@ -15,45 +15,45 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 rule "Initialize Emergency"
     ruleflow-group "select_ambulance"
     when
-       $processInstance: WorkflowProcessInstance()
-       $call: Call( )
-       not(Emergency())
+      $processInstance: WorkflowProcessInstance()
+      $call: Call()
     then
-       Emergency emergency  = new Emergency();
-       System.out.println("age = "+$processInstance.getVariable("emergency.age")+
-                        "name = "+$processInstance.getVariable("emergency.name")+
-                        "gender = "+$processInstance.getVariable("emergency.gender")+
-                        "type = "+$processInstance.getVariable("emergency.type")+
-                        "location = "+$processInstance.getVariable("emergency.location")
-                        );
-       Patient patient = new Patient(Patient.incrementalId.getAndIncrement(),
-                                (String)$processInstance.getVariable("emergency.name"),
-                                Integer.valueOf((String)$processInstance.getVariable("emergency.age")),
-                                (String)$processInstance.getVariable("emergency.gender") );
-       emergency.setPatient(patient);
-       emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
-       emergency.setCall($call);
-       insert(emergency); 
+     System.out.println("Emergency  "+$processInstance.getVariable("emergency"));
+    //  Emergency emergency = new Emergency();
+     //  Patient patient = new Patient(Patient.incrementalId.getAndIncrement(),
+     //                           (String)$processInstance.getVariable("emergency.name"),
+     //                           Integer.valueOf((String)$processInstance.getVariable("emergency.age")),
+     //                           (String)$processInstance.getVariable("emergency.gender") );
+     //  emergency.setPatient(patient);
+     //  emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+     //  emergency.setCall($call);
+     //  insert(emergency);
        
 end
 
 rule "Fire Emergency"
     ruleflow-group "select_ambulance"
     when
+        $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type : type == EmergencyType.FIRE)
     then
     	System.out.println("\t\tEMERGENCY = FIRE");
         Medic medic = new Medic(MedicSpeciality.BURNS);
         MedicalKit kit = new MedicalKit("Fire Medical Kit");
         Ambulance ambulance = new Ambulance();
+        ambulance.setId("MyAmbulance");
         ambulance.addKit(kit);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
+        $processInstance.setVariable("doctor", medic);
+        $processInstance.setVariable("ambulance", ambulance);
+        insert(ambulance);
 end
 
 rule "Car Crash Emergency"
      ruleflow-group "select_ambulance"
     when
+        $processInstance: WorkflowProcessInstance()
         $emergency: Emergency(type == EmergencyType.CAR_CRASH)
     then
     	System.out.println("\t\tEMERGENCY = CAR CRASH");
@@ -65,11 +65,16 @@ rule "Car Crash Emergency"
         ambulance.addKit(kit2);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
+        $processInstance.setVariable("doctor", medic);
+        $processInstance.setVariable("ambulance", ambulance);
+        
+        insert(ambulance);
 end
 
 rule "Heart Attack Emergency"
      ruleflow-group "select_ambulance"
     when
+        $processInstance: WorkflowProcessInstance()
         $emergency: Emergency(type == EmergencyType.HEART_ATTACK)
     then
     	System.out.println("\t\tEMERGENCY = HEART ATTACK");
@@ -79,4 +84,7 @@ rule "Heart Attack Emergency"
         ambulance.addKit(kit);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
+        $processInstance.setVariable("doctor", medic);
+        $processInstance.setVariable("ambulance", ambulance);
+        insert(ambulance);
 end

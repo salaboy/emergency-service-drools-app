@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_ambulanceItem" structureRef="org.plugtree.training.model.Ambulance" />
+  <itemDefinition id="_emergencyItem" structureRef="org.plugtree.training.model.Emergency" />
+  <itemDefinition id="_emergency.typeItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationItem" structureRef="String" />
+  <itemDefinition id="_patient.nameItem" structureRef="String" />
+  <itemDefinition id="_patient.ageItem" structureRef="String" />
+  <itemDefinition id="_patient.genderItem" structureRef="String" />
+  <itemDefinition id="_pickUpPatientEventItem" structureRef="org.plugtree.training.model.events.PatientPickUpEvent" />
+  <itemDefinition id="_emergency.priorityItem" structureRef="String" />
+  <itemDefinition id="_patientAtTheHospitalEventItem" structureRef="org.plugtree.training.model.events.PatientAtTheHospitalEvent" />
+
+  <process processType="Private" isExecutable="true" id="org.drools.bpmn2.EmergencyService" name="Emergency Service Main Process" >
+
+    <!-- process variables -->
+    <property id="ambulance" itemSubjectRef="_ambulanceItem"/>
+    <property id="emergency" itemSubjectRef="_emergencyItem"/>
+    <property id="emergency.type" itemSubjectRef="_emergency.typeItem"/>
+    <property id="emergency.location" itemSubjectRef="_emergency.locationItem"/>
+    <property id="patient.name" itemSubjectRef="_patient.nameItem"/>
+    <property id="patient.age" itemSubjectRef="_patient.ageItem"/>
+    <property id="patient.gender" itemSubjectRef="_patient.genderItem"/>
+    <property id="pickUpPatientEvent" itemSubjectRef="_pickUpPatientEventItem"/>
+    <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
+    <property id="patientAtTheHospitalEvent" itemSubjectRef="_patientAtTheHospitalEventItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <userTask id="_4" name="Ask for Emergency Information" >
+      <ioSpecification>
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_ContentInput" name="Content" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_PriorityInput" name="Priority" />
+        <dataOutput id="_4_emergency.typeOutput" name="emergency.type" />
+        <dataOutput id="_4_patient.genderOutput" name="patient.gender" />
+        <dataOutput id="_4_emergency.locationOutput" name="emergency.location" />
+        <dataOutput id="_4_patient.ageOutput" name="patient.age" />
+        <dataOutput id="_4_patient.nameOutput" name="patient.name" />
+        <inputSet>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_ContentInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_4_emergency.typeOutput</dataOutputRefs>
+          <dataOutputRefs>_4_patient.genderOutput</dataOutputRefs>
+          <dataOutputRefs>_4_emergency.locationOutput</dataOutputRefs>
+          <dataOutputRefs>_4_patient.ageOutput</dataOutputRefs>
+          <dataOutputRefs>_4_patient.nameOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_4_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">AskForEmergencyInformation</from>
+          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_4_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_emergency.typeOutput</sourceRef>
+        <targetRef>emergency.type</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_patient.genderOutput</sourceRef>
+        <targetRef>patient.gender</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_emergency.locationOutput</sourceRef>
+        <targetRef>emergency.location</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_patient.ageOutput</sourceRef>
+        <targetRef>patient.age</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_patient.nameOutput</sourceRef>
+        <targetRef>patient.name</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="_5" name="Dispatch Ambulance" >
+      <ioSpecification>
+        <dataInput id="_5_emergency.typeInput" name="emergency.type" />
+        <dataInput id="_5_ambulanceInput" name="ambulance" />
+        <dataInput id="_5_patient.genderInput" name="patient.gender" />
+        <dataInput id="_5_emergencyInput" name="emergency" />
+        <dataInput id="_5_emergency.locationInput" name="emergency.location" />
+        <dataInput id="_5_patient.ageInput" name="patient.age" />
+        <dataInput id="_5_patient.nameInput" name="patient.name" />
+        <dataInput id="_5_CommentInput" name="Comment" />
+        <dataInput id="_5_SkippableInput" name="Skippable" />
+        <dataInput id="_5_ContentInput" name="Content" />
+        <dataInput id="_5_TaskNameInput" name="TaskName" />
+        <dataInput id="_5_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_5_emergency.typeInput</dataInputRefs>
+          <dataInputRefs>_5_ambulanceInput</dataInputRefs>
+          <dataInputRefs>_5_patient.genderInput</dataInputRefs>
+          <dataInputRefs>_5_emergencyInput</dataInputRefs>
+          <dataInputRefs>_5_emergency.locationInput</dataInputRefs>
+          <dataInputRefs>_5_patient.ageInput</dataInputRefs>
+          <dataInputRefs>_5_patient.nameInput</dataInputRefs>
+          <dataInputRefs>_5_CommentInput</dataInputRefs>
+          <dataInputRefs>_5_SkippableInput</dataInputRefs>
+          <dataInputRefs>_5_ContentInput</dataInputRefs>
+          <dataInputRefs>_5_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_5_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.type</sourceRef>
+        <targetRef>_5_emergency.typeInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>ambulance</sourceRef>
+        <targetRef>_5_ambulanceInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>patient.gender</sourceRef>
+        <targetRef>_5_patient.genderInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_5_emergencyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency.location</sourceRef>
+        <targetRef>_5_emergency.locationInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>patient.age</sourceRef>
+        <targetRef>_5_patient.ageInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>patient.name</sourceRef>
+        <targetRef>_5_patient.nameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_5_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_5_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{emergency.type},  #{emergency.location}, #{patient.name}, #{patient.age}, #{patient.gender}</from>
+          <to xs:type="tFormalExpression">_5_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">DispatchAmbulance</from>
+          <to xs:type="tFormalExpression">_5_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_5_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <businessRuleTask id="_6" name="Select Ambulance" g:ruleFlowGroup="select_ambulance" />
+    <intermediateCatchEvent id="_7" name="PickUpPatientEvent" >
+      <dataOutput id="_7_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_7_Output</sourceRef>
+      <targetRef>pickUpPatientEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_7_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.PickUpPatientEvent"/>
+    </intermediateCatchEvent>
+    <userTask id="_8" name="Update Emergency Information" >
+      <ioSpecification>
+        <dataInput id="_8_pickUpPatientEventInput" name="pickUpPatientEvent" />
+        <dataInput id="_8_CommentInput" name="Comment" />
+        <dataInput id="_8_SkippableInput" name="Skippable" />
+        <dataInput id="_8_ContentInput" name="Content" />
+        <dataInput id="_8_TaskNameInput" name="TaskName" />
+        <dataInput id="_8_PriorityInput" name="Priority" />
+        <dataOutput id="_8_emergency.priorityOutput" name="emergency.priority" />
+        <inputSet>
+          <dataInputRefs>_8_pickUpPatientEventInput</dataInputRefs>
+          <dataInputRefs>_8_CommentInput</dataInputRefs>
+          <dataInputRefs>_8_SkippableInput</dataInputRefs>
+          <dataInputRefs>_8_ContentInput</dataInputRefs>
+          <dataInputRefs>_8_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_8_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_8_emergency.priorityOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>pickUpPatientEvent</sourceRef>
+        <targetRef>_8_pickUpPatientEventInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_8_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_8_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{pickUpPatientEvent.time}</from>
+          <to xs:type="tFormalExpression">_8_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">UpdateEmergencyInformation</from>
+          <to xs:type="tFormalExpression">_8_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_8_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_8_emergency.priorityOutput</sourceRef>
+        <targetRef>emergency.priority</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <businessRuleTask id="_9" name="Select Hospital" g:ruleFlowGroup="hospital_selection" />
+    <parallelGateway id="_10" name="Gateway" gatewayDirection="Converging" />
+    <parallelGateway id="_11" name="Gateway" gatewayDirection="Converging" />
+    <intermediateCatchEvent id="_12" name="PatientAtTheHospitalEvent" >
+      <dataOutput id="_12_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_12_Output</sourceRef>
+      <targetRef>patientAtTheHospitalEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_12_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="org.plugtree.training.model.events.PatientAtTheHospitalEvent"/>
+    </intermediateCatchEvent>
+    <task id="_13" name="Send Report" tns:taskName="Reporting" >
+      <ioSpecification>
+        <dataInput id="_13_emergency.priorityInput" name="emergency.priority" />
+        <inputSet>
+          <dataInputRefs>_13_emergency.priorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.priority</sourceRef>
+        <targetRef>_13_emergency.priorityInput</targetRef>
+      </dataInputAssociation>
+    </task>
+
+    <!-- connections -->
+    <sequenceFlow id="_13-_3" sourceRef="_13" targetRef="_3" />
+    <sequenceFlow id="_1-_4" sourceRef="_1" targetRef="_4" />
+    <sequenceFlow id="_6-_5" sourceRef="_6" targetRef="_5" />
+    <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" />
+    <sequenceFlow id="_10-_8" sourceRef="_10" targetRef="_8" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_5-_10" sourceRef="_5" targetRef="_10" />
+    <sequenceFlow id="_7-_10" sourceRef="_7" targetRef="_10" />
+    <sequenceFlow id="_12-_11" sourceRef="_12" targetRef="_11" />
+    <sequenceFlow id="_9-_11" sourceRef="_9" targetRef="_11" />
+    <sequenceFlow id="_11-_13" sourceRef="_11" targetRef="_13" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="org.drools.bpmn2.EmergencyService" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="1438" y="96" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="96" y="16" width="206" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="494" y="16" width="163" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="334" y="16" width="128" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="551" y="96" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" >
+        <dc:Bounds x="770" y="56" width="206" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_9" >
+        <dc:Bounds x="1008" y="56" width="128" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_10" >
+        <dc:Bounds x="689" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_11" >
+        <dc:Bounds x="1168" y="96" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12" >
+        <dc:Bounds x="1048" y="136" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_13" >
+        <dc:Bounds x="1249" y="96" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_13-_3" >
+        <di:waypoint x="1299" y="120" />
+        <di:waypoint x="1462" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_4" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="199" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_5" >
+        <di:waypoint x="398" y="40" />
+        <di:waypoint x="575" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_6" >
+        <di:waypoint x="199" y="40" />
+        <di:waypoint x="398" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10-_8" >
+        <di:waypoint x="713" y="80" />
+        <di:waypoint x="873" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8-_9" >
+        <di:waypoint x="873" y="80" />
+        <di:waypoint x="1072" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_10" >
+        <di:waypoint x="575" y="40" />
+        <di:waypoint x="713" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7-_10" >
+        <di:waypoint x="575" y="120" />
+        <di:waypoint x="713" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-_11" >
+        <di:waypoint x="1072" y="160" />
+        <di:waypoint x="1192" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9-_11" >
+        <di:waypoint x="1072" y="80" />
+        <di:waypoint x="1192" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11-_13" >
+        <di:waypoint x="1192" y="120" />
+        <di:waypoint x="1299" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,10 +1,13 @@
 package org.plugtree.emergencyservice.callsHandling;
 
 import org.plugtree.training.model.Call;
+import org.plugtree.training.model.Emergency;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
+import java.util.Map;
+import java.util.HashMap;
 
 global com.wordpress.salaboy.call.CallManager callManager;
 
@@ -13,11 +16,12 @@ rule "Handling Single Emergency Call"
        $call:  Call()
     
     then
-        ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.plugtree.training.EmergencyService", null);
-        System.out.println("Pi = "+pI);
-        
+        Emergency emergency = new Emergency();
+        emergency.setCall($call);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("emergency", emergency );
+        ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
         Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
-        System.out.println("WiID = "+id);
         $call.setProcessId(pI.getId());
         callManager.incomingCall(id, $call);
         insert(pI);
