@@ -1,5 +1,6 @@
 package org.plugtree.training.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -8,9 +9,9 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author salaboy
  */
-public class Patient {
+public class Patient implements Serializable {
 
-    public static final int DEFAULT_PATIENT_AGE = 30;
+    
     private Long id;
     private int age;
     private String name;
@@ -19,7 +20,6 @@ public class Patient {
     public static AtomicLong incrementalId = new AtomicLong();
     
     public Patient() {
-        this.age = DEFAULT_PATIENT_AGE;
         
     }
 
@@ -76,4 +76,11 @@ public class Patient {
     public void addAlert(Alert alert) {
         getAlerts().add(alert);
     }
+
+    @Override
+    public String toString() {
+        return "Patient{" + "id=" + id + ", age=" + age + ", name=" + name + ", gender=" + gender + ", alerts=" + alerts + '}';
+    }
+    
 }
+
