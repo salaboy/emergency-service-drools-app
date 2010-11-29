@@ -13,6 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <drools.version>5.2.0-SNAPSHOT</drools.version>
     </properties>
 
     <dependencies>
@@ -35,21 +36,18 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
         </dependency>
     	<!-- Generic JPA Persistence -->
         <dependency>
@@ -106,32 +104,28 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-process-task</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-flow-core</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         
          <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-flow-persistence-jpa</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         
@@ -161,15 +155,13 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-bam</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-bpmn2</artifactId>
-            <!--version>5.1.1</version-->
-            <version>5.2.0.SNAPSHOT</version>
+            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
