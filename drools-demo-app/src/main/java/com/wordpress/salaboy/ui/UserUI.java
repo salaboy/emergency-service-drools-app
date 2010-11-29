@@ -14,6 +14,7 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.TaskServerDaemon;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTabbedPane;
 import org.drools.SystemEventListenerFactory;
 import org.drools.task.Task;
 import org.drools.task.service.ContentData;
@@ -27,7 +28,7 @@ import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHan
  *
  * @author salaboy
  */
-public class UserUI extends javax.swing.JFrame{
+public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     
     private TaskClient client;
     private static final long DEFAULT_WAIT_TIME = 5000;
@@ -39,6 +40,7 @@ public class UserUI extends javax.swing.JFrame{
     private PhoneCallsPanel phoneCallsPanel;
     private EmergencyInfoPanel emergencyInfoPanel;
     private AmbulancePanel ambulancePanel;
+    private CurrentEmergenciesPanel currentEmergenciesPanel;
     
     /** Creates new form UserUI */
     public UserUI() {
@@ -49,10 +51,12 @@ public class UserUI extends javax.swing.JFrame{
         phoneCallsPanel = new PhoneCallsPanel(this);
         emergencyInfoPanel = new EmergencyInfoPanel(this);
         ambulancePanel = new AmbulancePanel(this);
+        currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
         
         this.mainJTabbedPane.add(this.phoneCallsPanel,0);
         this.mainJTabbedPane.add(this.emergencyInfoPanel,1);
         this.mainJTabbedPane.add(this.ambulancePanel,2);
+        this.mainJTabbedPane.add(this.currentEmergenciesPanel,3);
         
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
     }
@@ -67,17 +71,6 @@ public class UserUI extends javax.swing.JFrame{
     private void initComponents() {
 
         mainJTabbedPane = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel4 = new javax.swing.JLabel();
-        pickUpPatientjButton = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         hospitalJPanel = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -102,104 +95,6 @@ public class UserUI extends javax.swing.JFrame{
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Go to A8 and D8");
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jLabel4.setText("Directions");
-
-        pickUpPatientjButton.setText("Pick Up Patient");
-        pickUpPatientjButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pickUpPatientjButtonActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jLabel4)
-                .add(516, 516, 516))
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(pickUpPatientjButton)
-                .addContainerGap(399, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(16, 16, 16)
-                .add(jLabel4)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(pickUpPatientjButton)
-                .addContainerGap(383, Short.MAX_VALUE))
-        );
-
-        mainJTabbedPane.addTab("Driver", jPanel2);
-
-        jLabel9.setText("jLabel9");
-
-        jTextField1.setText("jTextField1");
-
-        jLabel10.setText("jLabel10");
-
-        jTextField2.setText("jTextField2");
-
-        jButton1.setText("Send Report - Select Hospital");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jLabel10)
-                            .add(jLabel9))
-                        .add(18, 18, 18)
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(29, 29, 29)
-                        .add(jButton1)))
-                .addContainerGap(281, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel9)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(30, 30, 30)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel10)
-                    .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(136, 136, 136)
-                .add(jButton1)
-                .addContainerGap(305, Short.MAX_VALUE))
-        );
-
-        mainJTabbedPane.addTab("Doctor", jPanel3);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -361,8 +256,8 @@ public class UserUI extends javax.swing.JFrame{
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 536, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                .add(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -379,12 +274,6 @@ public class UserUI extends javax.swing.JFrame{
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void pickUpPatientjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickUpPatientjButtonActionPerformed
-        // TODO add your handling code here:
-        //create dotor human task to report the situation
-        mainJTabbedPane.setSelectedIndex(3);
-    }//GEN-LAST:event_pickUpPatientjButtonActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         //Accept selected patient. Move to report/END
@@ -396,12 +285,6 @@ public class UserUI extends javax.swing.JFrame{
         
         
     }//GEN-LAST:event_selectPatientToAccept
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        // send report and select hospital. End Human Task
-        mainJTabbedPane.setSelectedIndex(4);
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -425,28 +308,17 @@ public class UserUI extends javax.swing.JFrame{
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel hospitalJPanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JButton pickUpPatientjButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
@@ -494,6 +366,7 @@ public class UserUI extends javax.swing.JFrame{
 
     void setUIMap(SlickBasicGame game) {
         this.game = game;
+        game.addMapEventsListener(this);
     }
 
     public void updateUIMap() {
@@ -519,7 +392,24 @@ public class UserUI extends javax.swing.JFrame{
     }
     
     public void sendAmbulance(){
-        mainJTabbedPane.setSelectedIndex(2);
+        this.currentEmergenciesPanel.addNewEmergency();
+        mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
     }
+
+    public JTabbedPane getMainJTabbedPane() {
+        return mainJTabbedPane;
+    }
+
+    @Override
+    public void hospitalReached(Block hospital) {
+        System.out.println("HOSPITAL REACHED!");
+    }
+
+    @Override
+    public void emergencyReached(Block emergency) {
+        System.out.println("EMERGENCY REACHED!");
+    }
+    
+    
 
 }

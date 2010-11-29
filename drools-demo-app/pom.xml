@@ -204,14 +204,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart-swt</artifactId>
-            <version>1.0.9</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-                <!-- HornetQ dependencies -->
+        <!-- HornetQ dependencies -->
         <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-core</artifactId>
@@ -260,7 +253,7 @@
                     <systemProperties>
                         <property>
                             <name>java.library.path</name>
-                            <value>/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</value>
+                            <value>/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</value>
                         </property>
                     </systemProperties>
                 </configuration>

@@ -3,6 +3,8 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.MyDroolsService;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 import org.newdawn.slick.Animation;
@@ -43,6 +45,8 @@ public class SlickBasicGame extends BasicGame {
         16, 25,
         17, 25};//Hospital 3 = X, Y
     private static UserUI ui;
+    
+    private MapEventsNotifier mapEventsNotifier= new MapEventsNotifier();
 
     public SlickBasicGame() {
         super("Emergency City!!");
@@ -207,7 +211,7 @@ public class SlickBasicGame extends BasicGame {
 
                 ksession.insert(new Call(new Date()));
 
-                new Thread(new Runnable()  {
+                new Thread(new Runnable()   {
 
                     public void run() {
                         ksession.fireUntilHalt();
@@ -264,7 +268,7 @@ public class SlickBasicGame extends BasicGame {
         final SlickBasicGame game = new SlickBasicGame();
         Renderer.setLineStripRenderer(Renderer.QUAD_BASED_LINE_STRIP_RENDERER);
         Renderer.getLineStripRenderer().setLineCaps(true);
-        java.awt.EventQueue.invokeLater(new Runnable()  {
+        java.awt.EventQueue.invokeLater(new Runnable()   {
 
             @Override
             public void run() {
@@ -293,6 +297,7 @@ public class SlickBasicGame extends BasicGame {
         for (int i = 0; i < BlockMap.emergencies.size(); i++) {
             Block entity1 = (Block) BlockMap.emergencies.get(i);
             if (playerPoly.intersects(entity1.poly)) {
+                this.mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.EMERGENCY_REACHED, entity1);
                 return true;
             }
         }
@@ -303,6 +308,7 @@ public class SlickBasicGame extends BasicGame {
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
             if (playerPoly.intersects(entity1.poly)) {
+                this.mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_REACHED, entity1);
                 return true;
             }
         }
@@ -311,5 +317,9 @@ public class SlickBasicGame extends BasicGame {
 
     private void hospitalPointReached() {
         System.out.println("Hospital Point Hit!");
+    }
+    
+    public void addMapEventsListener(MapEventsListener listener){
+        this.mapEventsNotifier.addMapEventsListener(listener);
     }
 }
