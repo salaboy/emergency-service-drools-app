@@ -6,6 +6,7 @@
 package org.plugtree.training.model;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -14,10 +15,11 @@ import java.io.Serializable;
 public class Medic implements Serializable {
     public enum MedicSpeciality{BURNS, BONES, REANIMATION};
     private Long id;
-    
     private MedicSpeciality speciality;
-
+    public static AtomicLong incrementalId = new AtomicLong();
+    
     public Medic() {
+        this.id = Medic.incrementalId.getAndIncrement();
     }
 
    

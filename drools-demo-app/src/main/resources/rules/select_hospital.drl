@@ -8,16 +8,18 @@ import org.plugtree.training.model.Medic.MedicSpeciality;
 import org.plugtree.training.model.MedicalKit;
 import org.plugtree.training.model.Location;
 import org.plugtree.training.model.Hospital;
-
+import org.drools.runtime.process.WorkflowProcessInstance;
 
 
 rule "Rank Hospital Speciality that matches EmergencyType"
     lock-on-active true
     ruleflow-group "hospital_selection"
     when
+        $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $hospital: Hospital($specialities: specialities) 
         EmergencyType(name == $type) from $specialities
+
     then
         System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
         $hospital.setRank($hospital.getRank() + 10);

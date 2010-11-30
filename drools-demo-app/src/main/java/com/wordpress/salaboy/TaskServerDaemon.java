@@ -51,7 +51,7 @@ public class TaskServerDaemon {
 		taskService.setUserinfo(userInfo);
 
 		User operator = new User("operator");
-		User driver = new User("driver");
+		User driver = new User("control_operator");
 		User hospital = new User("hospital");
                 User doctor = new User("doctor");
 		User Administrator = new User("Administrator");

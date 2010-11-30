@@ -4,66 +4,92 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
  * @author salaboy
  */
-public class Ambulance implements Serializable{
+public class Ambulance implements Serializable {
 
-	private String id;
-	private Medic medicOnBoard;
-	private List<MedicalKit> kits;
-	private Date departureTime;
-	private Date patientPickedUpTime;
+    private Long id;
+    private String description;
+    private Medic medicOnBoard;
+    private List<MedicalKit> kits;
+    private Date departureTime;
+    private Date patientPickedUpTime;
+    public static AtomicLong incrementalId = new AtomicLong();
 
-	public Ambulance() {
-	}
+    public Ambulance() {
+        this.id = Ambulance.incrementalId.getAndIncrement();
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public Ambulance(String description, Date departureTime) {
+        this.id = Ambulance.incrementalId.getAndIncrement();
+        this.description = description;
+        this.departureTime = departureTime;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public Ambulance(String description) {
+        this.id = Ambulance.incrementalId.getAndIncrement();
+        this.description = description;
+    }
+    
+    
+    
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public List<MedicalKit> getKits() {
-		return kits;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setKits(List<MedicalKit> kits) {
-		this.kits = kits;
-	}
+    public List<MedicalKit> getKits() {
+        return kits;
+    }
 
-	public Medic getMedicOnBoard() {
-		return medicOnBoard;
-	}
+    public void setKits(List<MedicalKit> kits) {
+        this.kits = kits;
+    }
 
-	public void setMedicOnBoard(Medic medicOnBoard) {
-		this.medicOnBoard = medicOnBoard;
-	}
-	public void addKit(MedicalKit kit){
-		if(kits == null){
-			kits = new ArrayList<MedicalKit>();
-		}
-		kits.add(kit);
-	}
+    public Medic getMedicOnBoard() {
+        return medicOnBoard;
+    }
 
-	public void setDepartureTime(Date departureTime) {
-		this.departureTime = departureTime;
-	}
+    public void setMedicOnBoard(Medic medicOnBoard) {
+        this.medicOnBoard = medicOnBoard;
+    }
 
-	public Date getDepartureTime() {
-		return departureTime;
-	}
+    public void addKit(MedicalKit kit) {
+        if (kits == null) {
+            kits = new ArrayList<MedicalKit>();
+        }
+        kits.add(kit);
+    }
 
-	public void setPatientPickedUpTime(Date patientPickedUpTime) {
-		this.patientPickedUpTime = patientPickedUpTime;
-	}
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
 
-	public Date getPatientPickedUpTime() {
-		return patientPickedUpTime;
-	}
+    public Date getDepartureTime() {
+        return departureTime;
+    }
 
+    public void setPatientPickedUpTime(Date patientPickedUpTime) {
+        this.patientPickedUpTime = patientPickedUpTime;
+    }
+
+    public Date getPatientPickedUpTime() {
+        return patientPickedUpTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

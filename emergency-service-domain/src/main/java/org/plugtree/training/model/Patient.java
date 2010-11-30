@@ -23,8 +23,8 @@ public class Patient implements Serializable {
         
     }
 
-    public Patient(Long id, String name, int age, String gender) {
-        this.id = id;
+    public Patient(String name, int age, String gender) {
+        this.id = Patient.incrementalId.getAndIncrement();
         this.name = name;
         this.age = age;
         this.gender = gender;

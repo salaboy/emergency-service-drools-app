@@ -6,6 +6,9 @@ package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import com.wordpress.salaboy.call.CallManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.io.impl.ClassPathResource;
@@ -24,6 +27,11 @@ import org.drools.task.Task;
 import org.drools.task.service.TaskClient;
 import org.drools.task.service.mina.MinaTaskClientConnector;
 import org.drools.task.service.mina.MinaTaskClientHandler;
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Medic;
+import org.plugtree.training.model.Medic.MedicSpeciality;
+import org.plugtree.training.model.MedicalKit;
 
 /**
  *
@@ -60,8 +68,48 @@ public class MyDroolsService {
     } 
     public static void setGlobals(StatefulKnowledgeSession ksession){
         ksession.setGlobal("callManager", CallManager.getInstance());
+        
+        
+        ksession.setGlobal("ambulances", new HashMap<EmergencyType, List<Ambulance>>(){
+                {
+                 put(EmergencyType.FIRE, new ArrayList<Ambulance>(){{add(initializeFireAmbulance());}});
+                 put(EmergencyType.HEART_ATTACK, new ArrayList<Ambulance>(){{add(initializeHeartAttackAmbulance());}});
+                 put(EmergencyType.CAR_CRASH, new ArrayList<Ambulance>(){{add(initializeCarCrashAmbulance());}});
+                }
+                });
+        
+        ksession.setGlobal("doctors", new HashMap<MedicSpeciality, List<Medic>>(){
+                {
+                 put(MedicSpeciality.BURNS, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BURNS));}});
+                 put(MedicSpeciality.BONES, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BONES));}});
+                 put(MedicSpeciality.REANIMATION, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.REANIMATION));}});
+                }
+                });
     
-    }   
+    }
+
+    private static Ambulance initializeFireAmbulance() {
+        MedicalKit fireKit = new MedicalKit("Fire Medical Kit");
+        Ambulance fireAmbulance = new Ambulance("Fire Ambulance");
+        fireAmbulance.addKit(fireKit);
+        return fireAmbulance;
+    }
+    
+    private static Ambulance initializeHeartAttackAmbulance() {
+        MedicalKit heartAttackKit = new MedicalKit("Heart Attack Medical Kit");
+        Ambulance heartAttackAmbulance = new Ambulance("Strokes Ambulance");
+        heartAttackAmbulance.addKit(heartAttackKit);
+        return heartAttackAmbulance;
+    }
+    
+    private static Ambulance initializeCarCrashAmbulance() {
+         MedicalKit carCrashKit1 = new MedicalKit("Bones Medical Kit");
+        MedicalKit carCrashKit2 = new MedicalKit("Fire Medical Kit");
+        Ambulance carCrashAmbulance = new Ambulance("Fire & Bones Ambulance");
+        carCrashAmbulance.addKit(carCrashKit1);
+        carCrashAmbulance.addKit(carCrashKit2);
+        return carCrashAmbulance;
+    }
 
     public static void registerHandlers(StatefulKnowledgeSession ksession) {
         //new WorkingMemoryDbLogger(ksession);

@@ -6,6 +6,7 @@ package org.plugtree.training.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -26,8 +27,10 @@ public class Emergency implements Serializable{
     private Date approximateTime;
     private Hospital selectedHospital;
     private boolean processed;
+    public static AtomicLong incrementalId = new AtomicLong();
 
     public Emergency() {
+        this.id = Emergency.incrementalId.getAndIncrement();
         this.patient = new Patient();
         this.location = new Location();
         this.selectedHospital = new Hospital();

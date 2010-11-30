@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 global com.wordpress.salaboy.call.CallManager callManager;
+global Map ambulances;
 
 rule "Handling Single Emergency Call"
     when
@@ -20,6 +21,7 @@ rule "Handling Single Emergency Call"
         emergency.setCall($call);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("emergency", emergency );
+        parameters.put("ambulances",ambulances);
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
         Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
         $call.setProcessId(pI.getId());

@@ -125,11 +125,11 @@ public class BasicProcessTest {
         Thread.sleep(5000);
         
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+        client.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
         List<TaskSummary> taskSums = handler.getResults();
         TaskSummary taskSum = taskSums.get(0);
         
-        client.start(taskSum.getId(), "operator", null);
+        client.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
         client.getTask(taskSum.getId(), handlerT);
         Task task2 = handlerT.getTask();
@@ -145,16 +145,17 @@ public class BasicProcessTest {
 		
 	ObjectInputStream ois = new ObjectInputStream(bais);
         String taskinfo =(String) ois.readObject(); 
-        
-        //emergency.type, emergency.location, patient.name,  patient.age, patient.gender
+        System.out.println("TASKINFO = "+taskinfo);
+        //#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}
         String[] values= taskinfo.split(",");
-        Assert.assertEquals(5 , values.length);
+        
+        Assert.assertEquals(8 , values.length);
         
         //I must test for changes here..
-        client.complete(taskSum.getId(), "operator", null, null);
+        client.complete(taskSum.getId(), "control_operator", null, null);
         
         
-        Thread.sleep(3000);
+        Thread.sleep(5000);
        
         
         //UI SIDE.. needs access to the ksession to propagate the event
@@ -165,11 +166,11 @@ public class BasicProcessTest {
         //Now back to the client/task client side
         
         handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+        client.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
         taskSums = handler.getResults();
         taskSum = taskSums.get(0);
         
-        client.start(taskSum.getId(), "operator", null);
+        client.start(taskSum.getId(), "doctor", null);
         handlerT = new BlockingGetTaskResponseHandler();
         client.getTask(taskSum.getId(), handlerT);
         Task task3 = handlerT.getTask();
@@ -204,7 +205,7 @@ public class BasicProcessTest {
         out.close();
         result.setContent(bos.toByteArray());
         
-        client.complete(taskSum.getId(), "operator", result , null);
+        client.complete(taskSum.getId(), "doctor", result , null);
         
         
         

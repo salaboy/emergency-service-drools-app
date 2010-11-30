@@ -2,6 +2,7 @@ package org.plugtree.training.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -13,8 +14,10 @@ public class Call implements Serializable{
     private Date date;
     private Emergency emergency;
     private Long processId;
+    public static AtomicLong incrementalId = new AtomicLong();
 
     public Call() {
+        this.id = Call.incrementalId.getAndIncrement();
     }
 
     public Call(Date date) {

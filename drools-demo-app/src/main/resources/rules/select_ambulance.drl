@@ -10,7 +10,11 @@ import org.plugtree.training.model.Medic.MedicSpeciality;
 import org.plugtree.training.model.MedicalKit;
 import org.plugtree.training.model.Location;
 import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.List;
 
+global Map ambulances;
+global Map doctors;
 
 rule "Initialize Emergency"
     ruleflow-group "select_ambulance"
@@ -19,15 +23,16 @@ rule "Initialize Emergency"
       $call: Call()
     then
      System.out.println("Emergency  "+$processInstance.getVariable("emergency"));
-    //  Emergency emergency = new Emergency();
-     //  Patient patient = new Patient(Patient.incrementalId.getAndIncrement(),
-     //                           (String)$processInstance.getVariable("emergency.name"),
-     //                           Integer.valueOf((String)$processInstance.getVariable("emergency.age")),
-     //                           (String)$processInstance.getVariable("emergency.gender") );
-     //  emergency.setPatient(patient);
-     //  emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
-     //  emergency.setCall($call);
-     //  insert(emergency);
+     Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+     Patient patient = new Patient((String)$processInstance.getVariable("patient.name"),
+                                Integer.valueOf((String)$processInstance.getVariable("patient.age")),
+                                (String)$processInstance.getVariable("patient.gender") );
+       emergency.setPatient(patient);
+       emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+       emergency.setCall($call);
+       $processInstance.setVariable("patient.id", patient.getId());
+       System.out.println("NEW Emergency  "+$processInstance.getVariable("emergency"));
+       insert(emergency);
        
 end
 
@@ -37,54 +42,50 @@ rule "Fire Emergency"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type : type == EmergencyType.FIRE)
     then
-    	System.out.println("\t\tEMERGENCY = FIRE");
-        Medic medic = new Medic(MedicSpeciality.BURNS);
-        MedicalKit kit = new MedicalKit("Fire Medical Kit");
-        Ambulance ambulance = new Ambulance();
-        ambulance.setId("MyAmbulance");
-        ambulance.addKit(kit);
+    	
+        Ambulance ambulance = (Ambulance)((List)ambulances.get($type)).get(0);
+        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BURNS)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-        $processInstance.setVariable("doctor", medic);
-        $processInstance.setVariable("ambulance", ambulance);
-        insert(ambulance);
+
+        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("ambulance.id", ambulance.getId());
+        //insert(ambulance);
 end
 
 rule "Car Crash Emergency"
      ruleflow-group "select_ambulance"
     when
         $processInstance: WorkflowProcessInstance()
-        $emergency: Emergency(type == EmergencyType.CAR_CRASH)
+        $emergency: Emergency($type: type == EmergencyType.CAR_CRASH)
     then
-    	System.out.println("\t\tEMERGENCY = CAR CRASH");
-        Medic medic = new Medic(MedicSpeciality.BONES);
-        MedicalKit kit1 = new MedicalKit("Bones Medical Kit");
-        MedicalKit kit2 = new MedicalKit("Fire Medical Kit");
-        Ambulance ambulance = new Ambulance();
-        ambulance.addKit(kit1);
-        ambulance.addKit(kit2);
+    	
+        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BONES)).get(0);
+        Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-        $processInstance.setVariable("doctor", medic);
-        $processInstance.setVariable("ambulance", ambulance);
+
+
+        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("ambulance.id", ambulance.getId());
         
-        insert(ambulance);
+        //insert(ambulance);
 end
 
 rule "Heart Attack Emergency"
      ruleflow-group "select_ambulance"
     when
         $processInstance: WorkflowProcessInstance()
-        $emergency: Emergency(type == EmergencyType.HEART_ATTACK)
+        $emergency: Emergency($type: type == EmergencyType.HEART_ATTACK)
     then
-    	System.out.println("\t\tEMERGENCY = HEART ATTACK");
-        Medic medic = new Medic(MedicSpeciality.REANIMATION);
-        MedicalKit kit = new MedicalKit("Heart Attack Medical Kit");
-        Ambulance ambulance = new Ambulance();
-        ambulance.addKit(kit);
+    	
+        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.REANIMATION)).get(0);
+        Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-        $processInstance.setVariable("doctor", medic);
-        $processInstance.setVariable("ambulance", ambulance);
-        insert(ambulance);
+
+        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("ambulance.id", ambulance.getId());
+        
+        //insert(ambulance);
 end
