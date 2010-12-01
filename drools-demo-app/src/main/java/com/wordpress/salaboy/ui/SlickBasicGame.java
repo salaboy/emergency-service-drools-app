@@ -396,7 +396,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         System.out.println("HOSPITAL REACHED TIME TO SIGNAL DE PATIENT AT THE HOSPITAL EVENT!!!");
         ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
         
-        ambulanceMonitorService.start();
+        ambulanceMonitorService.stop();
     }
 
     @Override
@@ -419,7 +419,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
     @Override
     public void hospitalSelected() {
-         new AmbulanceMonitorService(ksession, mapEventsNotifier);
+        ambulanceMonitorService = new AmbulanceMonitorService(ksession, mapEventsNotifier);
         ambulanceMonitorService.start();
     }
 }
