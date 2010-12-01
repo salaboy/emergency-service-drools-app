@@ -138,6 +138,10 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         return mainTabPanel;
     }
 
+    void heartBeatReceived(double value) {
+        this.emergencyMonitorPanel.updateMonitorGraph(value);
+    }
+
     
     
 }

@@ -18,26 +18,34 @@ public class MapEventsNotifier {
     public static enum EVENT_TYPE{
         HOSPITAL_REACHED,
         EMERGENCY_REACHED,
-        AMBULANCE_POSITION
+        AMBULANCE_POSITION,
+        HOSPITAL_SELECTED,
+        HEART_BEAT_RECEIVED
     }
     
     private final List<MapEventsListener> mapEventListeners = new ArrayList<MapEventsListener>();
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
 
-    public void notifyMapEventsListeners(final EVENT_TYPE type, final Block source) {
+    public void notifyMapEventsListeners(final EVENT_TYPE type, final Object data) {
         for (final MapEventsListener mapEventsListener : mapEventListeners) {
             executor.execute(new Runnable()  {
                 @Override
                 public void run() {
                     switch (type){
                         case EMERGENCY_REACHED:
-                            mapEventsListener.emergencyReached(source);
+                            mapEventsListener.emergencyReached((Block) data);
                             break;
                         case HOSPITAL_REACHED:
-                            mapEventsListener.hospitalReached(source);
+                            mapEventsListener.hospitalReached((Block) data);
                             break;
                         case AMBULANCE_POSITION:
-                            mapEventsListener.positionReceived(source);
+                            mapEventsListener.positionReceived((Block) data);
+                            break;
+                        case HOSPITAL_SELECTED:
+                            mapEventsListener.hospitalSelected();
+                            break;
+                        case HEART_BEAT_RECEIVED:
+                            mapEventsListener.heartBeatReceived((Double) data);
                             break;
                     }
                 }

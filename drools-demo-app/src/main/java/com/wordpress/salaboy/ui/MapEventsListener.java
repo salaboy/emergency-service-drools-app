@@ -13,4 +13,6 @@ public interface MapEventsListener {
     void hospitalReached(Block hospital);
     void emergencyReached(Block emergency);
     void positionReceived(Block corner);
+    void hospitalSelected();
+    void heartBeatReceived(double value);
 }

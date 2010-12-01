@@ -11,6 +11,9 @@
 
 package com.wordpress.salaboy.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author esteban
@@ -18,6 +21,7 @@ package com.wordpress.salaboy.ui;
 public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
     private UserUI parent;
+    private List<EmergencyFrame> emergencyFrames = new ArrayList<EmergencyFrame>();
     
     public CurrentEmergenciesPanel(UserUI parent) {
         this.parent = parent;
@@ -53,7 +57,15 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
     public void addNewEmergency(){
         EmergencyFrame emergencyFrame = EmergencyFrame.getInstance(this.parent);
+        this.emergencyFrames.add(emergencyFrame);
         this.add(emergencyFrame);
         this.validate();
+    }
+
+    void heartBeatReceived(double value) {
+        //notify all frames
+        for (EmergencyFrame emergencyFrame : emergencyFrames) {
+            emergencyFrame.heartBeatReceived(value);
+        }
     }
 }

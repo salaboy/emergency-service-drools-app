@@ -63,6 +63,9 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public Long ambulanceSelectedId = 0L;
     public EmergencyType emergencyTypeSelected;
     private MapEventsNotifier mapEventsNotifier= new MapEventsNotifier();
+    
+    //FIXME: It only supports one ambulance!
+    private AmbulanceMonitorService ambulanceMonitorService;
 
     public SlickBasicGame() {
         super("Emergency City!!");
@@ -392,6 +395,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public void hospitalReached(Block hospital) {
         System.out.println("HOSPITAL REACHED TIME TO SIGNAL DE PATIENT AT THE HOSPITAL EVENT!!!");
         ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
+        
+        ambulanceMonitorService.start();
     }
 
     @Override
@@ -406,5 +411,15 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
             ambulance.setPositionY(corner.poly.getY());
             FactHandle handle = ksession.getFactHandle(ambulance);
             ksession.update(handle, ambulance);
+    }
+    
+    @Override
+    public void heartBeatReceived(double value) {
+    }
+
+    @Override
+    public void hospitalSelected() {
+         new AmbulanceMonitorService(ksession, mapEventsNotifier);
+        ambulanceMonitorService.start();
     }
 }

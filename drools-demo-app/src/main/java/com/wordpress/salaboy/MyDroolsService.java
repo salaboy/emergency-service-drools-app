@@ -24,6 +24,7 @@ import org.drools.SystemEventListenerFactory;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.task.Task;
 import org.drools.task.service.TaskClient;
 import org.drools.task.service.mina.MinaTaskClientConnector;
@@ -39,23 +40,56 @@ import org.plugtree.training.model.MedicalKit;
  * @author salaboy
  * We need to separate the task stuff in another service class
  */
-
 public class MyDroolsService {
+
     public static final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
-    public static final Map<EmergencyType, List<Ambulance>> ambulances = new HashMap<EmergencyType, List<Ambulance>>(){
+    public static final Map<EmergencyType, List<Ambulance>> ambulances = new HashMap<EmergencyType, List<Ambulance>>() {
+
+        {
+            put(EmergencyType.FIRE, new ArrayList<Ambulance>() {
+
                 {
-                 put(EmergencyType.FIRE, new ArrayList<Ambulance>(){{add(initializeFireAmbulance());}});
-                 put(EmergencyType.HEART_ATTACK, new ArrayList<Ambulance>(){{add(initializeHeartAttackAmbulance());}});
-                 put(EmergencyType.CAR_CRASH, new ArrayList<Ambulance>(){{add(initializeCarCrashAmbulance());}});
+                    add(initializeFireAmbulance());
                 }
-                };
-    public static final Map<MedicSpeciality, List<Medic>> doctors =  new HashMap<MedicSpeciality, List<Medic>>(){
+            });
+            put(EmergencyType.HEART_ATTACK, new ArrayList<Ambulance>() {
+
                 {
-                 put(MedicSpeciality.BURNS, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BURNS));}});
-                 put(MedicSpeciality.BONES, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BONES));}});
-                 put(MedicSpeciality.REANIMATION, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.REANIMATION));}});
+                    add(initializeHeartAttackAmbulance());
                 }
-                };
+            });
+            put(EmergencyType.CAR_CRASH, new ArrayList<Ambulance>() {
+
+                {
+                    add(initializeCarCrashAmbulance());
+                }
+            });
+        }
+    };
+    public static final Map<MedicSpeciality, List<Medic>> doctors = new HashMap<MedicSpeciality, List<Medic>>() {
+
+        {
+            put(MedicSpeciality.BURNS, new ArrayList<Medic>() {
+
+                {
+                    add(new Medic(MedicSpeciality.BURNS));
+                }
+            });
+            put(MedicSpeciality.BONES, new ArrayList<Medic>() {
+
+                {
+                    add(new Medic(MedicSpeciality.BONES));
+                }
+            });
+            put(MedicSpeciality.REANIMATION, new ArrayList<Medic>() {
+
+                {
+                    add(new Medic(MedicSpeciality.REANIMATION));
+                }
+            });
+        }
+    };
+
     public static StatefulKnowledgeSession createSession() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -75,18 +109,19 @@ public class MyDroolsService {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         //patientHeartbeatsEntryPoint = ksession.getWorkingMemoryEntryPoint("patientHeartbeats");
         return ksession;
-    } 
-    public static void setGlobals(StatefulKnowledgeSession ksession){
+    }
+
+    public static void setGlobals(StatefulKnowledgeSession ksession) {
         ksession.setGlobal("callManager", CallManager.getInstance());
-        
-        
+
+
         ksession.setGlobal("ambulances", ambulances);
-        
+
         ksession.setGlobal("doctors", doctors);
-    
+
     }
 
     private static Ambulance initializeFireAmbulance() {
@@ -95,16 +130,16 @@ public class MyDroolsService {
         fireAmbulance.addKit(fireKit);
         return fireAmbulance;
     }
-    
+
     private static Ambulance initializeHeartAttackAmbulance() {
         MedicalKit heartAttackKit = new MedicalKit("Heart Attack Medical Kit");
         Ambulance heartAttackAmbulance = new Ambulance("Strokes Ambulance");
         heartAttackAmbulance.addKit(heartAttackKit);
         return heartAttackAmbulance;
     }
-    
+
     private static Ambulance initializeCarCrashAmbulance() {
-         MedicalKit carCrashKit1 = new MedicalKit("Bones Medical Kit");
+        MedicalKit carCrashKit1 = new MedicalKit("Bones Medical Kit");
         MedicalKit carCrashKit2 = new MedicalKit("Fire Medical Kit");
         Ambulance carCrashAmbulance = new Ambulance("Fire & Bones Ambulance");
         carCrashAmbulance.addKit(carCrashKit1);
@@ -118,46 +153,49 @@ public class MyDroolsService {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
         ksession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
     }
-    public static void initTaskServer(){
-         
-        
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() { 
+
+    public static void initTaskServer() {
+
+
+        Runtime.getRuntime().addShutdownHook(new Thread()  {
+
+            public void run() {
                 System.out.println("\n");
                 taskServerDaemon.stopServer();
                 System.out.println("server stoped...");
             }
-         });
+        });
 
         taskServerDaemon.startServer();
         System.out.println("server started... (ctrl-c to stop it)");
     }
-    
+
     public static TaskClient initTaskClient() {
         TaskClient client = new TaskClient(new MinaTaskClientConnector("client 1",
-        new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
         boolean connected = client.connect("127.0.0.1", 9123);
-        
+
         int retry = 0;
-        while(!connected){
+        while (!connected) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MyDroolsService.class.getName()).log(Level.SEVERE, null, ex);
             }
             connected = client.connect("127.0.0.1", 9123);
-            if(!connected){
+            if (!connected) {
                 retry++;
             }
         }
-        System.out.println("Client Connected after "+retry+" retries");
+        System.out.println("Client Connected after " + retry + " retries");
         return client;
     }
-    
+
     public static Task getTask(TaskClient client, Long workItemId) {
-            BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-            client.getTaskByWorkItemId(workItemId, getTaskResponseHandler);
-            Task task = getTaskResponseHandler.getTask();
-            return task;
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTaskByWorkItemId(workItemId, getTaskResponseHandler);
+        Task task = getTaskResponseHandler.getTask();
+        return task;
     }
+
 }

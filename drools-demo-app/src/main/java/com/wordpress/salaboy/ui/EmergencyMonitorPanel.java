@@ -11,10 +11,13 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.events.WiiMoteEvent;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import motej.Mote;
+import motej.event.AccelerometerEvent;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -52,24 +55,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         cPanel.setName("Monitor");
         parent.getMainTabPanel().add(cPanel);
         
-        new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        pulseTimeSeries.removeAgedItems(false);
-                        pulseTimeSeries.addOrUpdate(new Millisecond(), Math.random()*100);
-                        //EmergencyMonitorPanel.this.validateTree();
-                        //ChartUtilities.saveChartAsJPEG(new File("/tmp/chart"+System.currentTimeMillis()), chart, 200, 200);
-                        Thread.sleep(2000);
-                        } catch (Exception ex) {
-                            Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                }
-            }
-            
-        }).start();
     }
 
     /** This method is called from within the constructor to
@@ -134,5 +119,10 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
 		return chart;
 	}
+    
+    public void updateMonitorGraph(double pulse){
+        pulseTimeSeries.removeAgedItems(false);
+        pulseTimeSeries.addOrUpdate(new Millisecond(), pulse);
+    }
     
 }
