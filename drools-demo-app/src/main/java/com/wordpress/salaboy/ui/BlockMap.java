@@ -7,7 +7,6 @@ package com.wordpress.salaboy.ui;
 
 import java.util.ArrayList;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.tiled.TiledMap;
 
 /**
  *
@@ -21,6 +20,7 @@ public class BlockMap {
 	public static ArrayList<Object> entities;
         public static ArrayList<Object> emergencies = new ArrayList<Object>();
         public static ArrayList<Object> hospitals = new ArrayList<Object>();
+        public static ArrayList<Object> corners = new ArrayList<Object>();
         
  
 	public BlockMap(String ref) throws SlickException {
@@ -41,6 +41,18 @@ public class BlockMap {
 			}
 		}
 	}
+
+    public void initializeCorners() {
+        int[] xs = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26, 31, 32, 37, 38};
+        int[] ys = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26};
+        for (int x = 0; x < xs.length ; x++) {
+			for (int y = 0; y < ys.length ; y++) {
+                            corners.add(new Block(xs[x] * 16, ys[y] * 16, square, "square"));
+                        }
+        } 
+        
+    }
+        
         
         
 }

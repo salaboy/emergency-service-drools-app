@@ -12,4 +12,5 @@ package com.wordpress.salaboy.ui;
 public interface MapEventsListener {
     void hospitalReached(Block hospital);
     void emergencyReached(Block emergency);
+    void positionReceived(Block corner);
 }

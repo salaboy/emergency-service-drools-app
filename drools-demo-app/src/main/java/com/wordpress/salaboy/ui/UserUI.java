@@ -340,6 +340,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     void setUIMap(SlickBasicGame game) {
         this.game = game;
         game.addMapEventsListener(this);
+        
     }
 
     
@@ -409,6 +410,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     public TaskClient getTaskClient() {
         return taskClient;
+    }
+
+    @Override
+    public void positionReceived(Block corner) {
+        // do nothing
     }
 
 

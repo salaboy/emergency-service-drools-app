@@ -17,7 +17,8 @@ public class MapEventsNotifier {
 
     public static enum EVENT_TYPE{
         HOSPITAL_REACHED,
-        EMERGENCY_REACHED
+        EMERGENCY_REACHED,
+        AMBULANCE_POSITION
     }
     
     private final List<MapEventsListener> mapEventListeners = new ArrayList<MapEventsListener>();
@@ -34,6 +35,9 @@ public class MapEventsNotifier {
                             break;
                         case HOSPITAL_REACHED:
                             mapEventsListener.hospitalReached(source);
+                            break;
+                        case AMBULANCE_POSITION:
+                            mapEventsListener.positionReceived(source);
                             break;
                     }
                 }
