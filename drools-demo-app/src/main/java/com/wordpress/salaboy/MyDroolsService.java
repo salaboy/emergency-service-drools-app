@@ -6,6 +6,7 @@ package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.util.MedicalKitUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,18 @@ public class MyDroolsService {
             });
         }
     };
+    
+    public static Ambulance getAmbulanceById(Long id){
+        for (Map.Entry<EmergencyType, List<Ambulance>> entry : ambulances.entrySet()) {
+            for (Ambulance ambulance : entry.getValue()) {
+                if (ambulance.getId().equals(id)){
+                    return ambulance;
+                }
+            }
+        }
+        return null;
+    }
+    
     public static final Map<MedicSpeciality, List<Medic>> doctors = new HashMap<MedicSpeciality, List<Medic>>() {
 
         {
@@ -125,22 +138,22 @@ public class MyDroolsService {
     }
 
     private static Ambulance initializeFireAmbulance() {
-        MedicalKit fireKit = new MedicalKit("Fire Medical Kit");
+        MedicalKit fireKit = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BURNS);
         Ambulance fireAmbulance = new Ambulance("Fire Ambulance");
         fireAmbulance.addKit(fireKit);
         return fireAmbulance;
     }
 
     private static Ambulance initializeHeartAttackAmbulance() {
-        MedicalKit heartAttackKit = new MedicalKit("Heart Attack Medical Kit");
+        MedicalKit heartAttackKit = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.REANIMATION);
         Ambulance heartAttackAmbulance = new Ambulance("Strokes Ambulance");
         heartAttackAmbulance.addKit(heartAttackKit);
         return heartAttackAmbulance;
     }
 
     private static Ambulance initializeCarCrashAmbulance() {
-        MedicalKit carCrashKit1 = new MedicalKit("Bones Medical Kit");
-        MedicalKit carCrashKit2 = new MedicalKit("Fire Medical Kit");
+        MedicalKit carCrashKit1 = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BONES);
+        MedicalKit carCrashKit2 = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BURNS);
         Ambulance carCrashAmbulance = new Ambulance("Fire & Bones Ambulance");
         carCrashAmbulance.addKit(carCrashKit1);
         carCrashAmbulance.addKit(carCrashKit2);

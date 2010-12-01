@@ -16,6 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.task.Content;
@@ -355,10 +357,39 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     }
     
     public void callHandled(ContentData data){
-        //Complete human Task
-        taskClient.complete(currentTask.getId(), "operator", data, null);
-        //Show ambulance tab.. with all the selected items
-        mainJTabbedPane.setSelectedComponent(ambulancePanel);
+        ObjectInputStream ois = null;
+        try {
+            //Complete human Task
+            taskClient.complete(currentTask.getId(), "operator", data, null);
+            //Show ambulance tab.. with all the selected items
+            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+            taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
+            List<TaskSummary> taskSums = handler.getResults();
+            TaskSummary taskSum = taskSums.get(0);
+            taskClient.start(taskSum.getId(), "control_operator", null);
+            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+            taskClient.getTask(taskSum.getId(), handlerT);
+            Task task2 = handlerT.getTask();
+            TaskData taskData = task2.getTaskData();
+            System.out.println("TaskData = "+taskData);
+            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+            taskClient.getContent(taskData.getDocumentContentId(), handlerC);
+            Content content = handlerC.getContent();
+            System.out.println("Content= "+content);
+            ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+            ois = new ObjectInputStream(bais);
+            String taskinfo =(String) ois.readObject();
+            this.ambulancePanel.configurePanel(taskinfo);
+            mainJTabbedPane.setSelectedComponent(ambulancePanel);
+        } catch (Exception ex) {
+            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     public void sendAmbulance() throws IOException, ClassNotFoundException{
@@ -405,7 +436,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     @Override
     public void emergencyReached(Block emergency) {
-        System.out.println("EMERGENCY REACHED!");
         EmergencyFrame.emergencyMonitorPanel = new EmergencyMonitorPanel(EmergencyFrame.getInstance(this));
     }
 

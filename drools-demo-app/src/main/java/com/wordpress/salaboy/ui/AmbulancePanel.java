@@ -11,9 +11,21 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.util.MedicalKitUtil;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import org.drools.task.query.TaskSummary;
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.MedicalKit;
 
 /**
  *
@@ -44,6 +56,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         medicalKitsJInternalFrame = new javax.swing.JInternalFrame();
         jLabel8 = new javax.swing.JLabel();
+        medicalKitjPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         doctorsjList = new javax.swing.JList();
         jLabel7 = new javax.swing.JLabel();
@@ -77,21 +90,41 @@ public class AmbulancePanel extends javax.swing.JPanel {
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/older/collision.png"))); // NOI18N
 
+        medicalKitjPanel.setBackground(new java.awt.Color(222, 186, 149));
+
+        javax.swing.GroupLayout medicalKitjPanelLayout = new javax.swing.GroupLayout(medicalKitjPanel);
+        medicalKitjPanel.setLayout(medicalKitjPanelLayout);
+        medicalKitjPanelLayout.setHorizontalGroup(
+            medicalKitjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 344, Short.MAX_VALUE)
+        );
+        medicalKitjPanelLayout.setVerticalGroup(
+            medicalKitjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout medicalKitsJInternalFrameLayout = new javax.swing.GroupLayout(medicalKitsJInternalFrame.getContentPane());
         medicalKitsJInternalFrame.getContentPane().setLayout(medicalKitsJInternalFrameLayout);
         medicalKitsJInternalFrameLayout.setHorizontalGroup(
             medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(medicalKitsJInternalFrameLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, medicalKitsJInternalFrameLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(medicalKitjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(336, Short.MAX_VALUE))
+                .addContainerGap())
         );
         medicalKitsJInternalFrameLayout.setVerticalGroup(
             medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(medicalKitsJInternalFrameLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel8)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addGroup(medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(medicalKitsJInternalFrameLayout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel8))
+                    .addGroup(medicalKitsJInternalFrameLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(medicalKitjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         doctorsjList.setModel(new javax.swing.AbstractListModel() {
@@ -114,7 +147,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -124,7 +156,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
                             .addComponent(medicalKitsJInternalFrame)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)))
@@ -135,7 +167,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(refreshButton)
@@ -184,9 +215,39 @@ public class AmbulancePanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JPanel medicalKitjPanel;
     private javax.swing.JInternalFrame medicalKitsJInternalFrame;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton sendAmbulancejButton;
     // End of variables declaration//GEN-END:variables
 
+    void configurePanel(String taskinfo) {
+        String[] values= taskinfo.split(",");
+        String doctorId = values[0].trim(); 
+        String ambulanceId = values[1].trim(); 
+        String patientName = values[2].trim(); 
+        String patientAge = values[3].trim(); 
+        String patientGender = values[4].trim(); 
+        String emergencyLocation = values[5].trim(); 
+        String emergencyType = values[6].trim(); 
+        
+        Ambulance ambulance = MyDroolsService.getAmbulanceById(Long.parseLong(ambulanceId));
+        List<MedicalKit> kits = ambulance.getKits();
+        
+        for (MedicalKit medicalKit : kits) {
+            ImageIcon medicalKitImage = MedicalKitUtil.getMedicalKitImage(medicalKit);
+            JLabel kitLabel = new JLabel();
+            kitLabel.setPreferredSize(new Dimension(64, 64));
+            kitLabel.setIcon(medicalKitImage);
+            kitLabel.setBackground(Color.red);
+            this.medicalKitjPanel.add(kitLabel);
+        }
+        
+        this.medicalKitjPanel.setBackground(Color.YELLOW);
+        
+        this.medicalKitsJInternalFrame.validate();
+        this.medicalKitjPanel.validate();
+        
+    }
+    
 }
