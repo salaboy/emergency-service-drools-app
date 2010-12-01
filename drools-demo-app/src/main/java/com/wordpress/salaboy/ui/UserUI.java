@@ -27,7 +27,6 @@ import org.drools.task.service.TaskClient;
 import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Emergency.EmergencyType;
 
 /**
@@ -36,7 +35,7 @@ import org.plugtree.training.model.Emergency.EmergencyType;
  */
 public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     
-    private TaskClient client;
+    private TaskClient taskClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
     private Task currentTask;
     private SlickBasicGame game;
@@ -334,12 +333,9 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     }
 
     private void initTaskClient() {
-        client = MyDroolsService.initTaskClient();
+        taskClient = MyDroolsService.initTaskClient();
     }
     
-    
-
-   
 
     void setUIMap(SlickBasicGame game) {
         this.game = game;
@@ -349,36 +345,36 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     
     public void callSelected(Long id){
         
+        currentTask = MyDroolsService.getTask(taskClient, id);
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        taskClient.start(currentTask.getId(), "operator", responseHandler);
+        
         this.emergencyInfoPanel.enableComponents();
         mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
-        
-        currentTask = MyDroolsService.getTask(client, id);
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start(currentTask.getId(), "operator", responseHandler);
     }
     
     public void callHandled(ContentData data){
         //Complete human Task
-        client.complete(currentTask.getId(), "operator", data, null);
+        taskClient.complete(currentTask.getId(), "operator", data, null);
         //Show ambulance tab.. with all the selected items
         mainJTabbedPane.setSelectedComponent(ambulancePanel);
     }
     
     public void sendAmbulance() throws IOException, ClassNotFoundException{
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
+        taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
         List<TaskSummary> taskSums = handler.getResults();
         TaskSummary taskSum = taskSums.get(0);
         
-        client.start(taskSum.getId(), "control_operator", null);
+        taskClient.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-        client.getTask(taskSum.getId(), handlerT);
+        taskClient.getTask(taskSum.getId(), handlerT);
         Task task2 = handlerT.getTask();
         TaskData taskData = task2.getTaskData();
         
         System.out.println("TaskData = "+taskData);
         BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-        client.getContent(taskData.getDocumentContentId(), handlerC);
+        taskClient.getContent(taskData.getDocumentContentId(), handlerC);
         Content content = handlerC.getContent();
         
         System.out.println("Content= "+content);
@@ -394,7 +390,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
         this.game.ambulanceSelectedId = Long.valueOf(taskinfo[1].trim());
         this.game.ambulanceDispatched = true;
-        client.complete(taskSum.getId(), "control_operator", null, null);
+        taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
 
     public JTabbedPane getMainJTabbedPane() {
@@ -410,7 +406,10 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     public void emergencyReached(Block emergency) {
         System.out.println("EMERGENCY REACHED!");
     }
-    
-    
+
+    public TaskClient getTaskClient() {
+        return taskClient;
+    }
+
 
 }
