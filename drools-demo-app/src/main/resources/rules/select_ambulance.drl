@@ -22,7 +22,10 @@ rule "Initialize Emergency"
       $processInstance: WorkflowProcessInstance()
       $call: Call()
     then
-     System.out.println("Emergency  "+$processInstance.getVariable("emergency"));
+     System.out.println("Emergency !!!!!@@@@@@@@@  "+$processInstance.getVariable("emergency") +
+                             "\n patient.name = " +(String)$processInstance.getVariable("patient.name") +
+                             "\n patient.age = " + Integer.valueOf((String)$processInstance.getVariable("patient.age")) +
+                             "\n patient.gender = " + (String)$processInstance.getVariable("patient.gender"));
      Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
      Patient patient = new Patient((String)$processInstance.getVariable("patient.name"),
                                 Integer.valueOf((String)$processInstance.getVariable("patient.age")),

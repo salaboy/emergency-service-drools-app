@@ -354,6 +354,7 @@
       <script>org.drools.runtime.process.WorkflowProcessInstance process = (org.drools.runtime.process.WorkflowProcessInstance)kcontext.getProcessInstance();
 java.util.Map ambulances2 = (java.util.Map) process.getVariable("ambulances");
 kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(org.plugtree.training.model.Emergency.EmergencyType.valueOf((String)process.getVariable("emergency.type")))).get(0));
+
 </script>
     </scriptTask>
 

@@ -12,11 +12,23 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.List;
 import javax.swing.JTabbedPane;
+import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
+import org.drools.task.Content;
 import org.drools.task.Task;
+import org.drools.task.TaskData;
+import org.drools.task.query.TaskSummary;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.TaskClient;
+import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Emergency.EmergencyType;
 
 /**
  *
@@ -352,9 +364,37 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         mainJTabbedPane.setSelectedComponent(ambulancePanel);
     }
     
-    public void sendAmbulance(){
+    public void sendAmbulance() throws IOException, ClassNotFoundException{
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
+        List<TaskSummary> taskSums = handler.getResults();
+        TaskSummary taskSum = taskSums.get(0);
+        
+        client.start(taskSum.getId(), "control_operator", null);
+        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+        client.getTask(taskSum.getId(), handlerT);
+        Task task2 = handlerT.getTask();
+        TaskData taskData = task2.getTaskData();
+        
+        System.out.println("TaskData = "+taskData);
+        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+        client.getContent(taskData.getDocumentContentId(), handlerC);
+        Content content = handlerC.getContent();
+        
+        System.out.println("Content= "+content);
+        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+		
+	ObjectInputStream ois = new ObjectInputStream(bais);
+        //#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}
+        String[] taskinfo =((String) ois.readObject()).split(","); 
+        
+        
         this.currentEmergenciesPanel.addNewEmergency();
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
+        this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
+        this.game.ambulanceSelectedId = Long.valueOf(taskinfo[1].trim());
+        this.game.ambulanceDispatched = true;
+        client.complete(taskSum.getId(), "control_operator", null, null);
     }
 
     public JTabbedPane getMainJTabbedPane() {

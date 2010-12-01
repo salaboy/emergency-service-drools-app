@@ -172,10 +172,10 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
             System.out.println("genderUI = "+genderjComboBox.getModel().getSelectedItem());
             System.out.println("typeUI = "+emergencyTypeJComboBox.getModel().getSelectedItem());
             info.put("emergency.location",locationjTextField.getText());
-            info.put("emergency.name",nameJTextField.getText());
+            info.put("patient.name",nameJTextField.getText());
             info.put("emergency.type",emergencyTypeJComboBox.getModel().getSelectedItem()) ; // emergencyTypeJComboBox.getSelectedIndex())
-            info.put("emergency.age",ageJTextField.getText());
-            info.put("emergency.gender",genderjComboBox.getModel().getSelectedItem());
+            info.put("patient.age",ageJTextField.getText());
+            info.put("patient.gender",genderjComboBox.getModel().getSelectedItem());
             
             ContentData result = new ContentData();
             result.setAccessType(AccessType.Inline);

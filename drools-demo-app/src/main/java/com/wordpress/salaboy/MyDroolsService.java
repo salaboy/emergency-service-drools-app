@@ -9,6 +9,7 @@ import com.wordpress.salaboy.call.CallManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.io.impl.ClassPathResource;
@@ -41,8 +42,20 @@ import org.plugtree.training.model.MedicalKit;
 
 public class MyDroolsService {
     public static final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
-    
-    
+    public static final Map<EmergencyType, List<Ambulance>> ambulances = new HashMap<EmergencyType, List<Ambulance>>(){
+                {
+                 put(EmergencyType.FIRE, new ArrayList<Ambulance>(){{add(initializeFireAmbulance());}});
+                 put(EmergencyType.HEART_ATTACK, new ArrayList<Ambulance>(){{add(initializeHeartAttackAmbulance());}});
+                 put(EmergencyType.CAR_CRASH, new ArrayList<Ambulance>(){{add(initializeCarCrashAmbulance());}});
+                }
+                };
+    public static final Map<MedicSpeciality, List<Medic>> doctors =  new HashMap<MedicSpeciality, List<Medic>>(){
+                {
+                 put(MedicSpeciality.BURNS, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BURNS));}});
+                 put(MedicSpeciality.BONES, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BONES));}});
+                 put(MedicSpeciality.REANIMATION, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.REANIMATION));}});
+                }
+                };
     public static StatefulKnowledgeSession createSession() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -70,21 +83,9 @@ public class MyDroolsService {
         ksession.setGlobal("callManager", CallManager.getInstance());
         
         
-        ksession.setGlobal("ambulances", new HashMap<EmergencyType, List<Ambulance>>(){
-                {
-                 put(EmergencyType.FIRE, new ArrayList<Ambulance>(){{add(initializeFireAmbulance());}});
-                 put(EmergencyType.HEART_ATTACK, new ArrayList<Ambulance>(){{add(initializeHeartAttackAmbulance());}});
-                 put(EmergencyType.CAR_CRASH, new ArrayList<Ambulance>(){{add(initializeCarCrashAmbulance());}});
-                }
-                });
+        ksession.setGlobal("ambulances", ambulances);
         
-        ksession.setGlobal("doctors", new HashMap<MedicSpeciality, List<Medic>>(){
-                {
-                 put(MedicSpeciality.BURNS, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BURNS));}});
-                 put(MedicSpeciality.BONES, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.BONES));}});
-                 put(MedicSpeciality.REANIMATION, new ArrayList<Medic>(){{add(new Medic(MedicSpeciality.REANIMATION));}});
-                }
-                });
+        ksession.setGlobal("doctors", doctors);
     
     }
 

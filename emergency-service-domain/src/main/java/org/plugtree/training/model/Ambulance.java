@@ -18,6 +18,8 @@ public class Ambulance implements Serializable {
     private List<MedicalKit> kits;
     private Date departureTime;
     private Date patientPickedUpTime;
+    private float positionX;
+    private float positionY;
     public static AtomicLong incrementalId = new AtomicLong();
 
     public Ambulance() {
@@ -92,4 +94,28 @@ public class Ambulance implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public float getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(float positionX) {
+        this.positionX = positionX;
+    }
+
+    public float getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(float positionY) {
+        this.positionY = positionY;
+    }
+
+    @Override
+    public String toString() {
+        return "Ambulance{" + "id=" + id + ", description=" + description + ", medicOnBoard=" + medicOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+    }
+    
+    
+    
 }

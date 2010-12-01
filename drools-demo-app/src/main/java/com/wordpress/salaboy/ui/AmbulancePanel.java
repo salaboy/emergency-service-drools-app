@@ -11,6 +11,10 @@
 
 package com.wordpress.salaboy.ui;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author esteban
@@ -152,7 +156,13 @@ public class AmbulancePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendAmbulancejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAmbulancejButtonActionPerformed
-        parent.sendAmbulance();
+        try {
+            parent.sendAmbulance();
+        } catch (IOException ex) {
+            Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_sendAmbulancejButtonActionPerformed
 
     private void ambulancejListselectedAmbulance(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambulancejListselectedAmbulance

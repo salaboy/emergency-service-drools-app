@@ -4,8 +4,8 @@ import com.wordpress.salaboy.MyDroolsService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
@@ -18,7 +18,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.opengl.renderer.Renderer;
+import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
+import org.plugtree.training.model.Emergency.EmergencyType;
 
 public class SlickBasicGame extends BasicGame {
 
@@ -45,7 +47,10 @@ public class SlickBasicGame extends BasicGame {
         16, 25,
         17, 25};//Hospital 3 = X, Y
     private static UserUI ui;
-    
+    public boolean ambulanceDispatched = false;
+    private Ambulance ambulance;
+    public Long ambulanceSelectedId = 0L;
+    public EmergencyType emergencyTypeSelected;
     private MapEventsNotifier mapEventsNotifier= new MapEventsNotifier();
 
     public SlickBasicGame() {
@@ -108,6 +113,9 @@ public class SlickBasicGame extends BasicGame {
                 playerX++;
                 playerPoly.setX(playerX);
             }
+            ambulance.setPositionX(playerX);
+            FactHandle handle = ksession.getFactHandle(ambulance);
+            ksession.update(handle, ambulance);
             if (emergencyCollision()) {
                 emergencyPointReachedCreateHospital();
             }
@@ -133,6 +141,9 @@ public class SlickBasicGame extends BasicGame {
 
 
             }
+            ambulance.setPositionX(playerX);
+            FactHandle handle = ksession.getFactHandle(ambulance);
+            ksession.update(handle, ambulance);
             if (emergencyCollision()) {
                 emergencyPointReachedCreateHospital();
             }
@@ -154,6 +165,9 @@ public class SlickBasicGame extends BasicGame {
                 playerY++;
                 playerPoly.setY(playerY);
             }
+            ambulance.setPositionY(playerY);
+            FactHandle handle = ksession.getFactHandle(ambulance);
+            ksession.update(handle, ambulance);
             if (emergencyCollision()) {
                 emergencyPointReachedCreateHospital();
             }
@@ -170,12 +184,15 @@ public class SlickBasicGame extends BasicGame {
             }
             player.setCurrentFrame(current);
             playerY++;
+            
             playerPoly.setY(playerY);
             if (entityCollisionWith()) {
                 playerY--;
                 playerPoly.setY(playerY);
-
             }
+            ambulance.setPositionY(playerY);
+            FactHandle handle = ksession.getFactHandle(ambulance);
+            ksession.update(handle, ambulance);
             if (emergencyCollision()) {
                 emergencyPointReachedCreateHospital();
             }
@@ -246,7 +263,11 @@ public class SlickBasicGame extends BasicGame {
 
         g.draw(playerPoly);
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
-        g.drawAnimation(player, playerX, playerY);
+        if( ambulanceDispatched ){
+            this.ambulance = getAmbulanceById(emergencyTypeSelected, ambulanceSelectedId);
+            g.drawAnimation(player, playerX, playerY);
+            
+        }
 
         if (emergency != null) {
             g.drawAnimation(emergency, xs[randomx] * 16, ys[randomy] * 16);
@@ -321,5 +342,15 @@ public class SlickBasicGame extends BasicGame {
     
     public void addMapEventsListener(MapEventsListener listener){
         this.mapEventsNotifier.addMapEventsListener(listener);
+    }
+    
+    private Ambulance getAmbulanceById(EmergencyType type, Long id){
+       List<Ambulance> ambulances = MyDroolsService.ambulances.get(type); 
+       for(Ambulance ambulance : ambulances){
+           if(ambulance.getId() == id){
+               return ambulance;
+           }
+       }
+       return null;
     }
 }
