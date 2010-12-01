@@ -52,7 +52,7 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void addNewEmergency(){
-        EmergencyFrame emergencyFrame = new EmergencyFrame(this.parent);
+        EmergencyFrame emergencyFrame = EmergencyFrame.getInstance(this.parent);
         this.add(emergencyFrame);
         this.validate();
     }

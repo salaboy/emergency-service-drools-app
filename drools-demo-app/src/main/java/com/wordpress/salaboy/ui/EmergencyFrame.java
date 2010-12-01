@@ -20,7 +20,14 @@ import javax.swing.JTabbedPane;
 public class EmergencyFrame extends javax.swing.JInternalFrame {
 
     private UserUI parent;
-    private EmergencyMonitorPanel emergencyMonitorPanel;
+    public static EmergencyMonitorPanel emergencyMonitorPanel;
+    private static EmergencyFrame instance;
+    public static  EmergencyFrame getInstance(UserUI parent){
+        if(instance == null){
+            instance = new EmergencyFrame(parent);
+        }
+        return instance;
+    }
     
     /** Creates new form EmergencyFrame */
     public EmergencyFrame(UserUI parent) {
