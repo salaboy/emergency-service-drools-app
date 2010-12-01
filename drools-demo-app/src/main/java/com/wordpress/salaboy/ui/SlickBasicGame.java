@@ -74,7 +74,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         gc.setVSync(true);
         SpriteSheet sheet = new SpriteSheet("data/sprites/sprites-ambulancia.png", 32, 32, Color.magenta);
         emergencySheet = new SpriteSheet("data/sprites/alert.png", 32, 32, Color.magenta);
-        hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 76, Color.magenta);
+        hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
         map = new BlockMap("data/cityMap.tmx");
         map.initializeCorners();
 
@@ -154,9 +154,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
 
                 }
-                if(cornerCollision()){
-                    System.out.println("POSITION UPDATED!!!!");
-                }
+                cornerCollision();
                
                 if (emergencyCollision()) {
                     emergencyPointReachedCreateHospital();
@@ -181,9 +179,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerY++;
                     playerPoly.setY(playerY);
                 }
-                if(cornerCollision()){
-                    System.out.println("POSITION UPDATED!!!!");
-                }
+                cornerCollision();
                 if (emergencyCollision()) {
                     emergencyPointReachedCreateHospital();
                 }
@@ -208,9 +204,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerY--;
                     playerPoly.setY(playerY);
                 }
-                if(cornerCollision()){
-                    System.out.println("POSITION UPDATED!!!!");
-                }
+                cornerCollision();
                 if (emergencyCollision()) {
                     emergencyPointReachedCreateHospital();
                 }
@@ -265,12 +259,12 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         emergency = null;
         BlockMap.emergencies = new ArrayList<Object>();
         int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
-        BlockMap.hospitals.add(new Block(hospitals[0] * 16, hospitals[1] * 16, hospitasquare, "hospital"));
+        BlockMap.hospitals.add(new Block((hospitals[0]+2) * 16, (hospitals[1]+5) * 16, hospitasquare, "hospital"));
         hospitalPoly = new Polygon(new float[]{
-                    hospitals[0] * 16, hospitals[1] * 16,
-                    hospitals[0] * 16 + 16, hospitals[1] * 16,
-                    hospitals[0] * 16 + 16, hospitals[1] * 16 + 16,
-                    hospitals[0] * 16, hospitals[1] * 16 + 16
+                    (hospitals[0]+2) * 16, (hospitals[1]+5) * 16,
+                    (hospitals[0]+2) * 16 + 16, (hospitals[1]+5) * 16,
+                    (hospitals[0]+2) * 16 + 16, (hospitals[1]+5) * 16 + 16,
+                    (hospitals[0]+2) * 16, (hospitals[1]+5) * 16 + 16
                 });
         hospital = new Animation();
         hospital.setAutoUpdate(true);
@@ -285,6 +279,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
             throws SlickException {
 
         g.draw(playerPoly);
+        
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
         if( ambulanceDispatched ){
             this.ambulance = getAmbulanceById(emergencyTypeSelected, ambulanceSelectedId);
