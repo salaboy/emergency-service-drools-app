@@ -406,6 +406,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     @Override
     public void emergencyReached(Block emergency) {
         System.out.println("EMERGENCY REACHED!");
+        EmergencyFrame.emergencyMonitorPanel = new EmergencyMonitorPanel(EmergencyFrame.getInstance(this));
     }
 
     public TaskClient getTaskClient() {

@@ -21,6 +21,8 @@ import org.newdawn.slick.opengl.renderer.Renderer;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
 import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
+import org.plugtree.training.model.events.PatientPickUpEvent;
 
 public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
@@ -279,7 +281,9 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
             throws SlickException {
 
         g.draw(playerPoly);
-        
+        if(hospital != null){
+            g.draw(hospitalPoly);
+        }
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
         if( ambulanceDispatched ){
             this.ambulance = getAmbulanceById(emergencyTypeSelected, ambulanceSelectedId);
@@ -297,7 +301,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
         if (hospital != null) {
             g.drawAnimation(hospital, hospitals[0] * 16, hospitals[1] * 16);
-            g.draw(hospitalPoly);
+            
         }
     }
 
@@ -386,12 +390,14 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
     @Override
     public void hospitalReached(Block hospital) {
-        
+        System.out.println("HOSPITAL REACHED TIME TO SIGNAL DE PATIENT AT THE HOSPITAL EVENT!!!");
+        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
     }
 
     @Override
     public void emergencyReached(Block emergency) {
-        
+        System.out.println("EMERGENCY REACHED TIME TO SIGNAL DE PATIENT PICK UP EVENT!!!");
+        ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()) );
     }
 
     @Override
