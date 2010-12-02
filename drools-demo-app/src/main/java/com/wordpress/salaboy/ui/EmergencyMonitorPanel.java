@@ -83,7 +83,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     
     private JFreeChart createTimeSeriesChart() {
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
-				"Some Title", 
+				"Pulse", 
 				"X", 
 				"Y",
 				dataset, 

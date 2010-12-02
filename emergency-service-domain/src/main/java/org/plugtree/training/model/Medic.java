@@ -26,6 +26,7 @@ public class Medic implements Serializable {
 
 
     public Medic(MedicSpeciality speciality) {
+        this();
         this.speciality = speciality;
     }
 

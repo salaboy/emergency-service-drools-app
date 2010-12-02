@@ -39,7 +39,7 @@ public class MedicalKitUtil {
                 break;
         }
         
-        return new MedicalKit(stringType);
+        return new MedicalKit(stringType,type);
     }
     
     public static ImageIcon getMedicalKitImage(MedicalKit kit){
