@@ -20,8 +20,18 @@ public class Hospital implements Serializable{
     private List<EmergencyType> specialities;
     private int rank;
     private String name;
+    private float positionX;
+    private float positionY;
     public Hospital() {
     }
+
+    public Hospital(String name, float positionX, float positionY) {
+        this.name = name;
+        this.positionX = positionX;
+        this.positionY = positionY;
+    }
+    
+    
 
     public int getAvailableBeds() {
         return availableBeds;
@@ -70,6 +80,23 @@ public class Hospital implements Serializable{
         this.name = name;
     }
 
+    public float getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(float positionX) {
+        this.positionX = positionX;
+    }
+
+    public float getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(float positionY) {
+        this.positionY = positionY;
+    }
+
+    
     @Override
     public String toString() {
         return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + '}';

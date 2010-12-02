@@ -43,8 +43,8 @@ public class BlockMap {
 	}
 
     public void initializeCorners() {
-        int[] xs = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26, 31, 32, 37, 38};
-        int[] ys = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26};
+        int[] xs = new int[]{1, 7, 13,  19,  25,  31,  37};
+        int[] ys = new int[]{1, 7, 13,  19,  25};
         for (int x = 0; x < xs.length ; x++) {
 			for (int y = 0; y < ys.length ; y++) {
                             corners.add(new Block(xs[x] * 16, ys[y] * 16, square, "square"));

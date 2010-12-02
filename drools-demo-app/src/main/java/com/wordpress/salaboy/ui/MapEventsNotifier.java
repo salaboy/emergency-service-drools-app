@@ -42,7 +42,7 @@ public class MapEventsNotifier {
                             mapEventsListener.positionReceived((Block) data);
                             break;
                         case HOSPITAL_SELECTED:
-                            mapEventsListener.hospitalSelected();
+                            mapEventsListener.hospitalSelected((Long) data);
                             break;
                         case HEART_BEAT_RECEIVED:
                             mapEventsListener.heartBeatReceived((Double) data);

@@ -21,6 +21,7 @@ import org.newdawn.slick.opengl.renderer.Renderer;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
 import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Hospital;
 import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
 import org.plugtree.training.model.events.PatientPickUpEvent;
 
@@ -129,12 +130,10 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerX++;
                     playerPoly.setX(playerX);
                 }
-                if(cornerCollision()){
-                    System.out.println("POSITION UPDATED!!!!");
-                }
-                if (emergencyCollision()) {
-                    emergencyPointReachedCreateHospital();
-                }
+                cornerCollision();
+                emergencyCollision();
+                    
+                
                 if (hospitalCollision()) {
                     hospitalPointReached();
                 }
@@ -160,10 +159,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
                 }
                 cornerCollision();
-               
-                if (emergencyCollision()) {
-                    emergencyPointReachedCreateHospital();
-                }
+                emergencyCollision();
                 if (hospitalCollision()) {
                     hospitalPointReached();
                 }
@@ -185,9 +181,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerPoly.setY(playerY);
                 }
                 cornerCollision();
-                if (emergencyCollision()) {
-                    emergencyPointReachedCreateHospital();
-                }
+                emergencyCollision();
                 if (hospitalCollision()) {
                     hospitalPointReached();
                 }
@@ -210,9 +204,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerPoly.setY(playerY);
                 }
                 cornerCollision();
-                if (emergencyCollision()) {
-                    emergencyPointReachedCreateHospital();
-                }
+                emergencyCollision();
                 if (hospitalCollision()) {
                     hospitalPointReached();
                 }
@@ -244,7 +236,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
                 MyDroolsService.registerHandlers(ksession);
                 MyDroolsService.setGlobals(ksession);
-
+                MyDroolsService.setNotifier(ksession, mapEventsNotifier);
                 ksession.insert(new Call(new Date()));
 
                 new Thread(new Runnable()   {
@@ -258,27 +250,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
         }
     }
-
-    private void emergencyPointReachedCreateHospital() {
-        System.out.println("Check Point Hit!");
-        emergency = null;
-        BlockMap.emergencies = new ArrayList<Object>();
-        int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
-        BlockMap.hospitals.add(new Block((hospitals[0]+2) * 16, (hospitals[1]+5) * 16, hospitasquare, "hospital"));
-        hospitalPoly = new Polygon(new float[]{
-                    (hospitals[0]+2) * 16, (hospitals[1]+5) * 16,
-                    (hospitals[0]+2) * 16 + 16, (hospitals[1]+5) * 16,
-                    (hospitals[0]+2) * 16 + 16, (hospitals[1]+5) * 16 + 16,
-                    (hospitals[0]+2) * 16, (hospitals[1]+5) * 16 + 16
-                });
-        hospital = new Animation();
-        hospital.setAutoUpdate(true);
-         for (int frame = 0; frame < 5; frame++) {
-                    hospital.addFrame(hospitalSheet.getSprite(frame, 0), 150);
-                }
-        
-
-    }
+    
+    
 
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
@@ -401,14 +374,16 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
     @Override
     public void emergencyReached(Block emergency) {
+        
         System.out.println("EMERGENCY REACHED TIME TO SIGNAL DE PATIENT PICK UP EVENT!!!");
         ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()) );
     }
 
     @Override
     public void positionReceived(Block corner) {
-            ambulance.setPositionX(corner.poly.getX());
-            ambulance.setPositionY(corner.poly.getY());
+            
+            ambulance.setPositionX(Math.round(corner.poly.getX()/16));
+            ambulance.setPositionY(Math.round(corner.poly.getY()/16));
             FactHandle handle = ksession.getFactHandle(ambulance);
             ksession.update(handle, ambulance);
     }
@@ -417,8 +392,32 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public void heartBeatReceived(double value) {
     }
 
+   
+
     @Override
-    public void hospitalSelected() {
+    public void hospitalSelected(Long id) {
+        System.out.println("Check Point Hit!");
+        emergency = null;
+        BlockMap.emergencies = new ArrayList<Object>();
+        int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
+        Hospital selected = null;
+        for( Hospital hospital : MyDroolsService.hospitals.values()){
+            if(hospital.getId() == id){
+                selected = hospital;
+            }
+        }
+        BlockMap.hospitals.add(new Block(Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16, hospitasquare, "hospital"));
+        hospitalPoly = new Polygon(new float[]{
+                    Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16,
+                    Math.round(selected.getPositionX()) * 16 + 16, Math.round(selected.getPositionY()) * 16,
+                    Math.round(selected.getPositionX()) * 16 + 16, Math.round(selected.getPositionY()) * 16 + 16,
+                    Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16 + 16
+                });
+        hospital = new Animation();
+        hospital.setAutoUpdate(true);
+         for (int frame = 0; frame < 5; frame++) {
+                    hospital.addFrame(hospitalSheet.getSprite(frame, 0), 150);
+                }
         ambulanceMonitorService = new AmbulanceMonitorService(ksession, mapEventsNotifier);
         ambulanceMonitorService.start();
     }

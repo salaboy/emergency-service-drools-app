@@ -6,6 +6,7 @@ package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.util.MedicalKitUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +26,13 @@ import org.drools.SystemEventListenerFactory;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.task.Task;
 import org.drools.task.service.TaskClient;
 import org.drools.task.service.mina.MinaTaskClientConnector;
 import org.drools.task.service.mina.MinaTaskClientHandler;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Hospital;
 import org.plugtree.training.model.Medic;
 import org.plugtree.training.model.Medic.MedicSpeciality;
 import org.plugtree.training.model.MedicalKit;
@@ -102,10 +103,24 @@ public class MyDroolsService {
             });
         }
     };
+    
+    public static final Map<String, Hospital> hospitals = new HashMap<String, Hospital>(){{
+        //private int[] hospitals = new int[]{
+       //  9+2,8+5, -> la puerta del hospital 
+       //  33,8,
+       //  15,20
+     //};
+        
+        put("Hosital 01", new Hospital("Hospital 01", 11, 13));
+        put("Hosital 02", new Hospital("Hospital 02", 35, 13));
+        put("Hosital 03", new Hospital("Hospital 03", 17, 25));
+       
+    
+    }};
 
     public static StatefulKnowledgeSession createSession() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
+        
         kbuilder.add(new ClassPathResource("processes/EmergencyService3.bpmn"), ResourceType.BPMN2);
         kbuilder.add(new ClassPathResource("rules/select_ambulance.drl"), ResourceType.DRL);
         kbuilder.add(new ClassPathResource("rules/select_hospital.drl"), ResourceType.DRL);
@@ -130,11 +145,18 @@ public class MyDroolsService {
     public static void setGlobals(StatefulKnowledgeSession ksession) {
         ksession.setGlobal("callManager", CallManager.getInstance());
 
-
         ksession.setGlobal("ambulances", ambulances);
 
         ksession.setGlobal("doctors", doctors);
+        
+        ksession.setGlobal("hospitals", hospitals);
+        
+        
 
+    }
+    
+    public static void setNotifier(StatefulKnowledgeSession ksession, MapEventsNotifier notifier){
+        ksession.setGlobal("notifier", notifier);
     }
 
     private static Ambulance initializeFireAmbulance() {

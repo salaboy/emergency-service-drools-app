@@ -9,8 +9,12 @@ import org.plugtree.training.model.MedicalKit;
 import org.plugtree.training.model.Location;
 import org.plugtree.training.model.Hospital;
 import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import com.wordpress.salaboy.ui.MapEventsNotifier;
 
 
+global Map hospitals;
+global MapEventsNotifier notifier;
 rule "Rank Hospital Speciality that matches EmergencyType"
     lock-on-active true
     ruleflow-group "hospital_selection"
@@ -18,13 +22,31 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $ambulance: Ambulance()
-        $hospital: Hospital($specialities: specialities) 
-        EmergencyType(name == $type) from $specialities
+        // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
+        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
+                                                    init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
+                                                    action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
+                                                            //System.out.println("$hospital.getName() = "+$hospital.getName());
+                                                            //System.out.println("$hospital.getPositionX() = "+$hospital.getPositionX());
+                                                            //System.out.println("$ambulance.getPositionX() = "+$ambulance.getPositionX());
+                                                            //System.out.println("DifX = "+difX);
+                                                            float difY = $hospital.getPositionY() - $ambulance.getPositionY();
+                                                            float difTotal = difX - difY;
+                                                            if(Math.abs(difTotal) < best){ best = Math.abs(difTotal); selected = $hospital;}
+                                                            ),
+                                                    reverse(),
+                                                    result(selected)
+                                                    )
+        //$hospital: Hospital($specialities: specialities) 
+       // EmergencyType(name == $type) from $specialities
 
     then
-        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
-        //$hospital.setRank($hospital.getRank() + 10);
-        //update($hospital);
+        
+        System.out.println("Hospital " + $selectedHospital.getName() + " position (X,Y) = ("+ $selectedHospital.getPositionX() + ","+ $selectedHospital.getPositionY() +")" );
+        System.out.println("Ambulance " + $ambulance.getDescription() + " position (X,Y) = ("+ $ambulance.getPositionX() + ","+ $ambulance.getPositionY() +")" );
+        System.out.println("HOSPITAL SELECTED !!!!");
+        notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_SELECTED, $selectedHospital.getId());
+        
 end
 
 /*rule "Rank with 5 Hospital without the Emergency Speciality but with available beds"

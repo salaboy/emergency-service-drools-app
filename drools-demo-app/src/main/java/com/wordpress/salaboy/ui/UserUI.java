@@ -453,7 +453,9 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         this.currentEmergenciesPanel.heartBeatReceived(value);
     }
 
+   
+
     @Override
-    public void hospitalSelected() {
+    public void hospitalSelected(Long id) {
     }
 }
