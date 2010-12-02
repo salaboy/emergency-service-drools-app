@@ -80,6 +80,15 @@ public class MyDroolsService {
         return null;
     }
     
+    public static Hospital getHospitalById(Long id){
+        for (Map.Entry<String, Hospital> entry : hospitals.entrySet()) {
+            if (entry.getValue().getId().equals(id)){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+    
     public static final Map<MedicSpeciality, List<Medic>> doctors = new HashMap<MedicSpeciality, List<Medic>>() {
 
         {

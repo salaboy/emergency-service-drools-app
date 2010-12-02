@@ -51,4 +51,13 @@ public class CallManager {
         return Collections.unmodifiableMap(calls);
     }
     
+    public Call getCallById(Long id) {
+        for (Map.Entry<Long, Call> entry : calls.entrySet()) {
+            if (entry.getValue().getId() == id){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+    
 }

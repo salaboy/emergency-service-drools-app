@@ -15,6 +15,7 @@ import org.plugtree.training.model.Emergency.EmergencyType;
  * @author salaboy
  */
 public class Hospital implements Serializable{
+    private static Long lastId = 0l;
     private Long id;
     private int availableBeds;
     private List<EmergencyType> specialities;
@@ -26,6 +27,7 @@ public class Hospital implements Serializable{
     }
 
     public Hospital(String name, float positionX, float positionY) {
+        this.id = lastId++;
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;

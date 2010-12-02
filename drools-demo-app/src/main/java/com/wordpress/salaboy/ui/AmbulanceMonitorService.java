@@ -27,9 +27,13 @@ public class AmbulanceMonitorService {
         if (heartBeatsEmulator != null && heartBeatsEmulator.isRunning()){
             throw new IllegalStateException("Heart Beats Emulator is already running!");
         }
-        this.heartBeatsEmulator = new HeartBeatsEmulator(ksession, notifier);
-        Thread t = new Thread(heartBeatsEmulator);
-        t.start();
+        try{
+            this.heartBeatsEmulator = new HeartBeatsEmulator(ksession, notifier);
+            Thread t = new Thread(heartBeatsEmulator);
+            t.start();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     public void stop() {

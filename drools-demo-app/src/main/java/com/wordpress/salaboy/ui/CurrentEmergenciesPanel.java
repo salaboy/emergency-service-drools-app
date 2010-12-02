@@ -55,8 +55,8 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    public void addNewEmergency(){
-        EmergencyFrame emergencyFrame = new EmergencyFrame(parent);
+    public void addNewEmergency(long ambulanceId){
+        EmergencyFrame emergencyFrame = new EmergencyFrame(parent, ambulanceId);
         this.emergencyFrames.add(emergencyFrame);
         this.add(emergencyFrame);
         this.validate();
@@ -80,6 +80,13 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
         //notify all frames. FIXME: only one should be notified
         for (EmergencyFrame emergencyFrame : emergencyFrames) {
             emergencyFrame.hospitalSelected(id);
+        }
+    }
+
+    void positionReceived(Block corner) {
+        //notify all frames. FIXME: only one should be notified
+        for (EmergencyFrame emergencyFrame : emergencyFrames) {
+            emergencyFrame.positionReceived(corner);
         }
     }
 }

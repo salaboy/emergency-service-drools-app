@@ -11,7 +11,11 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.MyDroolsService;
+import java.awt.Color;
 import javax.swing.JTabbedPane;
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Hospital;
 
 /**
  *
@@ -20,12 +24,20 @@ import javax.swing.JTabbedPane;
 public class EmergencyFrame extends javax.swing.JInternalFrame {
 
     private UserUI parent;
+    private Ambulance ambulance;
     public EmergencyMonitorPanel emergencyMonitorPanel;
         
     /** Creates new form EmergencyFrame */
-    public EmergencyFrame(UserUI parent) {
+    public EmergencyFrame(UserUI parent, long ambulanceId) {
         this.parent = parent;
+        this.ambulance = MyDroolsService.getAmbulanceById(ambulanceId);
         initComponents();
+        
+        this.pnlMedicalEvaluation.setEnabled(false);
+        
+        this.lblDirection.setForeground(Color.red);
+        String text = "Emergency";
+        this.lblDirection.setText(text);
     }
 
     /** This method is called from within the constructor to
@@ -41,8 +53,10 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         driverPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtPosition = new javax.swing.JTextArea();
         pickUpPatientjButton = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        lblDirection = new javax.swing.JLabel();
         pnlMedicalEvaluation = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -57,12 +71,11 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
         driverPanel.setName("Driver"); // NOI18N
 
-        jLabel4.setText("Directions");
+        jLabel4.setText("Direction");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Go to A8 and D8");
-        jScrollPane1.setViewportView(jTextArea1);
+        txtPosition.setColumns(20);
+        txtPosition.setRows(5);
+        jScrollPane1.setViewportView(txtPosition);
 
         pickUpPatientjButton.setText("Pick Up Patient");
         pickUpPatientjButton.addActionListener(new java.awt.event.ActionListener() {
@@ -71,37 +84,45 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel5.setText("Position");
+
+        lblDirection.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        lblDirection.setForeground(new java.awt.Color(16, 160, 1));
+        lblDirection.setText("jLabel3");
+
         javax.swing.GroupLayout driverPanelLayout = new javax.swing.GroupLayout(driverPanel);
         driverPanel.setLayout(driverPanelLayout);
         driverPanelLayout.setHorizontalGroup(
             driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(driverPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(516, 516, 516))
-            .addGroup(driverPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pickUpPatientjButton)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(lblDirection, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(213, Short.MAX_VALUE))
-            .addGroup(driverPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pickUpPatientjButton)
-                .addContainerGap(470, Short.MAX_VALUE))
         );
         driverPanelLayout.setVerticalGroup(
             driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(driverPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDirection)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pickUpPatientjButton)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         mainTabPanel.addTab("Driver", driverPanel);
 
+        pnlMedicalEvaluation.setEnabled(false);
         pnlMedicalEvaluation.setName("Medical Evaluation"); // NOI18N
 
         jLabel1.setText("Severity");
@@ -161,7 +182,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabPanel)
+            .addComponent(mainTabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
         );
 
         pack();
@@ -176,9 +197,8 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         int severity = this.cboSeverity.getSelectedIndex();
         String comment = this.txtComment.getText();
-        
         parent.medicalEvaluationCompleted(severity,comment);
-                
+        this.mainTabPanel.remove(this.pnlMedicalEvaluation);
     }//GEN-LAST:event_btnSubmitActionPerformed
 
 
@@ -189,13 +209,15 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lblDirection;
     private javax.swing.JTabbedPane mainTabPanel;
     private javax.swing.JButton pickUpPatientjButton;
     private javax.swing.JPanel pnlMedicalEvaluation;
     private javax.swing.JTextArea txtComment;
+    private javax.swing.JTextArea txtPosition;
     // End of variables declaration//GEN-END:variables
 
     public JTabbedPane getMainTabPanel() {
@@ -209,13 +231,35 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     }
 
     void emergencyReached(Block emergency) {
+        this.pnlMedicalEvaluation.setEnabled(true);
         this.mainTabPanel.setSelectedComponent(this.pnlMedicalEvaluation);
     }
 
     void hospitalSelected(Long id) {
+        this.lblDirection.setForeground(Color.green);
+        Hospital hospital = MyDroolsService.getHospitalById(id);
+        int x = (int)hospital.getPositionX();
+        int y = (int)hospital.getPositionY();
+        
+        String text = "Hospital at "+x+" - "+y;
+        
+        this.lblDirection.setText(text);
+        
         this.emergencyMonitorPanel = new EmergencyMonitorPanel(this);
     }
 
+    private String lastPositionText = "";
+    void positionReceived(Block corner) {
+        int x = (int)ambulance.getPositionX();
+        int y = (int)ambulance.getPositionY();
+        
+        String text = x+" - "+y;
+        if (!lastPositionText.equals(text)){
+            this.txtPosition.insert(text+"\n", 0);
+            lastPositionText = text;
+        }
+    }
+    
     
     
 }

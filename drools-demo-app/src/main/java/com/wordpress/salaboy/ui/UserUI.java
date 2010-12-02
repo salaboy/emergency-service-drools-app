@@ -8,7 +8,6 @@
  *
  * Created on Nov 2, 2010, 4:45:08 PM
  */
-
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
@@ -39,36 +38,34 @@ import org.plugtree.training.model.Emergency.EmergencyType;
  *
  * @author salaboy
  */
-public class UserUI extends javax.swing.JFrame implements MapEventsListener{
-    
+public class UserUI extends javax.swing.JFrame implements MapEventsListener {
+
     private TaskClient taskClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
     private Task currentTask;
     private SlickBasicGame game;
-    
-    
     //Panels
     private PhoneCallsPanel phoneCallsPanel;
     private EmergencyInfoPanel emergencyInfoPanel;
     private AmbulancePanel ambulancePanel;
     private CurrentEmergenciesPanel currentEmergenciesPanel;
-    
+
     /** Creates new form UserUI */
     public UserUI() {
         initComponents();
         initTaskServer();
         initTaskClient();
-        
+
         phoneCallsPanel = new PhoneCallsPanel(this);
         emergencyInfoPanel = new EmergencyInfoPanel(this);
         ambulancePanel = new AmbulancePanel(this);
         currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
-        
-        this.mainJTabbedPane.add(this.phoneCallsPanel,0);
-        this.mainJTabbedPane.add(this.emergencyInfoPanel,1);
-        this.mainJTabbedPane.add(this.ambulancePanel,2);
-        this.mainJTabbedPane.add(this.currentEmergenciesPanel,3);
-        
+
+        this.mainJTabbedPane.add(this.phoneCallsPanel, 0);
+        this.mainJTabbedPane.add(this.emergencyInfoPanel, 1);
+        this.mainJTabbedPane.add(this.ambulancePanel, 2);
+        this.mainJTabbedPane.add(this.currentEmergenciesPanel, 3);
+
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
     }
 
@@ -298,8 +295,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     private void selectPatientToAccept(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectPatientToAccept
         // TODO add your handling code here:
-        
-        
     }//GEN-LAST:event_selectPatientToAccept
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -311,16 +306,16 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     }//GEN-LAST:event_formWindowClosing
 
     /**
-    * @param args the command line arguments
-    */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable()   {
+
             public void run() {
                 new UserUI().setVisible(true);
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
@@ -354,30 +349,43 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
     private void initTaskClient() {
         taskClient = MyDroolsService.initTaskClient();
     }
-    
 
     void setUIMap(SlickBasicGame game) {
         this.game = game;
         game.addMapEventsListener(this);
-        
+
     }
 
-    
-    public void callSelected(Long id){
-        
+    public void callSelected(Long id) {
+
         currentTask = MyDroolsService.getTask(taskClient, id);
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         taskClient.start(currentTask.getId(), "operator", responseHandler);
-        
-        this.emergencyInfoPanel.enableComponents();
+
+        this.emergencyInfoPanel.handleCall();
         mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
     }
-    
-    public void callHandled(ContentData data){
-        ObjectInputStream ois = null;
+
+    public void callHandled(ContentData data) {
+
+        //Complete human Task
+        BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
+        taskClient.complete(currentTask.getId(), "operator", data, blockingTaskOperationResponseHandler);
+        
+        while (!blockingTaskOperationResponseHandler.isDone()){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        this.prepareAmbulance();
+    }
+
+    private void prepareAmbulance() {
         try {
-            //Complete human Task
-            taskClient.complete(currentTask.getId(), "operator", data, null);
+            ObjectInputStream ois = null;
             //Show ambulance tab.. with all the selected items
             BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
             taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
@@ -388,100 +396,95 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
             taskClient.getTask(taskSum.getId(), handlerT);
             Task task2 = handlerT.getTask();
             TaskData taskData = task2.getTaskData();
-            System.out.println("TaskData = "+taskData);
+            System.out.println("TaskData = " + taskData);
             BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
             taskClient.getContent(taskData.getDocumentContentId(), handlerC);
             Content content = handlerC.getContent();
-            System.out.println("Content= "+content);
+            System.out.println("Content= " + content);
             ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
             ois = new ObjectInputStream(bais);
-            String taskinfo =(String) ois.readObject();
+            String taskinfo = (String) ois.readObject();
             this.ambulancePanel.configurePanel(taskinfo);
             mainJTabbedPane.setSelectedComponent(ambulancePanel);
         } catch (Exception ex) {
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                ois.close();
-            } catch (IOException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
     
-    public void sendAmbulance() throws IOException, ClassNotFoundException{
+    public void sendAmbulance() throws IOException, ClassNotFoundException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
         List<TaskSummary> taskSums = handler.getResults();
         TaskSummary taskSum = taskSums.get(0);
-        
+
         taskClient.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
         taskClient.getTask(taskSum.getId(), handlerT);
         Task task2 = handlerT.getTask();
         TaskData taskData = task2.getTaskData();
-        
-        System.out.println("TaskData = "+taskData);
+
+        System.out.println("TaskData = " + taskData);
         BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
         taskClient.getContent(taskData.getDocumentContentId(), handlerC);
         Content content = handlerC.getContent();
-        
-        System.out.println("Content= "+content);
+
+        System.out.println("Content= " + content);
         ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-		
-	ObjectInputStream ois = new ObjectInputStream(bais);
+
+        ObjectInputStream ois = new ObjectInputStream(bais);
         //#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}
-        String[] taskinfo =((String) ois.readObject()).split(","); 
+        String[] taskinfo = ((String) ois.readObject()).split(",");
+
+        Long ambulanceId = Long.valueOf(taskinfo[1].trim());
         
-        
-        this.currentEmergenciesPanel.addNewEmergency();
+        this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
         this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
-        this.game.ambulanceSelectedId = Long.valueOf(taskinfo[1].trim());
+        this.game.ambulanceSelectedId = ambulanceId;
         this.game.ambulanceDispatched = true;
         taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
-    
-    public void medicalEvaluationCompleted(int severity, String comment){
-        try{
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
-        List<TaskSummary> taskSums = handler.getResults();
-        TaskSummary taskSum = taskSums.get(0);
-        
-        taskClient.start(taskSum.getId(), "doctor", null);
-        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-        taskClient.getTask(taskSum.getId(), handlerT);
-        Task task3 = handlerT.getTask();
-        TaskData taskData = task3.getTaskData();
-        
-        System.out.println("TaskData = "+taskData);
-        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-        taskClient.getContent(taskData.getDocumentContentId(), handlerC);
-        Content content = handlerC.getContent();
-        
-        System.out.println("Content= "+content);
-        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        String taskinfo2 =(String) ois.readObject(); 
-        
-        System.out.println("TaskInfo 2= "+taskinfo2);
-        HashMap<String, Object> info = new HashMap<String, Object>();
 
-        
-        info.put("emergency.priority", severity);
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.util.Map");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject(info);
-        out.close();
-        result.setContent(bos.toByteArray());
-        
-        taskClient.complete(taskSum.getId(), "doctor", result , null);
-        
-        } catch (Exception e){
+    public void medicalEvaluationCompleted(int severity, String comment) {
+        try {
+            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+            taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+            List<TaskSummary> taskSums = handler.getResults();
+            TaskSummary taskSum = taskSums.get(0);
+
+            taskClient.start(taskSum.getId(), "doctor", null);
+            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+            taskClient.getTask(taskSum.getId(), handlerT);
+            Task task3 = handlerT.getTask();
+            TaskData taskData = task3.getTaskData();
+
+            System.out.println("TaskData = " + taskData);
+            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+            taskClient.getContent(taskData.getDocumentContentId(), handlerC);
+            Content content = handlerC.getContent();
+
+            System.out.println("Content= " + content);
+            ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            String taskinfo2 = (String) ois.readObject();
+
+            System.out.println("TaskInfo 2= " + taskinfo2);
+            HashMap<String, Object> info = new HashMap<String, Object>();
+
+
+            info.put("emergency.priority", severity);
+            ContentData result = new ContentData();
+            result.setAccessType(AccessType.Inline);
+            result.setType("java.util.Map");
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(info);
+            out.close();
+            result.setContent(bos.toByteArray());
+
+            taskClient.complete(taskSum.getId(), "doctor", result, null);
+
+        } catch (Exception e) {
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, e);
         }
     }
@@ -506,15 +509,13 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     @Override
     public void positionReceived(Block corner) {
-        // do nothing
+        this.currentEmergenciesPanel.positionReceived(corner);
     }
 
     @Override
     public void heartBeatReceived(double value) {
         this.currentEmergenciesPanel.heartBeatReceived(value);
     }
-
-   
 
     @Override
     public void hospitalSelected(Long id) {

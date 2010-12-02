@@ -29,13 +29,15 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
 
     private UserUI parent;
     
+    
+    
     /** Creates new form EmergencyInfoPanel */
     public EmergencyInfoPanel(UserUI parent) {
         this.parent = parent;
         initComponents();
     }
     
-    public void enableComponents(){
+    public void handleCall(){
         this.changeComponentsStatus(true);
     }
 

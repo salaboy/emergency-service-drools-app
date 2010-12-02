@@ -11,14 +11,10 @@
 
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.MyDroolsService;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
-import org.drools.task.Task;
-import org.drools.task.service.TaskClient;
-import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.plugtree.training.model.Call;
 
 /**
@@ -58,11 +54,13 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
             },
             new String [] {
-                "Alert"
+                "Alert", "Date", "Call"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class
+                java.lang.String.class,
+                java.util.Date.class,
+                java.lang.Number.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -96,7 +94,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 432, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,7 +112,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 551, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel11)
@@ -160,7 +156,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         }
         
         for (Map.Entry<Long, Call> entry : CallManager.getInstance().getCalls().entrySet()) {
-            tableModel.addRow(new String[]{entry.getKey().toString(), entry.getValue().getDate().toString()});
+            tableModel.addRow(new Object[]{entry.getKey().toString(), entry.getValue().getDate(),entry.getValue().getId()});
         }
     }
 

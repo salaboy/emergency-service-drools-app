@@ -21,6 +21,7 @@ public class Call implements Serializable{
     }
 
     public Call(Date date) {
+        this();
         this.date = date;
     }
 
