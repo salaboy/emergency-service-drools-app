@@ -11,13 +11,8 @@
 
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.events.WiiMoteEvent;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import motej.Mote;
-import motej.event.AccelerometerEvent;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -54,7 +49,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         cPanel.setPreferredSize(new java.awt.Dimension(parent.getWidth(), 270));
         cPanel.setName("Monitor");
         parent.getMainTabPanel().add(cPanel);
-        
+        parent.getMainTabPanel().setSelectedComponent(cPanel);
     }
 
     /** This method is called from within the constructor to

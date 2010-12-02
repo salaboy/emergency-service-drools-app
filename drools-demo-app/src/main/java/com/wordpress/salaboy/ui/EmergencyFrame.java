@@ -20,15 +20,8 @@ import javax.swing.JTabbedPane;
 public class EmergencyFrame extends javax.swing.JInternalFrame {
 
     private UserUI parent;
-    public static EmergencyMonitorPanel emergencyMonitorPanel;
-    private static EmergencyFrame instance;
-    public static  EmergencyFrame getInstance(UserUI parent){
-        if(instance == null){
-            instance = new EmergencyFrame(parent);
-        }
-        return instance;
-    }
-    
+    public EmergencyMonitorPanel emergencyMonitorPanel;
+        
     /** Creates new form EmergencyFrame */
     public EmergencyFrame(UserUI parent) {
         this.parent = parent;
@@ -50,6 +43,13 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         pickUpPatientjButton = new javax.swing.JButton();
+        pnlMedicalEvaluation = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtComment = new javax.swing.JTextArea();
+        cboSeverity = new javax.swing.JComboBox();
+        btnSubmit = new javax.swing.JButton();
 
         setMaximizable(true);
         setResizable(true);
@@ -75,7 +75,6 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         driverPanel.setLayout(driverPanelLayout);
         driverPanelLayout.setHorizontalGroup(
             driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 599, Short.MAX_VALUE)
             .addGroup(driverPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
@@ -91,7 +90,6 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         );
         driverPanelLayout.setVerticalGroup(
             driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 236, Short.MAX_VALUE)
             .addGroup(driverPanelLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(jLabel4)
@@ -99,10 +97,61 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pickUpPatientjButton)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         mainTabPanel.addTab("Driver", driverPanel);
+
+        pnlMedicalEvaluation.setName("Medical Evaluation"); // NOI18N
+
+        jLabel1.setText("Severity");
+
+        jLabel2.setText("Comments");
+
+        txtComment.setColumns(20);
+        txtComment.setRows(5);
+        jScrollPane2.setViewportView(txtComment);
+
+        cboSeverity.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
+
+        btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlMedicalEvaluationLayout = new javax.swing.GroupLayout(pnlMedicalEvaluation);
+        pnlMedicalEvaluation.setLayout(pnlMedicalEvaluationLayout);
+        pnlMedicalEvaluationLayout.setHorizontalGroup(
+            pnlMedicalEvaluationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMedicalEvaluationLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlMedicalEvaluationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(cboSeverity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSubmit))
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+        pnlMedicalEvaluationLayout.setVerticalGroup(
+            pnlMedicalEvaluationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMedicalEvaluationLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel1)
+                .addGap(6, 6, 6)
+                .addComponent(cboSeverity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSubmit)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        mainTabPanel.addTab("Medical Evaluation", pnlMedicalEvaluation);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,7 +161,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+            .addComponent(mainTabPanel)
         );
 
         pack();
@@ -120,18 +169,33 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
     private void pickUpPatientjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickUpPatientjButtonActionPerformed
 
-        this.emergencyMonitorPanel = new EmergencyMonitorPanel(this);
+        //this.emergencyMonitorPanel = new EmergencyMonitorPanel(this);
 
 }//GEN-LAST:event_pickUpPatientjButtonActionPerformed
 
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        int severity = this.cboSeverity.getSelectedIndex();
+        String comment = this.txtComment.getText();
+        
+        parent.medicalEvaluationCompleted(severity,comment);
+                
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JComboBox cboSeverity;
     private javax.swing.JPanel driverPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTabbedPane mainTabPanel;
     private javax.swing.JButton pickUpPatientjButton;
+    private javax.swing.JPanel pnlMedicalEvaluation;
+    private javax.swing.JTextArea txtComment;
     // End of variables declaration//GEN-END:variables
 
     public JTabbedPane getMainTabPanel() {
@@ -139,7 +203,17 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     }
 
     void heartBeatReceived(double value) {
-        this.emergencyMonitorPanel.updateMonitorGraph(value);
+        if (this.emergencyMonitorPanel != null){
+            this.emergencyMonitorPanel.updateMonitorGraph(value);
+        }
+    }
+
+    void emergencyReached(Block emergency) {
+        this.mainTabPanel.setSelectedComponent(this.pnlMedicalEvaluation);
+    }
+
+    void hospitalSelected(Long id) {
+        this.emergencyMonitorPanel = new EmergencyMonitorPanel(this);
     }
 
     

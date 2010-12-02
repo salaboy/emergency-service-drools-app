@@ -13,13 +13,17 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
+import org.drools.task.AccessType;
 import org.drools.task.Content;
 import org.drools.task.Task;
 import org.drools.task.TaskData;
@@ -102,6 +106,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -293,6 +302,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         
     }//GEN-LAST:event_selectPatientToAccept
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            taskClient.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     /**
     * @param args the command line arguments
     */
@@ -424,6 +441,50 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
         this.game.ambulanceDispatched = true;
         taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
+    
+    public void medicalEvaluationCompleted(int severity, String comment){
+        try{
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+        List<TaskSummary> taskSums = handler.getResults();
+        TaskSummary taskSum = taskSums.get(0);
+        
+        taskClient.start(taskSum.getId(), "doctor", null);
+        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+        taskClient.getTask(taskSum.getId(), handlerT);
+        Task task3 = handlerT.getTask();
+        TaskData taskData = task3.getTaskData();
+        
+        System.out.println("TaskData = "+taskData);
+        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+        taskClient.getContent(taskData.getDocumentContentId(), handlerC);
+        Content content = handlerC.getContent();
+        
+        System.out.println("Content= "+content);
+        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        String taskinfo2 =(String) ois.readObject(); 
+        
+        System.out.println("TaskInfo 2= "+taskinfo2);
+        HashMap<String, Object> info = new HashMap<String, Object>();
+
+        
+        info.put("emergency.priority", severity);
+        ContentData result = new ContentData();
+        result.setAccessType(AccessType.Inline);
+        result.setType("java.util.Map");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bos);
+        out.writeObject(info);
+        out.close();
+        result.setContent(bos.toByteArray());
+        
+        taskClient.complete(taskSum.getId(), "doctor", result , null);
+        
+        } catch (Exception e){
+            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
 
     public JTabbedPane getMainJTabbedPane() {
         return mainJTabbedPane;
@@ -436,7 +497,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     @Override
     public void emergencyReached(Block emergency) {
-        EmergencyFrame.emergencyMonitorPanel = new EmergencyMonitorPanel(EmergencyFrame.getInstance(this));
+        this.currentEmergenciesPanel.emergencyReached(emergency);
     }
 
     public TaskClient getTaskClient() {
@@ -457,5 +518,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener{
 
     @Override
     public void hospitalSelected(Long id) {
+        this.currentEmergenciesPanel.hospitalSelected(id);
     }
 }
