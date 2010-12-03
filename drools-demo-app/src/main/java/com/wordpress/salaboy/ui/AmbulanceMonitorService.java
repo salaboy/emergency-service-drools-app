@@ -17,66 +17,66 @@ public class AmbulanceMonitorService {
     private StatefulKnowledgeSession ksession;
     private HeartBeatsEmulator heartBeatsEmulator;
     private MapEventsNotifier notifier;
+    private WorkingMemoryEntryPoint patientHeartbeatsEntryPoint;
+
+    private class HeartBeatsEmulator implements Runnable {
+
+        private boolean continueMonitoring = true;
+
+        public HeartBeatsEmulator() {
+        }
+
+        @Override
+        public void run() {
+            while (continueMonitoring) {
+                try {
+                    sendNotification(235, 235, 235);
+                    Thread.sleep(1);
+                } catch (Exception ex) {
+                    Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        public void stop() {
+            this.continueMonitoring = false;
+        }
+
+        public boolean isRunning() {
+            return this.continueMonitoring;
+        }
+    }
 
     public AmbulanceMonitorService(StatefulKnowledgeSession ksession, MapEventsNotifier notifier) {
         this.ksession = ksession;
         this.notifier = notifier;
+        this.patientHeartbeatsEntryPoint = ksession.getWorkingMemoryEntryPoint("patientHeartbeats");
     }
 
     public void start() {
-        if (heartBeatsEmulator != null && heartBeatsEmulator.isRunning()){
+        if (heartBeatsEmulator != null && heartBeatsEmulator.isRunning()) {
             throw new IllegalStateException("Heart Beats Emulator is already running!");
         }
-        try{
-            this.heartBeatsEmulator = new HeartBeatsEmulator(ksession, notifier);
+        try {
+            this.heartBeatsEmulator = new HeartBeatsEmulator();
             Thread t = new Thread(heartBeatsEmulator);
             t.start();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void stop() {
-        if (this.heartBeatsEmulator != null && this.heartBeatsEmulator.isRunning()){
+        if (this.heartBeatsEmulator != null && this.heartBeatsEmulator.isRunning()) {
             this.heartBeatsEmulator.stop();
         }
     }
 
-}
-
-
-class HeartBeatsEmulator implements Runnable{
     
-    private boolean continueMonitoring = true;
-    private StatefulKnowledgeSession ksession;
-    private MapEventsNotifier notifier;
-
-    public HeartBeatsEmulator(StatefulKnowledgeSession ksession, MapEventsNotifier notifier) {
-        this.ksession = ksession;
-        this.notifier = notifier;
-    }
-    
-    @Override
-    public void run() {
-        WorkingMemoryEntryPoint patientHeartbeatsEntryPoint = ksession.getWorkingMemoryEntryPoint("patientHeartbeats");
-        while (continueMonitoring){
-            try {
-            WiiMoteEvent event = new WiiMoteEvent(new AccelerometerEvent<Mote>(null, 235, 235, 235));
-            patientHeartbeatsEntryPoint.insert(event);
-            notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HEART_BEAT_RECEIVED, (double)event.getEvent().getY());
-            Thread.sleep(500);
-            } catch (Exception ex) {
-                Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    public void stop() {
-        this.continueMonitoring = false;
-    }
-    
-    public boolean isRunning(){
-        return this.continueMonitoring;
+    public void sendNotification(int x, int y, int z){
+        WiiMoteEvent event = new WiiMoteEvent(new AccelerometerEvent<Mote>(null, x, y, z), "acc");
+        this.patientHeartbeatsEntryPoint.insert(event);
+        notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HEART_BEAT_RECEIVED, (double)y);
     }
     
 }

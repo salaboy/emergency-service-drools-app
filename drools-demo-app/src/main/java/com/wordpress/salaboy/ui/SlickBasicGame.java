@@ -422,4 +422,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         ambulanceMonitorService = new AmbulanceMonitorService(ksession, mapEventsNotifier);
         ambulanceMonitorService.start();
     }
+    
+    @Override
+    public void monitorAlertReceived(String string) {
+    }
 }

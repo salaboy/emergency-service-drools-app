@@ -521,4 +521,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     public void hospitalSelected(Long id) {
         this.currentEmergenciesPanel.hospitalSelected(id);
     }
+
+    @Override
+    public void monitorAlertReceived(String string) {
+        this.currentEmergenciesPanel.monitorAlertReceived(string);
+    }
+    
+    
 }

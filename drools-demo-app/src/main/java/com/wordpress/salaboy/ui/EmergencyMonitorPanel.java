@@ -48,6 +48,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         ChartPanel cPanel = new ChartPanel(chart);
         cPanel.setPreferredSize(new java.awt.Dimension(parent.getWidth(), 270));
         cPanel.setName("Monitor");
+        
         parent.getMainTabPanel().add(cPanel);
         parent.getMainTabPanel().setSelectedComponent(cPanel);
     }

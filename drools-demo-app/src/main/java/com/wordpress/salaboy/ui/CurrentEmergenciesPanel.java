@@ -89,4 +89,11 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
             emergencyFrame.positionReceived(corner);
         }
     }
+
+    void monitorAlertReceived(String string) {
+        //notify all frames. FIXME: only one should be notified
+        for (EmergencyFrame emergencyFrame : emergencyFrames) {
+            emergencyFrame.monitorAlertReceived(string);
+        }
+    }
 }

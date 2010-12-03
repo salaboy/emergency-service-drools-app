@@ -105,6 +105,13 @@ public class BasicProcessTest {
             public void heartBeatReceived(double value) {
                 System.out.println("Listener -> Heart beat received!!!!");
             }
+
+            @Override
+            public void monitorAlertReceived(String string) {
+                System.out.println("Listener -> Alert received!!!!: "+string);
+            }
+            
+            
         });
         MyDroolsService.setNotifier(ksession, mapEventsNotifier);
         ksession.insert(new Call(new Date()));

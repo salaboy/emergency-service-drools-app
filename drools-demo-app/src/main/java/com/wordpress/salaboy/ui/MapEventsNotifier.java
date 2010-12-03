@@ -20,7 +20,9 @@ public class MapEventsNotifier {
         EMERGENCY_REACHED,
         AMBULANCE_POSITION,
         HOSPITAL_SELECTED,
-        HEART_BEAT_RECEIVED
+        HEART_BEAT_RECEIVED,
+        NO_VITAL_SIGNS,
+        HEART_ATTACK
     }
     
     private final List<MapEventsListener> mapEventListeners = new ArrayList<MapEventsListener>();
@@ -46,6 +48,12 @@ public class MapEventsNotifier {
                             break;
                         case HEART_BEAT_RECEIVED:
                             mapEventsListener.heartBeatReceived((Double) data);
+                            break;
+                        case HEART_ATTACK:
+                            mapEventsListener.monitorAlertReceived((String) data);
+                            break;
+                        case NO_VITAL_SIGNS:
+                            mapEventsListener.monitorAlertReceived((String) data);
                             break;
                     }
                 }

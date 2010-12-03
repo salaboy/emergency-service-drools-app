@@ -12,7 +12,13 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
+import java.lang.String;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JTabbedPane;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Hospital;
@@ -31,6 +37,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     public EmergencyFrame(UserUI parent, long ambulanceId) {
         this.parent = parent;
         this.ambulance = MyDroolsService.getAmbulanceById(ambulanceId);
+        
         initComponents();
         
         this.pnlMedicalEvaluation.setEnabled(false);
@@ -64,6 +71,10 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         txtComment = new javax.swing.JTextArea();
         cboSeverity = new javax.swing.JComboBox();
         btnSubmit = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btnClear = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstAlerts = new javax.swing.JList();
 
         setMaximizable(true);
         setResizable(true);
@@ -117,7 +128,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pickUpPatientjButton)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         mainTabPanel.addTab("Driver", driverPanel);
@@ -174,15 +185,45 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
         mainTabPanel.addTab("Medical Evaluation", pnlMedicalEvaluation);
 
+        jLabel3.setText("Alerts");
+
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(lstAlerts);
+        lstAlerts.setCellRenderer(new AlertsIconListRenderer());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainTabPanel)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addContainerGap(554, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnClear)
+                .addGap(27, 27, 27))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainTabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnClear)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         pack();
@@ -201,18 +242,26 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         this.mainTabPanel.remove(this.pnlMedicalEvaluation);
     }//GEN-LAST:event_btnSubmitActionPerformed
 
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnClearActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JComboBox cboSeverity;
     private javax.swing.JPanel driverPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblDirection;
+    private javax.swing.JList lstAlerts;
     private javax.swing.JTabbedPane mainTabPanel;
     private javax.swing.JButton pickUpPatientjButton;
     private javax.swing.JPanel pnlMedicalEvaluation;
@@ -258,6 +307,19 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
             this.txtPosition.insert(text+"\n", 0);
             lastPositionText = text;
         }
+    }
+
+    private List<String> alerts = new ArrayList<String>(); 
+    void monitorAlertReceived(String message) {
+        alerts.add(0,message);
+        
+        DefaultListModel model = new DefaultListModel();
+        for (String alert : alerts) {
+            model.add(0,alert);
+        }
+        
+        this.lstAlerts.setModel(model);
+        this.validate();
     }
     
     

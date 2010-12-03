@@ -15,4 +15,5 @@ public interface MapEventsListener {
     void positionReceived(Block corner);
     void hospitalSelected(Long id);
     void heartBeatReceived(double value);
+    void monitorAlertReceived(String string);
 }

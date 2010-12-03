@@ -4,7 +4,6 @@ import motej.event.AccelerometerEvent;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import com.wordpress.salaboy.events.WiiMoteEvent;
-import com.wordpress.salaboy.msgs.HornetQClientService;
 
 declare WiiMoteEvent
     @role ( event )
@@ -18,7 +17,7 @@ rule "Patient with no vital sign"
         												average($y)) 
     then
         System.out.println("Warning, patient without vital signs " + $nextEvents);
-        HornetQClientService.getInstance().sendMessage("Warning, patient without vital signs");
+        //notifier.notifyMapEventsListeners(MapEventsNotifier.NO_VITAL_SIGNS, "Warning, patient without vital signs " + $nextEvents);
 end
 
 rule "Patient heart attack"
@@ -27,5 +26,5 @@ rule "Patient heart attack"
         $nextEvents : ArrayList(size > 10 ) from collect( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(1s) from entry-point "patientHeartbeats") 
     then
         System.out.println("Warning, patient suffering a heart attack " + $nextEvents.size());
-        HornetQClientService.getInstance().sendMessage("Warning, patient suffering a heart attack");
+        //notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HEART_ATTACK, "Warning, patient suffering a heart attack " + $nextEvents.size());
 end
