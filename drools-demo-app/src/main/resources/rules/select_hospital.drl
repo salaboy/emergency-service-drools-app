@@ -26,12 +26,11 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
                                                     init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
                                                     action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
-                                                            //System.out.println("$hospital.getName() = "+$hospital.getName());
-                                                            //System.out.println("$hospital.getPositionX() = "+$hospital.getPositionX());
-                                                            //System.out.println("$ambulance.getPositionX() = "+$ambulance.getPositionX());
-                                                            //System.out.println("DifX = "+difX);
+                                                            
                                                             float difY = $hospital.getPositionY() - $ambulance.getPositionY();
+                                                            
                                                             float difTotal = difX - difY;
+                                                            System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
                                                             if(Math.abs(difTotal) < best){ best = Math.abs(difTotal); selected = $hospital;}
                                                             ),
                                                     reverse(),
