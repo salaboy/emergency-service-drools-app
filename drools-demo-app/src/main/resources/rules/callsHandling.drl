@@ -15,13 +15,11 @@ global Map ambulances;
 rule "Handling Single Emergency Call"
     when
        $call:  Call()
-    
     then
         Emergency emergency = new Emergency();
         emergency.setCall($call);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("emergency", emergency );
-        parameters.put("ambulances",ambulances);
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
         Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
         $call.setProcessId(pI.getId());

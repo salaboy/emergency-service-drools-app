@@ -56,27 +56,27 @@
       <ioSpecification>
         <dataInput id="_4_CommentInput" name="Comment" />
         <dataInput id="_4_SkippableInput" name="Skippable" />
-        <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_ContentInput" name="Content" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_PriorityInput" name="Priority" />
         <dataOutput id="_4_emergency.typeOutput" name="emergency.type" />
         <dataOutput id="_4_patient.genderOutput" name="patient.gender" />
         <dataOutput id="_4_emergency.locationOutput" name="emergency.location" />
-        <dataOutput id="_4_patient.nameOutput" name="patient.name" />
         <dataOutput id="_4_patient.ageOutput" name="patient.age" />
+        <dataOutput id="_4_patient.nameOutput" name="patient.name" />
         <inputSet>
           <dataInputRefs>_4_CommentInput</dataInputRefs>
           <dataInputRefs>_4_SkippableInput</dataInputRefs>
-          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
           <dataInputRefs>_4_ContentInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
           <dataInputRefs>_4_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
           <dataOutputRefs>_4_emergency.typeOutput</dataOutputRefs>
           <dataOutputRefs>_4_patient.genderOutput</dataOutputRefs>
           <dataOutputRefs>_4_emergency.locationOutput</dataOutputRefs>
-          <dataOutputRefs>_4_patient.nameOutput</dataOutputRefs>
           <dataOutputRefs>_4_patient.ageOutput</dataOutputRefs>
+          <dataOutputRefs>_4_patient.nameOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
@@ -94,17 +94,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_4_TaskNameInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">AskForEmergencyInformation</from>
-          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">AskForEmergencyInformation</from>
+          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -127,12 +127,12 @@
         <targetRef>emergency.location</targetRef>
       </dataOutputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_4_patient.nameOutput</sourceRef>
-        <targetRef>patient.name</targetRef>
-      </dataOutputAssociation>
-      <dataOutputAssociation>
         <sourceRef>_4_patient.ageOutput</sourceRef>
         <targetRef>patient.age</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_patient.nameOutput</sourceRef>
+        <targetRef>patient.name</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -147,12 +147,12 @@
         <dataInput id="_5_patient.genderInput" name="patient.gender" />
         <dataInput id="_5_emergencyInput" name="emergency" />
         <dataInput id="_5_emergency.locationInput" name="emergency.location" />
-        <dataInput id="_5_patient.nameInput" name="patient.name" />
         <dataInput id="_5_patient.ageInput" name="patient.age" />
+        <dataInput id="_5_patient.nameInput" name="patient.name" />
         <dataInput id="_5_CommentInput" name="Comment" />
         <dataInput id="_5_SkippableInput" name="Skippable" />
-        <dataInput id="_5_ContentInput" name="Content" />
         <dataInput id="_5_TaskNameInput" name="TaskName" />
+        <dataInput id="_5_ContentInput" name="Content" />
         <dataInput id="_5_PriorityInput" name="Priority" />
         <inputSet>
           <dataInputRefs>_5_emergency.typeInput</dataInputRefs>
@@ -160,12 +160,12 @@
           <dataInputRefs>_5_patient.genderInput</dataInputRefs>
           <dataInputRefs>_5_emergencyInput</dataInputRefs>
           <dataInputRefs>_5_emergency.locationInput</dataInputRefs>
-          <dataInputRefs>_5_patient.nameInput</dataInputRefs>
           <dataInputRefs>_5_patient.ageInput</dataInputRefs>
+          <dataInputRefs>_5_patient.nameInput</dataInputRefs>
           <dataInputRefs>_5_CommentInput</dataInputRefs>
           <dataInputRefs>_5_SkippableInput</dataInputRefs>
-          <dataInputRefs>_5_ContentInput</dataInputRefs>
           <dataInputRefs>_5_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_5_ContentInput</dataInputRefs>
           <dataInputRefs>_5_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -192,12 +192,12 @@
         <targetRef>_5_emergency.locationInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>patient.name</sourceRef>
-        <targetRef>_5_patient.nameInput</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <sourceRef>patient.age</sourceRef>
         <targetRef>_5_patient.ageInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>patient.name</sourceRef>
+        <targetRef>_5_patient.nameInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_CommentInput</targetRef>
@@ -214,17 +214,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_5_ContentInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
-          <to xs:type="tFormalExpression">_5_ContentInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_5_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">DispatchAmbulance</from>
           <to xs:type="tFormalExpression">_5_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
+          <to xs:type="tFormalExpression">_5_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -257,16 +257,16 @@
         <dataInput id="_8_pickUpPatientEventInput" name="pickUpPatientEvent" />
         <dataInput id="_8_CommentInput" name="Comment" />
         <dataInput id="_8_SkippableInput" name="Skippable" />
-        <dataInput id="_8_TaskNameInput" name="TaskName" />
         <dataInput id="_8_ContentInput" name="Content" />
+        <dataInput id="_8_TaskNameInput" name="TaskName" />
         <dataInput id="_8_PriorityInput" name="Priority" />
         <dataOutput id="_8_emergency.priorityOutput" name="emergency.priority" />
         <inputSet>
           <dataInputRefs>_8_pickUpPatientEventInput</dataInputRefs>
           <dataInputRefs>_8_CommentInput</dataInputRefs>
           <dataInputRefs>_8_SkippableInput</dataInputRefs>
-          <dataInputRefs>_8_TaskNameInput</dataInputRefs>
           <dataInputRefs>_8_ContentInput</dataInputRefs>
+          <dataInputRefs>_8_TaskNameInput</dataInputRefs>
           <dataInputRefs>_8_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -292,17 +292,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_8_TaskNameInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">UpdateEmergencyInformation</from>
-          <to xs:type="tFormalExpression">_8_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_8_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">#{pickUpPatientEvent.time}</from>
           <to xs:type="tFormalExpression">_8_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">UpdateEmergencyInformation</from>
+          <to xs:type="tFormalExpression">_8_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -352,7 +352,8 @@
     </task>
     <scriptTask id="_14" name="Start Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>org.drools.runtime.process.WorkflowProcessInstance process = (org.drools.runtime.process.WorkflowProcessInstance)kcontext.getProcessInstance();
-java.util.Map ambulances2 = (java.util.Map) process.getVariable("ambulances");
+//java.util.Map ambulances2 = (java.util.Map) process.getVariable("ambulances");
+java.util.Map ambulances2 = (java.util.Map) kcontext.getKnowledgeRuntime().getGlobal("ambulances");
 kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(org.plugtree.training.model.Emergency.EmergencyType.valueOf((String)process.getVariable("emergency.type")))).get(0));
 
 </script>
@@ -377,91 +378,91 @@ kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(org.plugt
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="org.drools.bpmn2.EmergencyService" >
       <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="16" y="96" width="48" height="48" />
+        <dc:Bounds x="171" y="9" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="1604" y="96" width="48" height="48" />
+        <dc:Bounds x="171" y="616" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_4" >
-        <dc:Bounds x="96" y="96" width="206" height="48" />
+        <dc:Bounds x="92" y="67" width="206" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_5" >
-        <dc:Bounds x="494" y="96" width="163" height="48" />
+        <dc:Bounds x="114" y="185" width="163" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_6" >
-        <dc:Bounds x="334" y="96" width="128" height="48" />
+        <dc:Bounds x="132" y="124" width="128" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_7" >
-        <dc:Bounds x="761" y="16" width="48" height="48" />
+        <dc:Bounds x="110" y="310" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_8" >
-        <dc:Bounds x="994" y="56" width="206" height="48" />
+        <dc:Bounds x="94" y="369" width="206" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_9" >
-        <dc:Bounds x="1232" y="56" width="128" height="48" />
+        <dc:Bounds x="135" y="430" width="128" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_10" >
-        <dc:Bounds x="914" y="56" width="48" height="48" />
+        <dc:Bounds x="174" y="309" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_11" >
-        <dc:Bounds x="1392" y="96" width="48" height="48" />
+        <dc:Bounds x="172" y="492" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12" >
-        <dc:Bounds x="1272" y="136" width="48" height="48" />
+        <dc:Bounds x="239" y="491" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_13" >
-        <dc:Bounds x="1472" y="96" width="100" height="48" />
+        <dc:Bounds x="145" y="552" width="100" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_14" >
-        <dc:Bounds x="689" y="96" width="193" height="48" />
+        <dc:Bounds x="101" y="246" width="193" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_13-_3" >
-        <di:waypoint x="1522" y="120" />
-        <di:waypoint x="1628" y="120" />
+        <di:waypoint x="195" y="576" />
+        <di:waypoint x="195" y="640" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_1-_4" >
-        <di:waypoint x="40" y="120" />
-        <di:waypoint x="199" y="120" />
+        <di:waypoint x="195" y="33" />
+        <di:waypoint x="195" y="91" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_6-_5" >
-        <di:waypoint x="398" y="120" />
-        <di:waypoint x="575" y="120" />
+        <di:waypoint x="196" y="148" />
+        <di:waypoint x="195" y="209" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_4-_6" >
-        <di:waypoint x="199" y="120" />
-        <di:waypoint x="398" y="120" />
+        <di:waypoint x="195" y="91" />
+        <di:waypoint x="196" y="148" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_10-_8" >
-        <di:waypoint x="938" y="80" />
-        <di:waypoint x="1097" y="80" />
+        <di:waypoint x="198" y="333" />
+        <di:waypoint x="197" y="393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_8-_9" >
-        <di:waypoint x="1097" y="80" />
-        <di:waypoint x="1296" y="80" />
+        <di:waypoint x="197" y="393" />
+        <di:waypoint x="199" y="454" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_7-_10" >
-        <di:waypoint x="785" y="40" />
-        <di:waypoint x="938" y="80" />
+        <di:waypoint x="134" y="334" />
+        <di:waypoint x="198" y="333" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_14-_10" >
-        <di:waypoint x="785" y="120" />
-        <di:waypoint x="938" y="80" />
+        <di:waypoint x="197" y="270" />
+        <di:waypoint x="198" y="333" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_12-_11" >
-        <di:waypoint x="1296" y="160" />
-        <di:waypoint x="1416" y="120" />
+        <di:waypoint x="263" y="515" />
+        <di:waypoint x="196" y="516" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_9-_11" >
-        <di:waypoint x="1296" y="80" />
-        <di:waypoint x="1416" y="120" />
+        <di:waypoint x="199" y="454" />
+        <di:waypoint x="196" y="516" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_11-_13" >
-        <di:waypoint x="1416" y="120" />
-        <di:waypoint x="1522" y="120" />
+        <di:waypoint x="196" y="516" />
+        <di:waypoint x="195" y="576" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_5-_14" >
-        <di:waypoint x="575" y="120" />
-        <di:waypoint x="785" y="120" />
+        <di:waypoint x="195" y="209" />
+        <di:waypoint x="197" y="270" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

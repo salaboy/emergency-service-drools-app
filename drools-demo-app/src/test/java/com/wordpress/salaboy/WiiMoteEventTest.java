@@ -1,5 +1,8 @@
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.wiimote.EmbebbedHornetQServer;
+import com.wordpress.salaboy.wiimote.SimpleMoteFinder;
+import com.wordpress.salaboy.wiimote.WiiMoteEvent;
 import junit.framework.Assert;
 import motej.Mote;
 import motej.event.AccelerometerEvent;

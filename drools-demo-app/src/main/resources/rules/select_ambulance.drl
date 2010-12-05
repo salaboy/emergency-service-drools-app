@@ -18,77 +18,110 @@ global Map doctors;
 
 rule "Initialize Emergency"
     ruleflow-group "select_ambulance"
+    salience 20
     when
       $processInstance: WorkflowProcessInstance()
       $call: Call()
     then
-     System.out.println("Emergency !!!!!@@@@@@@@@  "+$processInstance.getVariable("emergency") +
-                             "\n patient.name = " +(String)$processInstance.getVariable("patient.name") +
-                             "\n patient.age = " + Integer.valueOf((String)$processInstance.getVariable("patient.age")) +
-                             "\n patient.gender = " + (String)$processInstance.getVariable("patient.gender"));
+     // Get the Emergency from the Process Variable
      Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+     // Create the patient based on the information collected in the first Human Task
      Patient patient = new Patient((String)$processInstance.getVariable("patient.name"),
                                 Integer.valueOf((String)$processInstance.getVariable("patient.age")),
                                 (String)$processInstance.getVariable("patient.gender") );
-       emergency.setPatient(patient);
-       emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
-       emergency.setCall($call);
-       $processInstance.setVariable("patient.id", patient.getId());
-       System.out.println("NEW Emergency  "+$processInstance.getVariable("emergency"));
-       insert(emergency);
+     emergency.setPatient(patient);
+     emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+     emergency.setCall($call);
+     
+     // Sets the patient Id as a process variable
+     $processInstance.setVariable("patient.id", patient.getId());
+     
+     // Insert the emergency in our world
+     insert(emergency);
+     //Insert the patient in our world
+     insert(patient);
        
 end
 
-rule "Fire Emergency"
+rule "Fire Emergency without more information"
     ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type : type == EmergencyType.FIRE)
     then
-    	
+    	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List)ambulances.get($type)).get(0);
+        // Get the first doctor that we have with the speciality related with the emergency
         Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BURNS)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-
+        //Update Emergency Information
+        update($emergency);
+		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
-        //insert(ambulance);
+        
 end
 
-rule "Car Crash Emergency"
-     ruleflow-group "select_ambulance"
+rule "Car Crash Emergency without more information"
+    ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type == EmergencyType.CAR_CRASH)
     then
-    	
-        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BONES)).get(0);
+    	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
+        // Get the first doctor that we have with the speciality related with the emergency
+        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BONES)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-
-
+        //Update Emergency Information
+        update($emergency);
+		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
         
-        //insert(ambulance);
+        
 end
 
-rule "Heart Attack Emergency"
-     ruleflow-group "select_ambulance"
+rule "Heart Attack Emergency without more information"
+    ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type == EmergencyType.HEART_ATTACK)
     then
-    	
-        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.REANIMATION)).get(0);
+    	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
+        // Get the first doctor that we have with the speciality related with the emergency
+        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.REANIMATION)).get(0);
         ambulance.setMedicOnBoard(medic);
         $emergency.setAmbulance(ambulance);
-
+        //Update Emergency Information
+        update($emergency);
+		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
         
-        //insert(ambulance);
+        
+end
+
+rule "Car Crash Emergency with Patient older than 80 years old"
+    ruleflow-group "select_ambulance"
+    salience 5
+    no-loop true
+    when
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency($type: type == EmergencyType.CAR_CRASH)
+        $patient: Patient(age > 80)
+    then
+    	// For this special situation we need to put in the ambulance a special stroller
+        Ambulance ambulance = $emergency.getAmbulance();
+        ambulance.addKit(new MedicalKit("special stroller", MedicSpeciality.BONES));
+        
 end

@@ -1,9 +1,15 @@
 package com.wordpress.salaboy.ui;
 
+import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.events.SimpleMoteFinder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import motej.Mote;
+import motej.event.AccelerometerEvent;
+import motej.event.AccelerometerListener;
+import motej.request.ReportModeRequest;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -69,9 +75,11 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private AmbulanceMonitorService ambulanceMonitorService;
 
     public SlickBasicGame() {
-        super("Emergency City!!");
+        super("City Map");
 
         this.mapEventsNotifier.addMapEventsListener(this);
+        
+       // initWiiMote();
     }
 
     @Override
@@ -237,7 +245,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                 MyDroolsService.registerHandlers(ksession);
                 MyDroolsService.setGlobals(ksession);
                 MyDroolsService.setNotifier(ksession, mapEventsNotifier);
-                ksession.insert(new Call(new Date()));
+                ksession.insert(new Call(new Date(System.currentTimeMillis())));
 
                 new Thread(new Runnable()   {
 
@@ -258,6 +266,9 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
             throws SlickException {
 
         g.draw(playerPoly);
+        if(emergency != null){
+            g.draw(emergencyPoly);
+        }
         if(hospital != null){
             g.draw(hospitalPoly);
         }
@@ -270,7 +281,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
         if (emergency != null) {
             g.drawAnimation(emergency, xs[randomx] * 16, ys[randomy] * 16);
-            g.draw(emergencyPoly);
+            
 
 
         }
@@ -391,6 +402,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     
     @Override
     public void heartBeatReceived(double value) {
+        //ambulanceMonitorService.sendNotification((int)value, (int)value, (int)value);
     }
 
    
@@ -425,5 +437,29 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     
     @Override
     public void monitorAlertReceived(String string) {
+    }
+    
+    private void initWiiMote() {
+        System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
+        SimpleMoteFinder simpleMoteFinder = new SimpleMoteFinder();
+        Mote mote = simpleMoteFinder.findMote();
+        System.out.println("founded wiimote" + mote);
+        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>() {
+			public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
+				int y = evt.getY();
+				if ( y > 225) {
+					System.out.println("sended " + y + " heartbeat");
+                                        if(ambulanceMonitorService != null){
+                                        ambulanceMonitorService.sendNotification(y, y, y);
+//					patientHeartbeatsEntryPoint.insert(new WiiMoteEvent(evt, "acc"));
+//					ksession.fireAllRules();
+                                        }
+				}
+			}
+		};
+		//mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
+		mote.addAccelerometerListener(listener);
+                
+        
     }
 }

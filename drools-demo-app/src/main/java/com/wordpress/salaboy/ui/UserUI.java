@@ -10,7 +10,9 @@
  */
 package com.wordpress.salaboy.ui;
 
+import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.events.SimpleMoteFinder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
+import motej.Mote;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.task.AccessType;
 import org.drools.task.Content;
@@ -55,6 +58,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         initComponents();
         initTaskServer();
         initTaskClient();
+        
 
         phoneCallsPanel = new PhoneCallsPanel(this);
         emergencyInfoPanel = new EmergencyInfoPanel(this);
@@ -103,11 +107,15 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Emergency Service Console");
+        setPreferredSize(new java.awt.Dimension(400, 480));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
+
+        mainJTabbedPane.setSize(new java.awt.Dimension(300, 480));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -146,23 +154,24 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         hospitalJPanel.setLayout(hospitalJPanelLayout);
         hospitalJPanelLayout.setHorizontalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, hospitalJPanelLayout.createSequentialGroup()
-                .addContainerGap(133, Short.MAX_VALUE)
-                .add(jButton2)
-                .add(214, 214, 214))
             .add(hospitalJPanelLayout.createSequentialGroup()
-                .add(200, 200, 200)
-                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(hospitalJPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 327, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(hospitalJPanelLayout.createSequentialGroup()
+                        .add(87, 87, 87)
+                        .add(jButton2)))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         hospitalJPanelLayout.setVerticalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(hospitalJPanelLayout.createSequentialGroup()
-                .add(43, 43, 43)
+                .addContainerGap()
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jButton2)
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
@@ -171,11 +180,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 496, Short.MAX_VALUE)
+            .add(0, 344, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 507, Short.MAX_VALUE)
+            .add(0, 298, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Reports", jPanel1);
@@ -184,11 +193,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 496, Short.MAX_VALUE)
+            .add(0, 344, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 507, Short.MAX_VALUE)
+            .add(0, 298, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Activity Console", jPanel4);
@@ -199,14 +208,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -269,14 +278,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
-                .add(21, 21, 21))
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 412, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -309,7 +318,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable()   {
+        java.awt.EventQueue.invokeLater(new Runnable()    {
 
             public void run() {
                 new UserUI().setVisible(true);
@@ -371,15 +380,16 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         //Complete human Task
         BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
         taskClient.complete(currentTask.getId(), "operator", data, blockingTaskOperationResponseHandler);
-        
-        while (!blockingTaskOperationResponseHandler.isDone()){
+
+        while (!blockingTaskOperationResponseHandler.isDone()) {
             try {
-                Thread.sleep(500);
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>Sleeping two secs!");
+                Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         this.prepareAmbulance();
     }
 
@@ -391,32 +401,33 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
             List<TaskSummary> taskSums = handler.getResults();
             TaskSummary taskSum = taskSums.get(0);
-            taskClient.start(taskSum.getId(), "control_operator", null);
+            
             BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
             taskClient.getTask(taskSum.getId(), handlerT);
             Task task2 = handlerT.getTask();
             TaskData taskData = task2.getTaskData();
-            System.out.println("TaskData = " + taskData);
+            //System.out.println("TaskData = " + taskData);
             BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
             taskClient.getContent(taskData.getDocumentContentId(), handlerC);
             Content content = handlerC.getContent();
-            System.out.println("Content= " + content);
+            //System.out.println("Content= " + content);
             ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
             ois = new ObjectInputStream(bais);
             String taskinfo = (String) ois.readObject();
+            //System.out.println("TASK INFO = "+taskinfo);
             this.ambulancePanel.configurePanel(taskinfo);
             mainJTabbedPane.setSelectedComponent(ambulancePanel);
         } catch (Exception ex) {
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void sendAmbulance() throws IOException, ClassNotFoundException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
         List<TaskSummary> taskSums = handler.getResults();
         TaskSummary taskSum = taskSums.get(0);
-
+        // se llama dos veces al mismo start.. que raro!!!!!!!
         taskClient.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
         taskClient.getTask(taskSum.getId(), handlerT);
@@ -436,7 +447,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         String[] taskinfo = ((String) ois.readObject()).split(",");
 
         Long ambulanceId = Long.valueOf(taskinfo[1].trim());
-        
+
         this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
         this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
@@ -514,6 +525,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     @Override
     public void heartBeatReceived(double value) {
+         
         this.currentEmergenciesPanel.heartBeatReceived(value);
     }
 
@@ -526,6 +538,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     public void monitorAlertReceived(String string) {
         this.currentEmergenciesPanel.monitorAlertReceived(string);
     }
-    
+
     
 }

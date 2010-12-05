@@ -114,9 +114,9 @@ import com.intel.bluetooth.BlueCoveConfigProperties;
  
  			
   			final String address = device.getBluetoothAddress();
- 			System.out.println("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
+ 			//System.out.println("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
  			// is this already registered?
- 			log.info("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
+ 			//log.info("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
   				//salaboy: 0023CC8AD195
   				//lucaz: 001EA9694D2C
  			//negro: 8C56C54923CA
@@ -129,7 +129,7 @@ import com.intel.bluetooth.BlueCoveConfigProperties;
  			
  			
  			// is this already registered?
- 			log.info("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
+ 			//log.info("!!!!!!!!!!!Cached Address = "+address+"------>"+bluetoothAddressCache.contains(address));
  			if (!bluetoothAddressCache.contains(address)) {
  				Thread connectThread = new Thread("connect: " + address) {
  					public void run() {

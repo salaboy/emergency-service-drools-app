@@ -31,7 +31,7 @@ public class AmbulanceMonitorService {
             while (continueMonitoring) {
                 try {
                     sendNotification(235, 235, 235);
-                    Thread.sleep(1);
+                    Thread.sleep(1000);
                 } catch (Exception ex) {
                     Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }

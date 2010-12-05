@@ -13,6 +13,8 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 import org.plugtree.training.model.Call;
@@ -46,7 +48,9 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         newEmergencyPhoneCallJButton = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         refreshJButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
+        setBounds(new java.awt.Rectangle(0, 0, 400, 480));
         setName("Phone Calls"); // NOI18N
 
         phoneCallsJTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -54,12 +58,12 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
             },
             new String [] {
-                "Alert", "Date", "Call"
+                "Alert", "Date/Time", "Call"
             }
         ) {
             Class[] types = new Class [] {
                 java.lang.String.class,
-                java.util.Date.class,
+                java.lang.String.class,
                 java.lang.Number.class
             };
 
@@ -67,6 +71,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                 return types [columnIndex];
             }
         });
+        phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 phoneCallsJTablerowClick(evt);
@@ -81,7 +86,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
 
-        jLabel11.setText("Incoming Calls");
+        jLabel11.setText("Incoming Calls:");
 
         refreshJButton.setText("Refresh");
         refreshJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -90,43 +95,51 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 255, 0));
+        jLabel1.setText("User: Operator");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(229, 229, 229)
+                        .addGap(106, 106, 106)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jLabel11))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(refreshJButton)
-                        .addGap(260, 260, 260))
-                    .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE))
-                .addGap(83, 83, 83))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(171, 171, 171)
-                .addComponent(newEmergencyPhoneCallJButton)
-                .addContainerGap(54, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(newEmergencyPhoneCallJButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refreshJButton)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(refreshJButton)
-                .addGap(18, 18, 18)
-                .addComponent(newEmergencyPhoneCallJButton)
-                .addGap(48, 48, 48))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newEmergencyPhoneCallJButton)
+                    .addComponent(refreshJButton))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void phoneCallsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phoneCallsJTablerowClick
-        System.out.println("ID from EVT"+evt.getID());
+        //System.out.println("ID from EVT"+evt.getID());
         int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
         Long id = Long.parseLong(phoneCallsJTable.getModel().getValueAt(selected, 0).toString());
         parent.callSelected(id);
@@ -154,14 +167,20 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         for (int i = 0; i < rowCount; i++) {
             tableModel.removeRow(0);
         }
+        Calendar calendar = Calendar.getInstance();
         
+       
         for (Map.Entry<Long, Call> entry : CallManager.getInstance().getCalls().entrySet()) {
-            tableModel.addRow(new Object[]{entry.getKey().toString(), entry.getValue().getDate(),entry.getValue().getId()});
+            calendar.setTime(entry.getValue().getDate());
+            tableModel.addRow(new Object[]{entry.getKey().toString(),
+                calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND),
+                entry.getValue().getId()});
         }
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JButton newEmergencyPhoneCallJButton;
     private javax.swing.JScrollPane phoneCallsJScrollPane;
