@@ -443,7 +443,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
 
-    public void medicalEvaluationCompleted(int severity, String comment) {
+    public void medicalEvaluationCompleted(int priority, String comment) {
         try {
             BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
             taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
@@ -470,7 +470,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             HashMap<String, Object> info = new HashMap<String, Object>();
 
 
-            info.put("emergency.priority", severity);
+            info.put("emergency.priority", String.valueOf(priority));
             ContentData result = new ContentData();
             result.setAccessType(AccessType.Inline);
             result.setType("java.util.Map");

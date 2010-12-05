@@ -17,9 +17,9 @@ public class AlertsIconListRenderer
 	private List<Icon> icons = null;
 
 	public AlertsIconListRenderer() {
-		icons = new ArrayList<Icon>();
-                icons.add(new ImageIcon("/data/png/botiquin.png"));
-                icons.add(new ImageIcon("/data/png/bpm.png"));
+            icons = new ArrayList<Icon>();
+            icons.add(new ImageIcon("/data/png/botiquin.png"));
+            icons.add(new ImageIcon("/data/png/bpm.png"));
 	}
 
 	@Override

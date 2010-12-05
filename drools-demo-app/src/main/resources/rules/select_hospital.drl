@@ -15,14 +15,17 @@ import com.wordpress.salaboy.ui.MapEventsNotifier;
 
 global Map hospitals;
 global MapEventsNotifier notifier;
+
+
+
 rule "Rank Hospital Speciality that matches EmergencyType"
-    lock-on-active true
+    //lock-on-active true
     ruleflow-group "hospital_selection"
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $ambulance: Ambulance()
-        eval($processInstance.getVariable("emergency.priority") != null && $processInstance.getVariable("emergency.priority") != "")
+        //eval(isEmergencyPrioritySet($processInstance))
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
                                                     init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
@@ -70,3 +73,4 @@ rule "Rank with 0 Hospital without available beds"
         $hospital.setRank(0);
         update($hospital);
 end*/
+
