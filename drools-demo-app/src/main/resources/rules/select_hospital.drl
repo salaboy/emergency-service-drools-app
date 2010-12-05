@@ -22,15 +22,14 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $ambulance: Ambulance()
+        eval($processInstance.getVariable("emergency.priority") != null && $processInstance.getVariable("emergency.priority") != "")
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
                                                     init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
                                                     action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
-                                                            
-                                                            float difY = $hospital.getPositionY() - $ambulance.getPositionY();
-                                                            
+                                                            float difY = $hospital.getPositionY() - $ambulance.getPositionY();                                                            
                                                             float difTotal = difX - difY;
-                                                            System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
+                                                            //System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
                                                             if(Math.abs(difTotal) < best){ best = Math.abs(difTotal); selected = $hospital;}
                                                             ),
                                                     reverse(),

@@ -93,22 +93,13 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel4 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
-        contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Emergency Service Console");
-        setPreferredSize(new java.awt.Dimension(400, 480));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -225,14 +216,8 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         fileMenu.setText("File");
 
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
-
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setText("Save As ...");
-        fileMenu.add(saveAsMenuItem);
+        jMenuItem1.setText("Wii Mote Binding");
+        fileMenu.add(jMenuItem1);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -244,28 +229,23 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         menuBar.add(fileMenu);
 
-        editMenu.setText("Edit");
-
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
-
         helpMenu.setText("Help");
 
-        contentsMenuItem.setText("Contents");
-        helpMenu.add(contentsMenuItem);
-
         aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        aboutMenuItem.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                aboutMenuItemMenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
@@ -314,6 +294,21 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void aboutMenuItemMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_aboutMenuItemMenuKeyPressed
+        new About().setVisible(true);
+    }//GEN-LAST:event_aboutMenuItemMenuKeyPressed
+
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable()   {
+
+            @Override
+            public void run() {
+                new About().setVisible(true);
+               
+            }
+        });
+    }//GEN-LAST:event_aboutMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -327,16 +322,12 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem contentsMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel hospitalJPanel;
     private javax.swing.JButton jButton2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane4;
@@ -345,10 +336,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
@@ -506,7 +493,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     @Override
     public void hospitalReached(Block hospital) {
-        System.out.println("HOSPITAL REACHED!");
     }
 
     @Override
@@ -525,7 +511,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     @Override
     public void heartBeatReceived(double value) {
-         
         this.currentEmergenciesPanel.heartBeatReceived(value);
     }
 

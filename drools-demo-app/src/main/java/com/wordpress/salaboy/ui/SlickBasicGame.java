@@ -9,7 +9,6 @@ import java.util.List;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
-import motej.request.ReportModeRequest;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -36,7 +35,6 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public StatefulKnowledgeSession ksession = MyDroolsService.createSession();
     private float playerX = 32;
     private float playerY = 400;
-    //private    TiledMap map;	
     private Animation player;
     private Animation emergency;
     private Animation hospital;
@@ -46,31 +44,17 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private Polygon hospitalPoly;
     private SpriteSheet emergencySheet;
     private SpriteSheet hospitalSheet;
-    //private int[] xs = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26, 31, 32, 37, 38};
-    //private int[] ys = new int[]{1, 2, 7, 8, 13, 14, 19, 20, 25, 26};
-    private int[] xs = new int[]{1, 7,  13,  19,  25,  31,  37};
-    private int[] ys = new int[]{1, 7,  13,  19,  25, };
+    private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
+    private int[] ys = new int[]{1, 7, 13, 19, 25,};
     private int randomx;
     private int randomy;
-//    private int[] hospitals = new int[]{10, 13, //Hospital 1 = X, Y 
-//        11, 13,//Hospital 2 = X, Y 
-//        34, 13,
-//        35, 13,
-//        16, 25,
-//        17, 25};//Hospital 3 = X, Y
-     private int[] hospitals = new int[]{
-         9,8,
-         33,8,
-         15,20
-     };
-    
+    private int[] hospitals = new int[]{9, 8, 33, 8, 15, 20};
     private static UserUI ui;
     public boolean ambulanceDispatched = false;
     private Ambulance ambulance;
     public Long ambulanceSelectedId = 0L;
     public EmergencyType emergencyTypeSelected;
-    private MapEventsNotifier mapEventsNotifier= new MapEventsNotifier();
-    
+    private MapEventsNotifier mapEventsNotifier = new MapEventsNotifier();
     //FIXME: It only supports one ambulance!
     private AmbulanceMonitorService ambulanceMonitorService;
 
@@ -78,8 +62,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         super("City Map");
 
         this.mapEventsNotifier.addMapEventsListener(this);
-        
-       // initWiiMote();
+
+        // initWiiMote();
     }
 
     @Override
@@ -91,38 +75,27 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
         map = new BlockMap("data/cityMap.tmx");
         map.initializeCorners();
-
-
-
-
         player = new Animation();
         player.setLooping(false);
         player.setAutoUpdate(false);
         for (int row = 0; row < 4; row++) {
             for (int frame = 0; frame < 4; frame++) {
-
                 player.addFrame(sheet.getSprite(frame, row), 250);
-
             }
         }
-
-
         playerPoly = new Polygon(new float[]{
                     playerX, playerY,
                     playerX + 30, playerY,
                     playerX + 30, playerY + 30,
                     playerX, playerY + 30
                 });
-
-
-
     }
 
     @Override
     public void update(GameContainer gc, int delta)
             throws SlickException {
         if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-            if(ambulance != null){
+            if (ambulance != null) {
                 int current = player.getFrame();
                 if (current < 7) {
                     current += 1;
@@ -138,18 +111,12 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerX++;
                     playerPoly.setX(playerX);
                 }
-                cornerCollision();
-                emergencyCollision();
-                    
-                
-                if (hospitalCollision()) {
-                    hospitalPointReached();
-                }
+               
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
 
-            if(ambulance != null){
+            if (ambulance != null) {
                 int current = player.getFrame();
                 if (current < 3) {
                     current += 1;
@@ -166,15 +133,11 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
 
                 }
-                cornerCollision();
-                emergencyCollision();
-                if (hospitalCollision()) {
-                    hospitalPointReached();
-                }
+               
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_UP)) {
-            if(ambulance != null){
+            if (ambulance != null) {
                 int current = player.getFrame();
                 if (current < 15) {
                     current += 1;
@@ -188,15 +151,11 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerY++;
                     playerPoly.setY(playerY);
                 }
-                cornerCollision();
-                emergencyCollision();
-                if (hospitalCollision()) {
-                    hospitalPointReached();
-                }
+              
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-            if(ambulance != null){
+            if (ambulance != null) {
                 int current = player.getFrame();
                 if (current < 11) {
                     current += 1;
@@ -211,12 +170,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     playerY--;
                     playerPoly.setY(playerY);
                 }
-                cornerCollision();
-                emergencyCollision();
-                if (hospitalCollision()) {
-                    hospitalPointReached();
-                }
-                
+
+
             }
         }
 
@@ -246,50 +201,49 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                 MyDroolsService.setGlobals(ksession);
                 MyDroolsService.setNotifier(ksession, mapEventsNotifier);
                 ksession.insert(new Call(new Date(System.currentTimeMillis())));
-
-                new Thread(new Runnable()   {
+                new Thread(new Runnable()     {
 
                     public void run() {
                         ksession.fireUntilHalt();
                     }
                 }).start();
             }
+        }
+        cornerCollision();
+        if (emergency != null) {
+            emergencyCollision();
+        }
 
-
+        if (hospital != null) {
+            hospitalCollision();
         }
     }
-    
-    
 
     @Override
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
 
         g.draw(playerPoly);
-        if(emergency != null){
+        if (emergency != null) {
             g.draw(emergencyPoly);
         }
-        if(hospital != null){
+        if (hospital != null) {
             g.draw(hospitalPoly);
         }
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
-        if( ambulanceDispatched ){
+        if (ambulanceDispatched) {
             this.ambulance = getAmbulanceById(emergencyTypeSelected, ambulanceSelectedId);
             g.drawAnimation(player, playerX, playerY);
-            
         }
 
         if (emergency != null) {
             g.drawAnimation(emergency, xs[randomx] * 16, ys[randomy] * 16);
-            
-
-
         }
-        
+
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
         if (hospital != null) {
             g.drawAnimation(hospital, hospitals[0] * 16, hospitals[1] * 16);
-            
+
         }
     }
 
@@ -299,7 +253,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         final SlickBasicGame game = new SlickBasicGame();
         Renderer.setLineStripRenderer(Renderer.QUAD_BASED_LINE_STRIP_RENDERER);
         Renderer.getLineStripRenderer().setLineCaps(true);
-        java.awt.EventQueue.invokeLater(new Runnable()   {
+        java.awt.EventQueue.invokeLater(new Runnable()     {
 
             @Override
             public void run() {
@@ -346,8 +300,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         return false;
     }
 
-    
-     public boolean cornerCollision() throws SlickException {
+    public boolean cornerCollision() throws SlickException {
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
             if (playerPoly.intersects(entity1.poly)) {
@@ -357,68 +310,69 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         }
         return false;
     }
-    
-    private void hospitalPointReached() {
-        System.out.println("Hospital Point Hit!");
-    }
-    
-    public void addMapEventsListener(MapEventsListener listener){
+
+    public void addMapEventsListener(MapEventsListener listener) {
         this.mapEventsNotifier.addMapEventsListener(listener);
     }
-    
-    private Ambulance getAmbulanceById(EmergencyType type, Long id){
-       List<Ambulance> ambulances = MyDroolsService.ambulances.get(type); 
-       for(Ambulance ambulance : ambulances){
-           if(ambulance.getId() == id){
-               return ambulance;
-           }
-       }
-       return null;
+
+    private Ambulance getAmbulanceById(EmergencyType type, Long id) {
+        List<Ambulance> ambulances = MyDroolsService.ambulances.get(type);
+        for (Ambulance ambulancenow : ambulances) {
+            if (ambulancenow.getId() == id) {
+                return ambulancenow;
+            }
+        }
+        return null;
     }
 
     @Override
-    public void hospitalReached(Block hospital) {
-        System.out.println("HOSPITAL REACHED TIME TO SIGNAL DE PATIENT AT THE HOSPITAL EVENT!!!");
-        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
-        
-        ambulanceMonitorService.stop();
+    public synchronized void hospitalReached(Block hospitalBlock) {
+        if (this.hospital != null) {
+            this.hospital = null;
+            
+            ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent());
+            System.out.println("HOSPITAL REACHED TIME TO SIGNAL The PATIENT AT THE HOSPITAL EVENT!!!");
+            ambulanceMonitorService.stop();
+        }
     }
 
     @Override
-    public void emergencyReached(Block emergency) {
-        
-        System.out.println("EMERGENCY REACHED TIME TO SIGNAL DE PATIENT PICK UP EVENT!!!");
-        ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()) );
+    public synchronized void emergencyReached(Block emergencyBlock) {
+        if(emergency != null){
+            emergency = null;
+            System.out.println("EMERGENCY REACHED TIME TO SIGNAL DE PATIENT PICK UP EVENT!!!");
+            ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()));
+        }
     }
 
     @Override
     public void positionReceived(Block corner) {
-            
-            ambulance.setPositionX(Math.round(corner.poly.getX()/16));
-            ambulance.setPositionY(Math.round(corner.poly.getY()/16));
+        float newX = Math.round(corner.poly.getX() / 16);
+        float newY = Math.round(corner.poly.getY() / 16);
+        if(newX != ambulance.getPositionX() || newY != ambulance.getPositionY()){
+            ambulance.setPositionX(newX);
+            ambulance.setPositionY(newY);
             FactHandle handle = ksession.getFactHandle(ambulance);
             ksession.update(handle, ambulance);
-    }
-    
-    @Override
-    public void heartBeatReceived(double value) {
-        //ambulanceMonitorService.sendNotification((int)value, (int)value, (int)value);
+        }
     }
 
-   
+    @Override
+    public void heartBeatReceived(double value) {
+    }
 
     @Override
     public void hospitalSelected(Long id) {
-        System.out.println("Check Point Hit!");
-        emergency = null;
-        BlockMap.emergencies = new ArrayList<Object>();
+        
+        BlockMap.emergencies.clear();
         int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
         Hospital selected = null;
-        for( Hospital hospital : MyDroolsService.hospitals.values()){
-            if(hospital.getId() == id){
-                selected = hospital;
+        for (Hospital hospitalnow : MyDroolsService.hospitals.values()) {
+            if (hospitalnow.getId() == id) {
+                selected = hospitalnow;
             }
         }
+        BlockMap.hospitals.clear();
         BlockMap.hospitals.add(new Block(Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16, hospitasquare, "hospital"));
         hospitalPoly = new Polygon(new float[]{
                     Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16,
@@ -428,38 +382,37 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                 });
         hospital = new Animation();
         hospital.setAutoUpdate(true);
-         for (int frame = 0; frame < 5; frame++) {
-                    hospital.addFrame(hospitalSheet.getSprite(frame, 0), 150);
-                }
+        for (int frame = 0; frame < 5; frame++) {
+            hospital.addFrame(hospitalSheet.getSprite(frame, 0), 150);
+        }
         ambulanceMonitorService = new AmbulanceMonitorService(ksession, mapEventsNotifier);
         ambulanceMonitorService.start();
     }
-    
+
     @Override
     public void monitorAlertReceived(String string) {
     }
-    
+
     private void initWiiMote() {
         System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
         SimpleMoteFinder simpleMoteFinder = new SimpleMoteFinder();
         Mote mote = simpleMoteFinder.findMote();
         System.out.println("founded wiimote" + mote);
-        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>() {
-			public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
-				int y = evt.getY();
-				if ( y > 225) {
-					System.out.println("sended " + y + " heartbeat");
-                                        if(ambulanceMonitorService != null){
-                                        ambulanceMonitorService.sendNotification(y, y, y);
-//					patientHeartbeatsEntryPoint.insert(new WiiMoteEvent(evt, "acc"));
-//					ksession.fireAllRules();
-                                        }
-				}
-			}
-		};
-		//mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
-		mote.addAccelerometerListener(listener);
-                
-        
+        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
+
+            public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
+                int y = evt.getY();
+                if (y > 225) {
+                    System.out.println("sended " + y + " heartbeat");
+                    if (ambulanceMonitorService != null) {
+                        ambulanceMonitorService.sendNotification(y, y, y);
+                    }
+                }
+            }
+        };
+        //mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
+        mote.addAccelerometerListener(listener);
+
+
     }
 }

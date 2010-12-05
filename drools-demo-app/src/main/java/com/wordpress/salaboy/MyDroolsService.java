@@ -114,11 +114,6 @@ public class MyDroolsService {
     };
     
     public static final Map<String, Hospital> hospitals = new HashMap<String, Hospital>(){{
-        //private int[] hospitals = new int[]{
-       //  9+2,8+5, -> la puerta del hospital 
-       //  33,8,
-       //  15,20
-     //};
         
         put("Hosital 01", new Hospital("Hospital 01", 11, 13));
         put("Hosital 02", new Hospital("Hospital 02", 35, 13));
@@ -147,7 +142,6 @@ public class MyDroolsService {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        //patientHeartbeatsEntryPoint = ksession.getWorkingMemoryEntryPoint("patientHeartbeats");
         return ksession;
     }
 
