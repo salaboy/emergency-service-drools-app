@@ -75,7 +75,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        lstAlerts = new javax.swing.JList();
+        lstAlerts = new javax.swing.JList(new Object[]{"vital signs"});
 
         setMaximizable(true);
         setResizable(true);
@@ -98,7 +98,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
         jLabel5.setText("Current Position");
 
-        lblDirection.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        lblDirection.setFont(new java.awt.Font("Ubuntu", 1, 18));
         lblDirection.setForeground(new java.awt.Color(16, 160, 1));
 
         javax.swing.GroupLayout driverPanelLayout = new javax.swing.GroupLayout(driverPanel);
@@ -113,7 +113,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
                     .addComponent(lblDirection, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         driverPanelLayout.setVerticalGroup(
             driverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,7 +128,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pickUpPatientjButton)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         mainTabPanel.addTab("Driver", driverPanel);
@@ -160,7 +160,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
             .addGroup(pnlMedicalEvaluationLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMedicalEvaluationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
                     .addComponent(cboSeverity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -180,7 +180,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSubmit)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         mainTabPanel.addTab("Doctor Evaluation", pnlMedicalEvaluation);
@@ -204,16 +204,16 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addContainerGap(378, Short.MAX_VALUE))
+                .addContainerGap(382, Short.MAX_VALUE))
             .addComponent(mainTabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnClear)
-                .addContainerGap(342, Short.MAX_VALUE))
+                .addContainerGap(374, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +245,8 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        // TODO add your handling code here:
+        DefaultListModel emptyModel = new DefaultListModel();
+        this.lstAlerts.setModel(emptyModel);
     }//GEN-LAST:event_btnClearActionPerformed
 
 
@@ -319,7 +320,6 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         for (String alert : alerts) {
             model.add(0,alert);
         }
-        
         this.lstAlerts.setModel(model);
         this.validate();
     }

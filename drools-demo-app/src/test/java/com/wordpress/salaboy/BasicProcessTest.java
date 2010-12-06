@@ -243,7 +243,7 @@ public class BasicProcessTest {
 
         
         // From 0 to 5 -> 0 == most urgent
-        info.put("emergency.priority", "0");
+        info.put("emergency.priority", "3");
         
 
         result = new ContentData();
@@ -268,7 +268,8 @@ public class BasicProcessTest {
         
         Thread.sleep(5000);
         
-        
+        Assert.assertEquals(ksession.getProcessInstances().size(), 0);
+
         
         
     }
