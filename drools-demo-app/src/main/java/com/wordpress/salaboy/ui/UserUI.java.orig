@@ -8,6 +8,7 @@
  *
  * Created on Nov 2, 2010, 4:45:08 PM
  */
+
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
-import javax.swing.table.DefaultTableModel;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.task.AccessType;
 import org.drools.task.Content;
@@ -34,42 +34,41 @@ import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandle
 import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Patient;
 
 /**
  *
  * @author salaboy
  */
-public class UserUI extends javax.swing.JFrame implements MapEventsListener {
-
+public class UserUI extends javax.swing.JFrame implements MapEventsListener{
+    
     private TaskClient taskClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
     private Task currentTask;
     private SlickBasicGame game;
+    
+    
     //Panels
     private PhoneCallsPanel phoneCallsPanel;
     private EmergencyInfoPanel emergencyInfoPanel;
     private AmbulancePanel ambulancePanel;
     private CurrentEmergenciesPanel currentEmergenciesPanel;
-
+    
     /** Creates new form UserUI */
     public UserUI() {
         initComponents();
         initTaskServer();
         initTaskClient();
         
-
         phoneCallsPanel = new PhoneCallsPanel(this);
         emergencyInfoPanel = new EmergencyInfoPanel(this);
         ambulancePanel = new AmbulancePanel(this);
         currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
-
-        this.mainJTabbedPane.add(this.phoneCallsPanel, 0);
-        this.mainJTabbedPane.add(this.emergencyInfoPanel, 1);
-        this.mainJTabbedPane.add(this.ambulancePanel, 2);
-        this.mainJTabbedPane.add(this.currentEmergenciesPanel, 3);
-
+        
+        this.mainJTabbedPane.add(this.phoneCallsPanel,0);
+        this.mainJTabbedPane.add(this.emergencyInfoPanel,1);
+        this.mainJTabbedPane.add(this.ambulancePanel,2);
+        this.mainJTabbedPane.add(this.currentEmergenciesPanel,3);
+        
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
     }
 
@@ -85,56 +84,59 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         mainJTabbedPane = new javax.swing.JTabbedPane();
         hospitalJPanel = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        patientJTable1 = new javax.swing.JTable();
+        jTable1 = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         managerjPanel = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        openMenuItem = new javax.swing.JMenuItem();
+        saveMenuItem = new javax.swing.JMenuItem();
+        saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
+        cutMenuItem = new javax.swing.JMenuItem();
+        copyMenuItem = new javax.swing.JMenuItem();
+        pasteMenuItem = new javax.swing.JMenuItem();
+        deleteMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
+        contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Emergency Service Console");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
-        mainJTabbedPane.setSize(new java.awt.Dimension(300, 480));
-
-        patientJTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Id", "Name", "Age", "Gender", "Hospital"
+                "Name", "Age", "Gender", "Emergency Type"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        patientJTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 selectPatientToAccept(evt);
             }
         });
-        jScrollPane4.setViewportView(patientJTable1);
+        jScrollPane4.setViewportView(jTable1);
 
         jButton2.setText("Accept Selected Patient");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -143,40 +145,27 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             }
         });
 
-        jButton1.setText("Refresh");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         org.jdesktop.layout.GroupLayout hospitalJPanelLayout = new org.jdesktop.layout.GroupLayout(hospitalJPanel);
         hospitalJPanel.setLayout(hospitalJPanelLayout);
         hospitalJPanelLayout.setHorizontalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, hospitalJPanelLayout.createSequentialGroup()
+                .addContainerGap(133, Short.MAX_VALUE)
+                .add(jButton2)
+                .add(214, 214, 214))
             .add(hospitalJPanelLayout.createSequentialGroup()
-                .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 327, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .add(87, 87, 87)
-                        .add(jButton2))
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .add(137, 137, 137)
-                        .add(jButton1)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .add(200, 200, 200)
+                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .addContainerGap())
         );
         hospitalJPanelLayout.setVerticalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(hospitalJPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .add(43, 43, 43)
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(18, 18, 18)
                 .add(jButton2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jButton1)
-                .addContainerGap())
+                .addContainerGap(221, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
@@ -185,11 +174,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 332, Short.MAX_VALUE)
+            .add(0, 496, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 299, Short.MAX_VALUE)
+            .add(0, 507, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Reports", jPanel1);
@@ -198,11 +187,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 332, Short.MAX_VALUE)
+            .add(0, 496, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 299, Short.MAX_VALUE)
+            .add(0, 507, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Activity Console", jPanel4);
@@ -213,14 +202,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -230,13 +219,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         fileMenu.setText("File");
 
-        jMenuItem1.setText("Wii Mote Binding");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem1);
+        openMenuItem.setText("Open");
+        fileMenu.add(openMenuItem);
+
+        saveMenuItem.setText("Save");
+        fileMenu.add(saveMenuItem);
+
+        saveAsMenuItem.setText("Save As ...");
+        fileMenu.add(saveAsMenuItem);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -248,23 +238,28 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         menuBar.add(fileMenu);
 
+        editMenu.setText("Edit");
+
+        cutMenuItem.setText("Cut");
+        editMenu.add(cutMenuItem);
+
+        copyMenuItem.setText("Copy");
+        editMenu.add(copyMenuItem);
+
+        pasteMenuItem.setText("Paste");
+        editMenu.add(pasteMenuItem);
+
+        deleteMenuItem.setText("Delete");
+        editMenu.add(deleteMenuItem);
+
+        menuBar.add(editMenu);
+
         helpMenu.setText("Help");
 
+        contentsMenuItem.setText("Contents");
+        helpMenu.add(contentsMenuItem);
+
         aboutMenuItem.setText("About");
-        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
-            }
-        });
-        aboutMenuItem.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
-            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
-                aboutMenuItemMenuKeyPressed(evt);
-            }
-            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
-            }
-            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
-            }
-        });
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
@@ -277,14 +272,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                .add(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane)
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -303,6 +298,8 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     private void selectPatientToAccept(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectPatientToAccept
         // TODO add your handling code here:
+        
+        
     }//GEN-LAST:event_selectPatientToAccept
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -313,86 +310,41 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void aboutMenuItemMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_aboutMenuItemMenuKeyPressed
-        new About().setVisible(true);
-    }//GEN-LAST:event_aboutMenuItemMenuKeyPressed
-
-    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()   {
-
-            @Override
-            public void run() {
-                new About().setVisible(true);
-               
-            }
-        });
-    }//GEN-LAST:event_aboutMenuItemActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        refreshPatientsTable();
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()   {
-
-            @Override
-            public void run() {
-                new WiiMoteOptions().setVisible(true);
-               
-            }
-        });
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-     public void refreshPatientsTable(){
-        DefaultTableModel tableModel = ((DefaultTableModel)this.patientJTable1.getModel());
-        
-        int rowCount = tableModel.getRowCount();
-        for (int i = 0; i < rowCount; i++) {
-            tableModel.removeRow(0);
-        }
-        
-        for(Hospital hospital : MyDroolsService.hospitals.values()){
-            for(Patient patient : hospital.getPatients()){
-                tableModel.addRow(new Object[]{patient.getId(), patient.getName(), patient.getAge(), patient.getGender(), hospital.getName()});
-                
-            }
-        
-        }
-        
-        
-       
-        
-    }
-    
     /**
-     * @param args the command line arguments
-     */
+    * @param args the command line arguments
+    */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable()    {
-
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new UserUI().setVisible(true);
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem contentsMenuItem;
+    private javax.swing.JMenuItem copyMenuItem;
+    private javax.swing.JMenuItem cutMenuItem;
+    private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel hospitalJPanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
-    public javax.swing.JTable patientJTable1;
+    private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JMenuItem saveAsMenuItem;
+    private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
@@ -402,144 +354,135 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     private void initTaskClient() {
         taskClient = MyDroolsService.initTaskClient();
     }
+    
 
     void setUIMap(SlickBasicGame game) {
         this.game = game;
         game.addMapEventsListener(this);
-
+        
     }
 
-    public void callSelected(Long id) {
-
+    
+    public void callSelected(Long id){
+        
         currentTask = MyDroolsService.getTask(taskClient, id);
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         taskClient.start(currentTask.getId(), "operator", responseHandler);
-
-        this.emergencyInfoPanel.handleCall();
+        
+        this.emergencyInfoPanel.enableComponents();
         mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
     }
-
-    public void callHandled(ContentData data) {
-
-        //Complete human Task
-        BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
-        taskClient.complete(currentTask.getId(), "operator", data, blockingTaskOperationResponseHandler);
-
-        while (!blockingTaskOperationResponseHandler.isDone()) {
-            try {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>Sleeping two secs!");
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        this.prepareAmbulance();
-    }
-
-    private void prepareAmbulance() {
+    
+    public void callHandled(ContentData data){
+        ObjectInputStream ois = null;
         try {
-            ObjectInputStream ois = null;
+            //Complete human Task
+            
+            taskClient.complete(currentTask.getId(), "operator", data, null);
             //Show ambulance tab.. with all the selected items
             BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
             taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
             List<TaskSummary> taskSums = handler.getResults();
             TaskSummary taskSum = taskSums.get(0);
-            
+            taskClient.start(taskSum.getId(), "control_operator", null);
             BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
             taskClient.getTask(taskSum.getId(), handlerT);
             Task task2 = handlerT.getTask();
             TaskData taskData = task2.getTaskData();
-            //System.out.println("TaskData = " + taskData);
+            System.out.println("TaskData = "+taskData);
             BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
             taskClient.getContent(taskData.getDocumentContentId(), handlerC);
             Content content = handlerC.getContent();
-            //System.out.println("Content= " + content);
+            System.out.println("Content= "+content);
             ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
             ois = new ObjectInputStream(bais);
-            String taskinfo = (String) ois.readObject();
-            //System.out.println("TASK INFO = "+taskinfo);
+            String taskinfo =(String) ois.readObject();
             this.ambulancePanel.configurePanel(taskinfo);
             mainJTabbedPane.setSelectedComponent(ambulancePanel);
         } catch (Exception ex) {
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-
-    public void sendAmbulance() throws IOException, ClassNotFoundException {
+    
+    public void sendAmbulance() throws IOException, ClassNotFoundException{
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
         List<TaskSummary> taskSums = handler.getResults();
         TaskSummary taskSum = taskSums.get(0);
-        // se llama dos veces al mismo start.. que raro!!!!!!!
+        
         taskClient.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
         taskClient.getTask(taskSum.getId(), handlerT);
         Task task2 = handlerT.getTask();
         TaskData taskData = task2.getTaskData();
-
-        System.out.println("TaskData = " + taskData);
+        
+        System.out.println("TaskData = "+taskData);
         BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
         taskClient.getContent(taskData.getDocumentContentId(), handlerC);
         Content content = handlerC.getContent();
-
-        System.out.println("Content= " + content);
+        
+        System.out.println("Content= "+content);
         ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-
-        ObjectInputStream ois = new ObjectInputStream(bais);
+		
+	ObjectInputStream ois = new ObjectInputStream(bais);
         //#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}
-        String[] taskinfo = ((String) ois.readObject()).split(",");
-
-        Long ambulanceId = Long.valueOf(taskinfo[1].trim());
-
-        this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
+        String[] taskinfo =((String) ois.readObject()).split(","); 
+        
+        
+        this.currentEmergenciesPanel.addNewEmergency();
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
         this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
-        this.game.ambulanceSelectedId = ambulanceId;
+        this.game.ambulanceSelectedId = Long.valueOf(taskinfo[1].trim());
         this.game.ambulanceDispatched = true;
         taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
+    
+    public void medicalEvaluationCompleted(int severity, String comment){
+        try{
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+        List<TaskSummary> taskSums = handler.getResults();
+        TaskSummary taskSum = taskSums.get(0);
+        
+        taskClient.start(taskSum.getId(), "doctor", null);
+        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+        taskClient.getTask(taskSum.getId(), handlerT);
+        Task task3 = handlerT.getTask();
+        TaskData taskData = task3.getTaskData();
+        
+        System.out.println("TaskData = "+taskData);
+        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+        taskClient.getContent(taskData.getDocumentContentId(), handlerC);
+        Content content = handlerC.getContent();
+        
+        System.out.println("Content= "+content);
+        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        String taskinfo2 =(String) ois.readObject(); 
+        
+        System.out.println("TaskInfo 2= "+taskinfo2);
+        HashMap<String, Object> info = new HashMap<String, Object>();
 
-    public void medicalEvaluationCompleted(int priority, String comment) {
-        try {
-            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-            taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
-            List<TaskSummary> taskSums = handler.getResults();
-            TaskSummary taskSum = taskSums.get(0);
-
-            taskClient.start(taskSum.getId(), "doctor", null);
-            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-            taskClient.getTask(taskSum.getId(), handlerT);
-            Task task3 = handlerT.getTask();
-            TaskData taskData = task3.getTaskData();
-
-            System.out.println("TaskData = " + taskData);
-            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-            taskClient.getContent(taskData.getDocumentContentId(), handlerC);
-            Content content = handlerC.getContent();
-
-            System.out.println("Content= " + content);
-            ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            String taskinfo2 = (String) ois.readObject();
-
-            System.out.println("TaskInfo 2= " + taskinfo2);
-            HashMap<String, Object> info = new HashMap<String, Object>();
-
-
-            info.put("emergency.priority", String.valueOf(priority));
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            out.close();
-            result.setContent(bos.toByteArray());
-
-            taskClient.complete(taskSum.getId(), "doctor", result, null);
-
-        } catch (Exception e) {
+        
+        info.put("emergency.priority", severity);
+        ContentData result = new ContentData();
+        result.setAccessType(AccessType.Inline);
+        result.setType("java.util.Map");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bos);
+        out.writeObject(info);
+        out.close();
+        result.setContent(bos.toByteArray());
+        
+        taskClient.complete(taskSum.getId(), "doctor", result , null);
+        
+        } catch (Exception e){
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, e);
         }
     }
@@ -550,13 +493,8 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     @Override
     public void hospitalReached(Block hospital) {
-        
-        this.currentEmergenciesPanel.hospitalReached(hospital);
-        
-        
+        System.out.println("HOSPITAL REACHED!");
     }
-    
-    
 
     @Override
     public void emergencyReached(Block emergency) {
@@ -569,7 +507,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     @Override
     public void positionReceived(Block corner) {
-        this.currentEmergenciesPanel.positionReceived(corner);
+        // do nothing
     }
 
     @Override
@@ -577,15 +515,10 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         this.currentEmergenciesPanel.heartBeatReceived(value);
     }
 
+   
+
     @Override
     public void hospitalSelected(Long id) {
         this.currentEmergenciesPanel.hospitalSelected(id);
     }
-
-    @Override
-    public void monitorAlertReceived(String string) {
-        this.currentEmergenciesPanel.monitorAlertReceived(string);
-    }
-
-    
 }

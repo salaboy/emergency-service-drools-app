@@ -7,13 +7,14 @@ package com.wordpress.salaboy.ui;
 
 import java.util.ArrayList;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.tiled.TiledMap;
 
 /**
  *
  * @author salaboy
  */
 public class BlockMap {
-	public static MyTiledMap tmap;
+	public static TiledMap tmap;
 	public static int mapWidth;
 	public static int mapHeight;
 	private int square[] = {1,1,15,1,15,15,1,15}; //square shaped tile
@@ -25,7 +26,7 @@ public class BlockMap {
  
 	public BlockMap(String ref) throws SlickException {
 		entities = new ArrayList<Object>();
-		tmap = new MyTiledMap(ref, "data");
+		tmap = new TiledMap(ref, "data");
                 
 		mapWidth = tmap.getWidth() * tmap.getTileWidth();
 		mapHeight = tmap.getHeight() * tmap.getTileHeight();

@@ -23,6 +23,8 @@ public class Hospital implements Serializable{
     private String name;
     private float positionX;
     private float positionY;
+    private List<Patient> patients;
+    
     public Hospital() {
     }
 
@@ -31,6 +33,7 @@ public class Hospital implements Serializable{
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
+        this.patients = new ArrayList<Patient>();
     }
     
     
@@ -51,6 +54,13 @@ public class Hospital implements Serializable{
         this.id = id;
     }
 
+    public void addPatient(Patient patient){
+        if(patients == null){
+            patients = new ArrayList<Patient>();
+        }
+        patients.add(patient);
+    }
+    
     public void addSpeciality(EmergencyType emergencyType){
         if(specialities == null){
             specialities = new ArrayList<EmergencyType>();
@@ -98,6 +108,15 @@ public class Hospital implements Serializable{
         this.positionY = positionY;
     }
 
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
+
+    
     
     @Override
     public String toString() {

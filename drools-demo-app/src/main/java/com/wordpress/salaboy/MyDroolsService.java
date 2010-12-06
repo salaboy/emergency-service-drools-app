@@ -6,9 +6,11 @@ package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.ui.Block;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.util.MedicalKitUtil;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -236,4 +238,16 @@ public class MyDroolsService {
         return task;
     }
 
+     public static Hospital getHospitalByCoordinates(Block hospitalBlock) {
+        Collection<Hospital> myhospitals = MyDroolsService.hospitals.values();
+        float x = Math.round(hospitalBlock.poly.getX()/16);
+        float y = Math.round(hospitalBlock.poly.getY()/16);
+        
+        for(Hospital thishospital : myhospitals){
+            if(thishospital.getPositionX() == x && thishospital.getPositionY() == y){
+                return thishospital;
+            }
+        }
+        return null;
+    }
 }

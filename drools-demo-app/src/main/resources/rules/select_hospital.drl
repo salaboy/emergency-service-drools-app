@@ -8,6 +8,7 @@ import org.plugtree.training.model.Medic.MedicSpeciality;
 import org.plugtree.training.model.MedicalKit;
 import org.plugtree.training.model.Location;
 import org.plugtree.training.model.Hospital;
+import org.plugtree.training.model.Patient;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
@@ -16,6 +17,11 @@ import com.wordpress.salaboy.ui.MapEventsNotifier;
 global Map hospitals;
 global MapEventsNotifier notifier;
 
+query "getPatient"
+    //$processInstance: WorkflowProcessInstance()
+    //$patient: Patient(id == Long.valueOf((String)$processInstance.getVariable("patient.id")));
+    patient: Patient()
+end
 
 
 rule "Rank Hospital Speciality that matches EmergencyType"
@@ -25,7 +31,6 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $ambulance: Ambulance()
-        //eval(isEmergencyPrioritySet($processInstance))
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
                                                     init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
@@ -43,8 +48,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
 
     then
         
-        System.out.println("Hospital " + $selectedHospital.getName() + " position (X,Y) = ("+ $selectedHospital.getPositionX() + ","+ $selectedHospital.getPositionY() +")" );
-        System.out.println("Ambulance " + $ambulance.getDescription() + " position (X,Y) = ("+ $ambulance.getPositionX() + ","+ $ambulance.getPositionY() +")" );
+        System.out.println("Emergency Priority = "+$processInstance.getVariable("emergency.priority"));
         System.out.println("HOSPITAL SELECTED !!!!");
         notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_SELECTED, $selectedHospital.getId());
         

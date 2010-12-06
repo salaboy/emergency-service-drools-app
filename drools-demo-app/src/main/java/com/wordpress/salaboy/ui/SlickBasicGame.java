@@ -3,14 +3,17 @@ package com.wordpress.salaboy.ui;
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.MyDroolsService;
 import com.wordpress.salaboy.events.SimpleMoteFinder;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
@@ -27,6 +30,7 @@ import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
 import org.plugtree.training.model.Emergency.EmergencyType;
 import org.plugtree.training.model.Hospital;
+import org.plugtree.training.model.Patient;
 import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
 import org.plugtree.training.model.events.PatientPickUpEvent;
 
@@ -265,7 +269,9 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         AppGameContainer container =
                 new AppGameContainer(game);
         container.start();
-
+        
+        
+        
     }
 
     public boolean entityCollisionWith() throws SlickException {
@@ -329,10 +335,21 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public synchronized void hospitalReached(Block hospitalBlock) {
         if (this.hospital != null) {
             this.hospital = null;
-            
-            ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent());
             System.out.println("HOSPITAL REACHED TIME TO SIGNAL The PATIENT AT THE HOSPITAL EVENT!!!");
+            ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent());
+            
             ambulanceMonitorService.stop();
+            
+            Hospital myhospital = MyDroolsService.getHospitalByCoordinates(hospitalBlock);
+            QueryResults results = ksession.getQueryResults("getPatient");
+            
+            Iterator<QueryResultsRow> it = results.iterator();
+            Patient patient = null;
+            while(it.hasNext()){
+                Object o = it.next().get(results.getIdentifiers()[0]);
+                patient = (Patient)o;
+            }
+            myhospital.addPatient(patient);
         }
     }
 
@@ -393,26 +410,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public void monitorAlertReceived(String string) {
     }
 
-    private void initWiiMote() {
-        System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
-        SimpleMoteFinder simpleMoteFinder = new SimpleMoteFinder();
-        Mote mote = simpleMoteFinder.findMote();
-        System.out.println("founded wiimote" + mote);
-        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
+    
 
-            public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
-                int y = evt.getY();
-                if (y > 225) {
-                    System.out.println("sended " + y + " heartbeat");
-                    if (ambulanceMonitorService != null) {
-                        ambulanceMonitorService.sendNotification(y, y, y);
-                    }
-                }
-            }
-        };
-        //mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
-        mote.addAccelerometerListener(listener);
-
-
-    }
+   
 }

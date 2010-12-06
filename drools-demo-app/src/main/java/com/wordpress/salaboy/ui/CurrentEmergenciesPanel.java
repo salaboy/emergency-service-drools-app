@@ -96,4 +96,9 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
             emergencyFrame.monitorAlertReceived(string);
         }
     }
+    void hospitalReached(Block hospitalBlock){
+        for(EmergencyFrame emergencyFrame : emergencyFrames){
+            emergencyFrame.hospitalReached(hospitalBlock); 
+        }
+    }
 }

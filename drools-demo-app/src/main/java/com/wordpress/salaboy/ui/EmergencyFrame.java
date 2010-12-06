@@ -15,13 +15,14 @@ import com.wordpress.salaboy.MyDroolsService;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.lang.String;
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JTabbedPane;
+import javax.swing.table.DefaultTableModel;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Hospital;
+import org.plugtree.training.model.Patient;
 
 /**
  *
@@ -323,6 +324,14 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         this.validate();
     }
     
+    void hospitalReached(Block hospitalBlock){
+        
+        this.parent.getMainJTabbedPane().setSelectedIndex(4);
+        this.parent.refreshPatientsTable();
+        
+    }
+    
+   
     
     
 }
