@@ -76,9 +76,10 @@ public class BasicProcessTest {
     @Test
     public void processTest() throws InterruptedException, IOException, ClassNotFoundException {
         final StatefulKnowledgeSession ksession = MyDroolsService.createSession();
+        
         MyDroolsService.registerHandlers(ksession);
         MyDroolsService.setGlobals(ksession);
-        MapEventsNotifier mapEventsNotifier = new MapEventsNotifier();
+        MapEventsNotifier mapEventsNotifier = new MapEventsNotifier(MyDroolsService.logger);
         mapEventsNotifier.addMapEventsListener(new MapEventsListener() {
 
             @Override
@@ -270,6 +271,10 @@ public class BasicProcessTest {
         
         Assert.assertEquals(ksession.getProcessInstances().size(), 0);
 
+        System.out.println("\n\nLogs:");
+        for (String message : MyDroolsService.logger.getLogs()) {
+            System.out.println("\t"+message);
+        }
         
         
     }

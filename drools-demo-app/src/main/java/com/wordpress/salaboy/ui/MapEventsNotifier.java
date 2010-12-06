@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -27,12 +28,18 @@ public class MapEventsNotifier {
     
     private final List<MapEventsListener> mapEventListeners = new ArrayList<MapEventsListener>();
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
+    private final Logger logger;
 
+    public MapEventsNotifier(Logger logger){
+        this.logger = logger;
+    }
+    
     public void notifyMapEventsListeners(final EVENT_TYPE type, final Object data) {
         for (final MapEventsListener mapEventsListener : mapEventListeners) {
             executor.execute(new Runnable()  {
                 @Override
                 public void run() {
+                    logger.addMessage(type+": "+data);
                     switch (type){
                         case EMERGENCY_REACHED:
                             mapEventsListener.emergencyReached((Block) data);

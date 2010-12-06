@@ -1,15 +1,9 @@
 package com.wordpress.salaboy.ui;
 
-import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.MyDroolsService;
-import com.wordpress.salaboy.events.SimpleMoteFinder;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import motej.Mote;
-import motej.event.AccelerometerEvent;
-import motej.event.AccelerometerListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
@@ -58,14 +52,16 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private Ambulance ambulance;
     public Long ambulanceSelectedId = 0L;
     public EmergencyType emergencyTypeSelected;
-    private MapEventsNotifier mapEventsNotifier = new MapEventsNotifier();
+    private MapEventsNotifier mapEventsNotifier;
     //FIXME: It only supports one ambulance!
     private AmbulanceMonitorService ambulanceMonitorService;
 
     public SlickBasicGame() {
         super("City Map");
 
+        this.mapEventsNotifier = new MapEventsNotifier(MyDroolsService.logger);
         this.mapEventsNotifier.addMapEventsListener(this);
+        
 
         // initWiiMote();
     }

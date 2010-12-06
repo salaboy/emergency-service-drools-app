@@ -6,6 +6,8 @@ package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.log.Logger;
+import com.wordpress.salaboy.log.ProcessEventLogger;
 import com.wordpress.salaboy.ui.Block;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.util.MedicalKitUtil;
@@ -15,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
@@ -46,6 +47,7 @@ import org.plugtree.training.model.MedicalKit;
  */
 public class MyDroolsService {
 
+    public static final Logger logger = new Logger();
     public static final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
     public static final Map<EmergencyType, List<Ambulance>> ambulances = new HashMap<EmergencyType, List<Ambulance>>() {
 
@@ -143,7 +145,8 @@ public class MyDroolsService {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
+        ksession.addEventListener(new ProcessEventLogger(logger));
+        
         return ksession;
     }
 
@@ -220,7 +223,7 @@ public class MyDroolsService {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MyDroolsService.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(MyDroolsService.class.getName()).log(Level.SEVERE, null, ex);
             }
             connected = client.connect("127.0.0.1", 9123);
             if (!connected) {

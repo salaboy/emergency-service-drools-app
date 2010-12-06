@@ -20,7 +20,6 @@ rule "Patient with no vital sign"
         $nextEvents : Number(doubleValue == 235 ) from accumulate( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(4s) from entry-point "patientHeartbeats",
         												average($y)) 
     then
-        
         notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.NO_VITAL_SIGNS, "Warning, patient without vital signs ");
 end
 

@@ -75,7 +75,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        lstAlerts = new javax.swing.JList(new Object[]{"vital signs"});
+        lstAlerts = new javax.swing.JList();
 
         setMaximizable(true);
         setResizable(true);

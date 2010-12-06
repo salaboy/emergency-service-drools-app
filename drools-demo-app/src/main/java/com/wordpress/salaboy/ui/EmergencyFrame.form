@@ -279,7 +279,7 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="lstAlerts.setCellRenderer(new AlertsIconListRenderer());"/>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JList(new Object[]{&quot;vital signs&quot;})"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JList()"/>
           </AuxValues>
         </Component>
       </SubComponents>
