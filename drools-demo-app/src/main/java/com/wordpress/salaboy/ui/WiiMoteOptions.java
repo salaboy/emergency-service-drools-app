@@ -18,6 +18,7 @@ import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
 import motej.event.MoteDisconnectedEvent;
 import motej.event.MoteDisconnectedListener;
+import motej.request.ReportModeRequest;
 
 /**
  *
@@ -25,9 +26,12 @@ import motej.event.MoteDisconnectedListener;
  */
 public class WiiMoteOptions extends javax.swing.JFrame {
     private Mote mote = null;
+    private SlickBasicGame game = null;
     /** Creates new form WiiMoteOptions */
-    public WiiMoteOptions() {
+    public WiiMoteOptions(SlickBasicGame game) {
         initComponents();
+        this.game = game;
+        
     }
 
     /** This method is called from within the constructor to
@@ -85,16 +89,7 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         initWiiMote();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new WiiMoteOptions().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -115,11 +110,12 @@ public class WiiMoteOptions extends javax.swing.JFrame {
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
                 int y = evt.getY();
                 if (y > 225) {
-                    jTextArea1.insert("sended " + y + " heartbeat", 0);
-                    System.out.println("sended " + y + " heartbeat");
-                    //if (ambulanceMonitorService != null) {
-                    //    ambulanceMonitorService.sendNotification(y, y, y);
-                    //}
+                    jTextArea1.insert("sended " + y + " heartbeat\n", 0);
+                    
+                    if (game.getAmbulanceMonitorService() != null) {
+                        System.out.println("sended " + y + " heartbeat");
+                        game.getAmbulanceMonitorService().sendNotification(y, y, y);
+                    }
                     
                 }
             }
@@ -131,14 +127,15 @@ public class WiiMoteOptions extends javax.swing.JFrame {
             @Override
             public void moteDisconnected(MoteDisconnectedEvent<Mote> mde) {
                 System.out.println("WII MOTE DISCONECTED!!!!!!");
-                jTextArea1.insert("Wii MOTE DISCONECTED!!!!", 0);
+                jTextArea1.insert("Wii MOTE DISCONECTED!!!!\n", 0);
             }
         
             
         };
-        //mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
-        mote.addAccelerometerListener(listener);
+        mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
         mote.addMoteDisconnectedListener(disconnectedListener);
+        mote.addAccelerometerListener(listener);
+        
 
     }
 }

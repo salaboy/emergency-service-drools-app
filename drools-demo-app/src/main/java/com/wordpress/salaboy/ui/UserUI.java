@@ -338,7 +338,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
             @Override
             public void run() {
-                new WiiMoteOptions().setVisible(true);
+                new WiiMoteOptions(game).setVisible(true);
                
             }
         });

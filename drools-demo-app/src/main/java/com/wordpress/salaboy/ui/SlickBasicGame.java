@@ -410,6 +410,11 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public void monitorAlertReceived(String string) {
     }
 
+    public AmbulanceMonitorService getAmbulanceMonitorService() {
+        return ambulanceMonitorService;
+    }
+
+    
     
 
    
