@@ -67,6 +67,8 @@ public class AmbulancePanel extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
 
         setName("Ambulances"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(300, 480));
+        setSize(new java.awt.Dimension(300, 480));
 
         sendAmbulancejButton.setText("Send Ambulance");
         sendAmbulancejButton.addActionListener(new java.awt.event.ActionListener() {
@@ -80,6 +82,8 @@ public class AmbulancePanel extends javax.swing.JPanel {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        ambulancejList.setPreferredSize(new java.awt.Dimension(240, 70));
+        ambulancejList.setSize(new java.awt.Dimension(240, 70));
         ambulancejList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ambulancejListselectedAmbulance(evt);
@@ -90,6 +94,8 @@ public class AmbulancePanel extends javax.swing.JPanel {
         jLabel6.setText("Available Ambulances");
 
         medicalKitsJInternalFrame.setTitle("Medical Kits");
+        medicalKitsJInternalFrame.setPreferredSize(new java.awt.Dimension(240, 150));
+        medicalKitsJInternalFrame.setSize(new java.awt.Dimension(240, 150));
         medicalKitsJInternalFrame.setVisible(true);
 
         lblMedHeart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/eletrochock.png"))); // NOI18N
@@ -109,7 +115,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
                 .addComponent(lblMedHeart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMedBone)
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         medicalKitsJInternalFrameLayout.setVerticalGroup(
             medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,11 +128,16 @@ public class AmbulancePanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(300, 480));
+        jScrollPane3.setSize(new java.awt.Dimension(300, 480));
+
         doctorsjList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Doctor D0001", "Doctor D0002" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        doctorsjList.setPreferredSize(new java.awt.Dimension(240, 80));
+        doctorsjList.setSize(new java.awt.Dimension(240, 80));
         jScrollPane3.setViewportView(doctorsjList);
 
         refreshButton.setText("Refresh");
@@ -137,7 +148,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
         });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 14));
         jLabel1.setForeground(new java.awt.Color(51, 153, 0));
         jLabel1.setText("User: Control Operator");
 
@@ -147,24 +158,10 @@ public class AmbulancePanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel6)
-                        .addGap(25, 25, 25)))
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(147, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(136, 136, 136))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(medicalKitsJInternalFrame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
@@ -179,6 +176,15 @@ public class AmbulancePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(refreshButton)
                 .addContainerGap(184, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(25, 25, 25))
+                    .addComponent(medicalKitsJInternalFrame, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +205,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sendAmbulancejButton)
                     .addComponent(refreshButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(347, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

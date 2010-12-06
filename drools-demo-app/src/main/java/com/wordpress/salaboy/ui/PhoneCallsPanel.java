@@ -51,7 +51,8 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         jLabel1 = new javax.swing.JLabel();
 
         setBounds(new java.awt.Rectangle(0, 0, 400, 480));
-        setName("Phone Calls"); // NOI18N
+        setName("Emergency Calls"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(300, 480));
 
         phoneCallsJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -72,6 +73,8 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
         phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        phoneCallsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
+        phoneCallsJTable.setSize(new java.awt.Dimension(280, 100));
         phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 phoneCallsJTablerowClick(evt);
@@ -86,7 +89,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
 
-        jLabel11.setText("Incoming Calls:");
+        jLabel11.setText("Incoming Emergency Calls");
 
         refreshJButton.setText("Refresh");
         refreshJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -96,7 +99,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         });
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(102, 255, 0));
+        jLabel1.setForeground(new java.awt.Color(51, 255, 0));
         jLabel1.setText("User: Operator");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -106,20 +109,20 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(106, 106, 106)
-                        .addComponent(jLabel1))
+                        .addContainerGap()
+                        .addComponent(newEmergencyPhoneCallJButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(refreshJButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel11))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel11)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(newEmergencyPhoneCallJButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(refreshJButton)))
-                .addContainerGap())
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,10 +134,10 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newEmergencyPhoneCallJButton)
-                    .addComponent(refreshJButton))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addComponent(newEmergencyPhoneCallJButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(refreshJButton)
+                .addContainerGap(64, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

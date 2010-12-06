@@ -320,7 +320,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         
         DefaultListModel model = new DefaultListModel();
         for (String alert : alerts) {
-            model.add(0,alert);
+            model.addElement(alert);
         }
         this.lstAlerts.setModel(model);
         this.validate();

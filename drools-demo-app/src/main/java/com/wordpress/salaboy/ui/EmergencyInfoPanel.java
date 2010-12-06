@@ -76,7 +76,10 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
         chooseAmbuelanceJButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
 
-        setName("Emergency Info (operator)"); // NOI18N
+        setMinimumSize(new java.awt.Dimension(300, 480));
+        setName("Emergency Questionaire"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(300, 480));
+        setSize(new java.awt.Dimension(300, 480));
 
         jLabel12.setText("Location:");
 
@@ -108,7 +111,7 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 14));
         jLabel4.setForeground(new java.awt.Color(51, 255, 0));
         jLabel4.setText("User: Operator");
 
@@ -128,9 +131,7 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(genderjComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(emergencyTypeJComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
@@ -171,7 +172,7 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
                     .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(chooseAmbuelanceJButton)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addContainerGap(196, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

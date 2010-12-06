@@ -101,13 +101,18 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Emergency Service Console");
+        setPreferredSize(new java.awt.Dimension(300, 480));
+        setSize(new java.awt.Dimension(300, 480));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
-        mainJTabbedPane.setSize(new java.awt.Dimension(300, 480));
+        mainJTabbedPane.setPreferredSize(new java.awt.Dimension(300, 400));
+        mainJTabbedPane.setSize(new java.awt.Dimension(300, 400));
+
+        hospitalJPanel.setPreferredSize(new java.awt.Dimension(300, 400));
 
         patientJTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -158,23 +163,24 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
                 .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 327, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(hospitalJPanelLayout.createSequentialGroup()
+                                .add(21, 21, 21)
+                                .add(jButton2))
+                            .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 236, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(hospitalJPanelLayout.createSequentialGroup()
-                        .add(87, 87, 87)
-                        .add(jButton2))
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .add(137, 137, 137)
+                        .add(89, 89, 89)
                         .add(jButton1)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         hospitalJPanelLayout.setVerticalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(hospitalJPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 34, Short.MAX_VALUE)
                 .add(jButton2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
                 .addContainerGap())
         );
@@ -185,11 +191,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 332, Short.MAX_VALUE)
+            .add(0, 232, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 299, Short.MAX_VALUE)
+            .add(0, 324, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Reports", jPanel1);
@@ -198,11 +204,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 332, Short.MAX_VALUE)
+            .add(0, 232, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 299, Short.MAX_VALUE)
+            .add(0, 324, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Activity Console", jPanel4);
@@ -213,14 +219,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -278,13 +284,13 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane)
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
