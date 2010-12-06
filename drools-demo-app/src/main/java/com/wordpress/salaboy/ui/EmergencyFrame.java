@@ -245,6 +245,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        this.alerts.clear();
         DefaultListModel emptyModel = new DefaultListModel();
         this.lstAlerts.setModel(emptyModel);
         
