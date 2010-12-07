@@ -11,8 +11,11 @@
 
 package com.wordpress.salaboy.ui;
 
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -59,6 +62,11 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
         EmergencyFrame emergencyFrame = new EmergencyFrame(parent, ambulanceId);
         this.emergencyFrames.add(emergencyFrame);
         this.add(emergencyFrame);
+        try {
+            emergencyFrame.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(CurrentEmergenciesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.validate();
     }
 
