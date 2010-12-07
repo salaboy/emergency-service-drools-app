@@ -46,12 +46,10 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
         phoneCallsJScrollPane = new javax.swing.JScrollPane();
         phoneCallsJTable = new javax.swing.JTable();
-        newEmergencyPhoneCallJButton = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         refreshJButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
 
-        setName("Emergency Calls"); // NOI18N
+        setName("Operator Tasks"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
 
         phoneCallsJTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -80,13 +78,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         });
         phoneCallsJScrollPane.setViewportView(phoneCallsJTable);
 
-        newEmergencyPhoneCallJButton.setText("New Emergency Phone Call");
-        newEmergencyPhoneCallJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newEmergencyPhoneCallJButtonActionPerformed(evt);
-            }
-        });
-
         jLabel11.setText("Incoming Emergency Calls");
 
         refreshJButton.setText("Refresh");
@@ -96,10 +87,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
-        jLabel1.setForeground(new java.awt.Color(51, 255, 0));
-        jLabel1.setText("User: Operator");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,36 +94,26 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(63, 63, 63)
                         .addComponent(jLabel11))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(80, 80, 80)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(newEmergencyPhoneCallJButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(refreshJButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)))
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addComponent(refreshJButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(newEmergencyPhoneCallJButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(refreshJButton)
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -147,11 +124,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         this.callSelected(id);
         
     }//GEN-LAST:event_phoneCallsJTablerowClick
-
-    private void newEmergencyPhoneCallJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newEmergencyPhoneCallJButtonActionPerformed
-        //Start Emergency Business Process
-        
-    }//GEN-LAST:event_newEmergencyPhoneCallJButtonActionPerformed
 
     private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
         this.refreshCallsTable();
@@ -188,9 +160,9 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     private JDialog callPopup;
     public void callSelected(Long id) {
         EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
-        callPopup = new JDialog(this.parent, "Info",true);
+        callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
         callPopup.add(emergencyInfoPanel);
-        this.callPopup.setSize(300, 600);
+        this.callPopup.setSize(300, 350);
         this.callPopup.setVisible(true);
         this.callPopup.requestFocus();
     }
@@ -202,9 +174,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JButton newEmergencyPhoneCallJButton;
     private javax.swing.JScrollPane phoneCallsJScrollPane;
     private javax.swing.JTable phoneCallsJTable;
     private javax.swing.JButton refreshJButton;

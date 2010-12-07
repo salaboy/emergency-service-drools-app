@@ -55,9 +55,8 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
         ambulanceControlsJTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         refreshJButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
 
-        setName("Emergency Calls"); // NOI18N
+        setName("Control Operator"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
 
         ambulanceControlsJTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -78,6 +77,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
             }
         });
         ambulanceControlsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        ambulanceControlsJTable.setName("Control Operator"); // NOI18N
         ambulanceControlsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
         ambulanceControlsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -95,10 +95,6 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 255, 0));
-        jLabel1.setText("User: Control Operator");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,31 +102,26 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(103, 103, 103)
+                        .addComponent(refreshJButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
                         .addComponent(jLabel11))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(refreshJButton)))
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(refreshJButton)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -203,7 +194,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
         ambulancePanel.configurePanel(taskinfo);
         callPopup = new JDialog(this.parent, "Info",true);
         callPopup.add(ambulancePanel);
-        this.callPopup.setSize(300, 600);
+        this.callPopup.setSize(300, 430);
         this.callPopup.setVisible(true);
         this.callPopup.requestFocus();
     }
@@ -244,7 +235,6 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ambulanceControlsJTable;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JScrollPane phoneCallsJScrollPane;
     private javax.swing.JButton refreshJButton;

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
