@@ -62,8 +62,8 @@
       <ioSpecification>
         <dataInput id="_4_CommentInput" name="Comment" />
         <dataInput id="_4_SkippableInput" name="Skippable" />
-        <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_ContentInput" name="Content" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_PriorityInput" name="Priority" />
         <dataOutput id="_4_emergency.typeOutput" name="emergency.type" />
         <dataOutput id="_4_patient.genderOutput" name="patient.gender" />
@@ -73,8 +73,8 @@
         <inputSet>
           <dataInputRefs>_4_CommentInput</dataInputRefs>
           <dataInputRefs>_4_SkippableInput</dataInputRefs>
-          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
           <dataInputRefs>_4_ContentInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
           <dataInputRefs>_4_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -100,17 +100,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_4_TaskNameInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">AskForEmergencyInformation</from>
-          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression"></from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">AskForEmergencyInformation #{call.phoneNumber}</from>
+          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>

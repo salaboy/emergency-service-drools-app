@@ -1,6 +1,8 @@
 package org.plugtree.training.model;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -24,6 +26,8 @@ public class Call implements Serializable{
     public Call(Date date) {
         this();
         this.date = date;
+        NumberFormat formatter = new DecimalFormat("0000");
+        this.phonenumber = "(555 -" + formatter.format(Math.random()*1000) + ")";
     }
 
     public Date getDate() {

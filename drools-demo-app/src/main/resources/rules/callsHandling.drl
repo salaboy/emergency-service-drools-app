@@ -27,6 +27,7 @@ rule "Handling Single Emergency Call"
         parameters.put("call.id", $call.getId());
         parameters.put("call.timestamp", df.format($call.getDate()));
         parameters.put("call.processId", $call.getProcessId());
+        parameters.put("call.phoneNumber", $call.getPhoneNumber());
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
         callManager.incomingCall($call);
         insert(pI);
