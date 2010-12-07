@@ -156,7 +156,6 @@
         </Container>
         <Container class="javax.swing.JPanel" name="pnlMedicalEvaluation">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="Medical Evaluation" noResource="true"/>
           </Properties>
           <Constraints>

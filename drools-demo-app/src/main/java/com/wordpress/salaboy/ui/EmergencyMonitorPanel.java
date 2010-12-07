@@ -12,11 +12,14 @@
 package com.wordpress.salaboy.ui;
 
 import java.awt.Color;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -112,13 +115,19 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
 		axis.setDateFormatOverride(new SimpleDateFormat(DATE_PATTERN));
-
+        
+                NumberAxis rangeAxis = (NumberAxis)plot.getRangeAxis();
+                NumberFormat numberformat = NumberFormat.getInstance();
+                numberformat.setMaximumFractionDigits(0);
+                numberformat.setMinimumFractionDigits(0);
+                rangeAxis.setNumberFormatOverride(numberformat);
+                
 		return chart;
 	}
     
     public void updateMonitorGraph(double pulse){
         pulseTimeSeries.removeAgedItems(false);
-        pulseTimeSeries.addOrUpdate(new Millisecond(), pulse);
+        pulseTimeSeries.addOrUpdate(new Millisecond(), pulse-235);
     }
     
 }

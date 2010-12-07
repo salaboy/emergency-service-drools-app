@@ -91,9 +91,10 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         jButton1 = new javax.swing.JButton();
         managerjPanel = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        pnlReport = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstReports = new javax.swing.JList();
+        btnClearReport = new javax.swing.JButton();
         btnRefreshReport = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -172,7 +173,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .add(89, 89, 89)
                         .add(jButton1)))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(157, Short.MAX_VALUE))
         );
         hospitalJPanelLayout.setVerticalGroup(
             hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -188,42 +189,59 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
 
+        pnlReport.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                pnlReportComponentShown(evt);
+            }
+        });
+
         jScrollPane1.setViewportView(lstReports);
 
-        btnRefreshReport.setText("jButton3");
+        btnClearReport.setText("Clear");
+        btnClearReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearReportActionPerformed(evt);
+            }
+        });
+
+        btnRefreshReport.setText("Refresh");
         btnRefreshReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefreshReportActionPerformed(evt);
             }
         });
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout pnlReportLayout = new org.jdesktop.layout.GroupLayout(pnlReport);
+        pnlReport.setLayout(pnlReportLayout);
+        pnlReportLayout.setHorizontalGroup(
+            pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+            .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(btnRefreshReport)
-                .addContainerGap(175, Short.MAX_VALUE))
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnClearReport)
+                .addContainerGap(239, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        pnlReportLayout.setVerticalGroup(
+            pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(btnRefreshReport)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(btnRefreshReport)
+                    .add(btnClearReport))
+                .add(12, 12, 12)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Reports", jPanel1);
+        jTabbedPane1.addTab("Reports", pnlReport);
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 260, Short.MAX_VALUE)
+            .add(0, 373, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -238,7 +256,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
@@ -302,8 +320,8 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -369,14 +387,26 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         });
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void btnRefreshReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshReportActionPerformed
+    private void refreshReportList(){
         DefaultListModel model = new DefaultListModel();
         for (String message : MyDroolsService.logger.getLogs()) {
             model.addElement(message);
         }
         
         this.lstReports.setModel(model);
-        
+    }
+    
+    private void btnClearReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearReportActionPerformed
+        MyDroolsService.logger.clearMessages();
+        this.refreshReportList();
+    }//GEN-LAST:event_btnClearReportActionPerformed
+
+    private void pnlReportComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pnlReportComponentShown
+        this.refreshReportList();
+    }//GEN-LAST:event_pnlReportComponentShown
+
+    private void btnRefreshReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshReportActionPerformed
+        this.refreshReportList();
     }//GEN-LAST:event_btnRefreshReportActionPerformed
 
      public void refreshPatientsTable(){
@@ -413,6 +443,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JButton btnClearReport;
     private javax.swing.JButton btnRefreshReport;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -421,7 +452,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
@@ -431,6 +461,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
     public javax.swing.JTable patientJTable1;
+    private javax.swing.JPanel pnlReport;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {

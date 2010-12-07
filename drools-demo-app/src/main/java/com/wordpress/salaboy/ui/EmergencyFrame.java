@@ -133,7 +133,6 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
         mainTabPanel.addTab("Driver", driverPanel);
 
-        pnlMedicalEvaluation.setEnabled(false);
         pnlMedicalEvaluation.setName("Medical Evaluation"); // NOI18N
 
         jLabel1.setText("Severity");
