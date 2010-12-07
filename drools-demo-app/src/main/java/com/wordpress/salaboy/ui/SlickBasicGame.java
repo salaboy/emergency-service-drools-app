@@ -43,7 +43,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private SpriteSheet emergencySheet;
     private SpriteSheet hospitalSheet;
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
-    private int[] ys = new int[]{1, 7, 13, 19, 25,};
+    private int[] ys = new int[]{1, 7, 13, 19, 25};
     private int randomx;
     private int randomy;
     private int[] hospitals = new int[]{9, 8, 33, 8, 15, 20};
@@ -178,8 +178,14 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         if (gc.getInput().isKeyDown(Input.KEY_SPACE)) {
 
             if (emergency == null) {
+                
+                
                 randomx = (int) (Math.random() * 10) % 7;
                 randomy = (int) (Math.random() * 10) % 5;
+                if(randomx == 1 && randomy == 25){
+                    randomx = 19;
+                }
+                
                 emergencyPoly = new Polygon(new float[]{
                             xs[randomx] * 16, ys[randomy] * 16,
                             xs[randomx] * 16 + 32, ys[randomy] * 16,
