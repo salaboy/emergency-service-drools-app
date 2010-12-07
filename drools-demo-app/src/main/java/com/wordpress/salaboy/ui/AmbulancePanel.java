@@ -148,7 +148,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
         });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
         jLabel1.setForeground(new java.awt.Color(51, 153, 0));
         jLabel1.setText("User: Control Operator");
 

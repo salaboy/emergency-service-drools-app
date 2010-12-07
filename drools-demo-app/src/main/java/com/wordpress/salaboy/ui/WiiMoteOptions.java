@@ -46,8 +46,9 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Lookup WiiMote");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -58,28 +59,35 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
+        jLabel1.setText("Messages");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(39, 39, 39)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(93, 93, 93)
-                .add(jButton1)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(68, 68, 68)
+                        .add(jButton1))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel1)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(54, 54, 54)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
-                        .add(90, 90, 90)
-                        .add(jButton1)))
-                .addContainerGap(346, Short.MAX_VALUE))
+                .add(13, 13, 13)
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(18, 18, 18)
+                .add(jButton1)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
@@ -93,6 +101,7 @@ public class WiiMoteOptions extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
@@ -103,17 +112,18 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         mote = simpleMoteFinder.findMote();
         if(mote == null){
             jTextArea1.insert("Wii mote not found! ", 0);
+            
         }
-        System.out.println("founded wiimote" + mote);
+        else{
+            jTextArea1.insert("Wii mote found! ", 0);
+        }
         AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
 
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
                 int y = evt.getY();
                 if (y > 225) {
                     jTextArea1.insert("sended " + y + " heartbeat\n", 0);
-                    
                     if (game.getAmbulanceMonitorService() != null) {
-                        System.out.println("sended " + y + " heartbeat");
                         game.getAmbulanceMonitorService().sendNotification(y, y, y);
                     }
                     
@@ -126,12 +136,12 @@ public class WiiMoteOptions extends javax.swing.JFrame {
 
             @Override
             public void moteDisconnected(MoteDisconnectedEvent<Mote> mde) {
-                System.out.println("WII MOTE DISCONECTED!!!!!!");
                 jTextArea1.insert("Wii MOTE DISCONECTED!!!!\n", 0);
             }
         
             
         };
+        
         mote.setReportMode(ReportModeRequest.DATA_REPORT_0x31);
         mote.addMoteDisconnectedListener(disconnectedListener);
         mote.addAccelerometerListener(listener);

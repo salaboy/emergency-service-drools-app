@@ -49,7 +49,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         dataset.addSeries(pulseTimeSeries);
         final JFreeChart chart = createTimeSeriesChart();
         ChartPanel cPanel = new ChartPanel(chart);
-        cPanel.setPreferredSize(new java.awt.Dimension(parent.getWidth(), 270));
+        cPanel.setPreferredSize(new java.awt.Dimension(220, 200));
         cPanel.setName("Monitor");
         
         parent.getMainTabPanel().add(cPanel);

@@ -19,7 +19,7 @@ public class SimpleMoteFinder implements MoteFinderListener {
 		this.mote = mote;
 		this.mote.rumble(2000l);
 		String blueId = this.mote.getBluetoothAddress();
-		//System.out.println("Bluethooth id = "+blueId);
+		System.out.println("Your Bluethooth id is = "+blueId);
 		synchronized(lock) {
 			lock.notifyAll();
 		}

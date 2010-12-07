@@ -98,7 +98,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
         jLabel1.setForeground(new java.awt.Color(51, 255, 0));
         jLabel1.setText("User: Operator");
 
@@ -112,9 +112,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                         .addContainerGap()
                         .addComponent(jLabel11))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(80, 80, 80)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
@@ -122,8 +119,11 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                         .addComponent(newEmergencyPhoneCallJButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(89, 89, 89)
-                        .addComponent(refreshJButton)))
-                .addContainerGap(84, Short.MAX_VALUE))
+                        .addComponent(refreshJButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +138,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                 .addComponent(newEmergencyPhoneCallJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(refreshJButton)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(158, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
