@@ -14,6 +14,7 @@ public class Call implements Serializable{
     private Date date;
     private Emergency emergency;
     private Long processId;
+    private String phonenumber;
     public static AtomicLong incrementalId = new AtomicLong();
 
     public Call() {
@@ -57,6 +58,15 @@ public class Call implements Serializable{
         this.processId = processId;
     }
 
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    
     @Override
     public String toString() {
         return "Call{" + "id=" + id + ", date=" + date + ", emergency=" + emergency + ", processId=" + processId + '}';

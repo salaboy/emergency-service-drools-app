@@ -27,6 +27,9 @@
   <itemDefinition id="_doctor.idItem" structureRef="String" />
   <itemDefinition id="_ambulance.idItem" structureRef="String" />
   <itemDefinition id="_ambulancesItem" structureRef="java.util.Map" />
+  <itemDefinition id="_call.idItem" structureRef="String" />
+  <itemDefinition id="_call.timestampItem" structureRef="String" />
+  <itemDefinition id="_call.processIdItem" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="org.drools.bpmn2.EmergencyService" name="Emergency Service Main Process" >
 
@@ -46,6 +49,9 @@
     <property id="doctor.id" itemSubjectRef="_doctor.idItem"/>
     <property id="ambulance.id" itemSubjectRef="_ambulance.idItem"/>
     <property id="ambulances" itemSubjectRef="_ambulancesItem"/>
+    <property id="call.id" itemSubjectRef="_call.idItem"/>
+    <property id="call.timestamp" itemSubjectRef="_call.timestampItem"/>
+    <property id="call.processId" itemSubjectRef="_call.processIdItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
@@ -56,27 +62,27 @@
       <ioSpecification>
         <dataInput id="_4_CommentInput" name="Comment" />
         <dataInput id="_4_SkippableInput" name="Skippable" />
-        <dataInput id="_4_ContentInput" name="Content" />
         <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_ContentInput" name="Content" />
         <dataInput id="_4_PriorityInput" name="Priority" />
         <dataOutput id="_4_emergency.typeOutput" name="emergency.type" />
         <dataOutput id="_4_patient.genderOutput" name="patient.gender" />
         <dataOutput id="_4_emergency.locationOutput" name="emergency.location" />
-        <dataOutput id="_4_patient.ageOutput" name="patient.age" />
         <dataOutput id="_4_patient.nameOutput" name="patient.name" />
+        <dataOutput id="_4_patient.ageOutput" name="patient.age" />
         <inputSet>
           <dataInputRefs>_4_CommentInput</dataInputRefs>
           <dataInputRefs>_4_SkippableInput</dataInputRefs>
-          <dataInputRefs>_4_ContentInput</dataInputRefs>
           <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_ContentInput</dataInputRefs>
           <dataInputRefs>_4_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
           <dataOutputRefs>_4_emergency.typeOutput</dataOutputRefs>
           <dataOutputRefs>_4_patient.genderOutput</dataOutputRefs>
           <dataOutputRefs>_4_emergency.locationOutput</dataOutputRefs>
-          <dataOutputRefs>_4_patient.ageOutput</dataOutputRefs>
           <dataOutputRefs>_4_patient.nameOutput</dataOutputRefs>
+          <dataOutputRefs>_4_patient.ageOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
@@ -94,17 +100,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_4_ContentInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression"></from>
-          <to xs:type="tFormalExpression">_4_ContentInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">AskForEmergencyInformation</from>
           <to xs:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -127,12 +133,12 @@
         <targetRef>emergency.location</targetRef>
       </dataOutputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_4_patient.ageOutput</sourceRef>
-        <targetRef>patient.age</targetRef>
-      </dataOutputAssociation>
-      <dataOutputAssociation>
         <sourceRef>_4_patient.nameOutput</sourceRef>
         <targetRef>patient.name</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_patient.ageOutput</sourceRef>
+        <targetRef>patient.age</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -147,12 +153,12 @@
         <dataInput id="_5_patient.genderInput" name="patient.gender" />
         <dataInput id="_5_emergencyInput" name="emergency" />
         <dataInput id="_5_emergency.locationInput" name="emergency.location" />
-        <dataInput id="_5_patient.ageInput" name="patient.age" />
         <dataInput id="_5_patient.nameInput" name="patient.name" />
+        <dataInput id="_5_patient.ageInput" name="patient.age" />
         <dataInput id="_5_CommentInput" name="Comment" />
         <dataInput id="_5_SkippableInput" name="Skippable" />
-        <dataInput id="_5_TaskNameInput" name="TaskName" />
         <dataInput id="_5_ContentInput" name="Content" />
+        <dataInput id="_5_TaskNameInput" name="TaskName" />
         <dataInput id="_5_PriorityInput" name="Priority" />
         <inputSet>
           <dataInputRefs>_5_emergency.typeInput</dataInputRefs>
@@ -160,12 +166,12 @@
           <dataInputRefs>_5_patient.genderInput</dataInputRefs>
           <dataInputRefs>_5_emergencyInput</dataInputRefs>
           <dataInputRefs>_5_emergency.locationInput</dataInputRefs>
-          <dataInputRefs>_5_patient.ageInput</dataInputRefs>
           <dataInputRefs>_5_patient.nameInput</dataInputRefs>
+          <dataInputRefs>_5_patient.ageInput</dataInputRefs>
           <dataInputRefs>_5_CommentInput</dataInputRefs>
           <dataInputRefs>_5_SkippableInput</dataInputRefs>
-          <dataInputRefs>_5_TaskNameInput</dataInputRefs>
           <dataInputRefs>_5_ContentInput</dataInputRefs>
+          <dataInputRefs>_5_TaskNameInput</dataInputRefs>
           <dataInputRefs>_5_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -192,12 +198,12 @@
         <targetRef>_5_emergency.locationInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>patient.age</sourceRef>
-        <targetRef>_5_patient.ageInput</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <sourceRef>patient.name</sourceRef>
         <targetRef>_5_patient.nameInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>patient.age</sourceRef>
+        <targetRef>_5_patient.ageInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_CommentInput</targetRef>
@@ -214,17 +220,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_5_TaskNameInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">DispatchAmbulance</from>
-          <to xs:type="tFormalExpression">_5_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_5_ContentInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
           <to xs:type="tFormalExpression">_5_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_5_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">DispatchAmbulance</from>
+          <to xs:type="tFormalExpression">_5_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -257,16 +263,16 @@
         <dataInput id="_8_pickUpPatientEventInput" name="pickUpPatientEvent" />
         <dataInput id="_8_CommentInput" name="Comment" />
         <dataInput id="_8_SkippableInput" name="Skippable" />
-        <dataInput id="_8_ContentInput" name="Content" />
         <dataInput id="_8_TaskNameInput" name="TaskName" />
+        <dataInput id="_8_ContentInput" name="Content" />
         <dataInput id="_8_PriorityInput" name="Priority" />
         <dataOutput id="_8_emergency.priorityOutput" name="emergency.priority" />
         <inputSet>
           <dataInputRefs>_8_pickUpPatientEventInput</dataInputRefs>
           <dataInputRefs>_8_CommentInput</dataInputRefs>
           <dataInputRefs>_8_SkippableInput</dataInputRefs>
-          <dataInputRefs>_8_ContentInput</dataInputRefs>
           <dataInputRefs>_8_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_8_ContentInput</dataInputRefs>
           <dataInputRefs>_8_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -292,17 +298,17 @@
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
-        <targetRef>_8_ContentInput</targetRef>
-        <assignment>
-          <from xs:type="tFormalExpression">#{pickUpPatientEvent.time}</from>
-          <to xs:type="tFormalExpression">_8_ContentInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <targetRef>_8_TaskNameInput</targetRef>
         <assignment>
           <from xs:type="tFormalExpression">UpdateEmergencyInformation</from>
           <to xs:type="tFormalExpression">_8_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_8_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{pickUpPatientEvent.time}</from>
+          <to xs:type="tFormalExpression">_8_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>

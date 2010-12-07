@@ -8,6 +8,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
 import java.util.Map;
 import java.util.HashMap;
+import java.text.SimpleDateFormat;
 
 global com.wordpress.salaboy.call.CallManager callManager;
 global Map ambulances;
@@ -16,14 +17,18 @@ rule "Handling Single Emergency Call"
     when
        $call:  Call()
     then
+        
+        SimpleDateFormat df = SimpleDateFormat.getInstance().getDateTimeInstance(SimpleDateFormat.SHORT, SimpleDateFormat.SHORT);
         Emergency emergency = new Emergency();
         emergency.setCall($call);
+        $call.setProcessId(pI.getId());
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("emergency", emergency );
+        parameters.put("call.id", $call.getId());
+        parameters.put("call.timestamp", df.format($call.getDate()));
+        parameters.put("call.processId", $call.getProcessId());
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
-        Long id = ((WorkItemNodeInstance)((WorkflowProcessInstance)pI).getNodeInstances().iterator().next()).getWorkItemId();
-        $call.setProcessId(pI.getId());
-        callManager.incomingCall(id, $call);
+        callManager.incomingCall($call);
         insert(pI);
 end
     
