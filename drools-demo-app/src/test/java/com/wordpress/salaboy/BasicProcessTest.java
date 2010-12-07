@@ -128,11 +128,6 @@ public class BasicProcessTest {
 
         Assert.assertEquals(1, ksession.getProcessInstances().size());
         Long taskId = null;
-        for (Map.Entry<Long, Call> entry : CallManager.getInstance().getCalls().entrySet()) {
-            System.out.println(
-                    "Key = " + entry.getKey().toString() + " Date " + entry.getValue().getDate().toString());
-            taskId = entry.getKey();
-        }
 
         Task task = MyDroolsService.getTask(client, taskId);
 

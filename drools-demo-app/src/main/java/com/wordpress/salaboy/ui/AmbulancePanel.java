@@ -12,15 +12,10 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.MyDroolsService;
-import com.wordpress.salaboy.util.MedicalKitUtil;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.MedicalKit;
 
@@ -30,11 +25,13 @@ import org.plugtree.training.model.MedicalKit;
  */
 public class AmbulancePanel extends javax.swing.JPanel {
 
-    private UserUI parent;
+    private AmbulanceControlPanel parent;
     
     /** Creates new form AmbulancePanel */
-    public AmbulancePanel(UserUI parent) {
+    public AmbulancePanel(AmbulanceControlPanel parent) {
+        
         this.parent = parent;
+        
         initComponents();
         
         lblMedBone.setVisible(false);
@@ -62,7 +59,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
         lblMedBone = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         doctorsjList = new javax.swing.JList();
-        refreshButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
@@ -117,15 +113,13 @@ public class AmbulancePanel extends javax.swing.JPanel {
         );
         medicalKitsJInternalFrameLayout.setVerticalGroup(
             medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, medicalKitsJInternalFrameLayout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
-                .addComponent(lblMedFire)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, medicalKitsJInternalFrameLayout.createSequentialGroup()
+            .addGroup(medicalKitsJInternalFrameLayout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
                 .addGroup(medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblMedBone)
-                    .addComponent(lblMedHeart))
+                    .addComponent(lblMedFire, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, medicalKitsJInternalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblMedBone)
+                        .addComponent(lblMedHeart)))
                 .addContainerGap())
         );
 
@@ -139,13 +133,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
         doctorsjList.setPreferredSize(new java.awt.Dimension(220, 80));
         doctorsjList.setVisibleRowCount(4);
         jScrollPane3.setViewportView(doctorsjList);
-
-        refreshButton.setText("Refresh");
-        refreshButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshButtonActionPerformed(evt);
-            }
-        });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
@@ -165,9 +152,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(sendAmbulancejButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(refreshButton)
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,16 +188,14 @@ public class AmbulancePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sendAmbulancejButton)
-                    .addComponent(refreshButton))
+                .addComponent(sendAmbulancejButton)
                 .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendAmbulancejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAmbulancejButtonActionPerformed
         try {
-            parent.sendAmbulance();
+            this.parent.sendAmbulance();
         } catch (IOException ex) {
             Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -224,11 +207,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         //From the list of selected ambulance show the ambulance details
     }//GEN-LAST:event_ambulancejListselectedAmbulance
-
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        // TODO add your handling code here:
-        //parent.updateUIMap();
-}//GEN-LAST:event_refreshButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -243,7 +221,6 @@ public class AmbulancePanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblMedFire;
     private javax.swing.JLabel lblMedHeart;
     private javax.swing.JInternalFrame medicalKitsJInternalFrame;
-    private javax.swing.JButton refreshButton;
     private javax.swing.JButton sendAmbulancejButton;
     // End of variables declaration//GEN-END:variables
 

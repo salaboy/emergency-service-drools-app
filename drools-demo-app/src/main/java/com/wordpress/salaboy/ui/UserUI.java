@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
-import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
-import javax.swing.Popup;
 import javax.swing.table.DefaultTableModel;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.task.AccessType;
@@ -35,7 +32,6 @@ import org.drools.task.query.TaskSummary;
 import org.drools.task.service.ContentData;
 import org.drools.task.service.TaskClient;
 import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.plugtree.training.model.Emergency.EmergencyType;
 import org.plugtree.training.model.Hospital;
@@ -49,12 +45,11 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     private TaskClient taskClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
-    private Task currentTask;
+    //private Task currentTask;
     private SlickBasicGame game;
     //Panels
     private PhoneCallsPanel phoneCallsPanel;
-    private EmergencyInfoPanel emergencyInfoPanel;
-    private AmbulancePanel ambulancePanel;
+    private AmbulanceControlPanel ambulanceControlPanel;
     private CurrentEmergenciesPanel currentEmergenciesPanel;
 
     /** Creates new form UserUI */
@@ -65,14 +60,12 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         
 
         phoneCallsPanel = new PhoneCallsPanel(this);
-        emergencyInfoPanel = new EmergencyInfoPanel(this);
-        ambulancePanel = new AmbulancePanel(this);
         currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
+        ambulanceControlPanel = new AmbulanceControlPanel(this);
 
         this.mainJTabbedPane.add(this.phoneCallsPanel, 0);
-        this.mainJTabbedPane.add(this.emergencyInfoPanel, 1);
-        this.mainJTabbedPane.add(this.ambulancePanel, 2);
-        this.mainJTabbedPane.add(this.currentEmergenciesPanel, 3);
+        this.mainJTabbedPane.add(this.ambulanceControlPanel, 1);
+        this.mainJTabbedPane.add(this.currentEmergenciesPanel, 2);
 
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
     }
@@ -506,96 +499,22 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     }
 
-    public void callSelected(Long id) {
-
-        currentTask = MyDroolsService.getTask(taskClient, id);
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        taskClient.start(currentTask.getId(), "operator", responseHandler);
-
-        this.emergencyInfoPanel.handleCall();
-        
-        mainJTabbedPane.setSelectedComponent(this.emergencyInfoPanel);
+    
+    public void callHandled() {
+        this.phoneCallsPanel.refreshCallsTable();    
+        this.controlAmbulance();
     }
 
-    public void callHandled(ContentData data) {
-
-        //Complete human Task
-        BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
-        taskClient.complete(currentTask.getId(), "operator", data, blockingTaskOperationResponseHandler);
-
-        while (!blockingTaskOperationResponseHandler.isDone()) {
-            try {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>Sleeping two secs!");
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        this.prepareAmbulance();
+    private void controlAmbulance() {
+        this.mainJTabbedPane.setSelectedComponent(this.ambulanceControlPanel);
     }
 
-    private void prepareAmbulance() {
-        try {
-            ObjectInputStream ois = null;
-            //Show ambulance tab.. with all the selected items
-            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-            taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-            List<TaskSummary> taskSums = handler.getResults();
-            TaskSummary taskSum = taskSums.get(0);
-            
-            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-            taskClient.getTask(taskSum.getId(), handlerT);
-            Task task2 = handlerT.getTask();
-            TaskData taskData = task2.getTaskData();
-            //System.out.println("TaskData = " + taskData);
-            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-            taskClient.getContent(taskData.getDocumentContentId(), handlerC);
-            Content content = handlerC.getContent();
-            //System.out.println("Content= " + content);
-            ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-            ois = new ObjectInputStream(bais);
-            String taskinfo = (String) ois.readObject();
-            //System.out.println("TASK INFO = "+taskinfo);
-            this.ambulancePanel.configurePanel(taskinfo);
-            mainJTabbedPane.setSelectedComponent(ambulancePanel);
-        } catch (Exception ex) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void sendAmbulance() throws IOException, ClassNotFoundException {
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        taskClient.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-        List<TaskSummary> taskSums = handler.getResults();
-        TaskSummary taskSum = taskSums.get(0);
-        // se llama dos veces al mismo start.. que raro!!!!!!!
-        taskClient.start(taskSum.getId(), "control_operator", null);
-        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-        taskClient.getTask(taskSum.getId(), handlerT);
-        Task task2 = handlerT.getTask();
-        TaskData taskData = task2.getTaskData();
-
-        System.out.println("TaskData = " + taskData);
-        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-        taskClient.getContent(taskData.getDocumentContentId(), handlerC);
-        Content content = handlerC.getContent();
-
-        System.out.println("Content= " + content);
-        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
-
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        //#{doctor.id}, #{ambulance.id},  #{patient.id}, #{patient.name}, #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}
-        String[] taskinfo = ((String) ois.readObject()).split(",");
-
-        Long ambulanceId = Long.valueOf(taskinfo[1].trim());
-
+    public void sendAmbulance(EmergencyType emergencyType, Long ambulanceId) {
         this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
-        this.game.emergencyTypeSelected = EmergencyType.valueOf(taskinfo[7].trim());
+        this.game.emergencyTypeSelected = emergencyType ;
         this.game.ambulanceSelectedId = ambulanceId;
         this.game.ambulanceDispatched = true;
-        taskClient.complete(taskSum.getId(), "control_operator", null, null);
     }
 
     public void medicalEvaluationCompleted(int priority, String comment) {
@@ -684,6 +603,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     public void monitorAlertReceived(String string) {
         this.currentEmergenciesPanel.monitorAlertReceived(string);
     }
+
 
     
 }
