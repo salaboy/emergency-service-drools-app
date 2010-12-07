@@ -16,7 +16,7 @@ public class Call implements Serializable{
     private Date date;
     private Emergency emergency;
     private Long processId;
-    private String phonenumber;
+    private String phoneNumber;
     public static AtomicLong incrementalId = new AtomicLong();
 
     public Call() {
@@ -27,7 +27,7 @@ public class Call implements Serializable{
         this();
         this.date = date;
         NumberFormat formatter = new DecimalFormat("0000");
-        this.phonenumber = "(555 -" + formatter.format(Math.random()*1000) + ")";
+        this.phoneNumber = "(555 -" + formatter.format(Math.random()*1000) + ")";
     }
 
     public Date getDate() {
@@ -62,12 +62,12 @@ public class Call implements Serializable{
         this.processId = processId;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     

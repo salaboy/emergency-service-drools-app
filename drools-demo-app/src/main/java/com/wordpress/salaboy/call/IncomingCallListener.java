@@ -12,5 +12,5 @@ import org.plugtree.training.model.Call;
  * @author esteban
  */
 public interface IncomingCallListener {
-    void processIncomingCall(Long id, Call call);
+    void processIncomingCall(Call call);
 }

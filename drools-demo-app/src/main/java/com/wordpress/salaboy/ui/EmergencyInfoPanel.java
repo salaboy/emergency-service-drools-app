@@ -8,9 +8,9 @@
  *
  * Created on Nov 24, 2010, 4:00:11 PM
  */
-
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.call.CallManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,6 +20,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.task.AccessType;
 import org.drools.task.service.ContentData;
+import org.drools.task.service.TaskClient;
+import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 /**
  *
@@ -27,33 +29,19 @@ import org.drools.task.service.ContentData;
  */
 public class EmergencyInfoPanel extends javax.swing.JPanel {
 
-    private UserUI parent;
-    
-    
-    
-    /** Creates new form EmergencyInfoPanel */
-    public EmergencyInfoPanel(UserUI parent) {
+    private TaskClient taskClient;
+    private Long taskId;
+    private PhoneCallsPanel parent;
+
+    EmergencyInfoPanel(PhoneCallsPanel parent, TaskClient taskClient, Long id) {
+        this.taskClient = taskClient;
+        this.taskId = id;
         this.parent = parent;
         initComponents();
-    }
-    
-    public void handleCall(){
-        this.changeComponentsStatus(true);
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        taskClient.start(id, "operator", responseHandler);
     }
 
-    public void disableComponents(){
-        this.changeComponentsStatus(false);
-    }
-    
-    private void changeComponentsStatus(boolean enabled){
-        locationjTextField.setEnabled(enabled);
-        nameJTextField.setEnabled(enabled);
-        emergencyTypeJComboBox.setEnabled(enabled);
-        ageJTextField.setEnabled(enabled);
-        chooseAmbuelanceJButton.setEnabled(enabled);
-        genderjComboBox.setEnabled(enabled);
-    }
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -79,39 +67,29 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(300, 480));
         setName("Emergency Questionaire"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
-        setSize(new java.awt.Dimension(300, 480));
 
         jLabel12.setText("Location:");
 
-        locationjTextField.setEnabled(false);
-
         jLabel1.setText("Name: ");
-
-        nameJTextField.setEnabled(false);
 
         jLabel2.setText("Gender:");
 
         genderjComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MALE", "FEMALE" }));
-        genderjComboBox.setEnabled(false);
 
         jLabel3.setText("Emergency Type:");
 
         emergencyTypeJComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FIRE", "CAR_CRASH", "HEART_ATTACK" }));
-        emergencyTypeJComboBox.setEnabled(false);
 
         jLabel5.setText("Age:");
 
-        ageJTextField.setEnabled(false);
-
         chooseAmbuelanceJButton.setText("Choose Ambulance");
-        chooseAmbuelanceJButton.setEnabled(false);
         chooseAmbuelanceJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseAmbuelanceJButtonActionPerformed(evt);
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 18));
         jLabel4.setForeground(new java.awt.Color(51, 204, 0));
         jLabel4.setText("User: Operator");
 
@@ -143,7 +121,7 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(jLabel4)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,27 +150,22 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
                     .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(chooseAmbuelanceJButton)
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooseAmbuelanceJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseAmbuelanceJButtonActionPerformed
         ObjectOutputStream out = null;
         try {
-            
+
             // data.setCon
             Map<String, Object> info = new HashMap<String, Object>();
-           // System.out.println("LocationUI = "+locationjTextField.getText());
-           // System.out.println("ageUI = "+ageJTextField.getText());
-           // System.out.println("nameUI = "+nameJTextField.getText());
-           // System.out.println("genderUI = "+genderjComboBox.getModel().getSelectedItem());
-           // System.out.println("typeUI = "+emergencyTypeJComboBox.getModel().getSelectedItem());
-            info.put("emergency.location",locationjTextField.getText());
-            info.put("patient.name",nameJTextField.getText());
-            info.put("emergency.type",emergencyTypeJComboBox.getModel().getSelectedItem()) ; 
-            info.put("patient.age",ageJTextField.getText());
-            info.put("patient.gender",genderjComboBox.getModel().getSelectedItem());
-            
+            info.put("emergency.location", locationjTextField.getText());
+            info.put("patient.name", nameJTextField.getText());
+            info.put("emergency.type", emergencyTypeJComboBox.getModel().getSelectedItem());
+            info.put("patient.age", ageJTextField.getText());
+            info.put("patient.gender", genderjComboBox.getModel().getSelectedItem());
+
             ContentData result = new ContentData();
             result.setAccessType(AccessType.Inline);
             result.setType("java.util.Map");
@@ -201,9 +174,12 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
             out.writeObject(info);
             out.close();
             result.setContent(bos.toByteArray());
-            
-            parent.callHandled(result);
-            
+
+            BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
+            taskClient.complete(this.taskId, "operator", result, blockingTaskOperationResponseHandler);
+
+            this.parent.hideDialog();
+
         } catch (IOException ex) {
             Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -213,10 +189,8 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
                 Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_chooseAmbuelanceJButtonActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField ageJTextField;
     private javax.swing.JButton chooseAmbuelanceJButton;
@@ -231,5 +205,4 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
     private javax.swing.JTextField locationjTextField;
     private javax.swing.JTextField nameJTextField;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -13,10 +13,11 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
+import org.drools.task.query.TaskSummary;
+import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.plugtree.training.model.Call;
 
 /**
@@ -50,7 +51,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         refreshJButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        setBounds(new java.awt.Rectangle(0, 0, 400, 480));
         setName("Emergency Calls"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
 
@@ -59,13 +59,12 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
             },
             new String [] {
-                "Alert", "Date/Time", "Call"
+                "Id","Incoming Call",
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.Number.class
+                java.lang.Number.class,
+                java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -74,7 +73,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         });
         phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         phoneCallsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
-        phoneCallsJTable.setSize(new java.awt.Dimension(280, 100));
         phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 phoneCallsJTablerowClick(evt);
@@ -122,7 +120,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                         .addComponent(refreshJButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -138,7 +136,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                 .addComponent(newEmergencyPhoneCallJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(refreshJButton)
-                .addContainerGap(158, Short.MAX_VALUE))
+                .addContainerGap(161, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -146,7 +144,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         //System.out.println("ID from EVT"+evt.getID());
         int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
         Long id = Long.parseLong(phoneCallsJTable.getModel().getValueAt(selected, 0).toString());
-        parent.callSelected(id);
+        this.callSelected(id);
         
     }//GEN-LAST:event_phoneCallsJTablerowClick
 
@@ -160,26 +158,45 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 }//GEN-LAST:event_refreshJButtonActionPerformed
 
     @Override
-    public void processIncomingCall(Long id, Call call) {
+    public void processIncomingCall(Call call) {
         refreshCallsTable();
     }
     
-    private void refreshCallsTable(){
+    public void refreshCallsTable(){
+
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        
+        this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+        
+        List<TaskSummary> results = handler.getResults();
+        
         DefaultTableModel tableModel = ((DefaultTableModel)phoneCallsJTable.getModel());
         
         int rowCount = tableModel.getRowCount();
         for (int i = 0; i < rowCount; i++) {
             tableModel.removeRow(0);
         }
-        Calendar calendar = Calendar.getInstance();
         
-       
-        for (Map.Entry<Long, Call> entry : CallManager.getInstance().getCalls().entrySet()) {
-            calendar.setTime(entry.getValue().getDate());
-            tableModel.addRow(new Object[]{entry.getKey().toString(),
-                calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND),
-                entry.getValue().getId()});
+        for (TaskSummary summary : results) {
+            long id = summary.getId();
+            String name = summary.getName();
+            tableModel.addRow(new Object[]{id,name});
         }
+    }
+    
+    
+    private JDialog callPopup;
+    public void callSelected(Long id) {
+        EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
+        callPopup = new JDialog(this.parent, "Info",true);
+        callPopup.add(emergencyInfoPanel);
+        this.callPopup.setSize(300, 600);
+        this.callPopup.setVisible(true);
+        this.callPopup.requestFocus();
+    }
+    
+    public void hideDialog(){
+        this.callPopup.setVisible(false);
     }
 
 

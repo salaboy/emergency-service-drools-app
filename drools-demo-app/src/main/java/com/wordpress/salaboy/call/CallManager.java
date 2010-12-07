@@ -6,10 +6,7 @@
 package com.wordpress.salaboy.call;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.plugtree.training.model.Call;
 
 /**
@@ -20,7 +17,6 @@ public class CallManager {
     
     private static CallManager INSTANCE;
     
-    private Map<Long, Call> calls = new HashMap<Long, Call>();
     private List<IncomingCallListener> listeners = new ArrayList<IncomingCallListener>();
     
     private CallManager(){
@@ -34,30 +30,14 @@ public class CallManager {
         return INSTANCE;
     }
     
-    public void incomingCall(Long id, Call call){
-        calls.put(id, call);
-        
+    public void incomingCall(Call call){
         //notify listeners:
         for (IncomingCallListener listener : listeners) {
-            listener.processIncomingCall(id, call);
+            listener.processIncomingCall(call);
         }
     }
     
     public void addIncomingCallListener(IncomingCallListener listener){
         listeners.add(listener);
     }
-
-    public Map<Long, Call> getCalls() {
-        return Collections.unmodifiableMap(calls);
-    }
-    
-    public Call getCallById(Long id) {
-        for (Map.Entry<Long, Call> entry : calls.entrySet()) {
-            if (entry.getValue().getId() == id){
-                return entry.getValue();
-            }
-        }
-        return null;
-    }
-    
 }
