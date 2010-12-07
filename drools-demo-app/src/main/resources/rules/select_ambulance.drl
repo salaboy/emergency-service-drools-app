@@ -62,6 +62,7 @@ rule "Fire Emergency without more information"
 		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
+        $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
 end
 
@@ -84,7 +85,7 @@ rule "Car Crash Emergency without more information"
 		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
-        
+        $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
 end
 
@@ -107,7 +108,7 @@ rule "Heart Attack Emergency without more information"
 		// Set the doctor.id and the ambulance.id as process variables for future references
         $processInstance.setVariable("doctor.id", medic.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
-        
+        $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
 end
 

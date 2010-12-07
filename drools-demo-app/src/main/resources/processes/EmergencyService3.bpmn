@@ -30,6 +30,7 @@
   <itemDefinition id="_call.idItem" structureRef="String" />
   <itemDefinition id="_call.timestampItem" structureRef="String" />
   <itemDefinition id="_call.phoneNumberItem" structureRef="String" />
+  <itemDefinition id="_ambulance.descriptionItem" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="org.drools.bpmn2.EmergencyService" name="Emergency Service Main Process" >
 
@@ -52,6 +53,7 @@
     <property id="call.id" itemSubjectRef="_call.idItem"/>
     <property id="call.timestamp" itemSubjectRef="_call.timestampItem"/>
     <property id="call.phoneNumber" itemSubjectRef="_call.phoneNumberItem"/>
+    <property id="ambulance.description" itemSubjectRef="_ambulance.descriptionItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
@@ -229,7 +231,7 @@
       <dataInputAssociation>
         <targetRef>_5_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">DispatchAmbulance</from>
+          <from xs:type="tFormalExpression">DispatchAmbulance #{ambulance.description}</from>
           <to xs:type="tFormalExpression">_5_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
