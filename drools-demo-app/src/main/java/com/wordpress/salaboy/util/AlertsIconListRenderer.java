@@ -28,7 +28,6 @@ public class AlertsIconListRenderer
 		boolean isSelected, boolean cellHasFocus) {
 
 		// Get the renderer component from parent class
-
 		JLabel label =
 			(JLabel) super.getListCellRendererComponent(list,
 				value, index, isSelected, cellHasFocus);

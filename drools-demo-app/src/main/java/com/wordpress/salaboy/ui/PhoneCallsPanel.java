@@ -197,6 +197,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     
     public void hideDialog(){
         this.callPopup.setVisible(false);
+        this.parent.controlAmbulance();
     }
 
 

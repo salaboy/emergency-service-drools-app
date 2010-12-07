@@ -505,7 +505,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         this.controlAmbulance();
     }
 
-    private void controlAmbulance() {
+    public void controlAmbulance() {
         this.mainJTabbedPane.setSelectedComponent(this.ambulanceControlPanel);
     }
 
