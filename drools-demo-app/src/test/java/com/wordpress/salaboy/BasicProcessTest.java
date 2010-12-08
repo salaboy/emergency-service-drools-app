@@ -127,15 +127,22 @@ public class BasicProcessTest {
         Thread.sleep(5000);
 
         Assert.assertEquals(1, ksession.getProcessInstances().size());
-        Long taskId = null;
+        
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+       
+        handler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+         List<TaskSummary> taskSums = handler.getResults();
+        TaskSummary taskSum = taskSums.get(0);
+        
 
-        Task task = MyDroolsService.getTask(client, taskId);
+       
 
-        Assert.assertNotNull(task);
+        Assert.assertNotNull(taskSum);
 
         //Start the Get Emergency Information Task
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start(task.getId(), "operator", responseHandler);
+        client.start(taskSum.getId(), "operator", responseHandler);
 
 
         Map<String, Object> info = new HashMap<String, Object>();
@@ -157,14 +164,14 @@ public class BasicProcessTest {
         out.close();
         result.setContent(bos.toByteArray());
         
-        client.complete(task.getId(),"operator", result, null);
+        client.complete(taskSum.getId(),"operator", result, null);
         
         Thread.sleep(5000);
         
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-        List<TaskSummary> taskSums = handler.getResults();
-        TaskSummary taskSum = taskSums.get(0);
+        taskSums = handler.getResults();
+        taskSum = taskSums.get(0);
         
         client.start(taskSum.getId(), "control_operator", null);
         BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();

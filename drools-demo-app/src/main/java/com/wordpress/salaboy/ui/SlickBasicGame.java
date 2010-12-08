@@ -47,7 +47,6 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private int[] ys = new int[]{1, 7, 13, 19, 25};
     private int randomx;
     private int randomy;
-    //private int[] hospitals = new int[]{9, 8, 33, 8, 15, 20};
     private static UserUI ui;
     public boolean ambulanceDispatched = false;
     private Ambulance ambulance;

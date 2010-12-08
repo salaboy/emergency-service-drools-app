@@ -234,12 +234,7 @@ public class MyDroolsService {
         return client;
     }
 
-    public static Task getTask(TaskClient client, Long workItemId) {
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-        client.getTaskByWorkItemId(workItemId, getTaskResponseHandler);
-        Task task = getTaskResponseHandler.getTask();
-        return task;
-    }
+   
 
      public static Hospital getHospitalByCoordinates(Block hospitalBlock) {
         Collection<Hospital> myhospitals = MyDroolsService.hospitals.values();

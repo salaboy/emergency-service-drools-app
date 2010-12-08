@@ -9,3 +9,13 @@ This is a generic application that can be customized to work of different domain
 We will try to clean and improve the demo application in order to reflect the best practicies to use Drools.
 
 www.drools.org
+
+Some configurations Steps:
+
+Inside the pom.xml file: 
+ we use a system variable java.library.path pointing to lwjgl that it's being used to render the city map.
+In my configuration (Mac OSX) it's pointing to /Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ where the native binaries are located. Notice that you must have the 2.1.0 version of lwjgl that you can download from: http://sourceforge.net/projects/java-game-lib/files/Official%20Releases/LWJGL%202.1.0/ that it's being required by slick 2D.
+
+We are also using the argLine parameter to <argLine>-d32</argLine> because bluecove (used for Wiimote) it's not supported in 64-bits machines.
+
+
