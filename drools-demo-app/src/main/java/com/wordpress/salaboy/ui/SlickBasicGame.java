@@ -37,6 +37,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private Animation emergency;
     private Animation hospital;
     public BlockMap map;
+    private Hospital selectedHospital = null;
     private Polygon playerPoly;
     private Polygon emergencyPoly;
     private Polygon hospitalPoly;
@@ -46,7 +47,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     private int[] ys = new int[]{1, 7, 13, 19, 25};
     private int randomx;
     private int randomy;
-    private int[] hospitals = new int[]{9, 8, 33, 8, 15, 20};
+    //private int[] hospitals = new int[]{9, 8, 33, 8, 15, 20};
     private static UserUI ui;
     public boolean ambulanceDispatched = false;
     private Ambulance ambulance;
@@ -247,8 +248,8 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         }
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
-        if (hospital != null) {
-            g.drawAnimation(hospital, hospitals[0] * 16, hospitals[1] * 16);
+        if (hospital != null && selectedHospital != null) {
+            g.drawAnimation(hospital, (selectedHospital.getPositionX()-2)*16 , (selectedHospital.getPositionY()-5)*16);
 
         }
     }
@@ -385,19 +386,19 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
         
         BlockMap.emergencies.clear();
         int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
-        Hospital selected = null;
+        
         for (Hospital hospitalnow : MyDroolsService.hospitals.values()) {
             if (hospitalnow.getId() == id) {
-                selected = hospitalnow;
+                selectedHospital = hospitalnow;
             }
         }
         BlockMap.hospitals.clear();
-        BlockMap.hospitals.add(new Block(Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16, hospitasquare, "hospital"));
+        BlockMap.hospitals.add(new Block(Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16, hospitasquare, "hospital"));
         hospitalPoly = new Polygon(new float[]{
-                    Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16,
-                    Math.round(selected.getPositionX()) * 16 + 16, Math.round(selected.getPositionY()) * 16,
-                    Math.round(selected.getPositionX()) * 16 + 16, Math.round(selected.getPositionY()) * 16 + 16,
-                    Math.round(selected.getPositionX()) * 16, Math.round(selected.getPositionY()) * 16 + 16
+                    Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16,
+                    Math.round(selectedHospital.getPositionX()) * 16 + 16, Math.round(selectedHospital.getPositionY()) * 16,
+                    Math.round(selectedHospital.getPositionX()) * 16 + 16, Math.round(selectedHospital.getPositionY()) * 16 + 16,
+                    Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16 + 16
                 });
         hospital = new Animation();
         hospital.setAutoUpdate(true);

@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.MyDroolsService;
 import com.wordpress.salaboy.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,28 +40,36 @@ public class MapEventsNotifier {
             executor.execute(new Runnable()  {
                 @Override
                 public void run() {
-                    logger.addMessage(type+": "+data);
+                    
                     switch (type){
                         case EMERGENCY_REACHED:
                             mapEventsListener.emergencyReached((Block) data);
+                            logger.addMessage("The emergency location was reached by the Ambulance");
                             break;
                         case HOSPITAL_REACHED:
                             mapEventsListener.hospitalReached((Block) data);
+                            logger.addMessage(" The Hospital: "+MyDroolsService.getHospitalByCoordinates((Block)data).getName()+" was selected");
                             break;
                         case AMBULANCE_POSITION:
                             mapEventsListener.positionReceived((Block) data);
+                            int x = (int)Math.round(((Block) data).poly.getX()/16);
+                            int y = (int)Math.round(((Block) data).poly.getY()/16);
+                            logger.addMessage("The Ambulance was at "+MyDroolsService.translatePosition(x, y));
                             break;
                         case HOSPITAL_SELECTED:
                             mapEventsListener.hospitalSelected((Long) data);
+                            logger.addMessage(" The Hospital: "+MyDroolsService.getHospitalById((Long)data)+" was selected for this emergency");
                             break;
                         case HEART_BEAT_RECEIVED:
                             mapEventsListener.heartBeatReceived((Double) data);
                             break;
                         case HEART_ATTACK:
                             mapEventsListener.monitorAlertReceived((String) data);
+                            logger.addMessage("Alarm: the Patient is having a Heart Attack");
                             break;
                         case NO_VITAL_SIGNS:
                             mapEventsListener.monitorAlertReceived((String) data);
+                            logger.addMessage("Alarm: we are not receiving the Patient's vital sign");
                             break;
                     }
                 }

@@ -253,4 +253,31 @@ public class MyDroolsService {
         }
         return null;
     }
+     
+      public static String translatePosition(int x, int y){
+        String xString = "";
+        String yString = "";
+        switch(x){
+             case 1: xString = "1st Street"; break;
+            case 7: xString = "2nd Street"; break;
+            case 13: xString = "3rd Street"; break;
+            case 19: xString = "4th Street"; break;
+            case 25: xString = "5th Street"; break;
+            case 31: xString = "6th Street"; break;
+            case 37: xString = "7th Street"; break;      
+        }
+         switch(y){
+             
+            case 1: yString = "A Street"; break;
+            case 7: yString = "B Street"; break;
+            case 13: yString = "C Street"; break;
+            case 19: yString = "D Street"; break;
+            case 25: yString = "E Street"; break;
+            
+        }
+        
+        
+        
+        return ""+xString +" and "+yString;
+    }
 }

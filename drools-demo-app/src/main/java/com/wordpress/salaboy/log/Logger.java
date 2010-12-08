@@ -18,7 +18,7 @@ import java.util.List;
 public class Logger {
     private List<String> logs = new ArrayList<String>();
     
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm:ss a");
     
     public synchronized void addMessage(String message){
         logs.add(dateFormat.format(new Date(System.currentTimeMillis()))+" - "+message);

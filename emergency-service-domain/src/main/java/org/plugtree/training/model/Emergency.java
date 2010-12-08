@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author salaboy
  */
 public class Emergency implements Serializable{
-
+    
     public enum EmergencyType {
 
         FIRE, CAR_CRASH, HEART_ATTACK, ASSAULT

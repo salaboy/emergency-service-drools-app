@@ -325,13 +325,14 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         int x = (int)ambulance.getPositionX();
         int y = (int)ambulance.getPositionY();
         
-        String text = x+" - "+y;
+        String text = MyDroolsService.translatePosition(x, y );
         if (!lastPositionText.equals(text)){
             this.txtPosition.insert(text+"\n", 0);
             lastPositionText = text;
         }
     }
 
+   
     private List<String> alerts = new ArrayList<String>(); 
     void monitorAlertReceived(String message) {
         alerts.add(0,message);

@@ -120,7 +120,7 @@ public class Hospital implements Serializable{
     
     @Override
     public String toString() {
-        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + '}';
+        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", X = "+positionX + ", Y =" +positionY+"}";
     }
     
     

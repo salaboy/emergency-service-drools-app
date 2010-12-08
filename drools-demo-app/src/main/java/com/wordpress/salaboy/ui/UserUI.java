@@ -93,7 +93,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         lstReports = new javax.swing.JList();
         btnClearReport = new javax.swing.JButton();
         btnRefreshReport = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -254,19 +253,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         );
 
         jTabbedPane1.addTab("Reports", pnlReport);
-
-        org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 345, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 368, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Activity Console", jPanel4);
 
         org.jdesktop.layout.GroupLayout managerjPanelLayout = new org.jdesktop.layout.GroupLayout(managerjPanel);
         managerjPanel.setLayout(managerjPanelLayout);
@@ -472,7 +458,6 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;

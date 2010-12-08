@@ -33,12 +33,13 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $ambulance: Ambulance()
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
-                                                    init( Hospital selected = null; float distanceX = 0; float distanceY = 0; float best = 1000;),
+                                                    init( Hospital selected = null; float distanceX = 0; float distanceY = 0; double best = 1000d;),
                                                     action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
                                                             float difY = $hospital.getPositionY() - $ambulance.getPositionY();                                                            
-                                                            float difTotal = difX - difY;
-                                                            //System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
-                                                            if(Math.abs(difTotal) < best){ best = Math.abs(difTotal); selected = $hospital;}
+                                                            double difTotal = Math.sqrt(Math.pow(((double)difX),2d) + Math.pow(((double)difY),2d));
+                                                            System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
+                                                            System.out.println("Hospital now = "+$hospital);
+                                                            if(difTotal < best){ best = difTotal; selected = $hospital;}
                                                             ),
                                                     reverse(),
                                                     result(selected)
@@ -49,7 +50,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
     then
         
         System.out.println("Emergency Priority = "+$processInstance.getVariable("emergency.priority"));
-        System.out.println("HOSPITAL SELECTED !!!!");
+        System.out.println("HOSPITAL SELECTED !!!!"+$selectedHospital);
         notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_SELECTED, $selectedHospital.getId());
         
 end
