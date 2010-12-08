@@ -67,6 +67,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         this.mainJTabbedPane.add(this.currentEmergenciesPanel, 2);
 
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
+        
     }
 
     /** This method is called from within the constructor to
@@ -189,7 +190,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
                         .add(jButton1))
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)))
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         hospitalJPanelLayout.setVerticalGroup(
@@ -197,7 +198,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, hospitalJPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 78, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 100, Short.MAX_VALUE)
                 .add(jButton2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
@@ -232,13 +233,15 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         pnlReport.setLayout(pnlReportLayout);
         pnlReportLayout.setHorizontalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
             .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(btnRefreshReport)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnClearReport)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .add(pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(pnlReportLayout.createSequentialGroup()
+                        .add(btnRefreshReport)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnClearReport)
+                        .addContainerGap())
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)))
         );
         pnlReportLayout.setVerticalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -247,8 +250,8 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
                 .add(pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnRefreshReport)
                     .add(btnClearReport))
-                .add(12, 12, 12)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -260,14 +263,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -331,7 +334,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
