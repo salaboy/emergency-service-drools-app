@@ -35,6 +35,8 @@ public class MapEventsNotifier {
         this.logger = logger;
     }
     
+    private String lastReportedPosition = "";
+    
     public void notifyMapEventsListeners(final EVENT_TYPE type, final Object data) {
         for (final MapEventsListener mapEventsListener : mapEventListeners) {
             executor.execute(new Runnable()  {
@@ -54,7 +56,13 @@ public class MapEventsNotifier {
                             mapEventsListener.positionReceived((Block) data);
                             int x = (int)Math.round(((Block) data).poly.getX()/16);
                             int y = (int)Math.round(((Block) data).poly.getY()/16);
-                            logger.addMessage("The Ambulance was at "+MyDroolsService.translatePosition(x, y));
+                            
+                            String position = MyDroolsService.translatePosition(x, y);
+                            if (!lastReportedPosition.equals(position)){
+                                lastReportedPosition = position;
+                                logger.addMessage("The Ambulance was at "+MyDroolsService.translatePosition(x, y));
+                            }
+                            
                             break;
                         case HOSPITAL_SELECTED:
                             mapEventsListener.hospitalSelected((Long) data);
