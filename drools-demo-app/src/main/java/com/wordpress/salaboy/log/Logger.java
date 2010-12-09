@@ -28,7 +28,7 @@ public class Logger {
         logs.clear();
     }
     
-    public List<String> getLogs(){
+    public synchronized List<String> getLogs(){
         return Collections.unmodifiableList(this.logs);
     }
     

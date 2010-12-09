@@ -1,0 +1,9 @@
+[condition][]There is an Emergency going on=$processInstance: WorkflowProcessInstance() AND $call: Call()
+[condition][]There is a {type} Emergency going on=$processInstance: WorkflowProcessInstance() AND $emergency: Emergency($type : type == EmergencyType.{type})
+[condition][]There is a person over {age} years old involved=$patient: Patient(age > 80)
+[condition][]AND=and
+[consequence][]Select an available Ambulance for {type} emergency=Ambulance ambulance = (Ambulance)((List)ambulances.get(EmergencyType.{type})).get(0);
+[consequence][]Select an available {type} specialist=Medic medic = (Medic)((List)doctors.get(MedicSpeciality.{type})).get(0);
+[consequence][]Prepare ambulance=ambulance.setMedicOnBoard(medic); $emergency.setAmbulance(ambulance); update($emergency); $processInstance.setVariable("doctor.id", medic.getId()); $processInstance.setVariable("ambulance.id", ambulance.getId()); $processInstance.setVariable("ambulance.description", ambulance.getDescription());
+[consequence][]Add {type} medical kit to the ambulance=Ambulance ambulance = $emergency.getAmbulance(); ambulance.addKit(new MedicalKit("special stroller", MedicSpeciality.{type}));
+[consequence][]Initialize Patient information=Emergency emergency = (Emergency)$processInstance.getVariable("emergency"); Patient patient = new Patient((String)$processInstance.getVariable("patient.name"), Integer.valueOf((String)$processInstance.getVariable("patient.age")), (String)$processInstance.getVariable("patient.gender") ); emergency.setPatient(patient); emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type"))); emergency.setCall($call); $processInstance.setVariable("patient.id", patient.getId()); insert(emergency); insert(patient); 

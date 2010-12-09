@@ -1,0 +1,4 @@
+[condition][]There is an incoming Call=$call: Call()
+[consequence][]Create an Emergency for the Call=Emergency emergency = new Emergency(); emergency.setCall($call);
+[consequence][]Start Emergency Process=java.text.DateFormat df = SimpleDateFormat.getInstance().getDateTimeInstance(SimpleDateFormat.SHORT, SimpleDateFormat.SHORT); Map<String, Object> parameters = new HashMap<String, Object>(); parameters.put("emergency", emergency ); parameters.put("call.id", $call.getId()); parameters.put("call.timestamp", df.format($call.getDate())); parameters.put("call.phoneNumber", $call.getPhoneNumber()); ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters); $call.setProcessId(pI.getId()); insert(pI);
+[consequence][]Notify about the incoming Call=callManager.incomingCall($call);

@@ -1,0 +1,74 @@
+package org.plugtree.emergencyservice.ambulance;
+
+import org.plugtree.training.model.Ambulance;
+import org.plugtree.training.model.Call;
+import org.plugtree.training.model.Patient;
+import org.plugtree.training.model.Emergency;
+import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Medic;
+import org.plugtree.training.model.Medic.MedicSpeciality;
+import org.plugtree.training.model.MedicalKit;
+import org.plugtree.training.model.Location;
+import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.List;
+
+global Map ambulances;
+global Map doctors;
+
+rule "Initialize Emergency"
+    ruleflow-group "select_ambulance"
+    salience 20
+    when
+      There is an Emergency going on
+    then
+     Initialize Patient information       
+end
+
+rule "Fire Emergency without more information"
+    ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
+    when
+        There is a FIRE Emergency going on
+    then
+        Select an available Ambulance for FIRE emergency
+        Select an available BURNS specialist
+        Prepare ambulance
+end
+
+rule "Car Crash Emergency without more information"
+    ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
+    when
+        There is a CAR_CRASH Emergency going on
+    then
+        Select an available Ambulance for CAR_CRASH emergency
+        Select an available BONES specialist
+        Prepare ambulance
+end
+
+rule "Heart Attack Emergency without more information"
+    ruleflow-group "select_ambulance"
+    salience 10
+    no-loop true
+    when
+        There is a HEART_ATTACK Emergency going on
+    then
+        Select an available Ambulance for HEART_ATTACK emergency
+        Select an available REANIMATION specialist
+        Prepare ambulance
+end
+
+rule "Car Crash Emergency with Patient older than 80 years old"
+    ruleflow-group "select_ambulance"
+    salience 5
+    no-loop true
+    when
+        There is a CAR_CRASH Emergency going on
+        AND
+        There is a person over 80 years old involved
+    then
+        Add BONES medical kit to the ambulance
+end
