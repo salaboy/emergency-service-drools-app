@@ -488,13 +488,10 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
 
     
     public void callHandled() {
-        this.phoneCallsPanel.refreshCallsTable();    
-        this.controlAmbulance();
+        this.phoneCallsPanel.refresh();    
+        
     }
 
-    public void controlAmbulance() {
-        this.mainJTabbedPane.setSelectedComponent(this.ambulanceControlPanel);
-    }
 
     public void sendAmbulance(EmergencyType emergencyType, Long ambulanceId) {
         this.currentEmergenciesPanel.addNewEmergency(ambulanceId);

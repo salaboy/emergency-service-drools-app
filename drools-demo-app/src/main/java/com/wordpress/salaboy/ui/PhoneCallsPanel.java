@@ -14,6 +14,8 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import org.drools.task.query.TaskSummary;
@@ -24,15 +26,16 @@ import org.plugtree.training.model.Call;
  *
  * @author esteban
  */
-public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallListener {
+public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallListener, Refreshable {
 
     private UserUI parent;
-    
+    private UIJTableRefreshManager refreshManager = null;
     /** Creates new form PhoneCallsPanel */
     public PhoneCallsPanel(UserUI parent) {
         this.parent = parent;
         initComponents();
         CallManager.getInstance().addIncomingCallListener(this);
+        
     }
 
     /** This method is called from within the constructor to
@@ -48,6 +51,9 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         phoneCallsJTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         refreshJButton = new javax.swing.JButton();
+        chk_autoRefresh = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        ftxt_refreshSeconds = new javax.swing.JFormattedTextField();
 
         setName("Operator Tasks"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
@@ -68,57 +74,80 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-        });
-        phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        phoneCallsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
-        phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                phoneCallsJTablerowClick(evt);
-            }
-        });
-        phoneCallsJScrollPane.setViewportView(phoneCallsJTable);
+        }
+    );
+    phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+    phoneCallsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
+    phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            phoneCallsJTablerowClick(evt);
+        }
+    });
+    phoneCallsJScrollPane.setViewportView(phoneCallsJTable);
 
-        jLabel11.setText("Incoming Emergency Calls");
+    jLabel11.setText("Incoming Emergency Calls");
 
-        refreshJButton.setText("Refresh");
-        refreshJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshJButtonActionPerformed(evt);
-            }
-        });
+    refreshJButton.setText("Refresh");
+    refreshJButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            refreshJButtonActionPerformed(evt);
+        }
+    });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(jLabel11))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(refreshJButton)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+    chk_autoRefresh.setText("auto refresh");
+    chk_autoRefresh.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            chk_autoRefreshActionPerformed(evt);
+        }
+    });
+
+    jLabel1.setText("secs");
+
+    ftxt_refreshSeconds.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+    ftxt_refreshSeconds.setText("3");
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+    this.setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(refreshJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(1, 1, 1)
+                    .addComponent(ftxt_refreshSeconds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(2, 2, 2)
+                    .addComponent(jLabel1)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(chk_autoRefresh)
+                    .addGap(147, 147, 147))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                    .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jLabel11)
+                    .addGap(120, 120, 120))))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabel11)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(refreshJButton)
-                .addContainerGap())
-        );
+                .addComponent(jLabel1)
+                .addComponent(chk_autoRefresh)
+                .addComponent(ftxt_refreshSeconds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(18, 18, 18))
+    );
     }// </editor-fold>//GEN-END:initComponents
 
     private void phoneCallsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phoneCallsJTablerowClick
-        //System.out.println("ID from EVT"+evt.getID());
+        
         int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
         Long id = Long.parseLong(phoneCallsJTable.getModel().getValueAt(selected, 0).toString());
         this.callSelected(id);
@@ -126,16 +155,51 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     }//GEN-LAST:event_phoneCallsJTablerowClick
 
     private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
-        this.refreshCallsTable();
+        this.refresh();
 }//GEN-LAST:event_refreshJButtonActionPerformed
+
+    private void chk_autoRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chk_autoRefreshActionPerformed
+       if(chk_autoRefresh.isSelected()){
+        UIJTableRefreshManager.start(chk_autoRefresh, Integer.valueOf(ftxt_refreshSeconds.getText()), this); 
+       }
+       
+    }//GEN-LAST:event_chk_autoRefreshActionPerformed
 
     @Override
     public void processIncomingCall(Call call) {
-        refreshCallsTable();
+        refresh();
     }
     
-    public void refreshCallsTable(){
+   
+    
+    
+    private JDialog callPopup;
+    public void callSelected(Long id) {
+        EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
+        callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
+        callPopup.add(emergencyInfoPanel);
+        this.callPopup.setSize(300, 350);
+        this.callPopup.setVisible(true);
+        this.callPopup.requestFocus();
+    }
+    
+    public void hideDialog(){
+        this.callPopup.setVisible(false);
+    }
 
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chk_autoRefresh;
+    private javax.swing.JFormattedTextField ftxt_refreshSeconds;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JScrollPane phoneCallsJScrollPane;
+    private javax.swing.JTable phoneCallsJTable;
+    private javax.swing.JButton refreshJButton;
+    // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void refresh() {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         
         this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
@@ -155,29 +219,5 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             tableModel.addRow(new Object[]{id,name});
         }
     }
-    
-    
-    private JDialog callPopup;
-    public void callSelected(Long id) {
-        EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
-        callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
-        callPopup.add(emergencyInfoPanel);
-        this.callPopup.setSize(300, 350);
-        this.callPopup.setVisible(true);
-        this.callPopup.requestFocus();
-    }
-    
-    public void hideDialog(){
-        this.callPopup.setVisible(false);
-        this.parent.controlAmbulance();
-    }
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JScrollPane phoneCallsJScrollPane;
-    private javax.swing.JTable phoneCallsJTable;
-    private javax.swing.JButton refreshJButton;
-    // End of variables declaration//GEN-END:variables
 
 }

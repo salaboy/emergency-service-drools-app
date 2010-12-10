@@ -32,7 +32,7 @@ import org.plugtree.training.model.Emergency.EmergencyType;
  *
  * @author esteban
  */
-public class AmbulanceControlPanel extends javax.swing.JPanel{
+public class AmbulanceControlPanel extends javax.swing.JPanel implements Refreshable{
 
     private UserUI parent;
     
@@ -55,6 +55,9 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
         ambulanceControlsJTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         refreshJButton = new javax.swing.JButton();
+        ftxt_refreshSeconds = new javax.swing.JFormattedTextField();
+        jLabel1 = new javax.swing.JLabel();
+        chk_autoRefresh = new javax.swing.JCheckBox();
 
         setName("Control Operator"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
@@ -95,6 +98,17 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
             }
         });
 
+        ftxt_refreshSeconds.setText("3");
+
+        jLabel1.setText("secs");
+
+        chk_autoRefresh.setText("auto refresh");
+        chk_autoRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chk_autoRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -102,14 +116,20 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(refreshJButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(55, 55, 55)
                         .addComponent(jLabel11))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(refreshJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ftxt_refreshSeconds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chk_autoRefresh)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -118,9 +138,13 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
                 .addContainerGap()
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(refreshJButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refreshJButton)
+                    .addComponent(jLabel1)
+                    .addComponent(chk_autoRefresh)
+                    .addComponent(ftxt_refreshSeconds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -134,10 +158,16 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
     }//GEN-LAST:event_ambulanceControlsJTablerowClick
 
     private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
-        this.refreshAmbulancesTable();
+        this.refresh();
 }//GEN-LAST:event_refreshJButtonActionPerformed
+
+    private void chk_autoRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chk_autoRefreshActionPerformed
+        if(chk_autoRefresh.isSelected()){
+            UIJTableRefreshManager.start(chk_autoRefresh, Integer.valueOf(ftxt_refreshSeconds.getText()), this);
+        }
+    }//GEN-LAST:event_chk_autoRefreshActionPerformed
     
-    public void refreshAmbulancesTable(){
+    public void refresh(){
 
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         
@@ -235,6 +265,9 @@ public class AmbulanceControlPanel extends javax.swing.JPanel{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ambulanceControlsJTable;
+    private javax.swing.JCheckBox chk_autoRefresh;
+    private javax.swing.JFormattedTextField ftxt_refreshSeconds;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JScrollPane phoneCallsJScrollPane;
     private javax.swing.JButton refreshJButton;

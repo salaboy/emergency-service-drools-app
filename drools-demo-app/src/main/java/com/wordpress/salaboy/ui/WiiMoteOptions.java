@@ -26,9 +26,9 @@ import motej.request.ReportModeRequest;
  */
 public class WiiMoteOptions extends javax.swing.JFrame {
     private Mote mote = null;
-    private SlickBasicGame game = null;
+    private CityMapUI game = null;
     /** Creates new form WiiMoteOptions */
-    public WiiMoteOptions(SlickBasicGame game) {
+    public WiiMoteOptions(CityMapUI game) {
         initComponents();
         this.game = game;
         

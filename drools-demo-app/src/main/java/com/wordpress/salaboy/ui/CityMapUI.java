@@ -28,7 +28,7 @@ import org.plugtree.training.model.Patient;
 import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
 import org.plugtree.training.model.events.PatientPickUpEvent;
 
-public class SlickBasicGame extends BasicGame implements MapEventsListener {
+public class CityMapUI extends BasicGame implements MapEventsListener {
 
     public StatefulKnowledgeSession ksession = MyDroolsService.createSession();
     private float playerX = 32;
@@ -53,17 +53,16 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public Long ambulanceSelectedId = 0L;
     public EmergencyType emergencyTypeSelected;
     private MapEventsNotifier mapEventsNotifier;
+    private boolean turbo;
     //FIXME: It only supports one ambulance!
     private AmbulanceMonitorService ambulanceMonitorService;
 
-    public SlickBasicGame() {
+    public CityMapUI() {
         super("City Map");
 
         this.mapEventsNotifier = new MapEventsNotifier(MyDroolsService.logger);
         this.mapEventsNotifier.addMapEventsListener(this);
         
-
-        // initWiiMote();
     }
 
     @Override
@@ -105,10 +104,18 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
 
                 player.setCurrentFrame(current);
 
-                playerX--;
+                 if(turbo){
+                    playerX -= 5;
+                }else{
+                    playerX--;
+                }
                 playerPoly.setX(playerX);
                 if (entityCollisionWith()) {
-                    playerX++;
+                     if(turbo){
+                        playerX += 5;
+                    }else{
+                        playerX++;
+                    }
                     playerPoly.setX(playerX);
                 }
                
@@ -125,10 +132,18 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                 }
 
                 player.setCurrentFrame(current);
-                playerX++;
+                if(turbo){
+                    playerX += 5;
+                }else{
+                    playerX++;
+                }
                 playerPoly.setX(playerX);
                 if (entityCollisionWith()) {
-                    playerX--;
+                    if(turbo){
+                        playerX -= 5;
+                    }else{
+                        playerX--;
+                    }
                     playerPoly.setX(playerX);
 
 
@@ -145,10 +160,18 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     current = 12;
                 }
                 player.setCurrentFrame(current);
-                playerY--;
+                if(turbo){
+                    playerY -= 5;
+                }else{
+                    playerY--;
+                }
                 playerPoly.setY(playerY);
                 if (entityCollisionWith()) {
+                    if(turbo){
+                    playerY += 5;
+                }else{
                     playerY++;
+                }
                     playerPoly.setY(playerY);
                 }
               
@@ -163,18 +186,35 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
                     current = 8;
                 }
                 player.setCurrentFrame(current);
-                playerY++;
-
+                
+                if(turbo){
+                    playerY += 5;
+                }else{
+                    playerY++;
+                }
                 playerPoly.setY(playerY);
                 if (entityCollisionWith()) {
-                    playerY--;
+                    if(turbo){
+                    playerY -= 5;
+                    }else{
+                        playerY--;
+                    }
                     playerPoly.setY(playerY);
                 }
 
 
             }
         }
-
+        if (gc.getInput().isKeyDown(Input.KEY_CAPITAL)) {
+            if(turbo){
+                turbo = false;
+            }
+            else{
+                turbo = true;
+            }
+        }
+        
+        
         if (gc.getInput().isKeyDown(Input.KEY_SPACE)) {
 
             if (emergency == null) {
@@ -228,13 +268,16 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     @Override
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
-
+        
         g.draw(playerPoly);
         if (emergency != null) {
             g.draw(emergencyPoly);
         }
         if (hospital != null) {
             g.draw(hospitalPoly);
+        }
+        if(turbo){
+            g.drawString("TURBO!!!!", 40,100);
         }
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
         if (ambulanceDispatched) {
@@ -256,7 +299,7 @@ public class SlickBasicGame extends BasicGame implements MapEventsListener {
     public static void main(String[] args)
             throws SlickException {
 
-        final SlickBasicGame game = new SlickBasicGame();
+        final CityMapUI game = new CityMapUI();
         Renderer.setLineStripRenderer(Renderer.QUAD_BASED_LINE_STRIP_RENDERER);
         Renderer.getLineStripRenderer().setLineCaps(true);
         java.awt.EventQueue.invokeLater(new Runnable()     {
