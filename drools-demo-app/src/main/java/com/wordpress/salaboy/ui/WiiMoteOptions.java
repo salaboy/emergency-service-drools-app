@@ -12,6 +12,7 @@
 package com.wordpress.salaboy.ui;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
+import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.SimpleMoteFinder;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
@@ -120,12 +121,14 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
 
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
-                int y = evt.getY();
-                if (y > 225) {
-                    jTextArea1.insert("sended " + y + " heartbeat\n", 0);
-                    if (game.getAmbulanceMonitorService() != null) {
-                        game.getAmbulanceMonitorService().sendNotification(y, y, y);
+                
+                if (evt.getY() > 225) {
+                    jTextArea1.insert("sended " + evt.getY() + " heartbeat\n", 0);
+                    if(AmbulanceMonitorService.getInstance().isRunning()){
+                        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, evt);
+                        //AmbulanceMonitorService.getInstance().sendNotification(y, y, y);
                     }
+                    
                     
                 }
             }

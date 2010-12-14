@@ -12,34 +12,50 @@ import org.plugtree.training.model.Location;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import java.util.List;
-
+import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEmergencyReachedEventNotifier;
+import com.wordpress.salaboy.EmergencyService;
 global Map ambulances;
 global Map doctors;
 
+
 rule "Initialize Emergency"
     ruleflow-group "select_ambulance"
+    no-loop true
+    lock-on-active true
     salience 20
     when
       $processInstance: WorkflowProcessInstance()
-      $call: Call()
+      $emergency: Emergency()
+      
     then
      // Get the Emergency from the Process Variable
-     Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+     //Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+     
      // Create the patient based on the information collected in the first Human Task
      Patient patient = new Patient((String)$processInstance.getVariable("patient.name"),
                                 Integer.valueOf((String)$processInstance.getVariable("patient.age")),
                                 (String)$processInstance.getVariable("patient.gender") );
-     emergency.setPatient(patient);
-     emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
-     emergency.setCall($call);
+     $emergency.setPatient(patient);
+     $emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+     
      
      // Sets the patient Id as a process variable
      $processInstance.setVariable("patient.id", patient.getId());
      
+    //ADD NOTIFIER.. because a new Emergency with a call was created!
+    System.out.println("ADDING EMERGENCY REACHED LISTENER NOTIFIER");
+     EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED, new MapEmergencyReachedEventNotifier($emergency));
+     
+
      // Insert the emergency in our world
-     insert(emergency);
+     update($emergency);
      //Insert the patient in our world
      insert(patient);
+
+     
+     
        
 end
 

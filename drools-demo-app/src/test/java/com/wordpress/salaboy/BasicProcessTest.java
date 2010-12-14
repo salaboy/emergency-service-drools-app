@@ -4,10 +4,6 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.call.CallManager;
-import com.wordpress.salaboy.ui.Block;
-import com.wordpress.salaboy.ui.MapEventsListener;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,9 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.runtime.rule.FactHandle;
 import org.drools.task.AccessType;
 import org.drools.task.Content;
 import org.drools.task.Task;
@@ -39,7 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
-import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
 import org.plugtree.training.model.events.PatientPickUpEvent;
 
 /**
@@ -63,8 +55,8 @@ public class BasicProcessTest {
 
     @Before
     public void setUp() {
-        MyDroolsService.initTaskServer();
-        client = MyDroolsService.initTaskClient();
+        MyDroolsUtilities.initTaskServer();
+        client = MyDroolsUtilities.initTaskClient();
 
     }
 
@@ -75,58 +67,16 @@ public class BasicProcessTest {
 
     @Test
     public void processTest() throws InterruptedException, IOException, ClassNotFoundException {
-        final StatefulKnowledgeSession ksession = MyDroolsService.createSession();
         
-        MyDroolsService.registerHandlers(ksession);
-        MyDroolsService.setGlobals(ksession);
-        MapEventsNotifier mapEventsNotifier = new MapEventsNotifier(MyDroolsService.logger);
-        mapEventsNotifier.addMapEventsListener(new MapEventsListener() {
-
-            @Override
-            public void hospitalReached(Block hospital) {
-                System.out.println("Listener -> Hospital reached!!!!");
-            }
-
-            @Override
-            public void emergencyReached(Block emergency) {
-                System.out.println("Listener -> Emergency reached!!!!");
-            }
-
-            @Override
-            public void positionReceived(Block corner) {
-                System.out.println("Listener -> Position recieved!!!!");
-            }
-
-            @Override
-            public void hospitalSelected(Long id) {
-                System.out.println("Listener -> Hospital Selected!!!! + id ="+id);
-            }
-
-            @Override
-            public void heartBeatReceived(double value) {
-                System.out.println("Listener -> Heart beat received!!!!");
-            }
-
-            @Override
-            public void monitorAlertReceived(String string) {
-                System.out.println("Listener -> Alert received!!!!: "+string);
-            }
-            
-            
-        });
-        MyDroolsService.setNotifier(ksession, mapEventsNotifier);
-        ksession.insert(new Call(new Date()));
-
-        new Thread(new Runnable()   {
-
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        }).start();
+        
+        
+        
+        
+        Call call = new Call(7,11, new Date());
+        EmergencyService.getInstance().newCall(call);
 
         Thread.sleep(5000);
 
-        Assert.assertEquals(1, ksession.getProcessInstances().size());
         
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
        
@@ -202,17 +152,15 @@ public class BasicProcessTest {
         Thread.sleep(5000);
        
         
-        //UI SIDE.. needs access to the ksession to propagate the event
+       // UI SIDE.. needs access to the ksession to propagate the event
         
-        WorkflowProcessInstance pI = (WorkflowProcessInstance) ksession.getProcessInstances().iterator().next();
-        Long ambulanceId = (Long)pI.getVariable("ambulance.id");
-        Ambulance ambulance = MyDroolsService.getAmbulanceById(ambulanceId);
-        ambulance.setPositionX(33);
+
+        Ambulance ambulance = EmergencyService.getInstance().getAmbulance(call.getProcessId());
+         ambulance.setPositionX(33);
         ambulance.setPositionY(12);
-        FactHandle handle = ksession.getFactHandle(ambulance);
-        ksession.update(handle, ambulance);
+        EmergencyService.getInstance().updateAmbualancePosition(ambulance);
+        EmergencyService.getInstance().sendPatientPickUpEvent(new PatientPickUpEvent(new Date()),call.getProcessId());
         
-        ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()) );
         
         Thread.sleep(5000);
         
@@ -265,18 +213,18 @@ public class BasicProcessTest {
         
         
         Thread.sleep(3000);
-        
-         //UI SIDE.. needs access to the ksession to propagate the event
-        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
-        
-        Thread.sleep(5000);
-        
-        Assert.assertEquals(ksession.getProcessInstances().size(), 0);
-
-        System.out.println("\n\nLogs:");
-        for (String message : MyDroolsService.logger.getLogs()) {
-            System.out.println("\t"+message);
-        }
+//        
+//         //UI SIDE.. needs access to the ksession to propagate the event
+//        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
+//        
+//        Thread.sleep(5000);
+//        
+//        Assert.assertEquals(ksession.getProcessInstances().size(), 0);
+//
+//        System.out.println("\n\nLogs:");
+//        for (String message : MyDroolsUtilities.logger.getLogs()) {
+//            System.out.println("\t"+message);
+//        }
         
         
     }

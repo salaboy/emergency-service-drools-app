@@ -34,10 +34,10 @@ import org.plugtree.training.model.Emergency.EmergencyType;
  */
 public class AmbulanceControlPanel extends javax.swing.JPanel implements Refreshable{
 
-    private UserUI parent;
+    private UserTaskListUI parent;
     
     /** Creates new form PhoneCallsPanel */
-    public AmbulanceControlPanel(UserUI parent) {
+    public AmbulanceControlPanel(UserTaskListUI parent) {
         this.parent = parent;
         initComponents();
     }
@@ -215,7 +215,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
             ois = new ObjectInputStream(bais);
             taskinfo = (String) ois.readObject();
         } catch (Exception ex) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         

@@ -12,8 +12,8 @@
 package com.wordpress.salaboy.ui;
 
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,10 +23,11 @@ import java.util.logging.Logger;
  */
 public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
-    private UserUI parent;
-    private List<EmergencyFrame> emergencyFrames = new ArrayList<EmergencyFrame>();
+    private UserTaskListUI parent;
+    //This should be a MAP with the Ambualance ID??? or emergency ID.. 
+    private Map<Long, EmergencyFrame> emergencyFrames = new ConcurrentHashMap<Long, EmergencyFrame>();
     
-    public CurrentEmergenciesPanel(UserUI parent) {
+    public CurrentEmergenciesPanel(UserTaskListUI parent) {
         this.parent = parent;
         initComponents();
     }
@@ -60,53 +61,20 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
     public void addNewEmergency(long ambulanceId){
         EmergencyFrame emergencyFrame = new EmergencyFrame(parent, ambulanceId);
-        this.emergencyFrames.add(emergencyFrame);
+        this.emergencyFrames.put(ambulanceId, emergencyFrame);
         this.add(emergencyFrame);
         try {
             emergencyFrame.setMaximum(true);
+            emergencyFrame.setTitle("Ambulance Monitor ("+ambulanceId+")");
         } catch (PropertyVetoException ex) {
             Logger.getLogger(CurrentEmergenciesPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.validate();
     }
+    
+    public EmergencyFrame getEmergencyFrameById(Long id){
+        return this.emergencyFrames.get(id);
+    }
+    
 
-    void heartBeatReceived(double value) {
-        //notify all frames. FIXME: only one should be notified
-        for (EmergencyFrame emergencyFrame : emergencyFrames) {
-            emergencyFrame.heartBeatReceived(value);
-        }
-    }
-
-    void emergencyReached(Block emergency) {
-        //notify all frames. FIXME: only one should be notified
-        for (EmergencyFrame emergencyFrame : emergencyFrames) {
-            emergencyFrame.emergencyReached(emergency);
-        }
-    }
-
-    void hospitalSelected(Long id) {
-        //notify all frames. FIXME: only one should be notified
-        for (EmergencyFrame emergencyFrame : emergencyFrames) {
-            emergencyFrame.hospitalSelected(id);
-        }
-    }
-
-    void positionReceived(Block corner) {
-        //notify all frames. FIXME: only one should be notified
-        for (EmergencyFrame emergencyFrame : emergencyFrames) {
-            emergencyFrame.positionReceived(corner);
-        }
-    }
-
-    void monitorAlertReceived(String string) {
-        //notify all frames. FIXME: only one should be notified
-        for (EmergencyFrame emergencyFrame : emergencyFrames) {
-            emergencyFrame.monitorAlertReceived(string);
-        }
-    }
-    void hospitalReached(Block hospitalBlock){
-        for(EmergencyFrame emergencyFrame : emergencyFrames){
-            emergencyFrame.hospitalReached(hospitalBlock); 
-        }
-    }
 }

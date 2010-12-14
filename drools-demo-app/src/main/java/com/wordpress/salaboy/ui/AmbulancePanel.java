@@ -11,7 +11,8 @@
 
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.CityEntitiesUtils;
+import com.wordpress.salaboy.MyDroolsUtilities;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -230,7 +231,7 @@ public class AmbulancePanel extends javax.swing.JPanel {
         this.lblMedFire.setVisible(false);
         this.lblMedHeart.setVisible(false);
         
-        Ambulance ambulance = MyDroolsService.getAmbulanceById(Long.parseLong(ambulanceId));
+        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(Long.parseLong(ambulanceId));
         List<MedicalKit> kits = ambulance.getKits();
         
         for (MedicalKit medicalKit : kits) {

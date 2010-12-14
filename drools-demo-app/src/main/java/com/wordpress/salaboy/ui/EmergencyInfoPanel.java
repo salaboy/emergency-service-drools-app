@@ -171,12 +171,12 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
             this.parent.hideDialog();
 
         } catch (IOException ex) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
-                Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

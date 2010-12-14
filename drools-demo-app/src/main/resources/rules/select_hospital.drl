@@ -10,26 +10,28 @@ import org.plugtree.training.model.Location;
 import org.plugtree.training.model.Hospital;
 import org.plugtree.training.model.Patient;
 import org.drools.runtime.process.WorkflowProcessInstance;
+import com.wordpress.salaboy.EmergencyService;
 import java.util.Map;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 
 
 global Map hospitals;
-global MapEventsNotifier notifier;
+
 
 query "getPatient"
-    //$processInstance: WorkflowProcessInstance()
-    //$patient: Patient(id == Long.valueOf((String)$processInstance.getVariable("patient.id")));
+    //@TODO add more filters per process/emergency
     patient: Patient()
 end
 
 
 rule "Rank Hospital Speciality that matches EmergencyType"
-    //lock-on-active true
+    
     ruleflow-group "hospital_selection"
     when
         $processInstance: WorkflowProcessInstance()
+        
         $emergency: Emergency($type: type.name)
+        $patient: Patient()
         $ambulance: Ambulance()
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
@@ -37,45 +39,21 @@ rule "Rank Hospital Speciality that matches EmergencyType"
                                                     action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
                                                             float difY = $hospital.getPositionY() - $ambulance.getPositionY();                                                            
                                                             double difTotal = Math.sqrt(Math.pow(((double)difX),2d) + Math.pow(((double)difY),2d));
-                                                            System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
-                                                            System.out.println("Hospital now = "+$hospital);
+                                                            //System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
+                                                            //System.out.println("Hospital now = "+$hospital);
                                                             if(difTotal < best){ best = difTotal; selected = $hospital;}
                                                             ),
                                                     reverse(),
                                                     result(selected)
                                                     )
-        //$hospital: Hospital($specialities: specialities) 
-       // EmergencyType(name == $type) from $specialities
+        //@TODO add more filters
 
     then
-        
-        System.out.println("Emergency Priority = "+$processInstance.getVariable("emergency.priority"));
-        System.out.println("HOSPITAL SELECTED !!!!"+$selectedHospital);
-        notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_SELECTED, $selectedHospital.getId());
+        //@TODO use the 
+        System.out.println("Hospital Selected"+$selectedHospital);
+        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, $selectedHospital.getId());
         
 end
 
-/*rule "Rank with 5 Hospital without the Emergency Speciality but with available beds"
-    salience -500
-    lock-on-active true
-    ruleflow-group "hospital_selection"
-    when
-        $hospital: Hospital(availableBeds >= 0)
-    then
-        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
-        $hospital.setRank($hospital.getRank() + 5);
-        update($hospital);
-end
 
-rule "Rank with 0 Hospital without available beds"
-    salience -999
-    lock-on-active true
-    ruleflow-group "hospital_selection"
-    when
-        $hospital: Hospital(availableBeds == 0)
-    then
-        System.out.println("Hospital " + $hospital.getName() + " ranked with = "+$hospital.getRank() +" points" );
-        $hospital.setRank(0);
-        update($hospital);
-end*/
 

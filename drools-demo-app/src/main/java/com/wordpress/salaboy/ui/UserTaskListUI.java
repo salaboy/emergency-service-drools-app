@@ -10,7 +10,14 @@
  */
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.CityEntitiesUtils;
+import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.MyDroolsUtilities;
+import com.wordpress.salaboy.events.MapAmbulancePositionUpdatedEventNotifier;
+import com.wordpress.salaboy.events.TaskListUIAmbulancePositionUpdatedEventNotifier;
+import com.wordpress.salaboy.events.TaskListUIEmergencyReachedEventNotifier;
+import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.ui.player.PlayerUIManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -40,34 +47,37 @@ import org.plugtree.training.model.Patient;
  *
  * @author salaboy
  */
-public class UserUI extends javax.swing.JFrame implements MapEventsListener {
+public class UserTaskListUI extends javax.swing.JFrame {
 
     private TaskClient taskClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
     //private Task currentTask;
-    private SlickBasicGame game;
+    private CityMapUI game;
     //Panels
     private PhoneCallsPanel phoneCallsPanel;
     private AmbulanceControlPanel ambulanceControlPanel;
     private CurrentEmergenciesPanel currentEmergenciesPanel;
 
+    private static UserTaskListUI ui = new UserTaskListUI();
+    
+    public static UserTaskListUI getInstance(){
+        return ui;
+    }
     /** Creates new form UserUI */
-    public UserUI() {
+    public UserTaskListUI() {
         initComponents();
         initTaskServer();
         initTaskClient();
-        
+
 
         phoneCallsPanel = new PhoneCallsPanel(this);
         currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
         ambulanceControlPanel = new AmbulanceControlPanel(this);
-
         this.mainJTabbedPane.add(this.phoneCallsPanel, 0);
         this.mainJTabbedPane.add(this.ambulanceControlPanel, 1);
         this.mainJTabbedPane.add(this.currentEmergenciesPanel, 2);
-
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsPanel);
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -190,7 +200,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
                         .add(jButton1))
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)))
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         hospitalJPanelLayout.setVerticalGroup(
@@ -198,7 +208,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, hospitalJPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 78, Short.MAX_VALUE)
                 .add(jButton2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
@@ -233,15 +243,13 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         pnlReport.setLayout(pnlReportLayout);
         pnlReportLayout.setHorizontalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
             .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(pnlReportLayout.createSequentialGroup()
-                        .add(btnRefreshReport)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnClearReport)
-                        .addContainerGap())
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)))
+                .add(btnRefreshReport)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnClearReport)
+                .addContainerGap(155, Short.MAX_VALUE))
         );
         pnlReportLayout.setVerticalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -263,14 +271,14 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -359,7 +367,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         try {
             taskClient.disconnect();
         } catch (Exception ex) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
 
@@ -368,43 +376,43 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     }//GEN-LAST:event_aboutMenuItemMenuKeyPressed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()   {
+        java.awt.EventQueue.invokeLater(new Runnable()    {
 
             @Override
             public void run() {
                 new About().setVisible(true);
-               
+
             }
         });
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         refreshPatientsTable();
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()   {
+        java.awt.EventQueue.invokeLater(new Runnable()    {
 
             @Override
             public void run() {
                 new WiiMoteOptions(game).setVisible(true);
-               
+
             }
         });
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void refreshReportList(){
+    private void refreshReportList() {
         DefaultListModel model = new DefaultListModel();
-        for (String message : MyDroolsService.logger.getLogs()) {
+        for (String message : EmergencyService.logger.getLogs()) {
             model.addElement(message);
         }
-        
+
         this.lstReports.setModel(model);
     }
-    
+
     private void btnClearReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearReportActionPerformed
-        MyDroolsService.logger.clearMessages();
+        EmergencyService.logger.clearMessages();
         this.refreshReportList();
     }//GEN-LAST:event_btnClearReportActionPerformed
 
@@ -416,35 +424,35 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         this.refreshReportList();
     }//GEN-LAST:event_btnRefreshReportActionPerformed
 
-     public void refreshPatientsTable(){
-        DefaultTableModel tableModel = ((DefaultTableModel)this.patientJTable1.getModel());
-        
+    public void refreshPatientsTable() {
+        DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
+
         int rowCount = tableModel.getRowCount();
         for (int i = 0; i < rowCount; i++) {
             tableModel.removeRow(0);
         }
-        
-        for(Hospital hospital : MyDroolsService.hospitals.values()){
-            for(Patient patient : hospital.getPatients()){
+
+        for (Hospital hospital : CityEntitiesUtils.hospitals.values()) {
+            for (Patient patient : hospital.getPatients()) {
                 tableModel.addRow(new Object[]{patient.getId(), patient.getName(), patient.getAge(), patient.getGender(), hospital.getName()});
-                
+
             }
-        
+
         }
-        
-        
-       
-        
+
+
+
+
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable()    {
+        java.awt.EventQueue.invokeLater(new Runnable()     {
 
             public void run() {
-                new UserUI().setVisible(true);
+                new UserTaskListUI().setVisible(true);
             }
         });
     }
@@ -473,32 +481,41 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
-        MyDroolsService.initTaskServer();
+        MyDroolsUtilities.initTaskServer();
     }
 
     private void initTaskClient() {
-        taskClient = MyDroolsService.initTaskClient();
+        taskClient = MyDroolsUtilities.initTaskClient();
     }
 
-    void setUIMap(SlickBasicGame game) {
+    void setUIMap(CityMapUI game) {
         this.game = game;
-        game.addMapEventsListener(this);
+     
 
     }
 
-    
     public void callHandled() {
-        this.phoneCallsPanel.refresh();    
-        
-    }
+        this.phoneCallsPanel.refresh();
 
+    }
 
     public void sendAmbulance(EmergencyType emergencyType, Long ambulanceId) {
         this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
         mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
-        this.game.emergencyTypeSelected = emergencyType ;
-        this.game.ambulanceSelectedId = ambulanceId;
-        this.game.ambulanceDispatched = true;
+        
+       
+
+        // NOTE: I Don't like this approach because the UI is deciding something that the process should do, not at HT level
+        this.game.addAmbulance(new PlayerUIManager(32, 400).addAmbulance(ambulanceId));
+        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION, 
+                            new MapAmbulancePositionUpdatedEventNotifier());
+        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION,
+                new TaskListUIAmbulancePositionUpdatedEventNotifier(this.currentEmergenciesPanel));
+        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED,
+                new TaskListUIEmergencyReachedEventNotifier());
+
+        EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulanceId, false);
+
     }
 
     public void medicalEvaluationCompleted(int priority, String comment) {
@@ -541,7 +558,7 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
             taskClient.complete(taskSum.getId(), "doctor", result, null);
 
         } catch (Exception e) {
-            Logger.getLogger(UserUI.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -549,45 +566,20 @@ public class UserUI extends javax.swing.JFrame implements MapEventsListener {
         return mainJTabbedPane;
     }
 
-    @Override
-    public void hospitalReached(Block hospital) {
-        
-        this.currentEmergenciesPanel.hospitalReached(hospital);
-        
-        
-    }
-    
-    
-
-    @Override
-    public void emergencyReached(Block emergency) {
-        this.currentEmergenciesPanel.emergencyReached(emergency);
-    }
 
     public TaskClient getTaskClient() {
         return taskClient;
     }
 
-    @Override
-    public void positionReceived(Block corner) {
-        this.currentEmergenciesPanel.positionReceived(corner);
+    public CurrentEmergenciesPanel getCurrentEmergenciesPanel() {
+        return currentEmergenciesPanel;
     }
 
-    @Override
-    public void heartBeatReceived(double value) {
-        this.currentEmergenciesPanel.heartBeatReceived(value);
+    public CityMapUI getGame() {
+        return game;
     }
-
-    @Override
-    public void hospitalSelected(Long id) {
-        this.currentEmergenciesPanel.hospitalSelected(id);
-    }
-
-    @Override
-    public void monitorAlertReceived(String string) {
-        this.currentEmergenciesPanel.monitorAlertReceived(string);
-    }
-
-
+    
+    
+    
     
 }

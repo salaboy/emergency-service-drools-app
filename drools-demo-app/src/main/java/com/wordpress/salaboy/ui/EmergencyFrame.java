@@ -11,30 +11,34 @@
 
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.CityEntitiesUtils;
+import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Hospital;
 
 /**
- *
+ * @author salaboy
  * @author esteban
  */
 public class EmergencyFrame extends javax.swing.JInternalFrame {
 
-    private UserUI parent;
+    private UserTaskListUI parent;
     private Ambulance ambulance;
     public EmergencyMonitorPanel emergencyMonitorPanel;
         
     /** Creates new form EmergencyFrame */
-    public EmergencyFrame(UserUI parent, long ambulanceId) {
+    public EmergencyFrame(UserTaskListUI parent, long ambulanceId) {
         this.parent = parent;
-        this.ambulance = MyDroolsService.getAmbulanceById(ambulanceId);
+        this.ambulance = CityEntitiesUtils.getAmbulanceById(ambulanceId);
         
         initComponents();
         
@@ -294,68 +298,47 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea txtComment;
     private javax.swing.JTextArea txtPosition;
     // End of variables declaration//GEN-END:variables
-
+    private List<String> alerts = new ArrayList<String>(); 
+    
     public JTabbedPane getMainTabPanel() {
         return mainTabPanel;
     }
 
-    void heartBeatReceived(double value) {
-        if (this.emergencyMonitorPanel != null){
-            this.emergencyMonitorPanel.updateMonitorGraph(value);
-        }
+    public EmergencyMonitorPanel getEmergencyMonitorPanel() {
+        return emergencyMonitorPanel;
     }
 
-    void emergencyReached(Block emergency) {
-        this.pnlMedicalEvaluation.setEnabled(true);
-        this.mainTabPanel.setSelectedComponent(this.pnlMedicalEvaluation);
+    public List<String> getAlerts() {
+        return alerts;
     }
 
-    void hospitalSelected(Long id) {
-        this.lblDirection.setForeground(Color.green);
-        Hospital hospital = MyDroolsService.getHospitalById(id);
-        int x = (int)hospital.getPositionX();
-        int y = (int)hospital.getPositionY();
-        
-        String text = "Hospital at "+x+" - "+y;
-        
-        this.lblDirection.setText(text);
-        
-        this.emergencyMonitorPanel = new EmergencyMonitorPanel(this);
+    public JList getLstAlerts() {
+        return lstAlerts;
+    }
+    
+
+
+    public JTextArea getTxtPosition() {
+        return txtPosition;
     }
 
-    private String lastPositionText = "";
-    void positionReceived(Block corner) {
-        int x = (int)ambulance.getPositionX();
-        int y = (int)ambulance.getPositionY();
-        
-        String text = MyDroolsService.translatePosition(x, y );
-        if (!lastPositionText.equals(text)){
-            this.txtPosition.insert(text+"\n", 0);
-            lastPositionText = text;
-        }
+    public JPanel getPnlMedicalEvaluation() {
+        return pnlMedicalEvaluation;
     }
 
-   
-    private List<String> alerts = new ArrayList<String>(); 
-    void monitorAlertReceived(String message) {
-        alerts.add(0,message);
-        
-        DefaultListModel model = new DefaultListModel();
-        for (String alert : alerts) {
-            model.addElement(alert);
-        }
-        this.lstAlerts.setModel(model);
+    public JLabel getLblDirection() {
+        return lblDirection;
+    }
+
+    public void setEmergencyMonitorPanel(EmergencyMonitorPanel emergencyMonitorPanel) {
+        this.emergencyMonitorPanel = emergencyMonitorPanel;
+    }
+    
+    public void refresh(){
         this.validate();
     }
-    
-    void hospitalReached(Block hospitalBlock){
-        
-        this.parent.getMainJTabbedPane().setSelectedIndex(4);
-        this.parent.refreshPatientsTable();
-        
-    }
-    
    
+    
     
     
 }

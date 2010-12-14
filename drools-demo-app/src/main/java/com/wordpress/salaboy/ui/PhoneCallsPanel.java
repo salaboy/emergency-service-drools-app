@@ -28,10 +28,10 @@ import org.plugtree.training.model.Call;
  */
 public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallListener, Refreshable {
 
-    private UserUI parent;
+    private UserTaskListUI parent;
     private UIJTableRefreshManager refreshManager = null;
     /** Creates new form PhoneCallsPanel */
-    public PhoneCallsPanel(UserUI parent) {
+    public PhoneCallsPanel(UserTaskListUI parent) {
         this.parent = parent;
         initComponents();
         CallManager.getInstance().addIncomingCallListener(this);

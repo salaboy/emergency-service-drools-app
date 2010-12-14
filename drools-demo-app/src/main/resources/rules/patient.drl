@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import com.wordpress.salaboy.events.WiiMoteEvent;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.EmergencyService;
 
 
-global MapEventsNotifier notifier;
 
 declare WiiMoteEvent
     @role ( event )
@@ -20,7 +20,7 @@ rule "Patient with no vital sign"
         $nextEvents : Number(doubleValue == 235 ) from accumulate( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(4s) from entry-point "patientHeartbeats",
         												average($y)) 
     then
-        notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.NO_VITAL_SIGNS, "Warning, patient without vital signs ");
+        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.NO_VITAL_SIGNS, "Warning, patient without vital signs ");
 end
 
 rule "Patient heart attack"
@@ -28,6 +28,5 @@ rule "Patient heart attack"
         
         $nextEvents : ArrayList(size > 10 ) from collect( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(1s) from entry-point "patientHeartbeats") 
     then
-        
-        notifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HEART_ATTACK, "Warning, patient suffering a heart attack ");
+        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_ATTACK, "Warning, patient suffering a heart attack ");
 end

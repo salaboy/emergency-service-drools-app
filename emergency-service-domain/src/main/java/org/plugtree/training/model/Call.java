@@ -18,16 +18,23 @@ public class Call implements Serializable{
     private Long processId;
     private String phoneNumber;
     public static AtomicLong incrementalId = new AtomicLong();
+    private int x; //location detected from the phonenumber :)
+    private int y; //location detected from the phonenumber :)
+    
+    
+    
 
-    public Call() {
+    public Call(int x, int y, Date date) {
         this.id = Call.incrementalId.getAndIncrement();
+        this.date = date;
+        this.phoneNumber = generateRandomePhoneNumber();
+        this.x = x;
+        this.y = y;
     }
 
-    public Call(Date date) {
-        this();
-        this.date = date;
+    private String generateRandomePhoneNumber() {
         NumberFormat formatter = new DecimalFormat("0000");
-        this.phoneNumber = "(555 -" + formatter.format(Math.random()*1000) + ")";
+        return "(555 -" + formatter.format(Math.random()*1000) + ")";
     }
 
     public Date getDate() {
@@ -70,10 +77,28 @@ public class Call implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     @Override
     public String toString() {
-        return "Call{" + "id=" + id + ", date=" + date + ", emergency=" + emergency + ", processId=" + processId + '}';
+        return "Call{" + "id=" + id + ", date=" + date + ", emergency=" + emergency + ", processId=" + processId + ", phoneNumber=" + phoneNumber + ", x=" + x + ", y=" + y + '}';
     }
+
+    
+   
     
 }

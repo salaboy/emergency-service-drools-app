@@ -1,15 +1,15 @@
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.MyDroolsService;
+import com.wordpress.salaboy.CityEntitiesUtils;
+import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.events.MapHospitalReachedEventNotifier;
+import com.wordpress.salaboy.events.MapHospitalSelectedEventNotifier;
+import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.QueryResultsRow;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
@@ -18,282 +18,243 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Emergency.EmergencyType;
+import org.plugtree.training.model.Emergency;
 import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Patient;
-import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
-import org.plugtree.training.model.events.PatientPickUpEvent;
 
-public class CityMapUI extends BasicGame implements MapEventsListener {
+public class CityMapUI extends BasicGame {
 
-    public StatefulKnowledgeSession ksession = MyDroolsService.createSession();
-    private float playerX = 32;
-    private float playerY = 400;
-    private Animation player;
-    private Animation emergency;
-    private Animation hospital;
+    private float playerInitialX = 32;
+    private float playerInitialY = 400;
+    
+    
+    // The map itself (created using Tiled)
     public BlockMap map;
-    private Hospital selectedHospital = null;
-    private Polygon playerPoly;
-    private Polygon emergencyPoly;
-    private Polygon hospitalPoly;
-    private SpriteSheet emergencySheet;
-    private SpriteSheet hospitalSheet;
+    
+    
+    // Places for emergencies
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private int[] ys = new int[]{1, 7, 13, 19, 25};
     private int randomx;
     private int randomy;
-    private static UserUI ui;
-    public boolean ambulanceDispatched = false;
-    private Ambulance ambulance;
-    public Long ambulanceSelectedId = 0L;
-    public EmergencyType emergencyTypeSelected;
-    private MapEventsNotifier mapEventsNotifier;
+    
+    
+    private List<Ambulance> ambulances = new ArrayList<Ambulance>();
+    private List<Emergency> emergencies = new CopyOnWriteArrayList<Emergency>();
+    private List<Hospital> hospitals = new CopyOnWriteArrayList<Hospital>();
+    
+    
     private boolean turbo;
-    //FIXME: It only supports one ambulance!
-    private AmbulanceMonitorService ambulanceMonitorService;
+    
+    
+    public static SpriteSheet alertSheet;
+    public static SpriteSheet hospitalSheet;
 
     public CityMapUI() {
         super("City Map");
 
-        this.mapEventsNotifier = new MapEventsNotifier(MyDroolsService.logger);
-        this.mapEventsNotifier.addMapEventsListener(this);
-        
     }
 
     @Override
     public void init(GameContainer gc)
             throws SlickException {
         gc.setVSync(true);
-        SpriteSheet sheet = new SpriteSheet("data/sprites/sprites-ambulancia.png", 32, 32, Color.magenta);
-        emergencySheet = new SpriteSheet("data/sprites/alert.png", 32, 32, Color.magenta);
+
+        alertSheet = new SpriteSheet("data/sprites/alert.png", 32, 32, Color.magenta);
         hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
+
         map = new BlockMap("data/cityMap.tmx");
+        
         map.initializeCorners();
-        player = new Animation();
-        player.setLooping(false);
-        player.setAutoUpdate(false);
-        for (int row = 0; row < 4; row++) {
-            for (int frame = 0; frame < 4; frame++) {
-                player.addFrame(sheet.getSprite(frame, row), 250);
-            }
-        }
-        playerPoly = new Polygon(new float[]{
-                    playerX, playerY,
-                    playerX + 30, playerY,
-                    playerX + 30, playerY + 30,
-                    playerX, playerY + 30
-                });
+
     }
 
     @Override
     public void update(GameContainer gc, int delta)
             throws SlickException {
+        //@TODO:  Keys are defined for Player 1 .. add support for multiple controllers        
+        // HACK -> I'm just selecting the first ambulance to bind it to these keys
+        Ambulance ambulance = null;
+        if (ambulances.size() >= 1) {
+            ambulance = ambulances.iterator().next();
+        }
+
         if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
             if (ambulance != null) {
-                int current = player.getFrame();
+                int current = ambulance.getAnimation().getFrame();
                 if (current < 7) {
                     current += 1;
                 } else {
                     current = 4;
                 }
 
-                player.setCurrentFrame(current);
+                ambulance.getAnimation().setCurrentFrame(current);
 
-                 if(turbo){
-                    playerX -= 5;
-                }else{
-                    playerX--;
+                if (turbo) {
+                    playerInitialX -= 5;
+                } else {
+                    playerInitialX--;
                 }
-                playerPoly.setX(playerX);
-                if (entityCollisionWith()) {
-                     if(turbo){
-                        playerX += 5;
-                    }else{
-                        playerX++;
+                ambulance.getPolygon().setX(playerInitialX);
+                if (entityCollisionWith(ambulance)) {
+                    if (turbo) {
+                        playerInitialX += 5;
+                    } else {
+                        playerInitialX++;
                     }
-                    playerPoly.setX(playerX);
+                    ambulance.getPolygon().setX(playerInitialX);
                 }
-               
+
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
 
             if (ambulance != null) {
-                int current = player.getFrame();
+                int current = ambulance.getAnimation().getFrame();
                 if (current < 3) {
                     current += 1;
                 } else {
                     current = 0;
                 }
 
-                player.setCurrentFrame(current);
-                if(turbo){
-                    playerX += 5;
-                }else{
-                    playerX++;
+                ambulance.getAnimation().setCurrentFrame(current);
+                if (turbo) {
+                    playerInitialX += 5;
+                } else {
+                    playerInitialX++;
                 }
-                playerPoly.setX(playerX);
-                if (entityCollisionWith()) {
-                    if(turbo){
-                        playerX -= 5;
-                    }else{
-                        playerX--;
+                ambulance.getPolygon().setX(playerInitialX);
+                if (entityCollisionWith(ambulance)) {
+                    if (turbo) {
+                        playerInitialX -= 5;
+                    } else {
+                        playerInitialX--;
                     }
-                    playerPoly.setX(playerX);
+                    ambulance.getPolygon().setX(playerInitialX);
 
 
                 }
-               
+
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_UP)) {
             if (ambulance != null) {
-                int current = player.getFrame();
+                int current = ambulance.getAnimation().getFrame();
                 if (current < 15) {
                     current += 1;
                 } else {
                     current = 12;
                 }
-                player.setCurrentFrame(current);
-                if(turbo){
-                    playerY -= 5;
-                }else{
-                    playerY--;
+                ambulance.getAnimation().setCurrentFrame(current);
+                if (turbo) {
+                    playerInitialY -= 5;
+                } else {
+                    playerInitialY--;
                 }
-                playerPoly.setY(playerY);
-                if (entityCollisionWith()) {
-                    if(turbo){
-                    playerY += 5;
-                }else{
-                    playerY++;
+                ambulance.getPolygon().setY(playerInitialY);
+                if (entityCollisionWith(ambulance)) {
+                    if (turbo) {
+                        playerInitialY += 5;
+                    } else {
+                        playerInitialY++;
+                    }
+                    ambulance.getPolygon().setY(playerInitialY);
                 }
-                    playerPoly.setY(playerY);
-                }
-              
+
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
             if (ambulance != null) {
-                int current = player.getFrame();
+                int current = ambulance.getAnimation().getFrame();
                 if (current < 11) {
                     current += 1;
                 } else {
                     current = 8;
                 }
-                player.setCurrentFrame(current);
-                
-                if(turbo){
-                    playerY += 5;
-                }else{
-                    playerY++;
+                ambulance.getAnimation().setCurrentFrame(current);
+
+                if (turbo) {
+                    playerInitialY += 5;
+                } else {
+                    playerInitialY++;
                 }
-                playerPoly.setY(playerY);
-                if (entityCollisionWith()) {
-                    if(turbo){
-                    playerY -= 5;
-                    }else{
-                        playerY--;
+                ambulance.getPolygon().setY(playerInitialY);
+                if (entityCollisionWith(ambulance)) {
+                    if (turbo) {
+                        playerInitialY -= 5;
+                    } else {
+                        playerInitialY--;
                     }
-                    playerPoly.setY(playerY);
+                    ambulance.getPolygon().setY(playerInitialY);
                 }
 
 
             }
         }
         if (gc.getInput().isKeyDown(Input.KEY_CAPITAL)) {
-            if(turbo){
+            if (turbo) {
                 turbo = false;
-            }
-            else{
+            } else {
                 turbo = true;
             }
         }
-        
-        
-        if (gc.getInput().isKeyDown(Input.KEY_SPACE)) {
-
-            if (emergency == null) {
-                
-                
-                randomx = (int) (Math.random() * 10) % 7;
-                randomy = (int) (Math.random() * 10) % 5;
-                if(randomx == 1 && randomy == 25){
-                    randomx = 19;
-                }
-                
-                emergencyPoly = new Polygon(new float[]{
-                            xs[randomx] * 16, ys[randomy] * 16,
-                            xs[randomx] * 16 + 32, ys[randomy] * 16,
-                            xs[randomx] * 16 + 32, ys[randomy] * 16 + 32,
-                            xs[randomx] * 16, ys[randomy] * 16 + 32
-                        });
-
-                System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
-                int emergencysquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
-                BlockMap.emergencies.add(new Block(xs[randomx] * 16, ys[randomy] * 16, emergencysquare, "emergency"));
-                emergency = new Animation();
-                emergency.setAutoUpdate(true);
-                for (int frame = 0; frame < 5; frame++) {
-                    emergency.addFrame(emergencySheet.getSprite(frame, 0), 150);
-                }
 
 
-                MyDroolsService.registerHandlers(ksession);
-                MyDroolsService.setGlobals(ksession);
-                MyDroolsService.setNotifier(ksession, mapEventsNotifier);
-                ksession.insert(new Call(new Date(System.currentTimeMillis())));
-                new Thread(new Runnable()     {
-
-                    public void run() {
-                        ksession.fireUntilHalt();
-                    }
-                }).start();
+        if (gc.getInput().isKeyPressed(Input.KEY_SPACE)) {
+            randomx = (int) (Math.random() * 10) % 7;
+            randomy = (int) (Math.random() * 10) % 5;
+            if (randomx == 1 && randomy == 25) {
+                randomx = 19;
             }
-        }
-        cornerCollision();
-        if (emergency != null) {
-            emergencyCollision();
-        }
+            System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
+            Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
+            int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
+            BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
+            emergencies.add(EmergencyService.getInstance().newCall(call));
 
-        if (hospital != null) {
-            hospitalCollision();
+        }
+        //if at least have one player
+        if (ambulances.size() >= 1) {
+            for (Ambulance collisionambulance : ambulances) {
+                cornerCollision(collisionambulance);
+                emergencyCollision(collisionambulance);
+                 if (hospitals.size() >= 1) {
+                    hospitalCollision(collisionambulance);
+                }
+            }
         }
     }
 
     @Override
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
-        
-        g.draw(playerPoly);
-        if (emergency != null) {
-            g.draw(emergencyPoly);
-        }
-        if (hospital != null) {
-            g.draw(hospitalPoly);
-        }
-        if(turbo){
-            g.drawString("TURBO!!!!", 40,100);
-        }
+
+
+
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
-        if (ambulanceDispatched) {
-            this.ambulance = getAmbulanceById(emergencyTypeSelected, ambulanceSelectedId);
-            g.drawAnimation(player, playerX, playerY);
+
+        for (Emergency renderEmergency : emergencies) {
+            g.drawAnimation(renderEmergency.getAnimation(), renderEmergency.getPolygon().getX(), renderEmergency.getPolygon().getY());
+            g.draw(renderEmergency.getPolygon());
         }
 
-        if (emergency != null) {
-            g.drawAnimation(emergency, xs[randomx] * 16, ys[randomy] * 16);
-        }
 
+        for (Ambulance renderAmbulance : ambulances) {
+            g.drawAnimation(renderAmbulance.getAnimation(), renderAmbulance.getPolygon().getX(), renderAmbulance.getPolygon().getY());
+            g.draw(renderAmbulance.getPolygon());
+        }
+        
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
-        if (hospital != null && selectedHospital != null) {
-            g.drawAnimation(hospital, (selectedHospital.getPositionX()-2)*16 , (selectedHospital.getPositionY()-5)*16);
-
+        
+        for (Hospital renderHospitalHightlight : hospitals) {
+            g.drawAnimation(renderHospitalHightlight.getAnimation(), renderHospitalHightlight.getPolygon().getX() - 32, renderHospitalHightlight.getPolygon().getY() - 80);
+            g.draw(renderHospitalHightlight.getPolygon());
         }
+
+        
+
     }
 
     public static void main(String[] args)
@@ -302,165 +263,101 @@ public class CityMapUI extends BasicGame implements MapEventsListener {
         final CityMapUI game = new CityMapUI();
         Renderer.setLineStripRenderer(Renderer.QUAD_BASED_LINE_STRIP_RENDERER);
         Renderer.getLineStripRenderer().setLineCaps(true);
-        java.awt.EventQueue.invokeLater(new Runnable()     {
+        java.awt.EventQueue.invokeLater(new Runnable()       {
 
             @Override
             public void run() {
-                ui = new UserUI();
-                ui.setVisible(true);
-                ui.setUIMap(game);
+                UserTaskListUI.getInstance().setVisible(true);
+                UserTaskListUI.getInstance().setUIMap(game);
             }
         });
         AppGameContainer container =
                 new AppGameContainer(game);
         container.start();
-        
-        
-        
+
+
+
     }
 
-    public boolean entityCollisionWith() throws SlickException {
+    public synchronized boolean entityCollisionWith(Ambulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.entities.size(); i++) {
             Block entity1 = (Block) BlockMap.entities.get(i);
-            if (playerPoly.intersects(entity1.poly)) {
+            if (ambulance.getPolygon().intersects(entity1.poly)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean emergencyCollision() throws SlickException {
+    public synchronized boolean emergencyCollision(Ambulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.emergencies.size(); i++) {
             Block entity1 = (Block) BlockMap.emergencies.get(i);
-            if (playerPoly.intersects(entity1.poly)) {
-                this.mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.EMERGENCY_REACHED, entity1);
+            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId())) {
+                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getId(), true);
+                System.out.println("EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId()) = "+EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId()));
+                
+                EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, ambulance.getId());
+                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), false);
                 return true;
             }
         }
         return false;
     }
 
-    public boolean hospitalCollision() throws SlickException {
+    public synchronized boolean hospitalCollision(Ambulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (playerPoly.intersects(entity1.poly)) {
-                this.mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.HOSPITAL_REACHED, entity1);
+            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId())) {
+                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), true);
+                System.out.println("EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId())"+EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId()));
+                
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, ambulance.getId());
+                
                 return true;
             }
         }
         return false;
     }
 
-    public boolean cornerCollision() throws SlickException {
+    public boolean cornerCollision(Ambulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
-            if (playerPoly.intersects(entity1.poly)) {
-                this.mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EVENT_TYPE.AMBULANCE_POSITION, entity1);
+            if (ambulance.getPolygon().intersects(entity1.poly)) {
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, ambulance.getId());
                 return true;
             }
         }
         return false;
     }
 
-    public void addMapEventsListener(MapEventsListener listener) {
-        this.mapEventsNotifier.addMapEventsListener(listener);
+    public void addAmbulance(Ambulance ambulance) {
+        this.ambulances.add(ambulance);
     }
-
-    private Ambulance getAmbulanceById(EmergencyType type, Long id) {
-        List<Ambulance> ambulances = MyDroolsService.ambulances.get(type);
-        for (Ambulance ambulancenow : ambulances) {
-            if (ambulancenow.getId() == id) {
-                return ambulancenow;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public synchronized void hospitalReached(Block hospitalBlock) {
-        if (this.hospital != null) {
-            this.hospital = null;
-            System.out.println("HOSPITAL REACHED TIME TO SIGNAL The PATIENT AT THE HOSPITAL EVENT!!!");
-            ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent());
-            
-            ambulanceMonitorService.stop();
-            
-            Hospital myhospital = MyDroolsService.getHospitalByCoordinates(hospitalBlock);
-            QueryResults results = ksession.getQueryResults("getPatient");
-            
-            Iterator<QueryResultsRow> it = results.iterator();
-            Patient patient = null;
-            while(it.hasNext()){
-                Object o = it.next().get(results.getIdentifiers()[0]);
-                patient = (Patient)o;
-            }
-            myhospital.addPatient(patient);
-        }
-    }
-
-    @Override
-    public synchronized void emergencyReached(Block emergencyBlock) {
-        if(emergency != null){
-            emergency = null;
-            System.out.println("EMERGENCY REACHED TIME TO SIGNAL DE PATIENT PICK UP EVENT!!!");
-            ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", new PatientPickUpEvent(new Date()));
-        }
-    }
-
-    @Override
-    public void positionReceived(Block corner) {
-        float newX = Math.round(corner.poly.getX() / 16);
-        float newY = Math.round(corner.poly.getY() / 16);
-        if(newX != ambulance.getPositionX() || newY != ambulance.getPositionY()){
-            ambulance.setPositionX(newX);
-            ambulance.setPositionY(newY);
-            FactHandle handle = ksession.getFactHandle(ambulance);
-            ksession.update(handle, ambulance);
-        }
-    }
-
-    @Override
-    public void heartBeatReceived(double value) {
-    }
-
-    @Override
-    public void hospitalSelected(Long id) {
-        
-        BlockMap.emergencies.clear();
-        int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
-        
-        for (Hospital hospitalnow : MyDroolsService.hospitals.values()) {
-            if (hospitalnow.getId() == id) {
-                selectedHospital = hospitalnow;
-            }
-        }
-        BlockMap.hospitals.clear();
-        BlockMap.hospitals.add(new Block(Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16, hospitasquare, "hospital"));
-        hospitalPoly = new Polygon(new float[]{
-                    Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16,
-                    Math.round(selectedHospital.getPositionX()) * 16 + 16, Math.round(selectedHospital.getPositionY()) * 16,
-                    Math.round(selectedHospital.getPositionX()) * 16 + 16, Math.round(selectedHospital.getPositionY()) * 16 + 16,
-                    Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16 + 16
-                });
-        hospital = new Animation();
-        hospital.setAutoUpdate(true);
-        for (int frame = 0; frame < 5; frame++) {
-            hospital.addFrame(hospitalSheet.getSprite(frame, 0), 150);
-        }
-        ambulanceMonitorService = new AmbulanceMonitorService(ksession, mapEventsNotifier);
-        ambulanceMonitorService.start();
-    }
-
-    @Override
-    public void monitorAlertReceived(String string) {
-    }
-
-    public AmbulanceMonitorService getAmbulanceMonitorService() {
-        return ambulanceMonitorService;
-    }
-
     
-    
+    public void addHospital(Hospital hospital){
+        this.hospitals.add(hospital);
+    }
 
-   
+    public void removeAmbulance(long id) {
+        for(Ambulance ambulance : this.ambulances){
+            if(ambulance.getId() == id){
+                this.ambulances.remove(ambulance);
+            }
+        }
+    }
+    public synchronized void removeEmergency(long id){
+         for(Emergency emergency : this.emergencies){
+            if(emergency.getId() == id){
+                this.emergencies.remove(emergency);
+            }
+        }
+    }
+    public synchronized void removeHospital(long id){
+         for(Hospital hospital : this.hospitals){
+            if(hospital.getId() == id){
+                this.hospitals.remove(hospital);
+            }
+        }
+    }
 }

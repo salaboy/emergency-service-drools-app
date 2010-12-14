@@ -7,12 +7,16 @@ package org.plugtree.training.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.geom.Polygon;
 
 /**
  *
  * @author salaboy
  */
-public class Emergency implements Serializable{
+public class Emergency implements Serializable, Graphicable{
+
+    
     
     public enum EmergencyType {
 
@@ -28,13 +32,23 @@ public class Emergency implements Serializable{
     private Hospital selectedHospital;
     private boolean processed;
     public static AtomicLong incrementalId = new AtomicLong();
+    
+    //Graphicable
+    private transient Animation animation;
+    private transient Polygon polygon;
 
     public Emergency() {
         this.id = Emergency.incrementalId.getAndIncrement();
         this.patient = new Patient();
         this.location = new Location();
         this.selectedHospital = new Hospital();
-        this.ambulance = new Ambulance();
+        
+    }
+    
+    public Emergency(Animation animation, Polygon polygon){
+        this();
+        this.animation = animation;
+        this.polygon = polygon;
     }
 
     public Ambulance getAmbulance() {
@@ -110,6 +124,22 @@ public class Emergency implements Serializable{
 
     public boolean isProcessed() {
         return processed;
+    }
+    
+    public Animation getAnimation() {
+        return this.animation;
+    }
+
+    public Polygon getPolygon() {
+        return this.polygon;
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public void setPolygon(Polygon polygon) {
+        this.polygon = polygon;
     }
 
     @Override

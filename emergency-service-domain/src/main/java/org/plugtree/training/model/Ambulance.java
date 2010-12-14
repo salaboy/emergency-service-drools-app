@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.geom.Polygon;
 
 /**
  *
  * @author salaboy
  */
-public class Ambulance implements Serializable {
+public class Ambulance implements Serializable, Graphicable {
 
     private Long id;
     private String description;
@@ -21,9 +23,16 @@ public class Ambulance implements Serializable {
     private float positionX;
     private float positionY;
     public static AtomicLong incrementalId = new AtomicLong();
+    
+    //Graphicable
+    
+    private transient Animation animation;
+    private transient Polygon polygon;
 
-    public Ambulance() {
-        this.id = Ambulance.incrementalId.getAndIncrement();
+    public Ambulance(String description, Date departureTime, Animation animation , Polygon polygon) {
+        this(description, departureTime);
+        this.animation = animation;
+        this.polygon = polygon;
     }
 
     public Ambulance(String description, Date departureTime) {
@@ -114,6 +123,22 @@ public class Ambulance implements Serializable {
     @Override
     public String toString() {
         return "Ambulance{" + "id=" + id + ", description=" + description + ", medicOnBoard=" + medicOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public void setPolygon(Polygon polygon) {
+        this.polygon = polygon;
+    }
+
+    public Animation getAnimation() {
+        return this.animation;
+    }
+
+    public Polygon getPolygon() {
+        return this.polygon;
     }
     
     

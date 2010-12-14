@@ -9,26 +9,28 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance;
 import java.util.Map;
 import java.util.HashMap;
 import java.text.SimpleDateFormat;
-
+import com.wordpress.salaboy.ui.player.EmergencyUIManager;
 global com.wordpress.salaboy.call.CallManager callManager;
 global Map ambulances;
 
 rule "Handling Single Emergency Call"
+    no-loop true
     when
-       $call:  Call()
+  
+        $emergency: Emergency()
     then
         
         java.text.DateFormat df = SimpleDateFormat.getInstance().getDateTimeInstance(SimpleDateFormat.SHORT, SimpleDateFormat.SHORT);
-        Emergency emergency = new Emergency();
-        emergency.setCall($call);
+       
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("emergency", emergency );
-        parameters.put("call.id", $call.getId());
-        parameters.put("call.timestamp", df.format($call.getDate()));
-        parameters.put("call.phoneNumber", $call.getPhoneNumber());
+        parameters.put("emergency", $emergency );
+        parameters.put("call.id", $emergency.getCall().getId());
+        parameters.put("call.timestamp", df.format($emergency.getCall().getDate()));
+        parameters.put("call.phoneNumber", $emergency.getCall().getPhoneNumber());
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
-        $call.setProcessId(pI.getId());
-        callManager.incomingCall($call);
+        $emergency.getCall().setProcessId(pI.getId());
+        callManager.incomingCall($emergency.getCall());
+        update($emergency);
         insert(pI);
 end
     
