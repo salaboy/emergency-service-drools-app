@@ -46,8 +46,7 @@ public class EmergencyUIManager {
                 });
         emergency.setAnimation(myEmergency);
         emergency.setPolygon(myEmergencyPolygon);
-       // CityMapUI.emergencyAnimations.put(emergency.getCall().getId(), myEmergency);
-       // CityMapUI.emergencyPolygons.put(emergency.getCall().getId(), myEmergencyPolygon);
+       
         
     }
      

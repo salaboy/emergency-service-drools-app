@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.ui.CityMapUI;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class BasicProcessTest {
         
         
         
-        Call call = new Call(7,11, new Date());
+        Call call = new Call(2,4, new Date());
         EmergencyService.getInstance().newCall(call);
 
         Thread.sleep(5000);

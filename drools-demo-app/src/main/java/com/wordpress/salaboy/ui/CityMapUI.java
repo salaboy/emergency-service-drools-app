@@ -293,9 +293,7 @@ public class CityMapUI extends BasicGame {
         for (int i = 0; i < BlockMap.emergencies.size(); i++) {
             Block entity1 = (Block) BlockMap.emergencies.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId())) {
-                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getId(), true);
-                System.out.println("EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId()) = "+EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId()));
-                
+                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getId(), true); 
                 EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
                 EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, ambulance.getId());
                 EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), false);
@@ -310,10 +308,7 @@ public class CityMapUI extends BasicGame {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId())) {
                 EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), true);
-                System.out.println("EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId())"+EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId()));
-                
                 EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, ambulance.getId());
-                
                 return true;
             }
         }

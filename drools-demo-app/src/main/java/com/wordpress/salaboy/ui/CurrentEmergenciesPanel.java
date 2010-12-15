@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
     private UserTaskListUI parent;
-    //This should be a MAP with the Ambualance ID??? or emergency ID.. 
     private Map<Long, EmergencyFrame> emergencyFrames = new ConcurrentHashMap<Long, EmergencyFrame>();
     
     public CurrentEmergenciesPanel(UserTaskListUI parent) {
