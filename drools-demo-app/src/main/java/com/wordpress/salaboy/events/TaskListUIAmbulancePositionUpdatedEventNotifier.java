@@ -6,9 +6,10 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
+import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.ui.CurrentEmergenciesPanel;
+import com.wordpress.salaboy.ui.UserTaskListUI;
 import javax.swing.JComponent;
-import org.plugtree.training.model.Ambulance;
 
 /**
  *
@@ -25,12 +26,12 @@ public class TaskListUIAmbulancePositionUpdatedEventNotifier implements WorldEve
     
     @Override
     public void notify(Object event) {
-        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById((Long)event);
+        GraphicableAmbulance ambulance = UserTaskListUI.getInstance().getGame().getGraphicableAmbulanceById((Long)event);
         int newX = Math.round(ambulance.getPolygon().getX() / 16);
         int newY = Math.round(ambulance.getPolygon().getY() / 16); 
         String text = CityEntitiesUtils.translatePosition( newX, newY );
         if (!lastPositionText.equals(text) && !text.equals("N/A")){
-            ((CurrentEmergenciesPanel)frame).getEmergencyFrameById(ambulance.getId()).getTxtPosition().insert(text+"\n", 0);
+            ((CurrentEmergenciesPanel)frame).getEmergencyFrameById(ambulance.getAmbulance().getId()).getTxtPosition().insert(text+"\n", 0);
             lastPositionText = text;
         }
         

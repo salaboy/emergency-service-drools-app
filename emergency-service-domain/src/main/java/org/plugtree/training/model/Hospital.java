@@ -8,15 +8,13 @@ package org.plugtree.training.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.geom.Polygon;
 import org.plugtree.training.model.Emergency.EmergencyType;
 
 /**
  *
  * @author salaboy
  */
-public class Hospital implements Serializable, Graphicable{
+public class Hospital implements Serializable{
     private static Long lastId = 0l;
     private Long id;
     private int availableBeds;
@@ -27,9 +25,9 @@ public class Hospital implements Serializable, Graphicable{
     private float positionY;
     private List<Patient> patients;
     
-    // graphicable 
-    private transient Animation animation;
-    private transient Polygon polygon;
+//    // graphicable 
+//    private transient Animation animation;
+//    private transient Polygon polygon;
     
     public Hospital() {
     }
@@ -129,21 +127,21 @@ public class Hospital implements Serializable, Graphicable{
         return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", X = "+positionX + ", Y =" +positionY+"}";
     }
 
-    public Animation getAnimation() {
-        return this.animation;
-    }
-
-    public Polygon getPolygon() {
-        return this.polygon;
-    }
-
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
-    }
-
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
-    }
+//    public Animation getAnimation() {
+//        return this.animation;
+//    }
+//
+//    public Polygon getPolygon() {
+//        return this.polygon;
+//    }
+//
+//    public void setAnimation(Animation animation) {
+//        this.animation = animation;
+//    }
+//
+//    public void setPolygon(Polygon polygon) {
+//        this.polygon = polygon;
+//    }
 
     
     

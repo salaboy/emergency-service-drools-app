@@ -1,8 +1,9 @@
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.EmergencyService;
-import com.wordpress.salaboy.events.MapHospitalReachedEventNotifier;
+import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
+import com.wordpress.salaboy.graphicable.GraphicableEmergency;
+import com.wordpress.salaboy.graphicable.GraphicableHighlightedHospital;
 import com.wordpress.salaboy.events.MapHospitalSelectedEventNotifier;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.plugtree.training.model.Hospital;
 
 public class CityMapUI extends BasicGame {
 
+    //Initial Emergency Service Spot
     private float playerInitialX = 32;
     private float playerInitialY = 400;
     
@@ -41,15 +43,13 @@ public class CityMapUI extends BasicGame {
     private int randomy;
     
     
-    private List<Ambulance> ambulances = new ArrayList<Ambulance>();
-    private List<Emergency> emergencies = new CopyOnWriteArrayList<Emergency>();
-    private List<Hospital> hospitals = new CopyOnWriteArrayList<Hospital>();
+    private List<GraphicableAmbulance> ambulances = new ArrayList<GraphicableAmbulance>();
+    private List<GraphicableEmergency> emergencies = new CopyOnWriteArrayList<GraphicableEmergency>();
+    private List<GraphicableHighlightedHospital> hospitals = new CopyOnWriteArrayList<GraphicableHighlightedHospital>();
     
     
     private boolean turbo;
-    
-    
-    public static SpriteSheet alertSheet;
+  
     public static SpriteSheet hospitalSheet;
 
     public CityMapUI() {
@@ -62,7 +62,6 @@ public class CityMapUI extends BasicGame {
             throws SlickException {
         gc.setVSync(true);
 
-        alertSheet = new SpriteSheet("data/sprites/alert.png", 32, 32, Color.magenta);
         hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
 
         map = new BlockMap("data/cityMap.tmx");
@@ -76,7 +75,7 @@ public class CityMapUI extends BasicGame {
             throws SlickException {
         //@TODO:  Keys are defined for Player 1 .. add support for multiple controllers        
         // HACK -> I'm just selecting the first ambulance to bind it to these keys
-        Ambulance ambulance = null;
+        GraphicableAmbulance ambulance = null;
         if (ambulances.size() >= 1) {
             ambulance = ambulances.iterator().next();
         }
@@ -217,7 +216,7 @@ public class CityMapUI extends BasicGame {
         }
         //if at least have one player
         if (ambulances.size() >= 1) {
-            for (Ambulance collisionambulance : ambulances) {
+            for (GraphicableAmbulance collisionambulance : ambulances) {
                 cornerCollision(collisionambulance);
                 emergencyCollision(collisionambulance);
                  if (hospitals.size() >= 1) {
@@ -235,23 +234,25 @@ public class CityMapUI extends BasicGame {
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
 
-        for (Emergency renderEmergency : emergencies) {
+        for (GraphicableEmergency renderEmergency : emergencies) {
             g.drawAnimation(renderEmergency.getAnimation(), renderEmergency.getPolygon().getX(), renderEmergency.getPolygon().getY());
             g.draw(renderEmergency.getPolygon());
         }
 
 
-        for (Ambulance renderAmbulance : ambulances) {
+        for (GraphicableAmbulance renderAmbulance : ambulances) {
             g.drawAnimation(renderAmbulance.getAnimation(), renderAmbulance.getPolygon().getX(), renderAmbulance.getPolygon().getY());
             g.draw(renderAmbulance.getPolygon());
         }
         
-        BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
-        
-        for (Hospital renderHospitalHightlight : hospitals) {
+        for (GraphicableHighlightedHospital renderHospitalHightlight : hospitals) {
             g.drawAnimation(renderHospitalHightlight.getAnimation(), renderHospitalHightlight.getPolygon().getX() - 32, renderHospitalHightlight.getPolygon().getY() - 80);
             g.draw(renderHospitalHightlight.getPolygon());
         }
+        
+        BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
+        
+        
 
         
 
@@ -279,7 +280,7 @@ public class CityMapUI extends BasicGame {
 
     }
 
-    public synchronized boolean entityCollisionWith(Ambulance ambulance) throws SlickException {
+    public synchronized boolean entityCollisionWith(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.entities.size(); i++) {
             Block entity1 = (Block) BlockMap.entities.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly)) {
@@ -289,70 +290,80 @@ public class CityMapUI extends BasicGame {
         return false;
     }
 
-    public synchronized boolean emergencyCollision(Ambulance ambulance) throws SlickException {
+    public synchronized boolean emergencyCollision(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.emergencies.size(); i++) {
             Block entity1 = (Block) BlockMap.emergencies.get(i);
-            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getId())) {
-                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getId(), true); 
+            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getAmbulance().getId())) {
+                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getAmbulance().getId(), true); 
                 EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, ambulance.getId());
-                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), false);
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, ambulance.getAmbulance().getId());
+                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), false);
                 return true;
             }
         }
         return false;
     }
 
-    public synchronized boolean hospitalCollision(Ambulance ambulance) throws SlickException {
+    public synchronized boolean hospitalCollision(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getId())) {
-                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getId(), true);
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, ambulance.getId());
+            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getAmbulance().getId())) {
+                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), true);
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, ambulance.getAmbulance().getId());
                 return true;
             }
         }
         return false;
     }
 
-    public boolean cornerCollision(Ambulance ambulance) throws SlickException {
+    public boolean cornerCollision(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly)) {
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, ambulance.getId());
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, ambulance.getAmbulance().getId());
                 return true;
             }
         }
         return false;
     }
 
-    public void addAmbulance(Ambulance ambulance) {
+    public void addAmbulance(GraphicableAmbulance ambulance) {
         this.ambulances.add(ambulance);
     }
     
-    public void addHospital(Hospital hospital){
+    public void addHospital(GraphicableHighlightedHospital hospital){
         this.hospitals.add(hospital);
     }
 
     public void removeAmbulance(long id) {
-        for(Ambulance ambulance : this.ambulances){
-            if(ambulance.getId() == id){
+        for(GraphicableAmbulance ambulance : this.ambulances){
+            if(ambulance.getAmbulance().getId().compareTo(id) == 0){
                 this.ambulances.remove(ambulance);
             }
         }
     }
     public synchronized void removeEmergency(long id){
-         for(Emergency emergency : this.emergencies){
-            if(emergency.getId() == id){
+         for(GraphicableEmergency emergency : this.emergencies){
+            if(emergency.getEmergency().getId().compareTo(id) == 0 ){
                 this.emergencies.remove(emergency);
             }
         }
     }
     public synchronized void removeHospital(long id){
-         for(Hospital hospital : this.hospitals){
-            if(hospital.getId() == id){
+         for(GraphicableHighlightedHospital hospital : this.hospitals){
+            if(hospital.getHospital().getId().compareTo(id) == 0){
                 this.hospitals.remove(hospital);
             }
         }
+    }
+    
+    public GraphicableAmbulance getGraphicableAmbulanceById(Long id) {
+         
+        for (GraphicableAmbulance ambulancenow : ambulances) {
+            if (ambulancenow.getAmbulance().getId().compareTo(id) == 0) {
+                return ambulancenow;
+            }
+        }
+        return null;
     }
 }

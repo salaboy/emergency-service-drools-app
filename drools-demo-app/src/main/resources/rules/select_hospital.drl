@@ -29,9 +29,8 @@ rule "Rank Hospital Speciality that matches EmergencyType"
     ruleflow-group "hospital_selection"
     when
         $processInstance: WorkflowProcessInstance()
-        
         $emergency: Emergency($type: type.name)
-        $patient: Patient()
+        //$patient: Patient()
         $ambulance: Ambulance()
         // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 

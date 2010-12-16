@@ -16,8 +16,8 @@ import com.wordpress.salaboy.MyDroolsUtilities;
 import com.wordpress.salaboy.events.MapAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIEmergencyReachedEventNotifier;
+import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
-import com.wordpress.salaboy.ui.player.PlayerUIManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -505,8 +505,8 @@ public class UserTaskListUI extends javax.swing.JFrame {
         
        
 
-        // NOTE: I Don't like this approach because the UI is deciding something that the process should do, not at HT level
-        this.game.addAmbulance(new PlayerUIManager(32, 400).addAmbulance(ambulanceId));
+        //@TODO: NOTE: I Don't like this approach because the UI is deciding something that the process should do, not at HT level
+        this.game.addAmbulance(GraphicableFactory.newAmbulance(CityEntitiesUtils.getAmbulanceById(ambulanceId)));
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION, 
                             new MapAmbulancePositionUpdatedEventNotifier());
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION,

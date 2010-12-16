@@ -9,8 +9,9 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance;
 import java.util.Map;
 import java.util.HashMap;
 import java.text.SimpleDateFormat;
-import com.wordpress.salaboy.ui.player.EmergencyUIManager;
+
 global com.wordpress.salaboy.call.CallManager callManager;
+
 global Map ambulances;
 
 rule "Handling Single Emergency Call"

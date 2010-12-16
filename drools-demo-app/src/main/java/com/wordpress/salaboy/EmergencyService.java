@@ -5,10 +5,11 @@
 package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.events.WiiMoteEvent;
+import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
-import com.wordpress.salaboy.ui.player.EmergencyUIManager;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,11 +38,7 @@ public class EmergencyService {
     private Map<Long, Boolean> emergencyReachedNotified = new ConcurrentHashMap<Long, Boolean>();
     private Map<Long, Boolean> hospitalReachedNotified = new ConcurrentHashMap<Long, Boolean>();
     
-    public void updateAmbualancePosition(Ambulance ambulance) {
-        FactHandle handle = ksession.getFactHandle(ambulance);
-        ksession.update(handle, ambulance);
-    }
-
+    
 
     public EmergencyService() {
         this.mapEventsNotifier = new MapEventsNotifier(EmergencyService.logger);
@@ -76,7 +73,7 @@ public class EmergencyService {
 
     private void registerHandlers() {
         //@TODO: create a list 
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+        //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
         ksession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
     }
@@ -96,15 +93,17 @@ public class EmergencyService {
 
     }
 
-    public Emergency newCall(Call call) {
+    public GraphicableEmergency newCall(Call call) {
         //@TODO: do a notifier, transform call into an Event inside a workingmemory entry point
         //ksession.insert(call);
         
-        int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
-        int[] ys = new int[]{1, 7, 13, 19, 25};
-        Emergency newEmergency = EmergencyUIManager.addEmergencyAlert(xs[call.getX()] * 16, ys[call.getY()] * 16);
-        newEmergency.setCall(call);
-        ksession.insert(newEmergency);
+        
+        Emergency emergency = new Emergency();
+        emergency.setCall(call);
+        GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(emergency);
+        //addEmergencyAlert(xs[call.getX()] * 16, ys[call.getY()] * 16);
+        //newEmergency.getEmergency().setCall(call);
+        ksession.insert(newEmergency.getEmergency());
         return newEmergency;
         
     }
@@ -141,5 +140,9 @@ public class EmergencyService {
         getWorkingMemoryEntryPoint("patientHeartbeats").insert(evt);
     }
     
-    
+    public void updateAmbualancePosition(Ambulance ambulance) {
+        FactHandle handle = ksession.getFactHandle(ambulance);
+        ksession.update(handle, ambulance);
+    }
+
 }

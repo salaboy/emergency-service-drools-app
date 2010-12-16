@@ -21,7 +21,7 @@ public class AmbulanceMonitorService {
     private HeartBeatsEmulator heartBeatsEmulator;
     
     private boolean running = false;
-    public static AmbulanceMonitorService getInstance() {
+    public synchronized static AmbulanceMonitorService getInstance() {
         if (monitorService == null) {
             monitorService = new AmbulanceMonitorService();
         }
@@ -32,7 +32,7 @@ public class AmbulanceMonitorService {
         
     }
 
-    public void start() {
+    public synchronized void start() {
         if (heartBeatsEmulator != null && heartBeatsEmulator.isRunning()) {
             throw new IllegalStateException("Heart Beats Emulator is already running!");
         }

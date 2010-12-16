@@ -21,11 +21,7 @@
         </plugins>
     </build>
     <dependencies>
-         <dependency>
-            <groupId>slick</groupId>
-            <artifactId>slick</artifactId>
-            <version>274</version>
-        </dependency>
+         
   </dependencies>
   
   <repositories>

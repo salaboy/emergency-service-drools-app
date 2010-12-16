@@ -5,6 +5,8 @@
 
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
+import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.util.MedicalKitUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,10 +50,22 @@ public class CityEntitiesUtils {
         }
     };
     
+   
+//    public static GraphicableAmbulance getGraphicableAmbulanceById(Long id){
+//        for (Map.Entry<EmergencyType, List<GraphicableAmbulance>> entry : ambulances.entrySet()) {
+//            for (GraphicableAmbulance ambulance : entry.getValue()) {
+//                if (ambulance.getAmbulance().getId().compareTo(id) == 0){
+//                    return ambulance;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+    
     public static Ambulance getAmbulanceById(Long id){
         for (Map.Entry<EmergencyType, List<Ambulance>> entry : ambulances.entrySet()) {
             for (Ambulance ambulance : entry.getValue()) {
-                if (ambulance.getId().equals(id)){
+                if (ambulance.getId().compareTo(id) == 0){
                     return ambulance;
                 }
             }
@@ -61,7 +75,7 @@ public class CityEntitiesUtils {
     
     public static Hospital getHospitalById(Long id){
         for (Map.Entry<String, Hospital> entry : hospitals.entrySet()) {
-            if (entry.getValue().getId().equals(id)){
+            if (entry.getValue().getId().compareTo(id) == 0){
                 return entry.getValue();
             }
         }
@@ -120,7 +134,7 @@ public class CityEntitiesUtils {
 
         switch(x){
             
-            case 1: xString = "1st Street"; break;
+            case 2: xString = "1st Street"; break;
             
             case 7: xString = "2nd Street"; break;
             
@@ -136,7 +150,7 @@ public class CityEntitiesUtils {
         }
          switch(y){
             
-            case 1: yString = "A Street"; break;
+            case 2: yString = "A Street"; break;
             
             case 7: yString = "B Street"; break;
             
@@ -181,11 +195,21 @@ public class CityEntitiesUtils {
      public static Ambulance getAmbulanceById(EmergencyType type, Long id) {
         
         for (Ambulance ambulancenow : CityEntitiesUtils.ambulances.get(type)) {
-            if (ambulancenow.getId() == id) {
+            if (ambulancenow.getId().compareTo(id) == 0) {
                 return ambulancenow;
             }
         }
         return null;
     }
+     
+//    public static GraphicableAmbulance getGraphicableAmbulanceById(EmergencyType type, Long id) {
+//         
+//        for (GraphicableAmbulance ambulancenow : CityEntitiesUtils.ambulances.get(type)) {
+//            if (ambulancenow.getAmbulance().getId().compareTo(id) == 0) {
+//                return ambulancenow;
+//            }
+//        }
+//        return null;
+//    }
     
 }

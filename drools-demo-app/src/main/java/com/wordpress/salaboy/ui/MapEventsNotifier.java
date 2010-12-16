@@ -44,15 +44,15 @@ public class MapEventsNotifier {
     
     public void notifyMapEventsListeners(final EventType type, final Object data) {
         for (final WorldEventNotifier mapEventNotifier : mapEventNotifiers.get(type)) {
-//            executor.execute(new Runnable()  {
-//                @Override
-//                public void run() {
+            //executor.execute(new Runnable()  {
+            //    @Override
+            //    public void run() {
                     
                      mapEventNotifier.notify(data);
                     
                     
-//                }
-//            });
+              //  }
+            //});
         }
     }
     

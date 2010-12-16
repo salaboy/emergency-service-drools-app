@@ -26,6 +26,10 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
+import org.drools.event.DebugProcessEventListener;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
@@ -76,6 +80,9 @@ public class MyDroolsUtilities {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.addEventListener(new ProcessEventLogger(EmergencyService.logger));
+        ksession.addEventListener(new DebugAgendaEventListener());
+        ksession.addEventListener(new DebugProcessEventListener());
+        ksession.addEventListener(new DebugWorkingMemoryEventListener());
         
         return ksession;
     }

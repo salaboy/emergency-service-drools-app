@@ -16,6 +16,9 @@ import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.events.MapEmergencyReachedEventNotifier;
 import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.graphicable.*;
+
+
 global Map ambulances;
 global Map doctors;
 
@@ -68,7 +71,7 @@ rule "Fire Emergency without more information"
         $emergency: Emergency($type : type == EmergencyType.FIRE)
     then
     	// Get the first ambulance that we have for this type of emergency
-        Ambulance ambulance = (Ambulance)((List)ambulances.get($type)).get(0);
+        Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         // Get the first doctor that we have with the speciality related with the emergency
         Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BURNS)).get(0);
         ambulance.setMedicOnBoard(medic);
