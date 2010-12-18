@@ -10,6 +10,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 
 /**
  *
@@ -57,6 +58,14 @@ public class ProcessEventLogger implements ProcessEventListener {
     @Override
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
         this.logger.addMessage("Leaving '"+event.getNodeInstance().getNodeName()+"' node");
+    }
+
+    @Override
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+    }
+
+    @Override
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
     }
 
 }

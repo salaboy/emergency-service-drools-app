@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-  <class name="org.drools.process.audit.ProcessInstanceLog">
+  <class name="org.jbpm.process.audit.ProcessInstanceLog">
     <id name="id">
       <generator class="native"/>
     </id>
@@ -10,7 +10,7 @@
     <property column="START_DATE" name="start" type="timestamp"/>
     <property column="END_DATE" name="end" type="timestamp"/>
   </class>
-  <class name="org.drools.process.audit.NodeInstanceLog">
+  <class name="org.jbpm.process.audit.NodeInstanceLog">
     <id name="id">
       <generator class="native"/>
     </id>

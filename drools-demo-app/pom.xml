@@ -103,12 +103,19 @@
         
         <dependency>
             <groupId>org.drools</groupId>
+            <artifactId>drools-persistence-jpa</artifactId>
+            <version>${drools.version}</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.drools</groupId>
             <artifactId>drools-process-task</artifactId>
             <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
             <version>${drools.version}</version>
@@ -127,7 +134,22 @@
             <artifactId>drools-flow-persistence-jpa</artifactId>
             <version>${drools.version}</version>
             <type>jar</type>
+        </dependency-->
+        
+        <!-- Drools BAM for History Logs -->
+
+        <!--dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bam</artifactId>
+            <version>${drools.version}</version>
+            <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bpmn2</artifactId>
+            <version>${drools.version}</version>
+            <type>jar</type>
+        </dependency-->
         
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -150,20 +172,7 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.0</version>
         </dependency>
-      	<!-- Drools BAM for History Logs -->
-
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-bam</artifactId>
-            <version>${drools.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-bpmn2</artifactId>
-            <version>${drools.version}</version>
-            <type>jar</type>
-        </dependency>
+      	
         <dependency>
             <groupId>com.wordpress.salaboy</groupId>
             <artifactId>emergency-service-domain</artifactId>
@@ -214,6 +223,27 @@
             <artifactId>netty</artifactId>
             <version>3.1.5.GA</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
+            <version>5.0-CR1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task</artifactId>
+            <version>5.0-CR1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-persistence-jpa</artifactId>
+            <version>5.0-CR1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bam</artifactId>
+            <version>5.0-CR1</version>
+        </dependency>
     </dependencies>
     
   
@@ -256,7 +286,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>

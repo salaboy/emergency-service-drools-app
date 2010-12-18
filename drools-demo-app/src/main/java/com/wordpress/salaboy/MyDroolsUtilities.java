@@ -4,18 +4,7 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
-import com.wordpress.salaboy.call.CallManager;
-import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.log.ProcessEventLogger;
-import com.wordpress.salaboy.ui.Block;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
-import com.wordpress.salaboy.util.MedicalKitUtil;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.builder.KnowledgeBuilder;
@@ -27,22 +16,11 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
 import org.drools.event.DebugProcessEventListener;
-import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.event.rule.DebugWorkingMemoryEventListener;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.process.workitem.wsht.BlockingGetTaskResponseHandler;
-import org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.drools.task.Task;
 import org.drools.task.service.TaskClient;
 import org.drools.task.service.mina.MinaTaskClientConnector;
 import org.drools.task.service.mina.MinaTaskClientHandler;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Medic;
-import org.plugtree.training.model.Medic.MedicSpeciality;
-import org.plugtree.training.model.MedicalKit;
 
 /**
  *
