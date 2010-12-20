@@ -45,9 +45,10 @@ public class TaskListUIHospitalSelectedEventNotifier implements WorldEventNotifi
         System.out.println("Hospital Selected = "+hospital.toString());
         UserTaskListUI.getInstance().getGame().addHospital(GraphicableFactory.newHighlightedHospital(CityEntitiesUtils.getHospitalById(hospitalId)));
         
+        TaskListUIMonitorAlertReceivedEventNotifier taskListUIMonitorAlertReceivedEventNotifier = new TaskListUIMonitorAlertReceivedEventNotifier();
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new TaskListUIPatientVitalSignReceivedEventNotifier());
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.NO_VITAL_SIGNS, new TaskListUIMonitorAlertReceivedEventNotifier());
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_ATTACK, new TaskListUIMonitorAlertReceivedEventNotifier());
+        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.NO_VITAL_SIGNS, taskListUIMonitorAlertReceivedEventNotifier);
+        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_ATTACK, taskListUIMonitorAlertReceivedEventNotifier );
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_REACHED, new TaskListUIHospitalReachedEventNotifier());
         
         

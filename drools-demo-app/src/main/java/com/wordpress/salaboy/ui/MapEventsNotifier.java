@@ -41,20 +41,15 @@ public class MapEventsNotifier {
     }
     
     public void notifyMapEventsListeners(final EventType type, final Object data) {
-        if (type == EventType.HOSPITAL_SELECTED){
-            System.out.println("\t\tAmmount of HOSPITAL SELECTED listeners: "+mapEventNotifiers.get(type).size());
-            for (final WorldEventNotifier mapEventNotifier : mapEventNotifiers.get(type)) {
-                System.out.println("\t\t\t"+mapEventNotifier);
-            }
+        if (mapEventNotifiers.get(type) == null){
+            return;
         }
+        
         for (final WorldEventNotifier mapEventNotifier : mapEventNotifiers.get(type)) {
             executor.execute(new Runnable()  {
                 @Override
                 public void run() {
                      Thread.currentThread().setName(type+" executor thread");
-                     if (type == EventType.HOSPITAL_SELECTED){
-                         System.out.println("\t\tThread "+Thread.currentThread().getId()+" notifying HOSPITAL SELECTED event");
-                     }
                      mapEventNotifier.notify(data);
                 }
             });

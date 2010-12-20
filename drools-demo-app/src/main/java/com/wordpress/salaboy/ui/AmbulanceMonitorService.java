@@ -2,14 +2,9 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.WiiMoteEvent;
-import com.wordpress.salaboy.events.WorldEventNotifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import motej.Mote;
 import motej.event.AccelerometerEvent;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * @author salaboy
@@ -72,7 +67,7 @@ public class AmbulanceMonitorService {
         public void run() {
             while (continueMonitoring) {
                 try {
-                    WiiMoteEvent evt = new WiiMoteEvent(new AccelerometerEvent("acc", 235, 235, 235));
+                    WiiMoteEvent evt = new WiiMoteEvent(new AccelerometerEvent(null, 235, 235, 235),"acc");
                     EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, evt);
                     Thread.sleep(1000);
                 } catch (Exception ex) {

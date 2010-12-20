@@ -25,7 +25,6 @@ public class WiiMoteEvent implements Serializable {
 
     public WiiMoteEvent(AccelerometerEvent event) {
         this.event = event;
-        
         this.processed = false;
         this.x = event.getX();
         this.y = event.getY();
@@ -33,12 +32,8 @@ public class WiiMoteEvent implements Serializable {
     }
 
     public WiiMoteEvent(AccelerometerEvent event, String type) {
-        this.event = event;
+        this(event);
         this.type = type;
-        this.processed = false;
-         this.x = event.getX();
-        this.y = event.getY();
-        this.z = event.getZ();
     }
 
 
