@@ -16,6 +16,7 @@ global Map ambulances;
 
 rule "Handling Single Emergency Call"
     no-loop true
+    lock-on-active true
     when
   
         $emergency: Emergency()
