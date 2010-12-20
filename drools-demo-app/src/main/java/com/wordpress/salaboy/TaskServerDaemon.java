@@ -4,13 +4,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.SystemEventListenerFactory;
-import org.drools.task.User;
-import org.drools.task.service.TaskService;
-import org.drools.task.service.TaskServiceSession;
+import org.jbpm.task.User;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.TaskServiceSession;
 
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.drools.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.mina.MinaTaskServer;
 
 
 public class TaskServerDaemon {
@@ -43,7 +43,7 @@ public class TaskServerDaemon {
 
 		ds1.init();
 		// Use persistence.xml configuration
-		emf = Persistence.createEntityManagerFactory("org.drools.task");
+		emf = Persistence.createEntityManagerFactory("org.jbpm.task");
 
 		taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 		taskSession = taskService.createSession();

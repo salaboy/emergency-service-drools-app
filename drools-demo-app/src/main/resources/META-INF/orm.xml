@@ -16,7 +16,7 @@ where
       <named-query name="TasksAssignedAsBusinessAdministrator">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -55,7 +55,7 @@ where
       <named-query name="TasksAssignedAsExcludedOwner">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -94,7 +94,7 @@ where
       <named-query name="TasksAssignedAsPotentialOwner">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subject.text,
@@ -136,7 +136,7 @@ where
             <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
           <query>
 select
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -178,7 +178,7 @@ where
        <named-query name="TasksAssignedAsPotentialOwnerByGroup">
           <query>
 select
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -220,7 +220,7 @@ where
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>
 select
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -263,7 +263,7 @@ where
 <named-query name="GetSubTasksByParentTaskId">
           <query>
 select
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -304,7 +304,7 @@ where
       <named-query name="TasksAssignedAsRecipient">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -343,7 +343,7 @@ where
       <named-query name="TasksAssignedAsTaskInitiator">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -382,7 +382,7 @@ where
       <named-query name="TasksAssignedAsTaskStakeholder">
           <query>
 select 
-     new org.drools.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummary(
      t.id,
      names.text,
      subjects.text,
@@ -421,7 +421,7 @@ where
       <named-query name="TasksOwned">
           <query>
 select 
-    new org.drools.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummary(
     t.id,
     names.text,
     subjects.text,
@@ -454,7 +454,7 @@ where
 	  <named-query name="UnescalatedDeadlines">
           <query>
 select 
-     new org.drools.task.query.DeadlineSummary(
+     new org.jbpm.task.query.DeadlineSummary(
      t.id,
      d.id,
      d.date)
