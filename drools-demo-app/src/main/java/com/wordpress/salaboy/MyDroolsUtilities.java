@@ -15,12 +15,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
+import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugProcessEventListener;
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.event.rule.DebugWorkingMemoryEventListener;
-import org.drools.task.service.TaskClient;
-import org.drools.task.service.mina.MinaTaskClientConnector;
-import org.drools.task.service.mina.MinaTaskClientHandler;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
 
 /**
  *
@@ -58,9 +58,9 @@ public class MyDroolsUtilities {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.addEventListener(new ProcessEventLogger(EmergencyService.logger));
-        ksession.addEventListener(new DebugAgendaEventListener());
+        //ksession.addEventListener(new DebugAgendaEventListener());
         ksession.addEventListener(new DebugProcessEventListener());
-        ksession.addEventListener(new DebugWorkingMemoryEventListener());
+        //ksession.addEventListener(new DebugWorkingMemoryEventListener());
         
         return ksession;
     }

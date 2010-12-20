@@ -19,13 +19,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
-import org.drools.task.Content;
-import org.drools.task.Task;
-import org.drools.task.TaskData;
-import org.drools.task.query.TaskSummary;
-import org.drools.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.Content;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.plugtree.training.model.Emergency.EmergencyType;
 
 /**

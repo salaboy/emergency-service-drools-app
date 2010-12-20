@@ -14,12 +14,10 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
-import org.drools.task.query.TaskSummary;
-import org.drools.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.plugtree.training.model.Call;
 
 /**

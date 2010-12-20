@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.drools.task.AccessType;
-import org.drools.task.service.ContentData;
-import org.drools.task.service.TaskClient;
-import org.drools.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 /**
  *
