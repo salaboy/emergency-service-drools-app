@@ -22,12 +22,13 @@ import org.plugtree.training.model.Hospital;
 public class TaskListUIHospitalSelectedEventNotifier implements WorldEventNotifier {
 
     @Override
-    public void notify(Object event) {
+    public void notify(NotifierEvent event) {
         // This is the hospital Selected ID
-        Long hospitalId = (Long)event;
-        //@TODO: I should also have the ambulance ID.. to be able to select the correct frame
+        Long hospitalId = ((HospitalSelectedNotifierEvent)event).getHospitalId();
+        Long ambulanceId = ((HospitalSelectedNotifierEvent)event).getAmbulanceId();
         
-        EmergencyFrame emergencyFrame = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(0L);
+        
+        EmergencyFrame emergencyFrame = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(ambulanceId);
         emergencyFrame.getLblDirection().setForeground(Color.green);
         
         

@@ -13,7 +13,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import com.wordpress.salaboy.EmergencyService;
 import java.util.Map;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
-
+import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 
 global Map hospitals;
 
@@ -50,7 +50,8 @@ rule "Rank Hospital Speciality that matches EmergencyType"
     then
         //@TODO use the 
         System.out.println("Hospital Selected"+$selectedHospital);
-        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, $selectedHospital.getId());
+        EmergencyService.getInstance().getMapEventsNotifier()
+            .notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, new HospitalSelectedNotifierEvent($ambulance.getId(), $selectedHospital.getId(), $emergency.getId()));
         
 end
 

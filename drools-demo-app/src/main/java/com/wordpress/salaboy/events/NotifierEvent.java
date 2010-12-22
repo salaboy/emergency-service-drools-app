@@ -9,6 +9,7 @@ package com.wordpress.salaboy.events;
  *
  * @author salaboy
  */
-public interface WorldEventNotifier {
-    public void notify(NotifierEvent event);    
+public interface NotifierEvent {
+    public String getEventType();
+    public Long getEventId();
 }

@@ -1,10 +1,14 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.events.EmergencyReachedNotifierEvent;
+import com.wordpress.salaboy.events.HospitalReachedNotifierEvent;
 import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.graphicable.GraphicableHighlightedHospital;
 import com.wordpress.salaboy.events.MapHospitalSelectedEventNotifier;
+import com.wordpress.salaboy.events.PositionUpdatedNotifierEvent;
+import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,10 +24,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.Hospital;
 
 public class CityMapUI extends BasicGame {
 
@@ -211,7 +212,7 @@ public class CityMapUI extends BasicGame {
             Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
             int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
             BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-            emergencies.add(EmergencyService.getInstance().newCall(call));
+            emergencies.add(GraphicableFactory.newEmergency(EmergencyService.getInstance().newEmergency(call)));
 
         }
         //if at least have one player
@@ -296,7 +297,7 @@ public class CityMapUI extends BasicGame {
             if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getAmbulance().getId())) {
                 EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getAmbulance().getId(), true); 
                 EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, ambulance.getAmbulance().getId());
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, new EmergencyReachedNotifierEvent(ambulance.getAmbulance().getId()));
                 EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), false);
                 return true;
             }
@@ -309,7 +310,7 @@ public class CityMapUI extends BasicGame {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getAmbulance().getId())) {
                 EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), true);
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, ambulance.getAmbulance().getId());
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, new HospitalReachedNotifierEvent(ambulance.getAmbulance().getId(), null));
                 return true;
             }
         }
@@ -320,7 +321,7 @@ public class CityMapUI extends BasicGame {
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly)) {
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, ambulance.getAmbulance().getId());
+                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, new PositionUpdatedNotifierEvent(ambulance.getAmbulance().getId()));
                 return true;
             }
         }

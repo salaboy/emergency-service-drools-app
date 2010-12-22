@@ -9,6 +9,7 @@ import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import java.util.Iterator;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.plugtree.training.model.Hospital;
 import org.plugtree.training.model.Patient;
@@ -27,15 +28,15 @@ public class MapHospitalReachedEventNotifier implements WorldEventNotifier {
     }
 
     @Override
-    public void notify(Object event) {
-        Long ambulanceId = (Long) event;
+    public void notify(NotifierEvent event) {
+        Long ambulanceId = ((HospitalReachedNotifierEvent)event).getAmbulanceId();
 
         AmbulanceMonitorService.getInstance().stop();
         EmergencyService.getInstance().sendPatientAtTheHospitalEvent(new PatientAtTheHospitalEvent(), ambulanceId);
 
 
 
-        org.drools.runtime.rule.QueryResults results = EmergencyService.getInstance().getQueryResults("getPatient");
+        QueryResults results = EmergencyService.getInstance().getQueryResults("getPatient");
         Iterator<QueryResultsRow> it = results.iterator();
         Patient patient = null;
         while (it.hasNext()) {

@@ -29,11 +29,12 @@ public class MapHospitalSelectedEventNotifier implements WorldEventNotifier{
     
     
     @Override
-    public void notify(Object event) {
-        //@TODO: i need the ambulance ID here too
-        //@TODO: i need the emergency ID too
+    public void notify(NotifierEvent event) {
+        
         Hospital selectedHospital = null;
-        Long hospitalId = (Long)event;
+        Long hospitalId = ((HospitalSelectedNotifierEvent)event).getHospitalId();
+        Long ambulanceId = ((HospitalSelectedNotifierEvent)event).getAmbulanceId();
+        Long emergencyId = ((HospitalSelectedNotifierEvent)event).getEmergencyId();
         
         int hospitasquare[] = {1, 1, 15, 1, 15, 15, 1, 15};
         
@@ -51,10 +52,10 @@ public class MapHospitalSelectedEventNotifier implements WorldEventNotifier{
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new MapPatientVitalSignReceivedEventNotifier());
         
         
-        //START the monitor service with the Ambulance ID
+        //@TODO: START the monitor service with the Ambulance ID
         AmbulanceMonitorService.getInstance().start();
         
-        UserTaskListUI.getInstance().getGame().removeEmergency(0L);
+        UserTaskListUI.getInstance().getGame().removeEmergency(emergencyId);
     }
 
 }

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import com.wordpress.salaboy.events.WiiMoteEvent;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.EmergencyService;
-
-
+import org.plugtree.training.model.*;
+import com.wordpress.salaboy.events.*;
 
 declare WiiMoteEvent
     @role ( event )
@@ -16,17 +16,19 @@ end
 
 rule "Patient with no vital sign"
     when
-        
+        $emergency: Emergency()
         $nextEvents : Number(doubleValue == 235 ) from accumulate( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(4s) from entry-point "patientHeartbeats",
         												average($y)) 
     then
-        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.NO_VITAL_SIGNS, "Warning, patient without vital signs ");
+        EmergencyService.getInstance().getMapEventsNotifier()
+            .notifyMapEventsListeners(MapEventsNotifier.EventType.NO_VITAL_SIGNS, new MonitorAlertReceivedNotifierEvent("Warning, patient without vital signs ", $emergency.getId()));
 end
 
 rule "Patient heart attack"
     when
-        
+        $emergency: Emergency()
         $nextEvents : ArrayList(size > 10 ) from collect( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(1s) from entry-point "patientHeartbeats") 
     then
-        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_ATTACK, "Warning, patient suffering a heart attack ");
+        EmergencyService.getInstance().getMapEventsNotifier()
+            .notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_ATTACK, new MonitorAlertReceivedNotifierEvent("Warning, patient suffering a heart attack ", $emergency.getId()));
 end

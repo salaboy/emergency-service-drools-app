@@ -92,17 +92,17 @@ public class EmergencyService {
 
     }
 
-    public GraphicableEmergency newCall(Call call) {
+    public Emergency newEmergency(Call call) {
         //@TODO: do a notifier, transform call into an Event inside a workingmemory entry point
         //ksession.insert(call);
         
         
-        Emergency emergency = new Emergency();
-        emergency.setCall(call);
-        GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(emergency);
-        //addEmergencyAlert(xs[call.getX()] * 16, ys[call.getY()] * 16);
-        //newEmergency.getEmergency().setCall(call);
-        ksession.insert(newEmergency.getEmergency());
+        Emergency newEmergency = new Emergency();
+        newEmergency.setCall(call);
+        //GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(emergency);
+        
+        //ksession.insert(newEmergency.getEmergency());
+        ksession.insert(newEmergency);
         return newEmergency;
         
     }
@@ -135,7 +135,8 @@ public class EmergencyService {
         return hospitalReachedNotified;
     }
 
-    public void heartBeatReceivedFromAmbulance(WiiMoteEvent evt) {
+    public void heartBeatReceivedFromAmbulance(Long ambulanceId, WiiMoteEvent evt) {
+        //@TODO: compose the event with the Ambulance Id
         getWorkingMemoryEntryPoint("patientHeartbeats").insert(evt);
     }
     

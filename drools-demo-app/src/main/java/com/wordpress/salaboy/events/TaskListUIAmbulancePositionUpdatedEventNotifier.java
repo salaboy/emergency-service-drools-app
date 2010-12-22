@@ -25,8 +25,9 @@ public class TaskListUIAmbulancePositionUpdatedEventNotifier implements WorldEve
     }
     
     @Override
-    public void notify(Object event) {
-        GraphicableAmbulance ambulance = UserTaskListUI.getInstance().getGame().getGraphicableAmbulanceById((Long)event);
+    public void notify(NotifierEvent event) {
+        Long ambulanceId = ((PositionUpdatedNotifierEvent)event).getAmbulanceId();
+        GraphicableAmbulance ambulance = UserTaskListUI.getInstance().getGame().getGraphicableAmbulanceById(ambulanceId);
         int newX = Math.round(ambulance.getPolygon().getX() / 16);
         int newY = Math.round(ambulance.getPolygon().getY() / 16); 
         String text = CityEntitiesUtils.translatePosition( newX, newY );

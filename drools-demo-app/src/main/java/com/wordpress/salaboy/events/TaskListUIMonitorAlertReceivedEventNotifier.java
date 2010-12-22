@@ -16,11 +16,12 @@ import javax.swing.DefaultListModel;
 public class TaskListUIMonitorAlertReceivedEventNotifier implements WorldEventNotifier{
 
     @Override
-    public void notify(Object event) {
-        String message = (String)event;
+    public void notify(NotifierEvent event) {
+        String message = ((MonitorAlertReceivedNotifierEvent)event).getMessage();
+        Long emergencyId = ((MonitorAlertReceivedNotifierEvent)event).getEmergencyId();
         //@TODO: I need the ambulanceId here too
         //Long ambulanceId = (Long)event;
-        EmergencyFrame emergencyFrame = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(0L);
+        EmergencyFrame emergencyFrame = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(emergencyId);
         emergencyFrame.getAlerts().add(0,message);
         
         DefaultListModel model = new DefaultListModel();

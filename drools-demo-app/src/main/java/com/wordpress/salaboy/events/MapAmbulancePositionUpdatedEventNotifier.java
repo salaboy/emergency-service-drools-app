@@ -19,9 +19,10 @@ public class MapAmbulancePositionUpdatedEventNotifier implements WorldEventNotif
 
     
     @Override
-    public void notify(Object event) {
-        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById((Long)event);
-        GraphicableAmbulance graphAmbulance = UserTaskListUI.getInstance().getGame().getGraphicableAmbulanceById((Long)event);
+    public void notify(NotifierEvent event) {
+        
+        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(((PositionUpdatedNotifierEvent)event).getAmbulanceId());
+        GraphicableAmbulance graphAmbulance = UserTaskListUI.getInstance().getGame().getGraphicableAmbulanceById(((PositionUpdatedNotifierEvent)event).getAmbulanceId());
         float newX = Math.round(graphAmbulance.getPolygon().getX() / 16);
         float newY = Math.round(graphAmbulance.getPolygon().getY() / 16);
         

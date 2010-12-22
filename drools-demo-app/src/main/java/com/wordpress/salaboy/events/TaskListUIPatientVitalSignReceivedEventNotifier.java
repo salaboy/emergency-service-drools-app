@@ -15,10 +15,10 @@ import com.wordpress.salaboy.ui.UserTaskListUI;
 public class TaskListUIPatientVitalSignReceivedEventNotifier implements WorldEventNotifier{
 
     @Override
-    public void notify(Object event) {
-        WiiMoteEvent evt = (WiiMoteEvent)event;
-        //THe event should contain the ambulance ID
-        EmergencyMonitorPanel emergencyMonitorPanel = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById((Long)0L).getEmergencyMonitorPanel();
+    public void notify(NotifierEvent event) {
+        WiiMoteEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
+        Long ambulanceId = ((PatientVitalSignNotifierEvent)event).getAmbulanceId();
+        EmergencyMonitorPanel emergencyMonitorPanel = UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(ambulanceId).getEmergencyMonitorPanel();
          if (emergencyMonitorPanel != null){
             emergencyMonitorPanel.updateMonitorGraph(evt.getY());
         }

@@ -14,11 +14,12 @@ import com.wordpress.salaboy.EmergencyService;
 public class MapPatientVitalSignReceivedEventNotifier implements WorldEventNotifier {
 
     @Override
-    public void notify(Object event) {
-        WiiMoteEvent evt = (WiiMoteEvent)event;
-        EmergencyService.getInstance().heartBeatReceivedFromAmbulance(
-                                                //evt.getAmbulanceId(), 
-                                                evt);
+    public void notify(NotifierEvent event) {
+        
+        WiiMoteEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
+        Long ambulanceId  = ((PatientVitalSignNotifierEvent)event).getAmbulanceId();
+        
+        EmergencyService.getInstance().heartBeatReceivedFromAmbulance(ambulanceId, evt);
         
     }
 

@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.events.NotifierEvent;
 import com.wordpress.salaboy.events.WorldEventNotifier;
 import com.wordpress.salaboy.log.Logger;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class MapEventsNotifier {
         this.logger = logger;
     }
     
-    public void notifyMapEventsListeners(final EventType type, final Object data) {
+    public void notifyMapEventsListeners(final EventType type, final NotifierEvent data) {
         if (mapEventNotifiers.get(type) == null){
             return;
         }

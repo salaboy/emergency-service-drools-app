@@ -6,6 +6,7 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.ui.EmergencyFrame;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 
@@ -17,11 +18,13 @@ public class TaskListUIEmergencyReachedEventNotifier implements WorldEventNotifi
 
     
     @Override
-    public void notify(Object event) {
+    public void notify(NotifierEvent event) {
         
-        Long id = (Long)event;
-        UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(id).getPnlMedicalEvaluation().setEnabled(true); 
-        UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(id).getMainTabPanel().setSelectedComponent(UserTaskListUI.getInstance().getCurrentEmergenciesPanel().getEmergencyFrameById(id).getPnlMedicalEvaluation());       
+        Long ambulanceId = ((EmergencyReachedNotifierEvent)event).getAmbulanceId();
+        final EmergencyFrame emergencyFrameById = UserTaskListUI.getInstance().getCurrentEmergenciesPanel()
+                                                          .getEmergencyFrameById(ambulanceId);
+        emergencyFrameById.getPnlMedicalEvaluation().setEnabled(true); 
+        emergencyFrameById.getMainTabPanel().setSelectedComponent(emergencyFrameById.getPnlMedicalEvaluation());       
         EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new TaskListUIHospitalSelectedEventNotifier());
     }
 

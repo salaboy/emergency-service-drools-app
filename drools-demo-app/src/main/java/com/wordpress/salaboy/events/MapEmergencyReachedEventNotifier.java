@@ -19,14 +19,12 @@ public class MapEmergencyReachedEventNotifier implements WorldEventNotifier{
     private Emergency emergency;
 
     public MapEmergencyReachedEventNotifier(Emergency emergency) {
-        
         this.emergency = emergency;
     }
     
     
     @Override
-    public void notify(Object event) {
-        Long id = (Long)event;
+    public void notify(NotifierEvent event) {
         EmergencyService.getInstance().sendPatientPickUpEvent(new PatientPickUpEvent(new Date()), this.emergency.getCall().getProcessId());
     }
 

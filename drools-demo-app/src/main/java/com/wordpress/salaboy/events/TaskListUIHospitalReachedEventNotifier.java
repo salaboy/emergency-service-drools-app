@@ -22,7 +22,7 @@ public class TaskListUIHospitalReachedEventNotifier implements WorldEventNotifie
     
     
     @Override
-    public void notify(Object event) {
+    public void notify(NotifierEvent event) {
         UserTaskListUI.getInstance().getMainJTabbedPane().setSelectedIndex(4);
         UserTaskListUI.getInstance().refreshPatientsTable();
     }

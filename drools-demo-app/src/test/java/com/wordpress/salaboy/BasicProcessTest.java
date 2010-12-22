@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.ui.CityMapUI;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.plugtree.training.model.Ambulance;
 import org.plugtree.training.model.Call;
+import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
 import org.plugtree.training.model.events.PatientPickUpEvent;
 
 /**
@@ -74,7 +74,7 @@ public class BasicProcessTest {
         
         
         Call call = new Call(2,4, new Date());
-        EmergencyService.getInstance().newCall(call);
+        EmergencyService.getInstance().newEmergency(call);
 
         Thread.sleep(5000);
 
@@ -213,19 +213,18 @@ public class BasicProcessTest {
         
         
         
+        
         Thread.sleep(3000);
 //        
 //         //UI SIDE.. needs access to the ksession to propagate the event
-//        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", new PatientAtTheHospitalEvent() );
-//        
-//        Thread.sleep(5000);
-//        
-//        Assert.assertEquals(ksession.getProcessInstances().size(), 0);
-//
-//        System.out.println("\n\nLogs:");
-//        for (String message : MyDroolsUtilities.logger.getLogs()) {
-//            System.out.println("\t"+message);
-//        }
+        EmergencyService.getInstance().sendPatientAtTheHospitalEvent( new PatientAtTheHospitalEvent() ,call.getProcessId());
+
+        Thread.sleep(5000);
+
+        System.out.println("\n\nLogs:");
+        for (String message : EmergencyService.logger.getLogs()) {
+            System.out.println("\t"+message);
+        }
         
         
     }
