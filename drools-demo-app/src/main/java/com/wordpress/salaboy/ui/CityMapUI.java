@@ -233,29 +233,34 @@ public class CityMapUI extends BasicGame {
 
 
 
+        for (GraphicableAmbulance renderAmbulance : ambulances) {
+            g.draw(renderAmbulance.getPolygon());
+        }
+        
+        for (GraphicableEmergency renderEmergency : emergencies) {
+            g.draw(renderEmergency.getPolygon());
+        }
+        
+        for (GraphicableHighlightedHospital renderHospitalHightlight : hospitals) {
+            g.draw(renderHospitalHightlight.getPolygon());
+        }
+        
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
 
         for (GraphicableEmergency renderEmergency : emergencies) {
             g.drawAnimation(renderEmergency.getAnimation(), renderEmergency.getPolygon().getX(), renderEmergency.getPolygon().getY());
-            g.draw(renderEmergency.getPolygon());
         }
 
 
         for (GraphicableAmbulance renderAmbulance : ambulances) {
             g.drawAnimation(renderAmbulance.getAnimation(), renderAmbulance.getPolygon().getX(), renderAmbulance.getPolygon().getY());
-            g.draw(renderAmbulance.getPolygon());
-        }
-        
-        for (GraphicableHighlightedHospital renderHospitalHightlight : hospitals) {
-            g.drawAnimation(renderHospitalHightlight.getAnimation(), renderHospitalHightlight.getPolygon().getX() - 32, renderHospitalHightlight.getPolygon().getY() - 80);
-            g.draw(renderHospitalHightlight.getPolygon());
         }
         
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
         
-        
-
-        
+        for (GraphicableHighlightedHospital renderHospitalHightlight : hospitals) {
+            g.drawAnimation(renderHospitalHightlight.getAnimation(), renderHospitalHightlight.getPolygon().getX() - 32, renderHospitalHightlight.getPolygon().getY() - 80);
+        }
 
     }
 
