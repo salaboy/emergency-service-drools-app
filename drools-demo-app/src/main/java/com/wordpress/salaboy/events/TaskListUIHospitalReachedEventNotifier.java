@@ -25,6 +25,7 @@ public class TaskListUIHospitalReachedEventNotifier implements WorldEventNotifie
     public void notify(NotifierEvent event) {
         UserTaskListUI.getInstance().getMainJTabbedPane().setSelectedIndex(4);
         UserTaskListUI.getInstance().refreshPatientsTable();
+        UserTaskListUI.getInstance().getCurrentEmergenciesPanel().onHospitalReached(((HospitalReachedNotifierEvent)event).getAmbulanceId());
     }
 
 }

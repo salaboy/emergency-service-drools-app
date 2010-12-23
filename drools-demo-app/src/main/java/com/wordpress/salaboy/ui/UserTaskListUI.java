@@ -559,7 +559,4 @@ public class UserTaskListUI extends javax.swing.JFrame {
         return game;
     }
     
-    
-    
-    
 }

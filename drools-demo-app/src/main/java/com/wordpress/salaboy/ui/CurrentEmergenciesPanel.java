@@ -8,7 +8,6 @@
  *
  * Created on Nov 24, 2010, 6:23:51 PM
  */
-
 package com.wordpress.salaboy.ui;
 
 import java.beans.PropertyVetoException;
@@ -25,7 +24,7 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
 
     private UserTaskListUI parent;
     private Map<Long, EmergencyFrame> emergencyFrames = new ConcurrentHashMap<Long, EmergencyFrame>();
-    
+
     public CurrentEmergenciesPanel(UserTaskListUI parent) {
         this.parent = parent;
         initComponents();
@@ -54,26 +53,48 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
-    public void addNewEmergency(long ambulanceId){
+    public void addNewEmergency(long ambulanceId) {
         EmergencyFrame emergencyFrame = new EmergencyFrame(parent, ambulanceId);
         this.emergencyFrames.put(ambulanceId, emergencyFrame);
         this.add(emergencyFrame);
         try {
             emergencyFrame.setMaximum(true);
-            emergencyFrame.setTitle("Ambulance Monitor ("+ambulanceId+")");
+            emergencyFrame.setTitle("Ambulance Monitor (" + ambulanceId + ")");
         } catch (PropertyVetoException ex) {
             Logger.getLogger(CurrentEmergenciesPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.validate();
     }
-    
-    public EmergencyFrame getEmergencyFrameById(Long id){
+
+    public EmergencyFrame getEmergencyFrameById(Long id) {
         return this.emergencyFrames.get(id);
     }
-    
 
+    public void onHospitalReached(Long ambulanceId) {
+        if (!this.emergencyFrames.containsKey(ambulanceId)) {
+            throw new IllegalArgumentException("Ambulance " + ambulanceId + " was not registered before!");
+        }
+
+        EmergencyFrame emergencyFrame = this.emergencyFrames.remove(ambulanceId);
+        this.remove(emergencyFrame);
+
+        this.validate();
+    }
+
+    public void onHeartBeatReceived(Long ambulanceId, int pulse) {
+        if (ambulanceId == null) {
+            //broadcast: pulse emulator
+            for (Map.Entry<Long, EmergencyFrame> entry : emergencyFrames.entrySet()) {
+                entry.getValue().getEmergencyMonitorPanel().updateMonitorGraph(pulse);
+            }
+        } else {
+            //direct event
+            EmergencyMonitorPanel emergencyMonitorPanel = this.getEmergencyFrameById(ambulanceId).getEmergencyMonitorPanel();
+            if (emergencyMonitorPanel != null) {
+                emergencyMonitorPanel.updateMonitorGraph(pulse);
+            }
+        }
+    }
 }
