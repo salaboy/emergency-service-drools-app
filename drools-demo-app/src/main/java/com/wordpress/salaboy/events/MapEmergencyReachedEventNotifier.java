@@ -7,8 +7,8 @@ package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.EmergencyService;
 import java.util.Date;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 
 /**
  *

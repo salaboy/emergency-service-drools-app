@@ -24,7 +24,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import org.plugtree.training.model.Call;
+import com.wordpress.salaboy.model.Call;
 
 public class CityMapUI extends BasicGame {
 

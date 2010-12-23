@@ -12,17 +12,17 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_ambulanceItem" structureRef="org.plugtree.training.model.Ambulance" />
-  <itemDefinition id="_emergencyItem" structureRef="org.plugtree.training.model.Emergency" />
+  <itemDefinition id="_ambulanceItem" structureRef="com.wordpress.salaboy.model.Ambulance" />
+  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_emergency.typeItem" structureRef="String" />
   <itemDefinition id="_emergency.locationItem" structureRef="String" />
   <itemDefinition id="_patient.nameItem" structureRef="String" />
   <itemDefinition id="_patient.ageItem" structureRef="String" />
   <itemDefinition id="_patient.genderItem" structureRef="String" />
-  <itemDefinition id="_pickUpPatientEventItem" structureRef="org.plugtree.training.model.events.PatientPickUpEvent" />
+  <itemDefinition id="_pickUpPatientEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
   <itemDefinition id="_emergency.priorityItem" structureRef="String" />
-  <itemDefinition id="_patientAtTheHospitalEventItem" structureRef="org.plugtree.training.model.events.PatientAtTheHospitalEvent" />
-  <itemDefinition id="_doctorItem" structureRef="org.plugtree.training.model.Medic" />
+  <itemDefinition id="_patientAtTheHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent" />
+  <itemDefinition id="_doctorItem" structureRef="com.wordpress.salaboy.model.Medic" />
   <itemDefinition id="_patient.idItem" structureRef="String" />
   <itemDefinition id="_doctor.idItem" structureRef="String" />
   <itemDefinition id="_ambulance.idItem" structureRef="String" />
@@ -32,7 +32,7 @@
   <itemDefinition id="_call.phoneNumberItem" structureRef="String" />
   <itemDefinition id="_ambulance.descriptionItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="org.drools.bpmn2.EmergencyService" name="Emergency Service Main Process" >
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.EmergencyService" name="Emergency Service Main Process" >
 
     <!-- process variables -->
     <property id="ambulance" itemSubjectRef="_ambulanceItem"/>
@@ -258,7 +258,7 @@
       <outputSet>
         <dataOutputRefs>_7_Output</dataOutputRefs>
       </outputSet>
-      <signalEventDefinition signalRef="com.wordpress.salaboy.PickUpPatientEvent"/>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PickUpPatientEvent"/>
     </intermediateCatchEvent>
     <userTask id="_8" name="Update Emergency Information" >
       <ioSpecification>
@@ -342,7 +342,7 @@
       <outputSet>
         <dataOutputRefs>_12_Output</dataOutputRefs>
       </outputSet>
-      <signalEventDefinition signalRef="org.plugtree.training.model.events.PatientAtTheHospitalEvent"/>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent"/>
     </intermediateCatchEvent>
     <task id="_13" name="Send Report" tns:taskName="Reporting" >
       <ioSpecification>
@@ -361,7 +361,7 @@
     <scriptTask id="_14" name="Start Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>org.drools.runtime.process.WorkflowProcessInstance process = (org.drools.runtime.process.WorkflowProcessInstance)kcontext.getProcessInstance();
 java.util.Map ambulances2 = (java.util.Map) kcontext.getKnowledgeRuntime().getGlobal("ambulances");
-kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(org.plugtree.training.model.Emergency.EmergencyType.valueOf((String)process.getVariable("emergency.type")))).get(0));
+kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(com.wordpress.salaboy.model.Emergency.EmergencyType.valueOf((String)process.getVariable("emergency.type")))).get(0));
 
 </script>
     </scriptTask>
@@ -383,7 +383,7 @@ kcontext.getKnowledgeRuntime().insert(((java.util.List)ambulances2.get(org.plugt
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="org.drools.bpmn2.EmergencyService" >
+    <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.EmergencyService" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="171" y="9" width="48" height="48" />
       </bpmndi:BPMNShape>

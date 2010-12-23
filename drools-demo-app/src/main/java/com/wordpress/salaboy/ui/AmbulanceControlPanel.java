@@ -26,7 +26,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.plugtree.training.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
 
 /**
  *

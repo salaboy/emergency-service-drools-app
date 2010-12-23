@@ -14,10 +14,10 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Polygon;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.Hospital;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Hospital;
 
 /**
  *

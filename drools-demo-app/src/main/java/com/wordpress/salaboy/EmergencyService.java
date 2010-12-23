@@ -5,9 +5,7 @@
 package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.call.CallManager;
-import com.wordpress.salaboy.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.events.WiiMoteEvent;
-import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
@@ -19,11 +17,11 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
-import org.plugtree.training.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 
 /**
  *
@@ -93,26 +91,22 @@ public class EmergencyService {
     }
 
     public Emergency newEmergency(Call call) {
-        //@TODO: do a notifier, transform call into an Event inside a workingmemory entry point
-        //ksession.insert(call);
+        
         
         
         Emergency newEmergency = new Emergency();
         newEmergency.setCall(call);
-        //GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(emergency);
-        
-        //ksession.insert(newEmergency.getEmergency());
         ksession.insert(newEmergency);
         return newEmergency;
         
     }
 
     public void sendPatientPickUpEvent(PatientPickUpEvent patientPickUpEvent, Long id) {
-        ksession.signalEvent("com.wordpress.salaboy.PickUpPatientEvent", patientPickUpEvent );
+        ksession.signalEvent("com.wordpress.salaboy.model.events.PickUpPatientEvent", patientPickUpEvent );
     }
     
     public void sendPatientAtTheHospitalEvent(PatientAtTheHospitalEvent patientAtTheHospitalEvent, Long id){
-        ksession.signalEvent("org.plugtree.training.model.events.PatientAtTheHospitalEvent", patientAtTheHospitalEvent);
+        ksession.signalEvent("com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent", patientAtTheHospitalEvent);
         System.out.println("Patient at the HOspital! Event Sent!");
     }
 

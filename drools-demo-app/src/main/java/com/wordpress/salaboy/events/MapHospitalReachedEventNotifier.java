@@ -11,9 +11,9 @@ import com.wordpress.salaboy.ui.UserTaskListUI;
 import java.util.Iterator;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Patient;
-import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
 
 /**
  *

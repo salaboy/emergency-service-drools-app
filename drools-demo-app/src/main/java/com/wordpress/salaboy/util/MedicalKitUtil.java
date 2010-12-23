@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import org.plugtree.training.model.Medic.MedicSpeciality;
-import org.plugtree.training.model.MedicalKit;
+import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.MedicalKit;
 
 /**
  *

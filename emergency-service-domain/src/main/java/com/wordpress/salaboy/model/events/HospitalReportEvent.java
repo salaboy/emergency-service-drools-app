@@ -3,14 +3,12 @@
  * and open the template in the editor.
  */
 
-package org.plugtree.training.model.events;
-
-import java.io.Serializable;
+package com.wordpress.salaboy.model.events;
 
 /**
  *
  * @author salaboy
  */
-public class PatientVitalSignEvent implements Serializable{
+public class HospitalReportEvent {
 
 }

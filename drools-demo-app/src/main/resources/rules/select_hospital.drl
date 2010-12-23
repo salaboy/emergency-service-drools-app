@@ -1,14 +1,10 @@
-package org.plugtree.emergencyservice.hospitalselection;
+package hospitalselectionrules;
 
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Medic;
-import org.plugtree.training.model.Medic.MedicSpeciality;
-import org.plugtree.training.model.MedicalKit;
-import org.plugtree.training.model.Location;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Patient;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Ambulance;
+
 import org.drools.runtime.process.WorkflowProcessInstance;
 import com.wordpress.salaboy.EmergencyService;
 import java.util.Map;

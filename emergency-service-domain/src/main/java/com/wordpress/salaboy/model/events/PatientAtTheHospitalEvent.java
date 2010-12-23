@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.plugtree.training.model.events;
+package com.wordpress.salaboy.model.events;
 
 import java.io.Serializable;
 

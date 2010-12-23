@@ -1,4 +1,4 @@
-package org.plugtree.training.model;
+package com.wordpress.salaboy.model;
 
 import java.util.Date;
 

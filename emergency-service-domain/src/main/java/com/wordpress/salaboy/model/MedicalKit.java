@@ -3,10 +3,10 @@
  * and open the template in the editor.
  */
 
-package org.plugtree.training.model;
+package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
-import org.plugtree.training.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Medic.MedicSpeciality;
 
 /**
  *

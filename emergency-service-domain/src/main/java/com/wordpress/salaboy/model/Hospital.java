@@ -3,12 +3,12 @@
  * and open the template in the editor.
  */
 
-package org.plugtree.training.model;
+package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.plugtree.training.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
 
 /**
  *

@@ -1,14 +1,13 @@
-package org.plugtree.emergencyservice.ambulance;
+package ambulancerules;
 
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Patient;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Medic;
-import org.plugtree.training.model.Medic.MedicSpeciality;
-import org.plugtree.training.model.MedicalKit;
-import org.plugtree.training.model.Location;
+
+import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Medic;
+import com.wordpress.salaboy.model.MedicalKit;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import java.util.List;
@@ -30,7 +29,7 @@ rule "Initialize Emergency"
     salience 20
     when
       $processInstance: WorkflowProcessInstance()
-      $emergency: Emergency()
+      $emergency: Emergency(call.processId == $processInstance.id)
       
     then
      // Get the Emergency from the Process Variable
@@ -48,7 +47,7 @@ rule "Initialize Emergency"
      $processInstance.setVariable("patient.id", patient.getId());
      
     //ADD NOTIFIER.. because a new Emergency with a call was created!
-    System.out.println("ADDING EMERGENCY REACHED LISTENER NOTIFIER");
+    //System.out.println("ADDING EMERGENCY REACHED LISTENER NOTIFIER");
      EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED, new MapEmergencyReachedEventNotifier($emergency));
      
 

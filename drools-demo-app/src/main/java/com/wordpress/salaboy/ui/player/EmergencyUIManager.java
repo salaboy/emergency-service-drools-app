@@ -10,7 +10,7 @@ import com.wordpress.salaboy.ui.CityMapUI;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Polygon;
-import org.plugtree.training.model.Emergency;
+import com.wordpress.salaboy.model.Emergency;
 
 /**
  *

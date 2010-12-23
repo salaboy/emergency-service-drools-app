@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.call;
 
-import org.plugtree.training.model.Call;
+import com.wordpress.salaboy.model.Call;
 
 /**
  *

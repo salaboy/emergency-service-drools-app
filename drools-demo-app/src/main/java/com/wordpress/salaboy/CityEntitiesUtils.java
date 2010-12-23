@@ -13,12 +13,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Medic;
-import org.plugtree.training.model.Medic.MedicSpeciality;
-import org.plugtree.training.model.MedicalKit;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Medic;
+import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.MedicalKit;
 
 /**
  *

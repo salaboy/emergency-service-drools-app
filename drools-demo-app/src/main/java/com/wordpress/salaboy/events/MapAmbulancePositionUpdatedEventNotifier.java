@@ -9,7 +9,7 @@ import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.ui.UserTaskListUI;
-import org.plugtree.training.model.Ambulance;
+import com.wordpress.salaboy.model.Ambulance;
 
 /**
  *

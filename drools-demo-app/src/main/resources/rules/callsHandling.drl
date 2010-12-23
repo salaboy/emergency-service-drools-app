@@ -1,7 +1,7 @@
-package org.plugtree.emergencyservice.callsHandling;
+package callsHandling;
 
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Emergency;
+import com.wordpress.salaboy.model.*;
+
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
@@ -18,10 +18,8 @@ rule "Handling Single Emergency Call"
     no-loop true
     lock-on-active true
     when
-  
         $emergency: Emergency()
     then
-        
         java.text.DateFormat df = SimpleDateFormat.getInstance().getDateTimeInstance(SimpleDateFormat.SHORT, SimpleDateFormat.SHORT);
        
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -29,7 +27,7 @@ rule "Handling Single Emergency Call"
         parameters.put("call.id", $emergency.getCall().getId());
         parameters.put("call.timestamp", df.format($emergency.getCall().getDate()));
         parameters.put("call.phoneNumber", $emergency.getCall().getPhoneNumber());
-        ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("org.drools.bpmn2.EmergencyService", parameters);
+        ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.EmergencyService", parameters);
         $emergency.getCall().setProcessId(pI.getId());
         callManager.incomingCall($emergency.getCall());
         update($emergency);

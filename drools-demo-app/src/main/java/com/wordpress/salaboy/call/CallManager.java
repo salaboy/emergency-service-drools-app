@@ -7,7 +7,7 @@ package com.wordpress.salaboy.call;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.plugtree.training.model.Call;
+import com.wordpress.salaboy.model.Call;
 
 /**
  *

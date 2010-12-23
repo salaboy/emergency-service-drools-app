@@ -23,7 +23,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import org.plugtree.training.model.Ambulance;
+import com.wordpress.salaboy.model.Ambulance;
 
 /**
  * @author salaboy

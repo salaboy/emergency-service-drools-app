@@ -30,10 +30,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.events.PatientAtTheHospitalEvent;
-import org.plugtree.training.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 
 /**
  *

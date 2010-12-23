@@ -13,7 +13,7 @@ import com.wordpress.salaboy.ui.EmergencyMonitorPanel;
 import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import java.awt.Color;
-import org.plugtree.training.model.Hospital;
+import com.wordpress.salaboy.model.Hospital;
 
 /**
  *

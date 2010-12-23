@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.MedicalKit;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.MedicalKit;
 
 /**
  *

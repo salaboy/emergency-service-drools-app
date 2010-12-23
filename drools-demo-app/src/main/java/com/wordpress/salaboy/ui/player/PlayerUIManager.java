@@ -15,7 +15,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Polygon;
-import org.plugtree.training.model.Ambulance;
+import com.wordpress.salaboy.model.Ambulance;
 
 /**
  *

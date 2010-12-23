@@ -39,9 +39,9 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Hospital;
-import org.plugtree.training.model.Patient;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Patient;
 
 /**
  *

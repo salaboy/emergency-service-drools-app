@@ -6,7 +6,7 @@ package com.wordpress.salaboy.graphicable;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.geom.Polygon;
-import org.plugtree.training.model.Hospital;
+import com.wordpress.salaboy.model.Hospital;
 
 /**
  *

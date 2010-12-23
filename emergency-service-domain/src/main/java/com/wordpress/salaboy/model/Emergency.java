@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.plugtree.training.model;
+package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
-package org.plugtree.training.model.events;
+package com.wordpress.salaboy.model.events;
 
 import java.io.Serializable;
 import java.util.Date;
-import org.plugtree.training.model.Ambulance;
+import com.wordpress.salaboy.model.Ambulance;
 
 /**
  *

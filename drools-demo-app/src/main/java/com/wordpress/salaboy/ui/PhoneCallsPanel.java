@@ -18,7 +18,7 @@ import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.plugtree.training.model.Call;
+import com.wordpress.salaboy.model.Call;
 
 /**
  *

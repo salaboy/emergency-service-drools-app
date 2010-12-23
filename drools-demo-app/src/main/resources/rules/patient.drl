@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.wiimote.drools;
+package patient.wiimote;
 
 import motej.event.AccelerometerEvent;
 import java.util.LinkedList;
@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import com.wordpress.salaboy.events.WiiMoteEvent;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.EmergencyService;
-import org.plugtree.training.model.*;
+import com.wordpress.salaboy.model.Emergency;
+
 import com.wordpress.salaboy.events.*;
 
 declare WiiMoteEvent
