@@ -1,3 +1,6 @@
 target
 nbactions.xml
 hs_err_pid*.log
+*.prefs
+.classpath
+.project

@@ -14,7 +14,7 @@ public class Ambulance implements Serializable{
 
     private Long id;
     private String description;
-    private Medic medicOnBoard;
+    private Doctor doctorOnBoard;
     private List<MedicalKit> kits;
     private Date departureTime;
     private Date patientPickedUpTime;
@@ -63,12 +63,12 @@ public class Ambulance implements Serializable{
         this.kits = kits;
     }
 
-    public Medic getMedicOnBoard() {
-        return medicOnBoard;
+    public Doctor getDoctorOnBoard() {
+        return doctorOnBoard;
     }
 
-    public void setMedicOnBoard(Medic medicOnBoard) {
-        this.medicOnBoard = medicOnBoard;
+    public void setDoctorOnBoard(Doctor doctorOnBoard) {
+        this.doctorOnBoard = doctorOnBoard;
     }
 
     public void addKit(MedicalKit kit) {
@@ -120,7 +120,7 @@ public class Ambulance implements Serializable{
 
     @Override
     public String toString() {
-        return "Ambulance{" + "id=" + id + ", description=" + description + ", medicOnBoard=" + medicOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "Ambulance{" + "id=" + id + ", description=" + description + ", doctorOnBoard=" + doctorOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
     }
 
 //    public void setAnimation(Animation animation) {

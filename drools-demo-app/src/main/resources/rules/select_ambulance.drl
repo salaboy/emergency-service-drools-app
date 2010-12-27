@@ -3,10 +3,10 @@ package ambulancerules;
 
 import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
-import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Medic;
+import com.wordpress.salaboy.model.Doctor;
 import com.wordpress.salaboy.model.MedicalKit;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
@@ -72,13 +72,13 @@ rule "Fire Emergency without more information"
     	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         // Get the first doctor that we have with the speciality related with the emergency
-        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BURNS)).get(0);
-        ambulance.setMedicOnBoard(medic);
+        Doctor doctor = (Doctor)((List)doctors.get(DoctorSpeciality.BURNS)).get(0);
+        ambulance.setDoctorOnBoard(doctor);
         $emergency.setAmbulance(ambulance);
         //Update Emergency Information
         update($emergency);
 		// Set the doctor.id and the ambulance.id as process variables for future references
-        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("doctor.id", doctor.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
         $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
@@ -95,13 +95,13 @@ rule "Car Crash Emergency without more information"
     	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         // Get the first doctor that we have with the speciality related with the emergency
-        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.BONES)).get(0);
-        ambulance.setMedicOnBoard(medic);
+        Doctor doctor = (Doctor)((List)doctors.get(DoctorSpeciality.BONES)).get(0);
+        ambulance.setDoctorOnBoard(doctor);
         $emergency.setAmbulance(ambulance);
         //Update Emergency Information
         update($emergency);
 		// Set the doctor.id and the ambulance.id as process variables for future references
-        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("doctor.id", doctor.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
         $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
@@ -118,13 +118,13 @@ rule "Heart Attack Emergency without more information"
     	// Get the first ambulance that we have for this type of emergency
         Ambulance ambulance = (Ambulance)((List) ambulances.get($type)).get(0);
         // Get the first doctor that we have with the speciality related with the emergency
-        Medic medic = (Medic)((List)doctors.get(MedicSpeciality.REANIMATION)).get(0);
-        ambulance.setMedicOnBoard(medic);
+        Doctor doctor = (Doctor)((List)doctors.get(DoctorSpeciality.REANIMATION)).get(0);
+        ambulance.setDoctorOnBoard(doctor);
         $emergency.setAmbulance(ambulance);
         //Update Emergency Information
         update($emergency);
 		// Set the doctor.id and the ambulance.id as process variables for future references
-        $processInstance.setVariable("doctor.id", medic.getId());
+        $processInstance.setVariable("doctor.id", doctor.getId());
         $processInstance.setVariable("ambulance.id", ambulance.getId());
         $processInstance.setVariable("ambulance.description", ambulance.getDescription());
         
@@ -141,6 +141,6 @@ rule "Car Crash Emergency with Patient older than 80 years old"
     then
     	// For this special situation we need to put in the ambulance a special stroller
         Ambulance ambulance = $emergency.getAmbulance();
-        ambulance.addKit(new MedicalKit("special stroller", MedicSpeciality.BONES));
+        ambulance.addKit(new MedicalKit("special stroller", DoctorSpeciality.BONES));
         
 end

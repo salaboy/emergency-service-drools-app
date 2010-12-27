@@ -12,20 +12,20 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author salaboy
  */
-public class Medic implements Serializable {
-    public enum MedicSpeciality{BURNS, BONES, REANIMATION};
+public class Doctor implements Serializable {
+    public enum DoctorSpeciality{BURNS, BONES, REANIMATION};
     private Long id;
-    private MedicSpeciality speciality;
+    private DoctorSpeciality speciality;
     public static AtomicLong incrementalId = new AtomicLong();
     
-    public Medic() {
-        this.id = Medic.incrementalId.getAndIncrement();
+    public Doctor() {
+        this.id = Doctor.incrementalId.getAndIncrement();
     }
 
    
 
 
-    public Medic(MedicSpeciality speciality) {
+    public Doctor(DoctorSpeciality speciality) {
         this();
         this.speciality = speciality;
     }
@@ -38,11 +38,11 @@ public class Medic implements Serializable {
         this.id = id;
     }
 
-    public MedicSpeciality getSpeciality() {
+    public DoctorSpeciality getSpeciality() {
         return speciality;
     }
 
-    public void setSpeciality(MedicSpeciality speciality) {
+    public void setSpeciality(DoctorSpeciality speciality) {
         this.speciality = speciality;
     }
 

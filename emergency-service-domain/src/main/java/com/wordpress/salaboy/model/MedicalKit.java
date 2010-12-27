@@ -6,7 +6,7 @@
 package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
-import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
 
 /**
  *
@@ -15,9 +15,9 @@ import com.wordpress.salaboy.model.Medic.MedicSpeciality;
 public class MedicalKit implements Serializable{
     private Long id;
     private String name;
-    private MedicSpeciality type;
+    private DoctorSpeciality type;
 
-    public MedicalKit(String name, MedicSpeciality type) {
+    public MedicalKit(String name, DoctorSpeciality type) {
         this.name = name;
         this.type = type;
     }
@@ -38,11 +38,11 @@ public class MedicalKit implements Serializable{
         this.name = name;
     }
 
-    public MedicSpeciality getType() {
+    public DoctorSpeciality getType() {
         return type;
     }
 
-    public void setType(MedicSpeciality type) {
+    public void setType(DoctorSpeciality type) {
         this.type = type;
     }
     

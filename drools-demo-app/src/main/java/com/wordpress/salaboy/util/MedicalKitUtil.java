@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
 import com.wordpress.salaboy.model.MedicalKit;
 
 /**
@@ -24,7 +24,7 @@ public class MedicalKitUtil {
     private static final String fireMedicalKitName="Fire Medical Kit";
     private static final String heartAttackMedicalKitName="Heart Attack Medical Kit";
     
-    public static MedicalKit createNewMEdicalKit(MedicSpeciality type){
+    public static MedicalKit createNewMEdicalKit(DoctorSpeciality type){
         String stringType = "";
         
         switch (type){

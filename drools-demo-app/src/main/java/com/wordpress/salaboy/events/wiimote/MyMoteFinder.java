@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.events;
+package com.wordpress.salaboy.events.wiimote;
 
 /*
     * Copyright 2007-2008 Volker Fritzsch

@@ -5,8 +5,6 @@
 
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
-import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.util.MedicalKitUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +14,8 @@ import java.util.Map;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Medic;
-import com.wordpress.salaboy.model.Medic.MedicSpeciality;
+import com.wordpress.salaboy.model.Doctor;
+import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
 import com.wordpress.salaboy.model.MedicalKit;
 
 /**
@@ -82,25 +80,25 @@ public class CityEntitiesUtils {
         return null;
     }
     
-    public static final Map<MedicSpeciality, List<Medic>> doctors = new HashMap<MedicSpeciality, List<Medic>>() {
+    public static final Map<DoctorSpeciality, List<Doctor>> doctors = new HashMap<DoctorSpeciality, List<Doctor>>() {
 
         {
-            put(MedicSpeciality.BURNS, new ArrayList<Medic>() {
+            put(DoctorSpeciality.BURNS, new ArrayList<Doctor>() {
 
                 {
-                    add(new Medic(MedicSpeciality.BURNS));
+                    add(new Doctor(DoctorSpeciality.BURNS));
                 }
             });
-            put(MedicSpeciality.BONES, new ArrayList<Medic>() {
+            put(DoctorSpeciality.BONES, new ArrayList<Doctor>() {
 
                 {
-                    add(new Medic(MedicSpeciality.BONES));
+                    add(new Doctor(DoctorSpeciality.BONES));
                 }
             });
-            put(MedicSpeciality.REANIMATION, new ArrayList<Medic>() {
+            put(DoctorSpeciality.REANIMATION, new ArrayList<Doctor>() {
 
                 {
-                    add(new Medic(MedicSpeciality.REANIMATION));
+                    add(new Doctor(DoctorSpeciality.REANIMATION));
                 }
             });
         }
@@ -170,22 +168,22 @@ public class CityEntitiesUtils {
     }
       
       private static Ambulance initializeFireAmbulance() {
-        MedicalKit fireKit = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BURNS);
+        MedicalKit fireKit = MedicalKitUtil.createNewMEdicalKit(DoctorSpeciality.BURNS);
         Ambulance fireAmbulance = new Ambulance("Fire Ambulance");
         fireAmbulance.addKit(fireKit);
         return fireAmbulance;
     }
 
     private static Ambulance initializeHeartAttackAmbulance() {
-        MedicalKit heartAttackKit = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.REANIMATION);
+        MedicalKit heartAttackKit = MedicalKitUtil.createNewMEdicalKit(DoctorSpeciality.REANIMATION);
         Ambulance heartAttackAmbulance = new Ambulance("Strokes Ambulance");
         heartAttackAmbulance.addKit(heartAttackKit);
         return heartAttackAmbulance;
     }
 
     private static Ambulance initializeCarCrashAmbulance() {
-        MedicalKit carCrashKit1 = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BONES);
-        MedicalKit carCrashKit2 = MedicalKitUtil.createNewMEdicalKit(MedicSpeciality.BURNS);
+        MedicalKit carCrashKit1 = MedicalKitUtil.createNewMEdicalKit(DoctorSpeciality.BONES);
+        MedicalKit carCrashKit2 = MedicalKitUtil.createNewMEdicalKit(DoctorSpeciality.BURNS);
         Ambulance carCrashAmbulance = new Ambulance("Fire & Bones Ambulance");
         carCrashAmbulance.addKit(carCrashKit1);
         carCrashAmbulance.addKit(carCrashKit2);

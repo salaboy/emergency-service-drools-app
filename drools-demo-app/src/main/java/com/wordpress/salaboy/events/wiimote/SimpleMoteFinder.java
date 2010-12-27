@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.events;
+package com.wordpress.salaboy.events.wiimote;
 
 
 import motej.Mote;

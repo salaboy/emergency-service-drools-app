@@ -3,7 +3,7 @@ package patient.wiimote;
 import motej.event.AccelerometerEvent;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import com.wordpress.salaboy.events.WiiMoteEvent;
+import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.model.Emergency;

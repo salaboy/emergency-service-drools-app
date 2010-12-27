@@ -22,7 +22,7 @@
   <itemDefinition id="_pickUpPatientEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
   <itemDefinition id="_emergency.priorityItem" structureRef="String" />
   <itemDefinition id="_patientAtTheHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent" />
-  <itemDefinition id="_doctorItem" structureRef="com.wordpress.salaboy.model.Medic" />
+  <itemDefinition id="_doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
   <itemDefinition id="_patient.idItem" structureRef="String" />
   <itemDefinition id="_doctor.idItem" structureRef="String" />
   <itemDefinition id="_ambulance.idItem" structureRef="String" />

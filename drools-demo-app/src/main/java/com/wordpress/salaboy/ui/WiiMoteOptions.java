@@ -14,8 +14,8 @@ package com.wordpress.salaboy.ui;
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
-import com.wordpress.salaboy.events.SimpleMoteFinder;
-import com.wordpress.salaboy.events.WiiMoteEvent;
+import com.wordpress.salaboy.events.wiimote.SimpleMoteFinder;
+import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
@@ -122,6 +122,7 @@ public class WiiMoteOptions extends javax.swing.JFrame {
         }
         AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
 
+            @Override
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
                 
                 if (evt.getY() > 225) {

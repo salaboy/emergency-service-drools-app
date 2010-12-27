@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.wordpress.salaboy.events;
+package com.wordpress.salaboy.events.wiimote;
 
 import java.io.Serializable;
 import motej.event.AccelerometerEvent;

@@ -2,7 +2,7 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
-import com.wordpress.salaboy.events.WiiMoteEvent;
+import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import motej.event.AccelerometerEvent;
