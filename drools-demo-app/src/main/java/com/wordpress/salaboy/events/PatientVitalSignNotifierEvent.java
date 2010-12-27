@@ -5,7 +5,8 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
+import com.wordpress.salaboy.wiimote.WiiMoteEvent;
+
 
 /**
  *
@@ -13,10 +14,10 @@ import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
  */
 public class PatientVitalSignNotifierEvent implements NotifierEvent {
 
-    private WiiMoteEvent heartBeatEvent;
+    private PulseEvent heartBeatEvent;
     private Long ambulanceId;
 
-    public PatientVitalSignNotifierEvent(WiiMoteEvent heartBeatEvent, Long ambulanceId) {
+    public PatientVitalSignNotifierEvent(PulseEvent heartBeatEvent, Long ambulanceId) {
         this.heartBeatEvent = heartBeatEvent;
         this.ambulanceId = ambulanceId;
     }
@@ -37,7 +38,7 @@ public class PatientVitalSignNotifierEvent implements NotifierEvent {
         return ambulanceId;
     }
 
-    public WiiMoteEvent getHeartBeatEvent() {
+    public PulseEvent getHeartBeatEvent() {
         return heartBeatEvent;
     }
     

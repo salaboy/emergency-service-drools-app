@@ -5,7 +5,6 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 import com.wordpress.salaboy.EmergencyService;
 
 /**
@@ -17,7 +16,7 @@ public class MapPatientVitalSignReceivedEventNotifier implements WorldEventNotif
     @Override
     public void notify(NotifierEvent event) {
         
-        WiiMoteEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
+        PulseEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
         Long ambulanceId  = ((PatientVitalSignNotifierEvent)event).getAmbulanceId();
         
         EmergencyService.getInstance().heartBeatReceivedFromAmbulance(ambulanceId, evt);

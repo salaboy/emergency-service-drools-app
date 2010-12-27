@@ -5,7 +5,6 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 
 /**
@@ -16,9 +15,9 @@ public class TaskListUIPatientVitalSignReceivedEventNotifier implements WorldEve
 
     @Override
     public void notify(NotifierEvent event) {
-        WiiMoteEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
+        PulseEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
         Long ambulanceId = ((PatientVitalSignNotifierEvent)event).getAmbulanceId();
-        UserTaskListUI.getInstance().getCurrentEmergenciesPanel().onHeartBeatReceived(ambulanceId, evt.getY());
+        UserTaskListUI.getInstance().getCurrentEmergenciesPanel().onHeartBeatReceived(ambulanceId, evt.getValue());
     }
 
 }

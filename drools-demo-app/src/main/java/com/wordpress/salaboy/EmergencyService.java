@@ -5,7 +5,7 @@
 package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.call.CallManager;
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
+import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
@@ -129,7 +129,7 @@ public class EmergencyService {
         return hospitalReachedNotified;
     }
 
-    public void heartBeatReceivedFromAmbulance(Long ambulanceId, WiiMoteEvent evt) {
+    public void heartBeatReceivedFromAmbulance(Long ambulanceId, PulseEvent evt) {
         //@TODO: compose the event with the Ambulance Id
         getWorkingMemoryEntryPoint("patientHeartbeats").insert(evt);
     }

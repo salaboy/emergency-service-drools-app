@@ -9,13 +9,15 @@
  * Created on Dec 6, 2010, 7:47:32 AM
  */
 
-package com.wordpress.salaboy.ui;
+package com.wordpress.salaboy.events.wiimote;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
-import com.wordpress.salaboy.events.wiimote.SimpleMoteFinder;
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
+import com.wordpress.salaboy.events.PulseEvent;
+import com.wordpress.salaboy.ui.AmbulanceMonitorService;
+import com.wordpress.salaboy.ui.CityMapUI;
+import com.wordpress.salaboy.ui.MapEventsNotifier;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
@@ -129,7 +131,7 @@ public class WiiMoteOptions extends javax.swing.JFrame {
                     jTextArea1.insert("sended " + evt.getY() + " heartbeat\n", 0);
                     if(AmbulanceMonitorService.getInstance().isRunning()){
                         // add the ambulanceId
-                        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new WiiMoteEvent(evt,"acc"), 0L));
+                        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(evt.getY()), 0L));
                         //AmbulanceMonitorService.getInstance().sendNotification(y, y, y);
                     }
                     

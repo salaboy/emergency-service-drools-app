@@ -3,14 +3,14 @@ package patient.wiimote;
 import motej.event.AccelerometerEvent;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
+import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.model.Emergency;
 
 import com.wordpress.salaboy.events.*;
 
-declare WiiMoteEvent
+declare PulseEvent
     @role ( event )
     @expires ( 20s )
 end
@@ -18,8 +18,8 @@ end
 rule "Patient with no vital sign"
     when
         $emergency: Emergency()
-        $nextEvents : Number(doubleValue == 235 ) from accumulate( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(4s) from entry-point "patientHeartbeats",
-        												average($y)) 
+        Number(doubleValue == 235 ) from accumulate( PulseEvent(processed == false, $pulse: value) over window:time(4s) from entry-point "patientHeartbeats",
+        												average($pulse)) 
     then
         EmergencyService.getInstance().getMapEventsNotifier()
             .notifyMapEventsListeners(MapEventsNotifier.EventType.NO_VITAL_SIGNS, new MonitorAlertReceivedNotifierEvent("Warning, patient without vital signs ", $emergency.getId()));
@@ -28,7 +28,7 @@ end
 rule "Patient heart attack"
     when
         $emergency: Emergency()
-        $nextEvents : ArrayList(size > 10 ) from collect( WiiMoteEvent( type == "acc", processed == false, $y: y) over window:time(1s) from entry-point "patientHeartbeats") 
+        ArrayList(size > 10 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
     then
         EmergencyService.getInstance().getMapEventsNotifier()
             .notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_ATTACK, new MonitorAlertReceivedNotifierEvent("Warning, patient suffering a heart attack ", $emergency.getId()));
