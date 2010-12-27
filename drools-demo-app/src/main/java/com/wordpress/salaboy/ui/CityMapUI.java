@@ -25,6 +25,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
+import org.newdawn.slick.KeyListener;
 
 public class CityMapUI extends BasicGame {
 
@@ -68,6 +69,8 @@ public class CityMapUI extends BasicGame {
         map = new BlockMap("data/cityMap.tmx");
         
         map.initializeCorners();
+        
+        gc.getInput().addKeyListener(new CityMapKeyListener(this));
 
     }
 
@@ -193,14 +196,6 @@ public class CityMapUI extends BasicGame {
 
             }
         }
-        if (gc.getInput().isKeyDown(Input.KEY_CAPITAL)) {
-            if (turbo) {
-                turbo = false;
-            } else {
-                turbo = true;
-            }
-        }
-
 
         if (gc.getInput().isKeyPressed(Input.KEY_SPACE)) {
             randomx = (int) (Math.random() * 10) % 7;
@@ -372,4 +367,9 @@ public class CityMapUI extends BasicGame {
         }
         return null;
     }
+
+    public void setTurbo(boolean turbo) {
+        this.turbo = turbo;
+    }
+    
 }

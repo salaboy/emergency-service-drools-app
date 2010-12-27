@@ -10,6 +10,7 @@
  */
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.events.wiimote.WiiMoteOptions;
 import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.MyDroolsUtilities;
@@ -42,6 +43,7 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
+import javax.swing.JFrame;
 
 /**
  *
@@ -106,6 +108,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        menuItemConfigreEventGenerators = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -186,7 +189,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                 .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .add(146, 146, 146)
                         .add(jButton1)))
@@ -199,7 +202,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
                 .add(jButton1)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
@@ -230,13 +233,13 @@ public class UserTaskListUI extends javax.swing.JFrame {
         pnlReport.setLayout(pnlReportLayout);
         pnlReportLayout.setHorizontalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
             .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(btnRefreshReport)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnClearReport)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(239, Short.MAX_VALUE))
         );
         pnlReportLayout.setVerticalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -246,7 +249,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                     .add(btnRefreshReport)
                     .add(btnClearReport))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -258,14 +261,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -282,6 +285,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
             }
         });
         fileMenu.add(jMenuItem1);
+
+        menuItemConfigreEventGenerators.setText("Configure Event Generators");
+        menuItemConfigreEventGenerators.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemConfigreEventGeneratorsActionPerformed(evt);
+            }
+        });
+        fileMenu.add(menuItemConfigreEventGenerators);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -405,6 +416,21 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.refreshReportList();
     }//GEN-LAST:event_btnRefreshReportActionPerformed
 
+    private void menuItemConfigreEventGeneratorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigreEventGeneratorsActionPerformed
+        
+        java.awt.EventQueue.invokeLater(new Runnable()    {
+
+            @Override
+            public void run() {
+                JFrame jFrame = new JFrame();
+                jFrame.add( new EventGeneratorsConfigPanel());
+                jFrame.setSize(300, 600);
+                jFrame.setVisible(true);
+            }
+        });
+
+    }//GEN-LAST:event_menuItemConfigreEventGeneratorsActionPerformed
+
     public void refreshPatientsTable() {
         DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
 
@@ -456,6 +482,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem menuItemConfigreEventGenerators;
     public javax.swing.JTable patientJTable1;
     private javax.swing.JPanel pnlReport;
     // End of variables declaration//GEN-END:variables
