@@ -1,6 +1,5 @@
 package patient.wiimote;
 
-import motej.event.AccelerometerEvent;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import com.wordpress.salaboy.events.PulseEvent;
