@@ -37,16 +37,21 @@ public class MyDroolsUtilities {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
         kbuilder.add(new ClassPathResource("processes/EmergencyService3.bpmn"), ResourceType.BPMN2);
-        kbuilder.add(new ClassPathResource("rules/select_ambulance.drl"), ResourceType.DRL);
-       // kbuilder.add(new ClassPathResource("rules/select_ambulance.dsl"), ResourceType.DSL);
-        //kbuilder.add(new ClassPathResource("rules/select_ambulance.dslr"), ResourceType.DSLR);
+        
+        //kbuilder.add(new ClassPathResource("rules/select_ambulance.drl"), ResourceType.DRL);
+        kbuilder.add(new ClassPathResource("rules/select_ambulance.dsl"), ResourceType.DSL);
+        kbuilder.add(new ClassPathResource("rules/select_ambulance.dslr"), ResourceType.DSLR);
+        
         kbuilder.add(new ClassPathResource("rules/select_hospital.drl"), ResourceType.DRL);
-        kbuilder.add(new ClassPathResource("rules/patient.drl"), ResourceType.DRL);
-    //    kbuilder.add(new ClassPathResource("rules/patient.dsl"), ResourceType.DSL);
-    //    kbuilder.add(new ClassPathResource("rules/patient.dslr"), ResourceType.DSLR);
-        kbuilder.add(new ClassPathResource("rules/callsHandling.drl"), ResourceType.DRL);
-       // kbuilder.add(new ClassPathResource("rules/callsHandling.dsl"), ResourceType.DSL);
-       // kbuilder.add(new ClassPathResource("rules/callsHandling.dslr"), ResourceType.DSLR);
+        
+        
+        //kbuilder.add(new ClassPathResource("rules/callsHandling.drl"), ResourceType.DRL);
+        kbuilder.add(new ClassPathResource("rules/callsHandling.dsl"), ResourceType.DSL);
+        kbuilder.add(new ClassPathResource("rules/callsHandling.dslr"), ResourceType.DSLR);
+        
+        //kbuilder.add(new ClassPathResource("rules/patient.drl"), ResourceType.DRL);        
+        kbuilder.add(new ClassPathResource("rules/patient.dsl"), ResourceType.DSL);
+        kbuilder.add(new ClassPathResource("rules/patient.dslr"), ResourceType.DSLR);
 
         if (kbuilder.hasErrors()) {
             for (KnowledgeBuilderError error : kbuilder.getErrors()) {

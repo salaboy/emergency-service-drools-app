@@ -33,4 +33,3 @@ rule "Handling Single Emergency Call"
         update($emergency);
         insert(pI);
 end
-    

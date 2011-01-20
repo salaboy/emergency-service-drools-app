@@ -55,10 +55,6 @@ rule "Initialize Emergency"
      update($emergency);
      //Insert the patient in our world
      insert(patient);
-
-     
-     
-       
 end
 
 rule "Fire Emergency without more information"
