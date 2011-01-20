@@ -6,8 +6,10 @@ import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Ambulance;
 
 import org.drools.runtime.process.WorkflowProcessInstance;
-import com.wordpress.salaboy.EmergencyService;
+
 import java.util.Map;
+
+import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.ui.MapEventsNotifier;
 import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 
