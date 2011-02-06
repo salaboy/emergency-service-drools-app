@@ -265,6 +265,7 @@ public class CityMapUI extends BasicGame {
         final CityMapUI game = new CityMapUI();
         Renderer.setLineStripRenderer(Renderer.QUAD_BASED_LINE_STRIP_RENDERER);
         Renderer.getLineStripRenderer().setLineCaps(true);
+        
         java.awt.EventQueue.invokeLater(new Runnable()       {
 
             @Override
@@ -273,12 +274,14 @@ public class CityMapUI extends BasicGame {
                 UserTaskListUI.getInstance().setUIMap(game);
             }
         });
+        
         AppGameContainer container =
                 new AppGameContainer(game);
         container.start();
+        
+        System.out.println(" ->  -> -> Displaying City!");
 
-
-
+        
     }
 
     public synchronized boolean entityCollisionWith(GraphicableAmbulance ambulance) throws SlickException {
