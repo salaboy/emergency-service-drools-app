@@ -4,3 +4,7 @@ hs_err_pid*.log
 *.prefs
 .classpath
 .project
+.DS_Store
+*.iml
+*.ipr
+*.iws
