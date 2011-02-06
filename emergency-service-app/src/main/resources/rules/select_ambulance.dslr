@@ -1,23 +1,28 @@
-package org.plugtree.emergencyservice.ambulance;
+package ambulancerules;
 
-import org.plugtree.training.model.Ambulance;
-import org.plugtree.training.model.Call;
-import org.plugtree.training.model.Patient;
-import org.plugtree.training.model.Emergency;
-import org.plugtree.training.model.Emergency.EmergencyType;
-import org.plugtree.training.model.Doctor;
-import org.plugtree.training.model.Doctor.DoctorSpeciality;
-import org.plugtree.training.model.MedicalKit;
-import org.plugtree.training.model.Location;
+
+import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Doctor;
+import com.wordpress.salaboy.model.MedicalKit;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import java.util.List;
+import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEmergencyReachedEventNotifier;
+import com.wordpress.salaboy.EmergencyService;
 
 global Map ambulances;
 global Map doctors;
 
 rule "Initialize Emergency"
     ruleflow-group "select_ambulance"
+    no-loop true
+    lock-on-active true
     salience 20
     when
       There is an Emergency going on

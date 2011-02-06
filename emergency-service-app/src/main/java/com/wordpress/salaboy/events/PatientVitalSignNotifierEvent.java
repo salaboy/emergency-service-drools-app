@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.wiimote.WiiMoteEvent;
+import com.wordpress.salaboy.events.wiimote.WiiMoteEvent;
 
 
 /**
