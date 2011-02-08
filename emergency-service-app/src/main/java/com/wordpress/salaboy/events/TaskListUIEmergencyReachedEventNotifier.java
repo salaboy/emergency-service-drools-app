@@ -7,7 +7,7 @@ package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.ui.EmergencyFrame;
-import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 
 /**

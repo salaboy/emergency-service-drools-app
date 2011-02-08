@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.text.SimpleDateFormat;
 
 global CallManager callManager;
-
-global com.wordpress.salaboy.call.CallManager callManager;
-
 global Map ambulances;
 
 rule "Handling Single Emergency Call"

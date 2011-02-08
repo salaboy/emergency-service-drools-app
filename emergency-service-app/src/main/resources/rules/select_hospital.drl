@@ -5,22 +5,22 @@ import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Ambulance;
 
+import com.wordpress.salaboy.acc.HospitalDistanceCalculationData;
+
 import org.drools.runtime.process.WorkflowProcessInstance;
 
 import java.util.Map;
 
-import com.wordpress.salaboy.EmergencyService;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 
 global Map hospitals;
-
+global MapEventsNotifier mapEventsNotifier;
 
 query "getPatient"
     //@TODO add more filters per process/emergency
     patient: Patient()
 end
-
 
 rule "Rank Hospital Speciality that matches EmergencyType"
     
@@ -28,30 +28,15 @@ rule "Rank Hospital Speciality that matches EmergencyType"
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
-        //$patient: Patient()
         $ambulance: Ambulance()
-        // need to add filters for specialities or based on the priority choose the closest one no matter what type of emergency
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
-                                                    init( Hospital selected = null; float distanceX = 0; float distanceY = 0; double best = 1000d;),
-                                                    action( float difX = $hospital.getPositionX() - $ambulance.getPositionX(); 
-                                                            float difY = $hospital.getPositionY() - $ambulance.getPositionY();                                                            
-                                                            double difTotal = Math.sqrt(Math.pow(((double)difX),2d) + Math.pow(((double)difY),2d));
-                                                            //System.out.println("Dif Total = "+difTotal+ " for Hospital ="+$hospital.getName());
-                                                            //System.out.println("Hospital now = "+$hospital);
-                                                            if(difTotal < best){ best = difTotal; selected = $hospital;}
-                                                            ),
-                                                    reverse(),
-                                                    result(selected)
-                                                    )
+            hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $ambulance))
+        )
         //@TODO add more filters
 
     then
         //@TODO use the 
         System.out.println("Hospital Selected"+$selectedHospital);
-        EmergencyService.getInstance().getMapEventsNotifier()
-            .notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, new HospitalSelectedNotifierEvent($ambulance.getId(), $selectedHospital.getId(), $emergency.getId()));
+        mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, new HospitalSelectedNotifierEvent($ambulance.getId(), $selectedHospital.getId(), $emergency.getId()));
         
 end
-
-
-
