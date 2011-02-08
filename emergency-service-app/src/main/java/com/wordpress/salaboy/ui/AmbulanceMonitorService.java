@@ -1,5 +1,6 @@
 package com.wordpress.salaboy.ui;
 
+import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;

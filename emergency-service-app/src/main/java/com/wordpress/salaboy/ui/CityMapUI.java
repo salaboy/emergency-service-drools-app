@@ -3,13 +3,14 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.events.EmergencyReachedNotifierEvent;
 import com.wordpress.salaboy.events.HospitalReachedNotifierEvent;
+import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.graphicable.GraphicableHighlightedHospital;
 import com.wordpress.salaboy.events.MapHospitalSelectedEventNotifier;
 import com.wordpress.salaboy.events.PositionUpdatedNotifierEvent;
 import com.wordpress.salaboy.graphicable.GraphicableFactory;
-import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
-import org.newdawn.slick.KeyListener;
 
 public class CityMapUI extends BasicGame {
 

@@ -11,7 +11,7 @@ import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
 import com.wordpress.salaboy.ui.Block;
 import com.wordpress.salaboy.ui.BlockMap;
-import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import com.wordpress.salaboy.model.Hospital;
 

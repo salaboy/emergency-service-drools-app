@@ -16,6 +16,19 @@ Inside the pom.xml file:
  we use a system variable java.library.path pointing to lwjgl that it's being used to render the city map.
 In my configuration (Mac OSX) it's pointing to /Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ where the native binaries are located. Notice that you must have the 2.1.0 version of lwjgl that you can download from: http://sourceforge.net/projects/java-game-lib/files/Official%20Releases/LWJGL%202.1.0/ that it's being required by slick 2D.
 
-We are also using the argLine parameter to <argLine>-d32</argLine> because bluecove (used for Wiimote) it's not supported in 64-bits machines.
+We are also using the parameter to -Dd32 because bluecove (used for Wiimote) it's not supported in 64-bits machines.
 
+How to run the application:
+1) mvn clean install -skipTests=true
+2) cd emergency-service-app/
+3) mvn exec:exec
 
+Notice that I'm using MySQL5 inside the persistence configuration (persistence.xml file inside src/main/resources/META-INF). You can change to another database if you want or use H2 in memory db. 
+The schemas that you need to create inside your database are:
+ - droolsflowht: for handling human tasks information 
+ - droolsflow: for handling the runtime status
+Note: I will rename the schema names in the future.
+
+Notice also that inside the pom.xml file inside the emergency-service-app/ there are multiple references to the lwjgl path. Please update these references with the path where you uncompress the lwjgl native libraries.
+
+Enjoy 

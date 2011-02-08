@@ -3,10 +3,8 @@
  * and open the template in the editor.
  */
 
-package com.wordpress.salaboy.ui;
+package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.events.NotifierEvent;
-import com.wordpress.salaboy.events.WorldEventNotifier;
 import com.wordpress.salaboy.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
