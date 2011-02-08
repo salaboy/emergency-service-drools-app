@@ -357,7 +357,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            taskClient.disconnect();
+            getTaskClient().disconnect();
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -528,19 +528,19 @@ public class UserTaskListUI extends javax.swing.JFrame {
     public void medicalEvaluationCompleted(int priority, String comment) {
         try {
             BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-            taskClient.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+            getTaskClient().getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
             List<TaskSummary> taskSums = handler.getResults();
             TaskSummary taskSum = taskSums.get(0);
 
-            taskClient.start(taskSum.getId(), "doctor", null);
+            getTaskClient().start(taskSum.getId(), "doctor", null);
             BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-            taskClient.getTask(taskSum.getId(), handlerT);
+            getTaskClient().getTask(taskSum.getId(), handlerT);
             Task task3 = handlerT.getTask();
             TaskData taskData = task3.getTaskData();
 
             System.out.println("TaskData = " + taskData);
             BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-            taskClient.getContent(taskData.getDocumentContentId(), handlerC);
+            getTaskClient().getContent(taskData.getDocumentContentId(), handlerC);
             Content content = handlerC.getContent();
 
             System.out.println("Content= " + content);
@@ -562,7 +562,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
             out.close();
             result.setContent(bos.toByteArray());
 
-            taskClient.complete(taskSum.getId(), "doctor", result, null);
+            getTaskClient().complete(taskSum.getId(), "doctor", result, null);
 
         } catch (Exception e) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, e);
