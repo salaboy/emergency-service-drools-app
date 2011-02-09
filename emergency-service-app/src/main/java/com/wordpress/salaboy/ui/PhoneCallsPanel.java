@@ -14,11 +14,15 @@ package com.wordpress.salaboy.ui;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.call.IncomingCallListener;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
+import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
+import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import com.wordpress.salaboy.model.Call;
+import org.example.ws_ht.api.TTaskAbstract;
 
 /**
  *
@@ -198,11 +202,21 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
     @Override
     public void refresh() {
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+//        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+//        
+//        this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+//        
+//        List<TaskSummary> results = handler.getResults();
         
-        this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+        List<TTaskAbstract> taskAbstracts = null;
+        try {
+            taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "operator", "", null, "", "", "", 0, 0);
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(PhoneCallsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(PhoneCallsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        List<TaskSummary> results = handler.getResults();
         
         DefaultTableModel tableModel = ((DefaultTableModel)phoneCallsJTable.getModel());
         
@@ -211,9 +225,9 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             tableModel.removeRow(0);
         }
         
-        for (TaskSummary summary : results) {
-            long id = summary.getId();
-            String name = summary.getName();
+        for (TTaskAbstract taskAbstract : taskAbstracts) {
+            String id = taskAbstract.getId();
+            String name = taskAbstract.getName().toString();
             tableModel.addRow(new Object[]{id,name});
         }
     }

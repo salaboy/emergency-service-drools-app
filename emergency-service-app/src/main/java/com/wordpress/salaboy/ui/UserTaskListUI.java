@@ -14,6 +14,9 @@ import com.wordpress.salaboy.events.wiimote.WiiMoteOptions;
 import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.MyDroolsUtilities;
+import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.api.HumanTaskServiceFactory;
+import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.events.MapAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIEmergencyReachedEventNotifier;
@@ -30,20 +33,17 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
-import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.jbpm.task.AccessType;
-import org.jbpm.task.Content;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HumanTaskClientConfiguration;
 import javax.swing.JFrame;
+import org.example.ws_ht.api.TAttachment;
+import org.example.ws_ht.api.TAttachmentInfo;
+import org.example.ws_ht.api.TTaskAbstract;
+import org.jbpm.task.Content;
 
 /**
  *
@@ -51,7 +51,7 @@ import javax.swing.JFrame;
  */
 public class UserTaskListUI extends javax.swing.JFrame {
 
-    private TaskClient taskClient;
+    private HumanTaskService humanTaskServiceClient;
     private static final long DEFAULT_WAIT_TIME = 5000;
     //private Task currentTask;
     private CityMapUI game;
@@ -357,7 +357,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            getTaskClient().disconnect();
+            getTaskClient().cleanUpService();
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -492,10 +492,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }
 
     private void initTaskClient() {
-        taskClient = MyDroolsUtilities.initTaskClient();
+        //humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(new ClassPathResource("conf/human-tasks-services.xml"));
+        HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5HumanTaskClientConfiguration("127.0.0.1", 9123));
+        humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
+        humanTaskServiceClient.initializeService();
     }
 
-    void setUIMap(CityMapUI game) {
+    public void setUIMap(CityMapUI game) {
         this.game = game;
      
 
@@ -527,24 +531,34 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     public void medicalEvaluationCompleted(int priority, String comment) {
         try {
-            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-            getTaskClient().getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
-            List<TaskSummary> taskSums = handler.getResults();
-            TaskSummary taskSum = taskSums.get(0);
+//            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+//            getTaskClient().getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+//            List<TaskSummary> taskSums = handler.getResults();
+//            TaskSummary taskSum = taskSums.get(0);
+            List<TTaskAbstract> taskAbstracts = getTaskClient().getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
+            TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
-            getTaskClient().start(taskSum.getId(), "doctor", null);
-            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-            getTaskClient().getTask(taskSum.getId(), handlerT);
-            Task task3 = handlerT.getTask();
-            TaskData taskData = task3.getTaskData();
+//            getTaskClient().start(taskSum.getId(), "doctor", null);
+//            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
+//            getTaskClient().getTask(taskSum.getId(), handlerT);
+//            Task task3 = handlerT.getTask();
+//            TaskData taskData = task3.getTaskData();
+            getTaskClient().setAuthorizedEntityId("doctor");
+            getTaskClient().start(taskAbstract.getId());
 
-            System.out.println("TaskData = " + taskData);
-            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-            getTaskClient().getContent(taskData.getDocumentContentId(), handlerC);
-            Content content = handlerC.getContent();
-
-            System.out.println("Content= " + content);
-            ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+//            System.out.println("TaskData = " + taskData);
+//            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
+//            getTaskClient().getContent(taskData.getDocumentContentId(), handlerC);
+//            Content content = handlerC.getContent();
+            
+            List<TAttachmentInfo> attachmentsInfo = getTaskClient().getAttachmentInfos(taskAbstract.getId());
+            TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
+            TAttachment attachment = getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
+            
+            System.out.println("Content= " + attachment.getValue());
+            
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(((Content)attachment.getValue()).getContent());
             ObjectInputStream ois = new ObjectInputStream(bais);
             String taskinfo2 = (String) ois.readObject();
 
@@ -561,8 +575,10 @@ public class UserTaskListUI extends javax.swing.JFrame {
             out.writeObject(info);
             out.close();
             result.setContent(bos.toByteArray());
-
-            getTaskClient().complete(taskSum.getId(), "doctor", result, null);
+            
+            
+            getTaskClient().setAuthorizedEntityId("doctor");
+            getTaskClient().complete(taskAbstract.getId(), result);
 
         } catch (Exception e) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, e);
@@ -574,8 +590,8 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }
 
 
-    public TaskClient getTaskClient() {
-        return taskClient;
+    public HumanTaskService getTaskClient() {
+        return humanTaskServiceClient;
     }
 
     public CurrentEmergenciesPanel getCurrentEmergenciesPanel() {

@@ -10,7 +10,7 @@
  */
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.call.CallManager;
+import com.wordpress.salaboy.api.HumanTaskService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.example.ws_ht.api.wsdl.IllegalAccessFault;
+import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
+import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 /**
  *
@@ -29,17 +30,32 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandl
  */
 public class EmergencyInfoPanel extends javax.swing.JPanel {
 
-    private TaskClient taskClient;
+    private final HumanTaskService taskClient;
     private Long taskId;
     private PhoneCallsPanel parent;
 
-    EmergencyInfoPanel(PhoneCallsPanel parent, TaskClient taskClient, Long id) {
+    EmergencyInfoPanel(PhoneCallsPanel parent, HumanTaskService taskClient, Long id) {
         this.taskClient = taskClient;
         this.taskId = id;
         this.parent = parent;
         initComponents();
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        taskClient.start(id, "operator", responseHandler);
+//        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+//        taskClient.start(id, "operator", responseHandler);
+         getTaskClient().setAuthorizedEntityId("operator");
+        try {
+            getTaskClient().start(id.toString());
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    private HumanTaskService getTaskClient(){
+        return this.taskClient;
     }
 
     /** This method is called from within the constructor to
@@ -165,11 +181,21 @@ public class EmergencyInfoPanel extends javax.swing.JPanel {
             out.close();
             result.setContent(bos.toByteArray());
 
-            BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
-            taskClient.complete(this.taskId, "operator", result, blockingTaskOperationResponseHandler);
+//            BlockingTaskOperationResponseHandler blockingTaskOperationResponseHandler = new BlockingTaskOperationResponseHandler();
+//            taskClient.complete(this.taskId, "operator", result, blockingTaskOperationResponseHandler);
+           
+            getTaskClient().setAuthorizedEntityId("operator");
+            getTaskClient().complete(this.taskId.toString(), result);
+            
 
             this.parent.hideDialog();
 
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessFault ex) {
+            Logger.getLogger(EmergencyInfoPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

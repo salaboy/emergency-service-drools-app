@@ -192,23 +192,36 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
-            <version>5.0-CR1</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task</artifactId>
-            <version>5.0-CR1</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-persistence-jpa</artifactId>
-            <version>5.0-CR1</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bam</artifactId>
-            <version>5.0-CR1</version>
+            <version>5.0.0</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.wordpress.salaboy.smarttasks</groupId>
+            <artifactId>smart-tasks-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.worpdress.salaboy.smarttasks</groupId>
+            <artifactId>smart-tasks-jbpm5-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+      
     </dependencies>
     
   
