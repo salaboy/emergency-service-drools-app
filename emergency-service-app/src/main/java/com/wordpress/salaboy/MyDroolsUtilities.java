@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.log.ProcessEventLogger;
 import java.util.logging.Level;
 import org.drools.io.impl.ClassPathResource;
@@ -15,6 +16,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.event.DebugProcessEventListener;
 import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.event.rule.DebugWorkingMemoryEventListener;
@@ -34,7 +36,11 @@ public class MyDroolsUtilities {
     public static final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
     
     public static StatefulKnowledgeSession createSession() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration();
+        pkgConf.addAccumulateFunction("hospitalDistanceCalculator", HospitalDistanceCalculator.class);
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgConf);
         
         kbuilder.add(new ClassPathResource("processes/EmergencyService3.bpmn"), ResourceType.BPMN2);
         

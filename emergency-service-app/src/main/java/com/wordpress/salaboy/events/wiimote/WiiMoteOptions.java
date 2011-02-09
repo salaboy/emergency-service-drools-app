@@ -17,7 +17,7 @@ import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
 import com.wordpress.salaboy.ui.CityMapUI;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.events.MapEventsNotifier;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;

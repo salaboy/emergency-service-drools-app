@@ -7,7 +7,7 @@ package com.wordpress.salaboy;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.log.Logger;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
+import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,6 +85,8 @@ public class EmergencyService {
         ksession.setGlobal("doctors", CityEntitiesUtils.doctors);
 
         ksession.setGlobal("hospitals", CityEntitiesUtils.hospitals);
+        
+        ksession.setGlobal("mapEventsNotifier", this.getMapEventsNotifier());
 
         
 

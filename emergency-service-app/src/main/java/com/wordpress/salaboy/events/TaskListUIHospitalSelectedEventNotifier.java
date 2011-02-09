@@ -10,7 +10,7 @@ import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.ui.EmergencyFrame;
 import com.wordpress.salaboy.ui.EmergencyMonitorPanel;
-import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import java.awt.Color;
 import com.wordpress.salaboy.model.Hospital;

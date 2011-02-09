@@ -2,16 +2,17 @@ package patient.wiimote;
 
 import java.util.ArrayList;
 import com.wordpress.salaboy.events.PulseEvent;
-import com.wordpress.salaboy.ui.MapEventsNotifier;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.events.MapEventsNotifier;
+import com.wordpress.salaboy.events.MonitorAlertReceivedNotifierEvent;
 import com.wordpress.salaboy.model.Emergency;
 
-import com.wordpress.salaboy.events.*;
 
 declare PulseEvent
     @role ( event )
     @expires ( 20s )
 end
+
+global MapEventsNotifier mapEventsNotifier;
 
 
 rule "Patient with no vital sign"

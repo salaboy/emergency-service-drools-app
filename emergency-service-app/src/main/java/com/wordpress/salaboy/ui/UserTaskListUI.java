@@ -21,7 +21,7 @@ import com.wordpress.salaboy.events.MapAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIAmbulancePositionUpdatedEventNotifier;
 import com.wordpress.salaboy.events.TaskListUIEmergencyReachedEventNotifier;
 import com.wordpress.salaboy.graphicable.GraphicableFactory;
-import com.wordpress.salaboy.ui.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
