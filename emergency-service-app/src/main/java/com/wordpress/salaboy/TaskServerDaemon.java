@@ -33,13 +33,14 @@ public class TaskServerDaemon {
 		ds1 = new PoolingDataSource();
 		ds1.setUniqueName("jdbc/testDS1");
 
-		ds1.setClassName("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+		//ds1.setClassName("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+                ds1.setClassName("org.h2.jdbcx.JdbcDataSource");
 		ds1.setMaxPoolSize(5);
 		ds1.setAllowLocalTransactions(true);
 		ds1.getDriverProperties().put("user", "root");
 		ds1.getDriverProperties().put("password", "atcroot");
-		ds1.getDriverProperties().put("databaseName", "droolsflow");
-		ds1.getDriverProperties().put("serverName", "localhost");
+		//ds1.getDriverProperties().put("databaseName", "droolsflow");
+		//ds1.getDriverProperties().put("serverName", "localhost");
 
 		ds1.init();
 		// Use persistence.xml configuration

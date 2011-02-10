@@ -97,11 +97,17 @@
         </dependency>
 
 		<!-- DB MySQL -->
-        <dependency>
+        <!--dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.9</version>
+        </dependency-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.2.139</version>
         </dependency>
+        
         
         <dependency>
             <groupId>org.drools</groupId>
@@ -297,8 +303,8 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <!--argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument-->
-                        <argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument>
+                        <argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument>
+                        <!--argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument-->
                         <argument>-Dd32</argument>
                         <argument>-classpath</argument>
                         <classpath/>
