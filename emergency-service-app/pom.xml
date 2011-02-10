@@ -15,6 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.2.0-SNAPSHOT</drools.version>
     </properties>  
+
+
       
     <dependencies>
         <dependency>
@@ -243,10 +245,20 @@
             <id>OW2</id>
             <url>http://maven.ow2.org/maven2/</url>
         </repository>
+        <repository>
+            <id>PlugTree</id>
+            <name>PlugTree-releases</name>
+            <url>http://www.plugtree.com/artifactory/plugtree-labs</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
     </repositories>
     <build>
         <plugins>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.6</version>
@@ -256,12 +268,11 @@
                      
                         <property>
                             <name>java.library.path</name>
-                            <value>/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</value>
-                            <!--value>/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</value-->
+                            <value>/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</value>
                         </property>
                     </systemProperties>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -286,7 +297,8 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument>
+                        <!--argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument-->
+                        <argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument>
                         <argument>-Dd32</argument>
                         <argument>-classpath</argument>
                         <classpath/>
