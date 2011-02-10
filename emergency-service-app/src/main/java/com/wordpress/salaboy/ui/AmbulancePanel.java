@@ -19,6 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.MedicalKit;
+import org.example.ws_ht.api.wsdl.IllegalAccessFault;
+import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
+import org.example.ws_ht.api.wsdl.IllegalStateFault;
 
 /**
  *
@@ -186,7 +189,15 @@ public class AmbulancePanel extends javax.swing.JPanel {
 
     private void sendAmbulancejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAmbulancejButtonActionPerformed
         try {
-            this.parent.sendAmbulance();
+            try {
+                this.parent.sendAmbulance();
+            } catch (IllegalArgumentFault ex) {
+                Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalStateFault ex) {
+                Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessFault ex) {
+                Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (IOException ex) {
             Logger.getLogger(AmbulancePanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

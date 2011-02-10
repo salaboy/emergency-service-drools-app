@@ -169,7 +169,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
 
     @Override
     public void processIncomingCall(Call call) {
-        refresh();
+        //refresh();
     }
     
    

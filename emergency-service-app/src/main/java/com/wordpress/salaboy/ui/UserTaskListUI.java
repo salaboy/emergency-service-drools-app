@@ -69,6 +69,11 @@ public class UserTaskListUI extends javax.swing.JFrame {
     public UserTaskListUI() {
         initComponents();
         initTaskServer();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initTaskClient();
 
 
@@ -109,6 +114,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         menuItemConfigreEventGenerators = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -189,7 +195,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                 .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
                     .add(hospitalJPanelLayout.createSequentialGroup()
                         .add(146, 146, 146)
                         .add(jButton1)))
@@ -202,7 +208,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
                 .add(jButton1)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         mainJTabbedPane.addTab("Hospital", hospitalJPanel);
@@ -233,13 +239,13 @@ public class UserTaskListUI extends javax.swing.JFrame {
         pnlReport.setLayout(pnlReportLayout);
         pnlReportLayout.setHorizontalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
             .add(pnlReportLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(btnRefreshReport)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnClearReport)
-                .addContainerGap(239, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
         );
         pnlReportLayout.setVerticalGroup(
             pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -249,7 +255,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
                     .add(btnRefreshReport)
                     .add(btnClearReport))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -261,14 +267,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
                 .addContainerGap())
         );
         managerjPanelLayout.setVerticalGroup(
             managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(managerjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -293,6 +299,23 @@ public class UserTaskListUI extends javax.swing.JFrame {
             }
         });
         fileMenu.add(menuItemConfigreEventGenerators);
+
+        jMenuItem2.setText("Servers Status");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenuItem2.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                jMenuItem2MenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        fileMenu.add(jMenuItem2);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -431,6 +454,26 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_menuItemConfigreEventGeneratorsActionPerformed
 
+    private void jMenuItem2MenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenuItem2MenuKeyPressed
+        // TODO add your handling code here:
+         
+        
+    }//GEN-LAST:event_jMenuItem2MenuKeyPressed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        java.awt.EventQueue.invokeLater(new Runnable()    {
+
+            @Override
+            public void run() {
+                JFrame jFrame = new JFrame();
+                jFrame.add( new ServersStatusPanel(getTaskClient()));
+                jFrame.setSize(300, 600);
+                jFrame.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     public void refreshPatientsTable() {
         DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
 
@@ -475,6 +518,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
