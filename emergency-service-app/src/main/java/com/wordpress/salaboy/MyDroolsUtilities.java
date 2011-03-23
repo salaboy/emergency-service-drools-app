@@ -101,6 +101,11 @@ public class MyDroolsUtilities {
         taskServerDaemon.startServer();
         System.out.println("server started... (ctrl-c to stop it)");
     }
+    
+    public static void stopTaskServer(){
+        System.out.println("server stoping...");
+        taskServerDaemon.stopServer();
+    }
 
     public static TaskClient initTaskClient() {
         TaskClient client = new TaskClient(new MinaTaskClientConnector("client 1",

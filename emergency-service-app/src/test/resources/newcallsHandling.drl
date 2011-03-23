@@ -1,0 +1,60 @@
+package callsHandling;
+
+import com.wordpress.salaboy.model.events.IncomingCallEvent;
+import com.wordpress.salaboy.NewEmergencyService;
+
+
+
+
+rule "Handling Each Incoming Emergency Call"
+    when
+          $incomingCall: IncomingCallEvent() from entry-point "incoming-calls"
+    then
+          NewEmergencyService.getInstance().incomingCallArriving($incomingCall);
+
+end
+
+
+
+#rule "Handling More than 10 calls per minute "
+#    when
+#          $incomingCalls: List(size > 10) from accumulate($incomingCall: IncomingCallEvent()
+#                   from entry-point "incoming-calls", sum($incomingCall))
+#    then
+#          NewEmergencyService.getInstance().startPanicEmergencyProcessEvent($incomingCalls);
+#
+#end
+
+
+#rule "Route the call to the less active central"
+#    when
+#        $central:  lessActive(centrals)
+#        $incomingCall: IncomingCallEvent() from entry-point "incoming-calls"
+#    then
+#
+#        $central.getNewEmergencyService.getInstance().startEmergencyProcessEvent($incomingCalls);
+#
+#end
+
+
+#rule "Route the call multiple entities to deal with the emergency"
+#    when
+#        $911central: 911()
+#        $police: Police()
+#        $incomingCall: IncomingCallEvent() from entry-point "incoming-calls"
+#    then
+#
+#        $911central.getNewEmergencyService.getInstance().startEmergencyProcessEvent($incomingCalls);
+#
+#end
+
+#rule "Another Route the call multiple entities to deal with the emergency"
+#    when
+#        $911central: 911()
+#        $police: Police()
+#        $incomingCall: IncomingCallEvent() from entry-point "incoming-calls"
+#    then
+#
+#        NewEmergencyService.getInstance().routeEmergency($incomingCalls, $911central, $police);
+#
+#end

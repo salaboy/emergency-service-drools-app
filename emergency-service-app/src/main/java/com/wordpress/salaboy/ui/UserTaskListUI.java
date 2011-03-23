@@ -38,12 +38,12 @@ import org.jbpm.task.service.ContentData;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HumanTaskClientConfiguration;
 import javax.swing.JFrame;
 import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TTaskAbstract;
 import org.jbpm.task.Content;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
 
 /**
  *
@@ -538,7 +538,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private void initTaskClient() {
         //humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(new ClassPathResource("conf/human-tasks-services.xml"));
         HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
-        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5HumanTaskClientConfiguration("127.0.0.1", 9123));
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
     }

@@ -151,7 +151,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     private void phoneCallsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phoneCallsJTablerowClick
         
         int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
-        Long id = Long.parseLong(phoneCallsJTable.getModel().getValueAt(selected, 0).toString());
+        String id = phoneCallsJTable.getModel().getValueAt(selected, 0).toString();
         this.callSelected(id);
         
     }//GEN-LAST:event_phoneCallsJTablerowClick
@@ -176,7 +176,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     
     
     private JDialog callPopup;
-    public void callSelected(Long id) {
+    public void callSelected(String id) {
         EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
         callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
         callPopup.add(emergencyInfoPanel);

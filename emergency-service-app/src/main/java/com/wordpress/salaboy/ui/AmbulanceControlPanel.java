@@ -151,7 +151,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
     private void ambulanceControlsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambulanceControlsJTablerowClick
         //System.out.println("ID from EVT"+evt.getID());
         int selected = ambulanceControlsJTable.rowAtPoint(evt.getPoint());
-        Long id = Long.parseLong(ambulanceControlsJTable.getModel().getValueAt(selected, 0).toString());
+        String id = ambulanceControlsJTable.getModel().getValueAt(selected, 0).toString();
         this.ambulanceSelected(id);
 
     }//GEN-LAST:event_ambulanceControlsJTablerowClick
@@ -199,36 +199,18 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
     }
     private JDialog callPopup;
 
-    public void ambulanceSelected(Long id) {
+    public void ambulanceSelected(String id) {
 
         String taskinfo = "";
 
         try {
             ObjectInputStream ois = null;
-            //Show ambulance tab.. with all the selected items
-//            BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-//            this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-//            List<TaskSummary> taskSums = handler.getResults();
-//            TaskSummary taskSum = taskSums.get(0);
+
 
             List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control_operator", "", null, "", "", "", 0, 0);
             TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
-//            BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-//            this.parent.getTaskClient().getTask(taskAbstract.getId(), handlerT);
-//            Task task2 = handlerT.getTask();
 
-            //  TTask task2 = this.parent.getTaskClient().getTaskInfo(taskAbstract.getId());
-
-
-
-
-            //TaskData taskData = task2.getTaskData();
-            //System.out.println("TaskData = " + taskData);
-//            BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-//            this.parent.getTaskClient().getContent(taskData.getDocumentContentId(), handlerC);
-//            Content content = handlerC.getContent();
-            //System.out.println("Content= " + content);
 
             List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(taskAbstract.getId());
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
@@ -257,29 +239,13 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
     public void sendAmbulance() throws IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
         this.callPopup.setVisible(false);
 
-//        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-//        this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-//        List<TaskSummary> taskSums = handler.getResults();
-//        TaskSummary taskSum = taskSums.get(0);
+
         List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control_operator", "", null, "", "", "", 0, 0);
         TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
         this.parent.getTaskClient().setAuthorizedEntityId("control_operator");
         this.parent.getTaskClient().start(taskAbstract.getId());
 
-//        this.parent.getTaskClient().start(taskSum.getId(), "control_operator", null);
-//        BlockingGetTaskResponseHandler handlerT = new BlockingGetTaskResponseHandler();
-//        this.parent.getTaskClient().getTask(taskSum.getId(), handlerT);
-//        Task task2 = handlerT.getTask();
-//        TaskData taskData = task2.getTaskData();
-
-//        System.out.println("TaskData = " + taskData);
-
-//        BlockingGetContentResponseHandler handlerC = new BlockingGetContentResponseHandler();
-//        this.parent.getTaskClient().getContent(taskData.getDocumentContentId(), handlerC);
-//        Content content = handlerC.getContent();
-//
-//        System.out.println("Content= " + content);
 
         List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(taskAbstract.getId());
         TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);

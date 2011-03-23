@@ -31,10 +31,10 @@ import org.jbpm.task.service.ContentData;
 public class EmergencyInfoPanel extends javax.swing.JPanel {
 
     private final HumanTaskService taskClient;
-    private Long taskId;
+    private String taskId;
     private PhoneCallsPanel parent;
 
-    EmergencyInfoPanel(PhoneCallsPanel parent, HumanTaskService taskClient, Long id) {
+    EmergencyInfoPanel(PhoneCallsPanel parent, HumanTaskService taskClient, String id) {
         this.taskClient = taskClient;
         this.taskId = id;
         this.parent = parent;

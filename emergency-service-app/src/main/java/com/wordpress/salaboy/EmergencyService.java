@@ -30,7 +30,7 @@ import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 public class EmergencyService {
     public static final Logger logger = new Logger();
     private static final EmergencyService emergency = new EmergencyService();
-    private static StatefulKnowledgeSession ksession;
+    protected static StatefulKnowledgeSession ksession;
     private final MapEventsNotifier mapEventsNotifier;
     private Map<Long, Boolean> emergencyReachedNotified = new ConcurrentHashMap<Long, Boolean>();
     private Map<Long, Boolean> hospitalReachedNotified = new ConcurrentHashMap<Long, Boolean>();
