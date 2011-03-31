@@ -8,3 +8,6 @@ hs_err_pid*.log
 *.iml
 *.ipr
 *.iws
+*.tlog
+/emergency-service-app/.settings/
+/emergency-service-domain/.settings/
