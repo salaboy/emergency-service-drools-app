@@ -2,15 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy;
+package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -22,14 +25,15 @@ import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
  *
  * @author salaboy
  */
-public class EmergencyService {
+public class GridEmergencyService {
     public static final Logger logger = new Logger();
-    private static final EmergencyService emergency = new EmergencyService();
+    private static final GridEmergencyService emergency = new GridEmergencyService();
     protected static StatefulKnowledgeSession ksession;
     private final MapEventsNotifier mapEventsNotifier;
     private Map<Long, Boolean> emergencyReachedNotified = new ConcurrentHashMap<Long, Boolean>();
@@ -37,9 +41,13 @@ public class EmergencyService {
     
     
 
-    public EmergencyService() {
-        this.mapEventsNotifier = new MapEventsNotifier(EmergencyService.logger);
-        ksession = MyDroolsUtilities.createSession();
+    public GridEmergencyService() {
+        this.mapEventsNotifier = new MapEventsNotifier(GridEmergencyService.logger);
+        try {
+            ksession = GridDroolsServices.createSession();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(GridEmergencyService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         registerHandlers();
         setGlobals();
 
@@ -51,7 +59,7 @@ public class EmergencyService {
         }).start();
     }
 
-    public static EmergencyService getInstance() {
+    public static GridEmergencyService getInstance() {
         return emergency;
     }
 
@@ -71,14 +79,16 @@ public class EmergencyService {
     private void registerHandlers() {
         //@TODO: create a list 
         //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
         ksession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
+        
     }
 
     private void setGlobals() {
         //@TODO: create a list
 
-        ksession.setGlobal("callManager", CallManager.getInstance());
+//        ksession.setGlobal("callManager", CallManager.getInstance());
+        //    ksession.setGlobal("mapEventsNotifier", this.getMapEventsNotifier());
 
         ksession.setGlobal("ambulances", CityEntitiesUtils.ambulances);
 
@@ -86,7 +96,7 @@ public class EmergencyService {
 
         ksession.setGlobal("hospitals", CityEntitiesUtils.hospitals);
         
-        ksession.setGlobal("mapEventsNotifier", this.getMapEventsNotifier());
+    
 
         
 
@@ -113,7 +123,7 @@ public class EmergencyService {
     }
 
     public Ambulance getAmbulance(Long processId) {
-        WorkflowProcessInstance pI = (WorkflowProcessInstance) ksession.getProcessInstance(processId);
+        WorkflowProcessInstanceImpl pI = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processId);
         Long ambulanceId = (Long)pI.getVariable("ambulance.id");
         Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(ambulanceId);
         return ambulance;
@@ -141,4 +151,9 @@ public class EmergencyService {
         ksession.update(handle, ambulance);
     }
 
+    public void newPhoneCall(Call call){
+        
+        
+    }
+    
 }

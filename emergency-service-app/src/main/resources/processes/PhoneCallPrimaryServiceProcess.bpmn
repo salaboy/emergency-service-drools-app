@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  
+  
+  <itemDefinition id="_emergency.typeItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationItem" structureRef="String" />
+  <itemDefinition id="_patient.ageItem" structureRef="String" />
+  <itemDefinition id="_patient.genderItem" structureRef="String" />
+  <itemDefinition id="_emergency.priorityItem" structureRef="String" />
+  <itemDefinition id="_patient.idItem" structureRef="String" />  
+  <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
+  
+  
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.PhoneCallPrimaryService" name="Phone Call Primary Service" >
+
+    <!-- process variables -->
+    
+    
+    <property id="emergency.type" itemSubjectRef="_emergency.typeItem"/>
+    <property id="emergency.location" itemSubjectRef="_emergency.locationItem"/>
+    <property id="patient.age" itemSubjectRef="_patient.ageItem"/>
+    <property id="patient.gender" itemSubjectRef="_patient.genderItem"/>
+    <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
+    <property id="call" itemSubjectRef="_callItem"/>
+   
+    
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    
+     <userTask id="_2" name="Ask for Emergency Information" >
+      <ioSpecification>
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_ContentInput" name="Content" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_PriorityInput" name="Priority" />
+        <dataOutput id="_2_emergency.typeOutput" name="emergency.type" />
+        <dataOutput id="_2_patient.genderOutput" name="patient.gender" />
+        <dataOutput id="_2_emergency.locationOutput" name="emergency.location" />
+        <dataOutput id="_2_patient.ageOutput" name="patient.age" />
+        <inputSet>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_SkippableInput</dataInputRefs>
+          <dataInputRefs>_2_ContentInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_2_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_emergency.typeOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.locationOutput</dataOutputRefs>
+          <dataOutputRefs>_2_patient.genderOutput</dataOutputRefs>
+          <dataOutputRefs>_2_patient.ageOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_2_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{call.getTimestamp()} Ask For Emergency Information #{call.getPhoneNumber()} </from>
+          <to xs:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_2_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.typeOutput</sourceRef>
+        <targetRef>emergency.type</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_patient.genderOutput</sourceRef>
+        <targetRef>patient.gender</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.locationOutput</sourceRef>
+        <targetRef>emergency.location</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_patient.ageOutput</sourceRef>
+        <targetRef>patient.age</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <businessRuleTask id="_3" name="Suggest Process For This Emergency" g:ruleFlowGroup="suggest process" />
+    
+    <userTask id="_4" name="Accept or Decline Suggestion" >
+      <ioSpecification>
+        <dataInput id="_4_emergency.typeInput" name="emergency.type" />
+        <dataInput id="_4_emergency.locationInput" name="emergency.location" />
+        <dataInput id="_4_patient.genderInput" name="patient.gender" />
+        <dataInput id="_4_patient.ageInput" name="patient.age" />
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_ContentInput" name="Content" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_4_emergency.typeInput</dataInputRefs>
+          <dataInputRefs>_4_emergency.locationInput</dataInputRefs>
+          <dataInputRefs>_4_patient.genderInput</dataInputRefs>
+          <dataInputRefs>_4_patient.ageInput</dataInputRefs>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_ContentInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.type</sourceRef>
+        <targetRef>_4_emergency.typeInput</targetRef>
+      </dataInputAssociation>
+     
+      <dataInputAssociation>
+        <sourceRef>patient.gender</sourceRef>
+        <targetRef>_4_patient.genderInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency.location</sourceRef>
+        <targetRef>_4_emergency.locationInput</targetRef>
+      </dataInputAssociation>
+     
+      <dataInputAssociation>
+        <sourceRef>patient.age</sourceRef>
+        <targetRef>_4_patient.ageInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"> #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
+          <to xs:type="tFormalExpression">_4_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">Accept or Decline Suggested Process -> #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
+          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_4_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>control</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+   
+    <businessRuleTask id="_5" name="Start Selected Process" g:ruleFlowGroup="start process" />
+    <endEvent id="_6" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+   
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+   
+  </process>
+
+</definitions>

@@ -29,14 +29,17 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $ambulance: Ambulance()
-        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
-            hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $ambulance))
-        )
+        //$selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
+            //hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $ambulance))
+
+//        )
+     //   $num: Number() from accumulate($hospital: Hospital() from hospitals.values(), sum($hospital))
         //@TODO add more filters
 
     then
         //@TODO use the 
-        System.out.println("Hospital Selected"+$selectedHospital);
-        mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, new HospitalSelectedNotifierEvent($ambulance.getId(), $selectedHospital.getId(), $emergency.getId()));
+        //System.out.println("I'm fine!! thanks!!!"+$num);
+        //System.out.println("Hospital Selected"+$selectedHospital);
+       // mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_SELECTED, new HospitalSelectedNotifierEvent($ambulance.getId(), $selectedHospital.getId(), $emergency.getId()));
         
 end

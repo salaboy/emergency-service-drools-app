@@ -14,6 +14,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 
 /**
@@ -97,7 +98,7 @@ public class NewEmergencyService {
        }
 
        public Ambulance getAmbulance(Long processId) {
-           WorkflowProcessInstance pI = (WorkflowProcessInstance) ksession.getProcessInstance(processId);
+           WorkflowProcessInstanceImpl pI = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processId);
            Long ambulanceId = (Long)pI.getVariable("ambulance.id");
            Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(ambulanceId);
            return ambulance;

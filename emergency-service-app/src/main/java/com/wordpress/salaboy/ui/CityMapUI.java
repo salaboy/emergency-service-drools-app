@@ -1,6 +1,6 @@
 package com.wordpress.salaboy.ui;
 
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.events.EmergencyReachedNotifierEvent;
 import com.wordpress.salaboy.events.HospitalReachedNotifierEvent;
 import com.wordpress.salaboy.events.MapEventsNotifier;
@@ -207,7 +207,7 @@ public class CityMapUI extends BasicGame {
             Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
             int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
             BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-            emergencies.add(GraphicableFactory.newEmergency(EmergencyService.getInstance().newEmergency(call)));
+            emergencies.add(GraphicableFactory.newEmergency(GridEmergencyService.getInstance().newEmergency(call)));
 
         }
         //if at least have one player
@@ -297,11 +297,11 @@ public class CityMapUI extends BasicGame {
     public synchronized boolean emergencyCollision(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.emergencies.size(); i++) {
             Block entity1 = (Block) BlockMap.emergencies.get(i);
-            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getAmbulance().getId())) {
-                EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getAmbulance().getId(), true); 
-                EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, new EmergencyReachedNotifierEvent(ambulance.getAmbulance().getId()));
-                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), false);
+            if (ambulance.getPolygon().intersects(entity1.poly) && !GridEmergencyService.getInstance().getEmergencyReachedNotified().get(ambulance.getAmbulance().getId())) {
+                GridEmergencyService.getInstance().getEmergencyReachedNotified().put(ambulance.getAmbulance().getId(), true); 
+                GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new MapHospitalSelectedEventNotifier());
+                GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.EMERGENCY_REACHED, new EmergencyReachedNotifierEvent(ambulance.getAmbulance().getId()));
+                GridEmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), false);
                 return true;
             }
         }
@@ -311,9 +311,9 @@ public class CityMapUI extends BasicGame {
     public synchronized boolean hospitalCollision(GraphicableAmbulance ambulance) throws SlickException {
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (ambulance.getPolygon().intersects(entity1.poly) && !EmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getAmbulance().getId())) {
-                EmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), true);
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, new HospitalReachedNotifierEvent(ambulance.getAmbulance().getId(), null));
+            if (ambulance.getPolygon().intersects(entity1.poly) && !GridEmergencyService.getInstance().getHospitalReachedNotified().get(ambulance.getAmbulance().getId())) {
+                GridEmergencyService.getInstance().getHospitalReachedNotified().put(ambulance.getAmbulance().getId(), true);
+                GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HOSPITAL_REACHED, new HospitalReachedNotifierEvent(ambulance.getAmbulance().getId(), null));
                 return true;
             }
         }
@@ -324,7 +324,7 @@ public class CityMapUI extends BasicGame {
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
             if (ambulance.getPolygon().intersects(entity1.poly)) {
-                EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, new PositionUpdatedNotifierEvent(ambulance.getAmbulance().getId()));
+                GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.AMBULANCE_POSITION, new PositionUpdatedNotifierEvent(ambulance.getAmbulance().getId()));
                 return true;
             }
         }

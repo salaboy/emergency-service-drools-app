@@ -12,7 +12,7 @@
 package com.wordpress.salaboy.events.wiimote;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
@@ -131,7 +131,7 @@ public class WiiMoteOptions extends javax.swing.JFrame {
                     jTextArea1.insert("sended " + evt.getY() + " heartbeat\n", 0);
                     if(AmbulanceMonitorService.getInstance().isRunning()){
                         // add the ambulanceId
-                        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(evt.getY()), 0L));
+                        GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(evt.getY()), 0L));
                         //AmbulanceMonitorService.getInstance().sendNotification(y, y, y);
                     }
                     

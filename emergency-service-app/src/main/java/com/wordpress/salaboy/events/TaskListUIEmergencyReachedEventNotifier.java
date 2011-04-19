@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.ui.EmergencyFrame;
 import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.ui.UserTaskListUI;
@@ -25,7 +25,7 @@ public class TaskListUIEmergencyReachedEventNotifier implements WorldEventNotifi
                                                           .getEmergencyFrameById(ambulanceId);
         emergencyFrameById.getPnlMedicalEvaluation().setEnabled(true); 
         emergencyFrameById.getMainTabPanel().setSelectedComponent(emergencyFrameById.getPnlMedicalEvaluation());       
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new TaskListUIHospitalSelectedEventNotifier());
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_SELECTED, new TaskListUIHospitalSelectedEventNotifier());
     }
 
 }

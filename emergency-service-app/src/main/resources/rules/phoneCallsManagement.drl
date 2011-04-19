@@ -1,0 +1,22 @@
+package phoneCallPrimaryService;
+
+
+import org.drools.runtime.process.ProcessInstance;
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.Call;
+
+
+declare Call
+  @role(event)
+end
+
+rule "Single Phone Call Handling"
+    when
+        $call: Call() from entry-point "phoneCalls stream"
+    then
+      Map<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("call", $call);
+      kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.PhoneCallPrimaryService", parameters);
+end
+

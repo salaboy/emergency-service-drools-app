@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import java.util.Date;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
@@ -25,7 +25,7 @@ public class MapEmergencyReachedEventNotifier implements WorldEventNotifier{
     
     @Override
     public void notify(NotifierEvent event) {
-        EmergencyService.getInstance().sendPatientPickUpEvent(new PatientPickUpEvent(new Date()), this.emergency.getCall().getProcessId());
+        GridEmergencyService.getInstance().sendPatientPickUpEvent(new PatientPickUpEvent(new Date()), this.emergency.getCall().getProcessId());
     }
 
 }

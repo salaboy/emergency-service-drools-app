@@ -84,6 +84,16 @@
         <!-- jBPM5 Dependencies -->
          <dependency>
             <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow-builder</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
             <version>${jbpm.version}</version>
         </dependency>

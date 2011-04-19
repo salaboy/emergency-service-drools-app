@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy;
+package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.log.Logger;
@@ -16,12 +17,12 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
  *
@@ -39,7 +40,7 @@ public class EmergencyService {
 
     public EmergencyService() {
         this.mapEventsNotifier = new MapEventsNotifier(EmergencyService.logger);
-        ksession = MyDroolsUtilities.createSession();
+        ksession = DroolsServices.createSession();
         registerHandlers();
         setGlobals();
 
@@ -113,7 +114,7 @@ public class EmergencyService {
     }
 
     public Ambulance getAmbulance(Long processId) {
-        WorkflowProcessInstance pI = (WorkflowProcessInstance) ksession.getProcessInstance(processId);
+        WorkflowProcessInstanceImpl pI = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processId);
         Long ambulanceId = (Long)pI.getVariable("ambulance.id");
         Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(ambulanceId);
         return ambulance;

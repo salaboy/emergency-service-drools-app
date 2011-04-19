@@ -7,7 +7,7 @@ package com.wordpress.salaboy.events;
 
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
 import com.wordpress.salaboy.ui.Block;
 import com.wordpress.salaboy.ui.BlockMap;
@@ -44,12 +44,12 @@ public class MapHospitalSelectedEventNotifier implements WorldEventNotifier{
             }
         }
         
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_REACHED, new MapHospitalReachedEventNotifier(hospitalId));
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_REACHED, new MapHospitalReachedEventNotifier(hospitalId));
 
         BlockMap.hospitals.add(new Block(Math.round(selectedHospital.getPositionX()) * 16, Math.round(selectedHospital.getPositionY()) * 16, hospitasquare, "hospital"));
 
         
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new MapPatientVitalSignReceivedEventNotifier());
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new MapPatientVitalSignReceivedEventNotifier());
         
         
         //@TODO: START the monitor service with the Ambulance ID

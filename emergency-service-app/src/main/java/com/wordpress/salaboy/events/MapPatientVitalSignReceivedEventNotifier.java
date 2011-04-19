@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events;
 
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 
 /**
  *
@@ -19,7 +19,7 @@ public class MapPatientVitalSignReceivedEventNotifier implements WorldEventNotif
         PulseEvent evt = ((PatientVitalSignNotifierEvent)event).getHeartBeatEvent();
         Long ambulanceId  = ((PatientVitalSignNotifierEvent)event).getAmbulanceId();
         
-        EmergencyService.getInstance().heartBeatReceivedFromAmbulance(ambulanceId, evt);
+        GridEmergencyService.getInstance().heartBeatReceivedFromAmbulance(ambulanceId, evt);
         
     }
 

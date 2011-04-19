@@ -43,7 +43,8 @@ rule "Initialize Emergency"
      
     //ADD NOTIFIER.. because a new Emergency with a call was created!
     //System.out.println("ADDING EMERGENCY REACHED LISTENER NOTIFIER");
-     mapEventsNotifier.addWorldEventNotifier(EventType.EMERGENCY_REACHED, new MapEmergencyReachedEventNotifier($emergency));
+    // mapEventsNotifier.addWorldEventNotifier(EventType.EMERGENCY_REACHED, new MapEmergencyReachedEventNotifier($emergency));
+    mapEventsNotifier.addWorldEventNotifier(EventType.EMERGENCY_REACHED, $emergency);
      
 
      // Insert the emergency in our world

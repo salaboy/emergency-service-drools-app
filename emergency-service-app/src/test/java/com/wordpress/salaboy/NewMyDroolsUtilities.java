@@ -1,5 +1,6 @@
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.services.EmergencyService;
 import bitronix.tm.TransactionManagerServices;
 import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.log.ProcessEventLogger;

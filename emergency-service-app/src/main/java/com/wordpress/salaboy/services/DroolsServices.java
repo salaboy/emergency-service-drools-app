@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy;
+package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.TaskServerDaemon;
 import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.log.ProcessEventLogger;
 import java.util.logging.Level;
@@ -30,10 +31,11 @@ import org.jbpm.task.service.mina.MinaTaskClientHandler;
  * @author salaboy
  * We need to separate the task stuff in another service class
  */
-public class MyDroolsUtilities {
+public class DroolsServices {
 
     
     public static final TaskServerDaemon taskServerDaemon = new TaskServerDaemon();
+    
     
     public static StatefulKnowledgeSession createSession() {
         
@@ -117,7 +119,7 @@ public class MyDroolsUtilities {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
-                java.util.logging.Logger.getLogger(MyDroolsUtilities.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(DroolsServices.class.getName()).log(Level.SEVERE, null, ex);
             }
             connected = client.connect("127.0.0.1", 9123);
             if (!connected) {

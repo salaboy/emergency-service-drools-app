@@ -1,13 +1,13 @@
 package callsHandling;
 
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.call.CallManager;
+//import com.wordpress.salaboy.call.CallManager;
 import org.drools.runtime.process.ProcessInstance;
 import java.util.Map;
 import java.util.HashMap;
 import java.text.SimpleDateFormat;
 
-global CallManager callManager;
+//global CallManager callManager;
 global Map ambulances;
 
 rule "Handling Single Emergency Call"
@@ -25,7 +25,9 @@ rule "Handling Single Emergency Call"
         parameters.put("call.phoneNumber", $emergency.getCall().getPhoneNumber());
         ProcessInstance pI = kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.EmergencyService", parameters);
         $emergency.getCall().setProcessId(pI.getId());
-        callManager.incomingCall($emergency.getCall());
-        update($emergency);
+        //callManager.incomingCall($emergency.getCall());
+        System.out.println("First Update Ever!");
+       // update($emergency);
+        System.out.println("After First Update Ever!");
         insert(pI);
 end

@@ -12,7 +12,7 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.MyDroolsUtilities;
+import com.wordpress.salaboy.services.DroolsServices;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;

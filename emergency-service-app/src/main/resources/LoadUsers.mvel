@@ -1,0 +1,9 @@
+users = [   
+       
+          'operator'   : new User('operator'),      
+          'admin'      : new User('Administrator'),
+          'control'  : new User('control')
+        ];       
+
+return users;
+        

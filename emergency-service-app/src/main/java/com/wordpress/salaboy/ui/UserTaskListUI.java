@@ -12,8 +12,8 @@ package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.events.wiimote.WiiMoteOptions;
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
-import com.wordpress.salaboy.MyDroolsUtilities;
+import com.wordpress.salaboy.services.DroolsServices;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
@@ -419,7 +419,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     private void refreshReportList() {
         DefaultListModel model = new DefaultListModel();
-        for (String message : EmergencyService.logger.getLogs()) {
+        for (String message : GridEmergencyService.logger.getLogs()) {
             model.addElement(message);
         }
 
@@ -427,7 +427,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }
 
     private void btnClearReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearReportActionPerformed
-        EmergencyService.logger.clearMessages();
+        GridEmergencyService.logger.clearMessages();
         this.refreshReportList();
     }//GEN-LAST:event_btnClearReportActionPerformed
 
@@ -532,7 +532,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initTaskServer() {
-        MyDroolsUtilities.initTaskServer();
+        DroolsServices.initTaskServer();
     }
 
     private void initTaskClient() {
@@ -562,14 +562,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         //@TODO: NOTE: I Don't like this approach because the UI is deciding something that the process should do, not at HT level
         this.game.addAmbulance(GraphicableFactory.newAmbulance(CityEntitiesUtils.getAmbulanceById(ambulanceId)));
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION, 
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION, 
                             new MapAmbulancePositionUpdatedEventNotifier());
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION,
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION,
                 new TaskListUIAmbulancePositionUpdatedEventNotifier(this.currentEmergenciesPanel));
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED,
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED,
                 new TaskListUIEmergencyReachedEventNotifier());
 
-        EmergencyService.getInstance().getEmergencyReachedNotified().put(ambulanceId, false);
+        GridEmergencyService.getInstance().getEmergencyReachedNotified().put(ambulanceId, false);
 
     }
 

@@ -1,7 +1,7 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.events.MapEventsNotifier;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;
 import java.util.logging.Level;
@@ -70,7 +70,7 @@ public class AmbulanceMonitorService {
                 try {
                     PulseEvent evt = new PulseEvent(235);
                     // Add the AmbulanceId
-                    EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(evt, null));
+                    GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(evt, null));
                     Thread.sleep(1000);
                 } catch (Exception ex) {
                     Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events.keyboard;
 
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.model.Ambulance;
@@ -62,7 +62,7 @@ public class KeyboardPulseEventGenerator {
             pulseValue = -1*pulseValue;
         }
         
-        EmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(pulseValue + 235), ambulanceId));
+        GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(pulseValue + 235), ambulanceId));
     }
     
 }

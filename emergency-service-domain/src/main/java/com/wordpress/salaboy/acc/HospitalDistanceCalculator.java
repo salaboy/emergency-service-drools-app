@@ -11,20 +11,20 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import org.drools.base.accumulators.AccumulateFunction;
+import org.drools.runtime.rule.AccumulateFunction;
 
 /**
  *
  * @author esteban
  */
-public class HospitalDistanceCalculator implements AccumulateFunction {
+public class HospitalDistanceCalculator implements AccumulateFunction, Serializable {
 
     public static class ContextData implements Serializable{
         public Hospital selectedHospital;
         public double minDistance;
     }
     
-    @Override
+    @Override 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 

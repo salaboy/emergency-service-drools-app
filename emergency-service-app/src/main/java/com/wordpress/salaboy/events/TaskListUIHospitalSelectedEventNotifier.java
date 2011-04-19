@@ -6,7 +6,7 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.ui.EmergencyFrame;
 import com.wordpress.salaboy.ui.EmergencyMonitorPanel;
@@ -47,10 +47,10 @@ public class TaskListUIHospitalSelectedEventNotifier implements WorldEventNotifi
         UserTaskListUI.getInstance().getGame().addHospital(GraphicableFactory.newHighlightedHospital(CityEntitiesUtils.getHospitalById(hospitalId)));
         
         TaskListUIMonitorAlertReceivedEventNotifier taskListUIMonitorAlertReceivedEventNotifier = new TaskListUIMonitorAlertReceivedEventNotifier();
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new TaskListUIPatientVitalSignReceivedEventNotifier());
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.NO_VITAL_SIGNS, taskListUIMonitorAlertReceivedEventNotifier);
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_ATTACK, taskListUIMonitorAlertReceivedEventNotifier );
-        EmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_REACHED, new TaskListUIHospitalReachedEventNotifier());
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_BEAT_RECEIVED, new TaskListUIPatientVitalSignReceivedEventNotifier());
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.NO_VITAL_SIGNS, taskListUIMonitorAlertReceivedEventNotifier);
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HEART_ATTACK, taskListUIMonitorAlertReceivedEventNotifier );
+        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.HOSPITAL_REACHED, new TaskListUIHospitalReachedEventNotifier());
         
         
     }

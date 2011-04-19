@@ -5,7 +5,7 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.ui.AmbulanceMonitorService;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import java.util.Iterator;
@@ -32,11 +32,11 @@ public class MapHospitalReachedEventNotifier implements WorldEventNotifier {
         Long ambulanceId = ((HospitalReachedNotifierEvent)event).getAmbulanceId();
 
         AmbulanceMonitorService.getInstance().stop();
-        EmergencyService.getInstance().sendPatientAtTheHospitalEvent(new PatientAtTheHospitalEvent(), ambulanceId);
+        GridEmergencyService.getInstance().sendPatientAtTheHospitalEvent(new PatientAtTheHospitalEvent(), ambulanceId);
 
 
 
-        QueryResults results = EmergencyService.getInstance().getQueryResults("getPatient");
+        QueryResults results = GridEmergencyService.getInstance().getQueryResults("getPatient");
         Iterator<QueryResultsRow> it = results.iterator();
         Patient patient = null;
         while (it.hasNext()) {

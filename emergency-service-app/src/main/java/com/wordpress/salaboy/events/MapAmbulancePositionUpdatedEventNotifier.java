@@ -6,7 +6,7 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
+import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.ui.UserTaskListUI;
 import com.wordpress.salaboy.model.Ambulance;
@@ -29,7 +29,7 @@ public class MapAmbulancePositionUpdatedEventNotifier implements WorldEventNotif
         if(newX != ambulance.getPositionX() || newY != ambulance.getPositionY()){
             ambulance.setPositionX(newX);
             ambulance.setPositionY(newY);
-            EmergencyService.getInstance().updateAmbualancePosition(ambulance);
+            GridEmergencyService.getInstance().updateAmbualancePosition(ambulance);
             
         }
     }

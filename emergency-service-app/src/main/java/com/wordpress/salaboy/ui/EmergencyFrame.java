@@ -12,7 +12,6 @@
 package com.wordpress.salaboy.ui;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.EmergencyService;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.util.ArrayList;

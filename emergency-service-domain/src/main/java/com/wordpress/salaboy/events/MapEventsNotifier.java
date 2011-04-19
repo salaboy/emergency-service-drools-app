@@ -6,12 +6,12 @@
 package com.wordpress.salaboy.events;
 
 import com.wordpress.salaboy.log.Logger;
+import com.wordpress.salaboy.model.Emergency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
 /**
  * @author salaboy
  * @author esteban
@@ -57,13 +57,17 @@ public class MapEventsNotifier {
     
    
     
-    public void addWorldEventNotifier(EventType type, WorldEventNotifier notifier) {
+    public void addWorldEventNotifier(EventType type, Object object) {
         List<WorldEventNotifier> notifiers = this.mapEventNotifiers.get(type);
         if(notifiers == null){
             this.mapEventNotifiers.put(type, new ArrayList<WorldEventNotifier>());
             notifiers = this.mapEventNotifiers.get(type);
         }
-        notifiers.add(notifier);
+        switch(type){
+            case EMERGENCY_REACHED:   
+                //notifiers.add(new MapEmergencyReachedEventNotifier((Emergency)object));
+        }
+        
     }
     
     public void removeWorldEventNotifier(EventType type){
