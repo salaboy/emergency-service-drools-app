@@ -1,24 +1,5 @@
 package com.wordpress.salaboy;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.api.HumanTaskServiceFactory;
-import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.events.IncomingCallEvent;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
-import org.example.ws_ht.api.TTaskAbstract;
-import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
-import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskClientHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
-import org.junit.*;
-
-import java.util.Date;
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: salaboy
@@ -26,8 +7,13 @@ import java.util.List;
  * Time: 3:09 PM
  * To change this template use File | Settings | File Templates.
  */
+import org.junit.Test;
 public class ProcessDataHandlingTest {
+	
+	@Test
+	public void noTestHere(){
 
+	}
 //    TaskClient client;
 //    private static PoolingDataSource ds1;
 //    private HumanTaskService humanTaskServiceClient;
