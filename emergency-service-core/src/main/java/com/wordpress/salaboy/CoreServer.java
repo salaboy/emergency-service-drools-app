@@ -4,6 +4,8 @@
  */
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.services.PhoneCallsMGMTService;
