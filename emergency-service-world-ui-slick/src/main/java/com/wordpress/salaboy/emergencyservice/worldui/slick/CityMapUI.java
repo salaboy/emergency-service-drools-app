@@ -212,7 +212,7 @@ public class CityMapUI extends BasicGame {
             Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
             int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
             BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-           // emergencies.add(GraphicableFactory.newEmergency(GridEmergencyService.getInstance().newEmergency(call)));
+            emergencies.add(GraphicableFactory.newEmergency(call));
             
             try {
                 MessageProducer messageProducer = MessageProducerFactory.createMessageProducer("phoneCalls");
@@ -361,9 +361,11 @@ public class CityMapUI extends BasicGame {
     }
     public synchronized void removeEmergency(long id){
          for(GraphicableEmergency emergency : this.emergencies){
-            if(emergency.getEmergency().getId().compareTo(id) == 0 ){
-                this.emergencies.remove(emergency);
-            }
+            //TODO: GraphicalbeEmergency no longer has the emergency as attribute
+            //if(emergency.getEmergency().getId().compareTo(id) == 0 ){
+            //    this.emergencies.remove(emergency);
+            //}
+            throw new IllegalStateException("TODO: GraphicalbeEmergency no longer has the emergency as attribute");
         }
     }
     public synchronized void removeHospital(long id){

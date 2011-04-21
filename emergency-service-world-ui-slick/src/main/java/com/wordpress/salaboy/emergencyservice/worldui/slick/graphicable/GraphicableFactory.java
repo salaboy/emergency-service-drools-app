@@ -116,8 +116,9 @@ public class GraphicableFactory {
         return graphHospital;
     }
     
-     public static GraphicableEmergency newEmergency(Emergency emergency){
-        GraphicableEmergency graphEmergency = new GraphicableEmergency(emergency);
+     public static GraphicableEmergency newEmergency(Call call){
+         //TODO: fix this
+        GraphicableEmergency graphEmergency = new GraphicableEmergency();
         
         Animation myEmergency = new Animation();
         myEmergency.setLooping(true);
@@ -132,10 +133,10 @@ public class GraphicableFactory {
         }
 
         Polygon myEmergencyPolygon = new Polygon(new float[]{
-                    xs[emergency.getCall().getX()] * 16, ys[emergency.getCall().getY()] * 16,
-                    (xs[emergency.getCall().getX()] * 16) + 32, ys[emergency.getCall().getY()] * 16,
-                    (xs[emergency.getCall().getX()] * 16) + 32, (ys[emergency.getCall().getY()] * 16) + 32,
-                    xs[emergency.getCall().getX()] * 16, (ys[emergency.getCall().getY()] * 16) + 32
+                    xs[call.getX()] * 16, ys[call.getY()] * 16,
+                    (xs[call.getX()] * 16) + 32, ys[call.getY()] * 16,
+                    (xs[call.getX()] * 16) + 32, (ys[call.getY()] * 16) + 32,
+                    xs[call.getX()] * 16, (ys[call.getY()] * 16) + 32
                 });
         graphEmergency.setAnimation(myEmergency);
         graphEmergency.setPolygon(myEmergencyPolygon);
