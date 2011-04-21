@@ -78,15 +78,13 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
     @Test
     public void phoneCallsMGMTServiceTest() throws HornetQException, InterruptedException{
         MessageProducer producer = MessageProducerFactory.createMessageProducer("phoneCalls");
-       // producer.sendMessage(new Call(1,2,new Date()));
-        producer.sendMessage("My Call");
+        producer.sendMessage(new Call(1,2,new Date()));
         producer.stop();
         
-        //Call call = (Call) consumer.receiveMessage();
-        String call = (String) consumer.receiveMessage();
+        Call call = (Call) consumer.receiveMessage();
         assertNotNull(call);
         
-        PhoneCallsMGMTService.getInstance().newPhoneCall(new Call(1, 3, new Date()));
+        PhoneCallsMGMTService.getInstance().newPhoneCall(call);
         
         Thread.sleep(1000);
         

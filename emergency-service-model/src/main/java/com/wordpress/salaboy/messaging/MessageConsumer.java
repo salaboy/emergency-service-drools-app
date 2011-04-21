@@ -5,6 +5,9 @@
 
 package com.wordpress.salaboy.messaging;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -47,9 +50,28 @@ public class MessageConsumer {
     }
     
     public Object receiveMessage() throws HornetQException {
-        ClientMessage msgReceived = consumer.receive();
-        //@TODO: write object reader form bytes -> msgReceived.getBodyBuffer().readByte();
-        return msgReceived.getBodyBuffer().readString();
+        ObjectInputStream ois = null;
+        try {
+            ClientMessage msgReceived = consumer.receive();
+            int length = msgReceived.getBodyBuffer().readInt();
+            byte[] data = new byte[length];
+            msgReceived.getBodyBuffer().readBytes(data);
+            ois = new org.hornetq.utils.ObjectInputStreamWithClassLoader(new ByteArrayInputStream(data));
+            return ois.readObject();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MessageConsumer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IllegalStateException("Unable to read Message body: "+ex.getMessage());
+        } catch (IOException ex) {
+            Logger.getLogger(MessageConsumer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IllegalStateException("Unable to read Message body: "+ex.getMessage());
+        } finally {
+            try {
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MessageConsumer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
 
     public void stop() throws HornetQException {

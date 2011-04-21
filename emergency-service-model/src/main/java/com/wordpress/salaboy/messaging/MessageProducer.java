@@ -5,10 +5,14 @@
 
 package com.wordpress.salaboy.messaging;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.IOUtils;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.api.core.client.ClientMessage;
@@ -47,10 +51,29 @@ public class MessageProducer {
     }
     
     public void sendMessage(Object object) throws HornetQException{
-        ClientMessage clientMessage = producerSession.createMessage(true);
-        //clientMessage.getBodyBuffer().writeBytes(IOUtils.toByteArray(object));
-        clientMessage.getBodyBuffer().writeString(object.toString());
-        producer.send(clientMessage);
+        ObjectOutputStream oos = null;
+        try {
+            
+            ClientMessage clientMessage = producerSession.createMessage(true);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(baos);
+            oos.writeObject(object);
+            oos.flush();
+            
+            byte[] data = baos.toByteArray();
+            
+            clientMessage.getBodyBuffer().writeInt(data.length);
+            clientMessage.getBodyBuffer().writeBytes(data);
+            producer.send(clientMessage);
+        } catch (IOException ex) {
+            Logger.getLogger(MessageProducer.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                oos.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MessageProducer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     public void stop() throws HornetQException{
