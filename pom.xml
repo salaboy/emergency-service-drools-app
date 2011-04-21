@@ -1,29 +1,30 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wordpress.salaboy</groupId>
+    <groupId>com.wordpress.salaboy.emergencyservice</groupId>
     <artifactId>emergency-service</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Emergency Service - Use Case</name>
+    <name>Emergency Service - Scenario</name>
   
    
   
     <modules>
-        <module>emergency-service-app</module>
-        <module>emergency-service-domain</module>
-    </modules>
+        <module>emergency-service-core</module>
+        <module>emergency-service-model</module>
+        <module>emergency-service-world-ui-slick</module>
+        <module>emergency-service-taskslists-ui-swing</module>
+  </modules>
   
     <dependencies>
         <dependency>
-            <groupId>com.wordpress.salaboy</groupId>
-            <artifactId>emergency-service-domain</artifactId>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-             <groupId>com.wordpress.salaboy</groupId>
-            <artifactId>emergency-service-app</artifactId>
+             <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
