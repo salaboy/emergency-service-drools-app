@@ -217,6 +217,7 @@ public class CityMapUI extends BasicGame {
             try {
                 MessageProducer messageProducer = MessageProducerFactory.createMessageProducer("phoneCalls");
                 messageProducer.sendMessage(call);
+                messageProducer.stop();
             } catch (HornetQException ex) {
                 Logger.getLogger(CityMapUI.class.getName()).log(Level.SEVERE, null, ex);
             }
