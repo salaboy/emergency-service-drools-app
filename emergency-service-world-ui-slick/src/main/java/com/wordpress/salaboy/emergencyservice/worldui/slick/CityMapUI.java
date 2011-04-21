@@ -1,5 +1,6 @@
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
+import com.wordpress.salaboy.messaging.MessageProducer;
 import com.wordpress.salaboy.services.GridEmergencyService;
 import com.wordpress.salaboy.events.EmergencyReachedNotifierEvent;
 import com.wordpress.salaboy.events.HospitalReachedNotifierEvent;
@@ -11,10 +12,14 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.events.MapHospitalSe
 import com.wordpress.salaboy.events.PositionUpdatedNotifierEvent;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
+import com.wordpress.salaboy.messaging.MessageProducerFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.hornetq.api.core.HornetQException;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -207,7 +212,14 @@ public class CityMapUI extends BasicGame {
             Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
             int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
             BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-            emergencies.add(GraphicableFactory.newEmergency(GridEmergencyService.getInstance().newEmergency(call)));
+           // emergencies.add(GraphicableFactory.newEmergency(GridEmergencyService.getInstance().newEmergency(call)));
+            
+            try {
+                MessageProducer messageProducer = MessageProducerFactory.createMessageProducer("phoneCalls");
+                messageProducer.sendMessage(call);
+            } catch (HornetQException ex) {
+                Logger.getLogger(CityMapUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
         //if at least have one player
