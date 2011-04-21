@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy;
+package com.wordpress.salaboy.messaging;
 
 import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.messaging.MessageConsumerFactory;
