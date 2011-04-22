@@ -5,15 +5,14 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.messaging.MessageFactory;
 import java.util.List;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskClient;
 import org.drools.grid.SocketService;
 import java.util.HashMap;
 import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.messaging.MessageConsumerFactory;
 import com.wordpress.salaboy.messaging.MessageProducer;
-import com.wordpress.salaboy.messaging.MessageProducerFactory;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.services.PhoneCallsMGMTService;
@@ -49,7 +48,7 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
     @Before
     public void setUp() throws Exception {
         MessageServerSingleton.getInstance().start();
-        consumer = MessageConsumerFactory.createMessageConsumer("phoneCalls");
+        consumer = MessageFactory.createMessageConsumer("phoneCalls");
         
         //Start one task server
         HumanTaskHelper.getInstance().taskServerStart();
@@ -77,7 +76,7 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
 
     @Test
     public void phoneCallsMGMTServiceTest() throws HornetQException, InterruptedException{
-        MessageProducer producer = MessageProducerFactory.createMessageProducer("phoneCalls");
+        MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
         producer.sendMessage(new Call(1,2,new Date()));
         producer.stop();
         

@@ -71,13 +71,14 @@ public class CoreServer {
         createRemoteNode();
         //Starting Human Task Server
         HumanTaskServerService.getInstance().initTaskServer();
+        
         //Start Workers
-        startWorkers();
+        startQueuesWorkers();
         
         
     }
 
-    private void startWorkers() {
+    private void startQueuesWorkers() {
         try {
             
             //Phone Calls Worker

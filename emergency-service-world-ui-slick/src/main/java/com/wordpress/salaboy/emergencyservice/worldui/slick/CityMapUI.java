@@ -15,7 +15,7 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.events.MapEventsNotifier.EventType;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.messaging.MessageProducerFactory;
+import com.wordpress.salaboy.messaging.MessageFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +34,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
 import java.util.HashMap;
@@ -218,7 +217,7 @@ public class CityMapUI extends BasicGame {
             emergencies.put(call.getId(),GraphicableFactory.newEmergency(call));
 
             try {
-                MessageProducer messageProducer = MessageProducerFactory.createMessageProducer("phoneCalls");
+                MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
                 messageProducer.sendMessage(new IncomingCallMessage(call));
                 messageProducer.stop();
             } catch (HornetQException ex) {
