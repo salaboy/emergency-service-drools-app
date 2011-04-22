@@ -23,14 +23,16 @@ rule "Initialize Emergency"
         String locationX = (String)$processInstance.getVariable("emergency.locationx");
         String locationY = (String)$processInstance.getVariable("emergency.locationy");
         int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
+        Call call = (Call)$processInstance.getVariable("call");
         Emergency emergency = new Emergency();
         emergency.setLocation(new Location(locationX, locationY));
         emergency.setType(EmergencyType.valueOf(type));
         emergency.setNroOfPeople(nroOfPeople);
+        emergency.setCall(call);
         if(nroOfPeople == 1){
             int patientAge = (Integer)$processInstance.getVariable("patient.age");
-            String patientGender = (String)$processInstance.getVariable("patient.gender");
-            Patient patient = new Patient(patientAge, patientGender);  
+            String patientGender = (String)$processInstance.getVariable("patient.gender"); 
+            insert(new Patient(patientAge, patientGender));
         }
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
