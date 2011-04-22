@@ -29,10 +29,10 @@ import org.example.ws_ht.api.wsdl.IllegalStateFault;
  */
 public class AmbulancePanel extends javax.swing.JPanel {
 
-    private AmbulanceControlPanel parent;
+    private ControlSuggestedProceduresPanel parent;
     
     /** Creates new form AmbulancePanel */
-    public AmbulancePanel(AmbulanceControlPanel parent) {
+    public AmbulancePanel(ControlSuggestedProceduresPanel parent) {
         
         this.parent = parent;
         

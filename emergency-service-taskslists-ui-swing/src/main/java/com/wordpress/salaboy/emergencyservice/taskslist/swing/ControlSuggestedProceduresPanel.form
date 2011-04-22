@@ -99,7 +99,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Ambulance for Emergencies"/>
+        <Property name="text" type="java.lang.String" value="Control Suggested Procedures"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="refreshJButton">

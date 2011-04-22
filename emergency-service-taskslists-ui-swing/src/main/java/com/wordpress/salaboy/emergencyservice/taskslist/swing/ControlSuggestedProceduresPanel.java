@@ -10,6 +10,7 @@
  */
 package com.wordpress.salaboy.emergencyservice.taskslist.swing;
 
+import com.wordpress.salaboy.api.HumanTaskService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,14 +32,18 @@ import org.example.ws_ht.api.TTaskAbstract;
  *
  * @author esteban
  */
-public class AmbulanceControlPanel extends javax.swing.JPanel implements Refreshable {
+public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implements Refreshable {
 
     private UserTaskListUI parent;
 
     /** Creates new form PhoneCallsPanel */
-    public AmbulanceControlPanel(UserTaskListUI parent) {
+    public ControlSuggestedProceduresPanel(UserTaskListUI parent) {
         this.parent = parent;
         initComponents();
+    }
+    
+    protected HumanTaskService getTaskClient(){
+        return this.parent.getTaskClient();
     }
 
     /** This method is called from within the constructor to
@@ -88,7 +93,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
         });
         phoneCallsJScrollPane.setViewportView(ambulanceControlsJTable);
 
-        jLabel11.setText("Ambulance for Emergencies");
+        jLabel11.setText("Control Suggested Procedures");
 
         refreshJButton.setText("Refresh");
         refreshJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -152,7 +157,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
         //System.out.println("ID from EVT"+evt.getID());
         int selected = ambulanceControlsJTable.rowAtPoint(evt.getPoint());
         String id = ambulanceControlsJTable.getModel().getValueAt(selected, 0).toString();
-        this.ambulanceSelected(id);
+        this.emergencyProcedureSuggestionSelected(id);
 
     }//GEN-LAST:event_ambulanceControlsJTablerowClick
 
@@ -168,19 +173,14 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
 
     public void refresh() {
 
-//        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-//        
-//        this.parent.getTaskClient().getTasksAssignedAsPotentialOwner("control_operator", "en-UK", handler);
-//        
-//        List<TaskSummary> results = handler.getResults();
 
         List<TTaskAbstract> taskAbstracts = null;
         try {
             taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
         } catch (IllegalArgumentFault ex) {
-            Logger.getLogger(AmbulanceControlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlSuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateFault ex) {
-            Logger.getLogger(AmbulanceControlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlSuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 //        
@@ -199,38 +199,12 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
     }
     private JDialog callPopup;
 
-    public void ambulanceSelected(String id) {
+    public void emergencyProcedureSuggestionSelected(String id) {
 
-        String taskinfo = "";
-
-        try {
-            ObjectInputStream ois = null;
-
-
-            List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
-            TTaskAbstract taskAbstract = taskAbstracts.get(0);
-
-
-
-            List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(taskAbstract.getId());
-            TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
-            TAttachment attachment = this.parent.getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
-
-            System.out.println("Content= " + attachment.getValue());
-
-            ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
-            ois = new ObjectInputStream(bais);
-            taskinfo = (String) ois.readObject();
-        } catch (Exception ex) {
-            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
-
-        //AmbulancePanel ambulancePanel = new AmbulancePanel(this);
-        //ambulancePanel.configurePanel(taskinfo);
+       
+        
         SuggestedProceduresPanel suggestedProcedures = new SuggestedProceduresPanel(this);
-        suggestedProcedures.configurePanel(taskinfo);
+        
         callPopup = new JDialog(this.parent, "Info", true);
         callPopup.add(suggestedProcedures);
         this.callPopup.setSize(300, 430);

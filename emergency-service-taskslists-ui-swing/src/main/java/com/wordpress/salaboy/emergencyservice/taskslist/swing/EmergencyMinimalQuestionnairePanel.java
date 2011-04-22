@@ -11,19 +11,26 @@
 package com.wordpress.salaboy.emergencyservice.taskslist.swing;
 
 import com.wordpress.salaboy.api.HumanTaskService;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.example.ws_ht.api.TAttachment;
+import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TStatus;
 import org.example.ws_ht.api.TTask;
+import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import org.jbpm.task.AccessType;
+import org.jbpm.task.Content;
 import org.jbpm.task.service.ContentData;
 
 /**
@@ -37,12 +44,12 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
     private String taskId;
     private PhoneCallsPanel parent;
 
-    EmergencyMinimalQuestionnairePanel(PhoneCallsPanel parent, HumanTaskService taskClient, String id) {
+    public EmergencyMinimalQuestionnairePanel(PhoneCallsPanel parent, HumanTaskService taskClient, String id) {
         this.taskClient = taskClient;
         this.taskId = id;
         this.parent = parent;
         initComponents();
-        
+        configure();
         
     }
     
@@ -76,6 +83,8 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         taskActionjButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        phoneCalljLabel = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(300, 480));
         setName("Emergency Questionaire"); // NOI18N
@@ -133,6 +142,10 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
 
         jLabel6.setText("Task Action:");
 
+        jLabel7.setText("Phone Call:");
+
+        phoneCalljLabel.setText("<Call Information>");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -141,53 +154,56 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(taskActionjButton)
+                        .addContainerGap(199, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jLabel5))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(genderjComboBox, 0, 228, Short.MAX_VALUE)
-                                            .addGap(46, 46, 46))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel12)
-                                            .addComponent(jLabel13))
-                                        .addGap(13, 13, 13)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(11, 11, 11)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(emergencyTypeJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGap(8, 8, 8)
-                                                        .addComponent(locationxjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(locationyjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addComponent(nroOfPeoplejFormattedTextField))))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel5))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(taskActionjButton))))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(genderjComboBox, 0, 228, Short.MAX_VALUE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel3)
+                                                .addComponent(jLabel12)
+                                                .addComponent(jLabel13))
+                                            .addGap(13, 13, 13)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(11, 11, 11)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(emergencyTypeJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                            .addGap(8, 8, 8)
+                                                            .addComponent(locationxjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(locationyjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                .addComponent(nroOfPeoplejFormattedTextField)))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(39, 39, 39)
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(28, 28, 28))
+                                .addComponent(suggestProcedureJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(74, 74, 74))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(suggestProcedureJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(77, Short.MAX_VALUE))))
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(phoneCalljLabel)
+                        .addContainerGap(164, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,7 +212,11 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(taskActionjButton))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(phoneCalljLabel))
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(emergencyTypeJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
@@ -223,10 +243,39 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
                     .addComponent(ageJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(suggestProcedureJButton)
-                .addContainerGap(118, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void configure(){
+        String taskinfo = "";
+
+        try {
+            ObjectInputStream ois = null;
+
+
+            List<TTaskAbstract> taskAbstracts = getTaskClient().getMyTaskAbstracts("", "operator", "", null, "", "", "", 0, 0);
+            TTaskAbstract taskAbstract = taskAbstracts.get(0);
+
+
+
+            List<TAttachmentInfo> attachmentsInfo = getTaskClient().getAttachmentInfos(taskAbstract.getId());
+            TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
+            TAttachment attachment = getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
+            ois = new ObjectInputStream(bais);
+            taskinfo = (String) ois.readObject();
+        } catch (Exception ex) {
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String[] values= taskinfo.split(",");
+        System.out.println("TaskInfo = "+taskinfo);
+        String timestamp = values[0].trim(); 
+        String phoneNumber = values[1].trim(); 
+        phoneCalljLabel.setText("Time: "+timestamp +" - Phone Number: "+phoneNumber);
+    }
+    
     private void suggestProcedureJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestProcedureJButtonActionPerformed
         ObjectOutputStream out = null;
         try {
@@ -346,10 +395,12 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField locationxjTextField;
     private javax.swing.JTextField locationyjTextField;
     private javax.swing.JFormattedTextField nroOfPeoplejFormattedTextField;
+    private javax.swing.JLabel phoneCalljLabel;
     private javax.swing.JButton suggestProcedureJButton;
     private javax.swing.JButton taskActionjButton;
     // End of variables declaration//GEN-END:variables
