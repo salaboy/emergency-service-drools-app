@@ -8,6 +8,7 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.PhoneCallsMGMTService;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,13 +56,19 @@ public class CoreServer {
             public void run() {
                 try {
                     MessageServerSingleton.getInstance().stop();
+                    remoteN1.dispose();
+                    grid1.get(SocketService.class).close();
+                    HumanTaskServerService.getInstance().stopTaskServer();
                 } catch (Exception ex) {
                     Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        
+        //Starting Grid View
         createRemoteNode();
+        //Starting Human Task Server
+        HumanTaskServerService.getInstance().initTaskServer();
+        //Start Workers
         startWorkers();
         
         

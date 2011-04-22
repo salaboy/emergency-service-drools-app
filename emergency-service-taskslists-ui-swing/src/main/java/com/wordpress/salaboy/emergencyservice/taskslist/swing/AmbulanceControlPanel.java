@@ -176,7 +176,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
 
         List<TTaskAbstract> taskAbstracts = null;
         try {
-            taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control_operator", "", null, "", "", "", 0, 0);
+            taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
         } catch (IllegalArgumentFault ex) {
             Logger.getLogger(AmbulanceControlPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateFault ex) {
@@ -207,7 +207,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
             ObjectInputStream ois = null;
 
 
-            List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control_operator", "", null, "", "", "", 0, 0);
+            List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
             TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
 
@@ -227,10 +227,12 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
 
 
 
-        AmbulancePanel ambulancePanel = new AmbulancePanel(this);
-        ambulancePanel.configurePanel(taskinfo);
+        //AmbulancePanel ambulancePanel = new AmbulancePanel(this);
+        //ambulancePanel.configurePanel(taskinfo);
+        SuggestedProceduresPanel suggestedProcedures = new SuggestedProceduresPanel(this);
+        suggestedProcedures.configurePanel(taskinfo);
         callPopup = new JDialog(this.parent, "Info", true);
-        callPopup.add(ambulancePanel);
+        callPopup.add(suggestedProcedures);
         this.callPopup.setSize(300, 430);
         this.callPopup.setVisible(true);
         this.callPopup.requestFocus();
@@ -240,10 +242,10 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
         this.callPopup.setVisible(false);
 
 
-        List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control_operator", "", null, "", "", "", 0, 0);
+        List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
         TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
-        this.parent.getTaskClient().setAuthorizedEntityId("control_operator");
+        this.parent.getTaskClient().setAuthorizedEntityId("control");
         this.parent.getTaskClient().start(taskAbstract.getId());
 
 
@@ -262,7 +264,7 @@ public class AmbulanceControlPanel extends javax.swing.JPanel implements Refresh
 
         Long ambulanceId = Long.valueOf(taskinfo[1].trim());
 
-        this.parent.getTaskClient().setAuthorizedEntityId("control_operator");
+        this.parent.getTaskClient().setAuthorizedEntityId("control");
         this.parent.getTaskClient().complete(taskAbstract.getId(), null);
 
         this.parent.sendAmbulance(EmergencyType.valueOf(taskinfo[7].trim()), ambulanceId);

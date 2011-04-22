@@ -177,7 +177,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     
     private JDialog callPopup;
     public void callSelected(String id) {
-        EmergencyInfoPanel emergencyInfoPanel = new EmergencyInfoPanel(this,this.parent.getTaskClient(), id);
+        EmergencyMinimalQuestionnairePanel emergencyInfoPanel = new EmergencyMinimalQuestionnairePanel(this,this.parent.getTaskClient(), id);
         callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
         callPopup.add(emergencyInfoPanel);
         this.callPopup.setSize(300, 350);

@@ -1,0 +1,32 @@
+package phoneCallPrimaryService.procedureSuggestion;
+
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+
+
+
+rule "Initialize Emergency"
+    salience 20
+    ruleflow-group "suggest process"
+    when
+        $processInstance: WorkflowProcessInstance()
+
+    then
+        Emergency emergency = new Emergency();
+        emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+        insert(emergency);
+end
+
+
+rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
+    ruleflow-group "suggest process"
+    when
+        $emergency: Emergency()
+    then
+      System.out.println("Emergency inserted!!! -> "+$emergency);
+end
+

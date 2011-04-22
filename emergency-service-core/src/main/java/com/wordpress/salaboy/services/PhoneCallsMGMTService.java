@@ -110,11 +110,12 @@ public class PhoneCallsMGMTService {
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/PhoneCallPrimaryServiceProcess.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/phoneCallsManagement.drl").getInputStream())), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/procedureSuggestions.drl").getInputStream())), ResourceType.DRL);
        
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
             for (KnowledgeBuilderError error : errors) {
-                System.out.println("Error: " + error.getMessage());
+                System.out.println(">>>>>>> Error: " + error.getMessage());
 
             }
             throw new IllegalStateException("Failed to parse knowledge!");

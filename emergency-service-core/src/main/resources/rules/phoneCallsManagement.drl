@@ -17,6 +17,7 @@ rule "Single Phone Call Handling"
     then
       Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("call", $call);
-      kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.PhoneCallPrimaryService", parameters);
+      ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.PhoneCallPrimaryService", parameters);
+      insert(pi);
 end
 

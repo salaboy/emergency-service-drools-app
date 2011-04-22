@@ -227,38 +227,38 @@ public class AmbulancePanel extends javax.swing.JPanel {
 
     void configurePanel(String taskinfo) {
         String[] values= taskinfo.split(",");
-        String doctorId = values[0].trim(); 
-        String ambulanceId = values[1].trim(); 
-        String patientName = values[2].trim(); 
-        String patientAge = values[3].trim(); 
-        String patientGender = values[4].trim(); 
-        String emergencyLocation = values[5].trim(); 
-        String emergencyType = values[6].trim(); 
+       // String doctorId = values[0].trim(); 
+       // String ambulanceId = values[1].trim(); 
+        String patientAge = values[0].trim(); 
+        String patientGender = values[1].trim(); 
+        String emergencyLocationX = values[2].trim(); 
+        String emergencyLocationY = values[3].trim(); 
+        String emergencyType = values[4].trim(); 
         
-        this.ambulancejList.setSelectedIndex(Integer.parseInt(ambulanceId));
-        this.doctorsjList.setSelectedIndex(Integer.parseInt(doctorId));
+       // this.ambulancejList.setSelectedIndex(Integer.parseInt(ambulanceId));
+       // this.doctorsjList.setSelectedIndex(Integer.parseInt(doctorId));
         
         this.lblMedBone.setVisible(false);
         this.lblMedFire.setVisible(false);
         this.lblMedHeart.setVisible(false);
         
-        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(Long.parseLong(ambulanceId));
-        List<MedicalKit> kits = ambulance.getKits();
-        
-        for (MedicalKit medicalKit : kits) {
-            switch (medicalKit.getType()){
-                case BONES:
-                    this.lblMedBone.setVisible(true);
-                    break;
-                case BURNS:
-                    this.lblMedFire.setVisible(true);
-                    break;
-                case REANIMATION:
-                    this.lblMedHeart.setVisible(true);
-                    break;
-                    
-            }
-        }
+//        Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(Long.parseLong(ambulanceId));
+//        List<MedicalKit> kits = ambulance.getKits();
+//        
+//        for (MedicalKit medicalKit : kits) {
+//            switch (medicalKit.getType()){
+//                case BONES:
+//                    this.lblMedBone.setVisible(true);
+//                    break;
+//                case BURNS:
+//                    this.lblMedFire.setVisible(true);
+//                    break;
+//                case REANIMATION:
+//                    this.lblMedHeart.setVisible(true);
+//                    break;
+//                    
+//            }
+//        }
         
         this.medicalKitsJInternalFrame.validate();
         

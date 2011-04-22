@@ -18,7 +18,7 @@ public class Emergency implements Serializable{
     
     public enum EmergencyType {
 
-        FIRE, CAR_CRASH, HEART_ATTACK, ASSAULT
+        FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
     };
     private Long id;
     private Call call;

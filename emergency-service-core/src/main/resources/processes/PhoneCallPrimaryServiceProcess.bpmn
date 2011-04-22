@@ -15,12 +15,15 @@
   
   
   <itemDefinition id="_emergency.typeItem" structureRef="String" />
-  <itemDefinition id="_emergency.locationItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationxItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationyItem" structureRef="String" />
+  <itemDefinition id="_emergency.nroofpeopleItem" structureRef="String" />
   <itemDefinition id="_patient.ageItem" structureRef="String" />
   <itemDefinition id="_patient.genderItem" structureRef="String" />
   <itemDefinition id="_emergency.priorityItem" structureRef="String" />
   <itemDefinition id="_patient.idItem" structureRef="String" />  
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
+  <itemDefinition id="_suggestedProcedureItem" structureRef="java.util.List" />
   
   
 
@@ -30,11 +33,14 @@
     
     
     <property id="emergency.type" itemSubjectRef="_emergency.typeItem"/>
-    <property id="emergency.location" itemSubjectRef="_emergency.locationItem"/>
+    <property id="emergency.locationx" itemSubjectRef="_emergency.locationxItem"/>
+    <property id="emergency.locationy" itemSubjectRef="_emergency.locationyItem"/>
+    <property id="emergency.nroofpeople" itemSubjectRef="_emergency.nroofpeopleItem"/>
     <property id="patient.age" itemSubjectRef="_patient.ageItem"/>
     <property id="patient.gender" itemSubjectRef="_patient.genderItem"/>
     <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
     <property id="call" itemSubjectRef="_callItem"/>
+    <property id="suggestedProcedures" itemSubjectRef="_suggestedProcedureItem"/>
    
     
 
@@ -50,7 +56,9 @@
         <dataInput id="_2_PriorityInput" name="Priority" />
         <dataOutput id="_2_emergency.typeOutput" name="emergency.type" />
         <dataOutput id="_2_patient.genderOutput" name="patient.gender" />
-        <dataOutput id="_2_emergency.locationOutput" name="emergency.location" />
+        <dataOutput id="_2_emergency.locationxOutput" name="emergency.locationx" />
+        <dataOutput id="_2_emergency.locationyOutput" name="emergency.locationy" />
+        <dataOutput id="_2_emergency.nroofpeopleOutput" name="emergency.nroofpeople" />
         <dataOutput id="_2_patient.ageOutput" name="patient.age" />
         <inputSet>
           <dataInputRefs>_2_CommentInput</dataInputRefs>
@@ -61,7 +69,9 @@
         </inputSet>
         <outputSet>
           <dataOutputRefs>_2_emergency.typeOutput</dataOutputRefs>
-          <dataOutputRefs>_2_emergency.locationOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.locationxOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.locationyOutput</dataOutputRefs>
+          <dataOutputRefs>_2_emergency.nroofpeopleOutput</dataOutputRefs>
           <dataOutputRefs>_2_patient.genderOutput</dataOutputRefs>
           <dataOutputRefs>_2_patient.ageOutput</dataOutputRefs>
         </outputSet>
@@ -110,8 +120,16 @@
         <targetRef>patient.gender</targetRef>
       </dataOutputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_2_emergency.locationOutput</sourceRef>
-        <targetRef>emergency.location</targetRef>
+        <sourceRef>_2_emergency.locationxOutput</sourceRef>
+        <targetRef>emergency.locationx</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.locationyOutput</sourceRef>
+        <targetRef>emergency.locationy</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.nroofpeopleOutput</sourceRef>
+        <targetRef>emergency.nroofpeople</targetRef>
       </dataOutputAssociation>
       <dataOutputAssociation>
         <sourceRef>_2_patient.ageOutput</sourceRef>
@@ -127,8 +145,11 @@
     
     <userTask id="_4" name="Accept or Decline Suggestion" >
       <ioSpecification>
+        <dataInput id="_4_suggestedProceduresInput" name="suggestedProcedures" />
         <dataInput id="_4_emergency.typeInput" name="emergency.type" />
-        <dataInput id="_4_emergency.locationInput" name="emergency.location" />
+        <dataInput id="_4_emergency.locationxInput" name="emergency.locationx" />
+        <dataInput id="_4_emergency.locationyInput" name="emergency.locationy" />
+        <dataInput id="_4_emergency.nroofpeopleInput" name="emergency.nroofpeople" />
         <dataInput id="_4_patient.genderInput" name="patient.gender" />
         <dataInput id="_4_patient.ageInput" name="patient.age" />
         <dataInput id="_4_CommentInput" name="Comment" />
@@ -137,8 +158,11 @@
         <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_PriorityInput" name="Priority" />
         <inputSet>
+          <dataInputRefs>_4_suggestedProceduresInput</dataInputRefs>
           <dataInputRefs>_4_emergency.typeInput</dataInputRefs>
-          <dataInputRefs>_4_emergency.locationInput</dataInputRefs>
+          <dataInputRefs>_4_emergency.locationxInput</dataInputRefs>
+          <dataInputRefs>_4_emergency.locationyInput</dataInputRefs>
+          <dataInputRefs>_4_emergency.nroofpeopleInput</dataInputRefs>
           <dataInputRefs>_4_patient.genderInput</dataInputRefs>
           <dataInputRefs>_4_patient.ageInput</dataInputRefs>
           <dataInputRefs>_4_CommentInput</dataInputRefs>
@@ -150,6 +174,10 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
+       <dataInputAssociation>
+        <sourceRef>suggestedProcedures</sourceRef>
+        <targetRef>_4_suggestedProceduresInput</targetRef>
+      </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>emergency.type</sourceRef>
         <targetRef>_4_emergency.typeInput</targetRef>
@@ -160,10 +188,17 @@
         <targetRef>_4_patient.genderInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>emergency.location</sourceRef>
-        <targetRef>_4_emergency.locationInput</targetRef>
+        <sourceRef>emergency.locationx</sourceRef>
+        <targetRef>_4_emergency.locationxInput</targetRef>
       </dataInputAssociation>
-     
+     <dataInputAssociation>
+        <sourceRef>emergency.locationy</sourceRef>
+        <targetRef>_4_emergency.locationyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency.nroofpeople</sourceRef>
+        <targetRef>_4_emergency.nroofpeopleInput</targetRef>
+      </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>patient.age</sourceRef>
         <targetRef>_4_patient.ageInput</targetRef>
@@ -185,14 +220,14 @@
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
+          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures}</from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Accept or Decline Suggested Process -> #{patient.age}, #{patient.gender}, #{emergency.location}, #{emergency.type}</from>
+          <from xs:type="tFormalExpression">Accept or Decline Suggested Process ->  #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}</from>
           <to xs:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>

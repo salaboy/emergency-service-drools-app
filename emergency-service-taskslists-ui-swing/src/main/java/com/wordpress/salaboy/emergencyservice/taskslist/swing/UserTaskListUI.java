@@ -14,7 +14,6 @@ import com.wordpress.salaboy.CityEntitiesUtils;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.services.HumanTaskServerService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -61,8 +60,8 @@ public class UserTaskListUI extends javax.swing.JFrame {
     /** Creates new form UserUI */
     public UserTaskListUI() {
         initComponents();
-        //This should go in another module
-        HumanTaskServerService.getInstance().initTaskServer();
+        
+       
         
         try {
             Thread.sleep(3000);
