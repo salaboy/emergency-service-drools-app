@@ -300,7 +300,6 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             out = new ObjectOutputStream(bos);
             out.writeObject(info);
-            out.close();
             result.setContent(bos.toByteArray());
            
             getTaskClient().setAuthorizedEntityId("operator");
@@ -316,12 +315,12 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
         } catch (IllegalAccessFault ex) {
             Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
-                Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

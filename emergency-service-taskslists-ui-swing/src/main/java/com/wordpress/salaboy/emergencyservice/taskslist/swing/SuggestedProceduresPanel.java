@@ -232,8 +232,8 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         try {
             int[] selected = suggestedProceduresjList.getSelectedIndices();
             SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
-            for(int i = 0; i > suggestedProcedures.size(); i++){
-                selectedProcedures.addSelectedProcedureName(suggestedProceduresjList.getComponent(selected[i]).getName());
+            for(int i = 0; i < selected.length; i++){
+                selectedProcedures.addSelectedProcedureName((String)suggestedProceduresjList.getModel().getElementAt(selected[i]));
             }
             Map<String, Object> info = new HashMap<String, Object>();
             info.put("selectedProcedures", selectedProcedures);
@@ -245,7 +245,6 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             out = new ObjectOutputStream(bos);
             out.writeObject(info);
-            out.close();
             result.setContent(bos.toByteArray());
            
             this.parent.getTaskClient().setAuthorizedEntityId("control");
@@ -255,18 +254,18 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
             this.parent.hideDialog();
 
         } catch (IllegalArgumentFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
-                Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SuggestedProceduresPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } 
     }//GEN-LAST:event_selectProcedurejButtonActionPerformed
@@ -281,7 +280,7 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         } catch (IllegalArgumentFault ex) {
             Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.parent.getTaskClient().setAuthorizedEntityId("operator");
+        this.parent.getTaskClient().setAuthorizedEntityId("control");
         try {
             this.parent.getTaskClient().start(taskId);
         } catch (IllegalArgumentFault ex) {
