@@ -16,17 +16,33 @@ rule "Initialize Emergency"
         $processInstance: WorkflowProcessInstance()
 
     then
+        String type = (String)$processInstance.getVariable("emergency.type");
+        String locationX = (String)$processInstance.getVariable("emergency.locationx");
+        String locationY = (String)$processInstance.getVariable("emergency.locationy");
+        int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
         Emergency emergency = new Emergency();
-        emergency.setType(EmergencyType.valueOf((String)$processInstance.getVariable("emergency.type")));
+        emergency.setLocation(new Location(locationX, locationY));
+        emergency.setType(EmergencyType.valueOf(type));
+        emergency.setNroOfPeople(nroOfPeople);
+        if(nroOfPeople == 1){
+            int patientAge = (Integer)$processInstance.getVariable("patient.age");
+            String patientGender = (String)$processInstance.getVariable("patient.gender");
+            Patient patient = new Patient(patientAge, patientGender);  
+        }
         insert(emergency);
+        insert(new SuggestedProcedures(emergency.getId()));
 end
 
 
 rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
     ruleflow-group "suggest process"
     when
-        $emergency: Emergency()
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency(nroOfPeople == 1)
+        $patient: Patient(age > 20 && < 60)
+        $procedures: SuggestedProcedures(emergencyId == $emergency.id)
     then
-      System.out.println("Emergency inserted!!! -> "+$emergency);
+       $procedures.addProcedureName("DefaultHeartAttackProcedure"); 
+       $processInstance.setVariable("suggestedProcedures",$procedures);
 end
 

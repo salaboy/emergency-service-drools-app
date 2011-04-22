@@ -17,13 +17,13 @@
   <itemDefinition id="_emergency.typeItem" structureRef="String" />
   <itemDefinition id="_emergency.locationxItem" structureRef="String" />
   <itemDefinition id="_emergency.locationyItem" structureRef="String" />
-  <itemDefinition id="_emergency.nroofpeopleItem" structureRef="String" />
-  <itemDefinition id="_patient.ageItem" structureRef="String" />
+  <itemDefinition id="_emergency.nroofpeopleItem" structureRef="Integer" />
+  <itemDefinition id="_patient.ageItem" structureRef="Integer" />
   <itemDefinition id="_patient.genderItem" structureRef="String" />
   <itemDefinition id="_emergency.priorityItem" structureRef="String" />
   <itemDefinition id="_patient.idItem" structureRef="String" />  
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
-  <itemDefinition id="_suggestedProcedureItem" structureRef="java.util.List" />
+  <itemDefinition id="_suggestedProcedureItem" structureRef="com.wordpress.salaboy.model.SuggestedProcedures" />
   
   
 
@@ -220,7 +220,7 @@
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures}</from>
+          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures.suggestedProceduresString}</from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>

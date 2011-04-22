@@ -235,9 +235,9 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
             info.put("emergency.locationx", locationxjTextField.getText());
             info.put("emergency.locationy", locationyjTextField.getText());
             info.put("emergency.type", emergencyTypeJComboBox.getModel().getSelectedItem());
-            info.put("emergency.nroofpeople", nroOfPeoplejFormattedTextField.getText());
+            info.put("emergency.nroofpeople", Integer.valueOf(nroOfPeoplejFormattedTextField.getText()));
             if(nroOfPeoplejFormattedTextField.getText().equals("1")){
-                info.put("patient.age", ageJTextField.getText());
+                info.put("patient.age", Integer.valueOf(ageJTextField.getText()));
                 info.put("patient.gender", genderjComboBox.getModel().getSelectedItem());
             }
 

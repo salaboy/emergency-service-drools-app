@@ -460,7 +460,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         for (Hospital hospital : CityEntitiesUtils.hospitals.values()) {
             for (Patient patient : hospital.getPatients()) {
-                tableModel.addRow(new Object[]{patient.getId(), patient.getName(), patient.getAge(), patient.getGender(), hospital.getName()});
+                tableModel.addRow(new Object[]{patient.getId(), patient.getGender(), patient.getAge(), patient.getGender(), hospital.getName()});
 
             }
 

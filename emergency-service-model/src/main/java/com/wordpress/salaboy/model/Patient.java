@@ -14,7 +14,6 @@ public class Patient implements Serializable {
     
     private Long id;
     private int age;
-    private String name;
     private String gender;
     private List<Alert> alerts;
     public static AtomicLong incrementalId = new AtomicLong();
@@ -23,19 +22,10 @@ public class Patient implements Serializable {
         
     }
 
-    public Patient(String name, int age, String gender) {
+    public Patient( int age, String gender) {
         this.id = Patient.incrementalId.getAndIncrement();
-        this.name = name;
         this.age = age;
         this.gender = gender;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getAge() {
@@ -77,10 +67,6 @@ public class Patient implements Serializable {
         getAlerts().add(alert);
     }
 
-    @Override
-    public String toString() {
-        return "Patient{" + "id=" + id + ", age=" + age + ", name=" + name + ", gender=" + gender + ", alerts=" + alerts + '}';
-    }
     
 }
 

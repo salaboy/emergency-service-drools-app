@@ -5,7 +5,6 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.call.CallManager;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.log.Logger;
 import com.wordpress.salaboy.events.MapEventsNotifier;
@@ -14,17 +13,16 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
@@ -32,14 +30,13 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
  * @author salaboy
  */
 public class GridEmergencyService {
+
     public static final Logger logger = new Logger();
     private static final GridEmergencyService emergency = new GridEmergencyService();
     protected static StatefulKnowledgeSession ksession;
     private final MapEventsNotifier mapEventsNotifier;
     private Map<Long, Boolean> emergencyReachedNotified = new ConcurrentHashMap<Long, Boolean>();
     private Map<Long, Boolean> hospitalReachedNotified = new ConcurrentHashMap<Long, Boolean>();
-    
-    
 
     public GridEmergencyService() {
         this.mapEventsNotifier = new MapEventsNotifier(GridEmergencyService.logger);
@@ -48,10 +45,11 @@ public class GridEmergencyService {
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(GridEmergencyService.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         registerHandlers();
         setGlobals();
 
-        new Thread(new Runnable()       {
+        new Thread(new Runnable() {
 
             public void run() {
                 ksession.fireUntilHalt();
@@ -81,7 +79,7 @@ public class GridEmergencyService {
         //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
-        
+
     }
 
     private void setGlobals() {
@@ -95,40 +93,40 @@ public class GridEmergencyService {
         ksession.setGlobal("doctors", CityEntitiesUtils.doctors);
 
         ksession.setGlobal("hospitals", CityEntitiesUtils.hospitals);
-        
-    
 
-        
+
+
+
 
     }
 
     public Emergency newEmergency(Call call) {
-        
-        
-        
+
+
+
         Emergency newEmergency = new Emergency();
         newEmergency.setCall(call);
         ksession.insert(newEmergency);
         return newEmergency;
-        
+
     }
 
     public void sendPatientPickUpEvent(PatientPickUpEvent patientPickUpEvent, Long id) {
-        ksession.signalEvent("com.wordpress.salaboy.model.events.PickUpPatientEvent", patientPickUpEvent );
+        ksession.signalEvent("com.wordpress.salaboy.model.events.PickUpPatientEvent", patientPickUpEvent);
     }
-    
-    public void sendPatientAtTheHospitalEvent(PatientAtTheHospitalEvent patientAtTheHospitalEvent, Long id){
+
+    public void sendPatientAtTheHospitalEvent(PatientAtTheHospitalEvent patientAtTheHospitalEvent, Long id) {
         ksession.signalEvent("com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent", patientAtTheHospitalEvent);
         System.out.println("Patient at the HOspital! Event Sent!");
     }
 
     public Ambulance getAmbulance(Long processId) {
         WorkflowProcessInstanceImpl pI = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processId);
-        Long ambulanceId = (Long)pI.getVariable("ambulance.id");
+        Long ambulanceId = (Long) pI.getVariable("ambulance.id");
         Ambulance ambulance = CityEntitiesUtils.getAmbulanceById(ambulanceId);
         return ambulance;
     }
- 
+
     public MapEventsNotifier getMapEventsNotifier() {
         return mapEventsNotifier;
     }
@@ -145,15 +143,10 @@ public class GridEmergencyService {
         //@TODO: compose the event with the Ambulance Id
         getWorkingMemoryEntryPoint("patientHeartbeats").insert(evt);
     }
-    
+
     public void updateAmbualancePosition(Ambulance ambulance) {
         FactHandle handle = ksession.getFactHandle(ambulance);
         ksession.update(handle, ambulance);
     }
 
-    public void newPhoneCall(Call call){
-        
-        
-    }
-    
 }

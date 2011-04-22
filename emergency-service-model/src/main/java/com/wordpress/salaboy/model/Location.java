@@ -12,27 +12,39 @@ import java.io.Serializable;
  * @author salaboy
  */
 public class Location implements Serializable{
-    private String location;
+    private String locationX;
+    private String locationY;
 
     public Location() {
     }
 
     
-    public Location(String location) {
-        this.location = location;
+    public Location(String locationX, String locationY) {
+        this.locationX = locationX;
+        this.locationY = locationY;
     }
 
-    public String getLocation() {
-        return location;
+    public String getLocationX() {
+        return locationX;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocationX(String locationX) {
+        this.locationX = locationX;
+    }
+
+    public String getLocationY() {
+        return locationY;
+    }
+
+    public void setLocationY(String locationY) {
+        this.locationY = locationY;
     }
 
     @Override
     public String toString() {
-        return "Location{" + "location=" + location + '}';
+        return "Location{" + "locationX=" + locationX + ", locationY=" + locationY + '}';
     }
+
+   
     
 }
