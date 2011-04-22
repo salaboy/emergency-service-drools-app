@@ -55,10 +55,12 @@ public class CoreServer {
             @Override
             public void run() {
                 try {
+                    System.out.println("Stopping Core Server ... ");
                     MessageServerSingleton.getInstance().stop();
                     remoteN1.dispose();
                     grid1.get(SocketService.class).close();
                     HumanTaskServerService.getInstance().stopTaskServer();
+                    System.out.println("Core Server Stopped! ");
                 } catch (Exception ex) {
                     Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
