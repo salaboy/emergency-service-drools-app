@@ -10,6 +10,7 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.geom.Polygon;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.Hospital;
 
 /**

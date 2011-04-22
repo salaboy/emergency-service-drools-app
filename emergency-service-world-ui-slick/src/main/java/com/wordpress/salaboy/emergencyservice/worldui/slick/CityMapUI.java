@@ -34,8 +34,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +61,9 @@ public class CityMapUI extends BasicGame {
     private List<GraphicableHighlightedHospital> hospitals = new CopyOnWriteArrayList<GraphicableHighlightedHospital>();
     private boolean turbo;
     public static SpriteSheet hospitalSheet;
+    
+    //Commands to be executed inside update() method
+    private List<Command> uiCommands = Collections.synchronizedList(new ArrayList<Command>());
 
     public CityMapUI() {
         super("City Map");
@@ -225,6 +231,7 @@ public class CityMapUI extends BasicGame {
             }
 
         }
+
         //if at least have one player
         if (ambulances.size() >= 1) {
             for (GraphicableAmbulance collisionambulance : ambulances) {
@@ -235,13 +242,19 @@ public class CityMapUI extends BasicGame {
                 }
             }
         }
+        
     }
 
     @Override
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
 
-
+        //Execute any uiCommand
+        for (Command command : this.uiCommands) {
+            command.execute();
+        }
+        //clear the command list
+        uiCommands.clear();
 
         for (GraphicableAmbulance renderAmbulance : ambulances) {
             g.draw(renderAmbulance.getPolygon());
@@ -399,8 +412,14 @@ public class CityMapUI extends BasicGame {
         MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("worldMessages", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
 
             @Override
-            public void handleMessage(EmergencyDetailsMessage message) {
-                emergencies.get(message.getCallId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
+            public void handleMessage(final EmergencyDetailsMessage message) {
+                //Changes emergency sprite
+                uiCommands.add(new Command() {
+                    public void execute() {
+                        System.out.println("EmergencyDetailsMessage received");
+                        emergencies.get(message.getCallId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
+                    }
+                });
             }
         });
 
