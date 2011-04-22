@@ -203,11 +203,11 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
 
        
         
-        SuggestedProceduresPanel suggestedProcedures = new SuggestedProceduresPanel(this);
+        SuggestedProceduresPanel suggestedProcedures = new SuggestedProceduresPanel(this, id);
         
         callPopup = new JDialog(this.parent, "Info", true);
         callPopup.add(suggestedProcedures);
-        this.callPopup.setSize(300, 430);
+        this.callPopup.setSize(320, 470);
         this.callPopup.setVisible(true);
         this.callPopup.requestFocus();
     }
@@ -242,6 +242,10 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
         this.parent.getTaskClient().complete(taskAbstract.getId(), null);
 
         this.parent.sendAmbulance(EmergencyType.valueOf(taskinfo[7].trim()), ambulanceId);
+    }
+    
+    public void hideDialog(){
+        this.callPopup.setVisible(false);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ambulanceControlsJTable;

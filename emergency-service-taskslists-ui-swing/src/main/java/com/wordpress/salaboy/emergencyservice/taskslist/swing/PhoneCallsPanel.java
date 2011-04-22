@@ -20,7 +20,6 @@ import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.query.TaskSummary;
 import com.wordpress.salaboy.model.Call;
 import org.example.ws_ht.api.TTaskAbstract;
 
@@ -182,7 +181,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
         EmergencyMinimalQuestionnairePanel emergencyMinimalQ = new EmergencyMinimalQuestionnairePanel(this,this.parent.getTaskClient(), id);
         callPopup = new JDialog(this.parent, "Ask For Emergency Information",true);
         callPopup.add(emergencyMinimalQ);
-        this.callPopup.setSize(300, 350);
+        this.callPopup.setSize(320, 470);
         this.callPopup.setVisible(true);
         this.callPopup.requestFocus();
     }

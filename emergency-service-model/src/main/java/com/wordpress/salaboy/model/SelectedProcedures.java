@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +12,11 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class SuggestedProcedures {
-    private List<String> procedures = new ArrayList<String>();
+public class SelectedProcedures implements Serializable{
     
+    private List<String> selectedProcedures = new ArrayList<String>();
     private Long emergencyId;
-    public SuggestedProcedures(Long emergencyId) {
+    public SelectedProcedures(Long emergencyId) {
         this.emergencyId = emergencyId;
     }
 
@@ -23,16 +24,18 @@ public class SuggestedProcedures {
         return emergencyId;
     }
     
-    public void addProcedureName(String procedureName){
-        procedures.add(procedureName);
+    
+    public void addSelectedProcedureName(String procedureName){
+        selectedProcedures.add(procedureName);
     }
     
-    public String getSuggestedProceduresString(){
+    public String getSelectedProceduresString(){
         String result = "[";
-        for(String value : procedures){
+        for(String value : selectedProcedures){
             result += value + ": ";
         }
         result +="]";
         return result;
-    } 
+    }
+    
 }

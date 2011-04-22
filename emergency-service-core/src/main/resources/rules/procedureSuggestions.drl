@@ -31,6 +31,7 @@ rule "Initialize Emergency"
             String patientGender = (String)$processInstance.getVariable("patient.gender"); 
             insert(new Patient(patientAge, patientGender));
         }
+        $processInstance.setVariable("emergency.id",emergency.getId());
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
 end

@@ -273,6 +273,10 @@ public class EmergencyMinimalQuestionnairePanel extends javax.swing.JPanel {
         System.out.println("TaskInfo = "+taskinfo);
         String timestamp = values[0].trim(); 
         String phoneNumber = values[1].trim(); 
+        String locationX = values[2].trim();
+        String locationY = values[3].trim();
+        locationxjTextField.setText(locationX);
+        locationyjTextField.setText(locationY);
         phoneCalljLabel.setText("Time: "+timestamp +" - Phone Number: "+phoneNumber);
     }
     

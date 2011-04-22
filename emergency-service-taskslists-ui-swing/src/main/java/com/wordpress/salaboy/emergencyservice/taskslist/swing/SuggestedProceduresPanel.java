@@ -10,17 +10,30 @@
  */
 package com.wordpress.salaboy.emergencyservice.taskslist.swing;
 
+import com.wordpress.salaboy.model.SelectedProcedures;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
+import org.example.ws_ht.api.TStatus;
+import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.TTaskAbstract;
+import org.example.ws_ht.api.wsdl.IllegalAccessFault;
+import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
+import org.example.ws_ht.api.wsdl.IllegalStateFault;
+import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
+import org.jbpm.task.service.ContentData;
 
 /**
  *
@@ -30,10 +43,12 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
 
     private ControlSuggestedProceduresPanel parent;
     private List<String> suggestedProcedures;
-
+    private Long emergencyId;
+    private String taskId;
     /** Creates new form SuggestedProceduresPanel */
-    public SuggestedProceduresPanel(ControlSuggestedProceduresPanel parent) {
+    public SuggestedProceduresPanel(ControlSuggestedProceduresPanel parent, String id) {
         this.parent = parent;
+        this.taskId = id;
         initComponents();
         configurePanel();
     }
@@ -56,7 +71,7 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         suggestedProceduresjList = new javax.swing.JList();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        selectProcedurejButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         emergencyLocationjTextField = new javax.swing.JTextField();
         nroOfPeoplejTextField = new javax.swing.JTextField();
@@ -67,6 +82,7 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         patientGenderjTextField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        taskActionjButton = new javax.swing.JButton();
 
         jLabel1.setText("Suggested Procedures for Emergency");
 
@@ -85,10 +101,10 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
 
         jLabel5.setText("Suggested Procedures:");
 
-        jButton1.setText("Select Procedure");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        selectProcedurejButton.setText("Select Procedure");
+        selectProcedurejButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                selectProcedurejButtonActionPerformed(evt);
             }
         });
 
@@ -108,33 +124,19 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
 
         jLabel9.setText("Gender:");
 
+        taskActionjButton.setText("Start");
+        taskActionjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskActionjButtonActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(jButton1)
-                            .add(layout.createSequentialGroup()
-                                .add(jLabel4)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(nroOfPeoplejTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel2)
-                                    .add(jLabel3)
-                                    .add(jLabel6))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(emergencyLocationjTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(emergencyTimejTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(emergencyTypejTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)))
                     .add(layout.createSequentialGroup()
                         .add(28, 28, 28)
                         .add(jLabel8)
@@ -143,18 +145,42 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
                             .add(jLabel7)
                             .add(layout.createSequentialGroup()
                                 .add(patientAgejTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 94, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(47, 47, 47)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel9)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(patientGenderjTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 97, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 53, Short.MAX_VALUE))
+                                .add(patientGenderjTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 97, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                        .add(jLabel5))
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel5)))
-                .addContainerGap())
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1)
+                            .add(layout.createSequentialGroup()
+                                .add(selectProcedurejButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 63, Short.MAX_VALUE)
+                                .add(taskActionjButton)
+                                .add(39, 39, 39))
+                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 324, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jLabel2)
+                                    .add(jLabel3)
+                                    .add(jLabel6))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(emergencyTimejTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                    .add(emergencyLocationjTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                    .add(emergencyTypejTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)))
+                            .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(jLabel4)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(nroOfPeoplejTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jSeparator2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 304, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(38, 38, 38))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -194,19 +220,85 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 161, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jButton1)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(selectProcedurejButton)
+                    .add(taskActionjButton))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void selectProcedurejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectProcedurejButtonActionPerformed
+        ObjectOutputStream out = null;
+        try {
+            int[] selected = suggestedProceduresjList.getSelectedIndices();
+            SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
+            for(int i = 0; i > suggestedProcedures.size(); i++){
+                selectedProcedures.addSelectedProcedureName(suggestedProceduresjList.getComponent(selected[i]).getName());
+            }
+            Map<String, Object> info = new HashMap<String, Object>();
+            info.put("selectedProcedures", selectedProcedures);
+            
+
+            ContentData result = new ContentData();
+            result.setAccessType(AccessType.Inline);
+            result.setType("java.util.Map");
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            out = new ObjectOutputStream(bos);
+            out.writeObject(info);
+            out.close();
+            result.setContent(bos.toByteArray());
+           
+            this.parent.getTaskClient().setAuthorizedEntityId("control");
+            this.parent.getTaskClient().complete(this.taskId, result);
+            
+
+            this.parent.hideDialog();
+
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
+    }//GEN-LAST:event_selectProcedurejButtonActionPerformed
+
+    private void taskActionjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskActionjButtonActionPerformed
+        try {
+            TTask task = this.parent.getTaskClient().getTaskInfo(taskId);
+            TStatus status = task.getStatus();
+            String statusName = status.name();
+            System.out.println("Status of the TASK = "+statusName);
+            //@TODO: check the status and show or not the button!
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.parent.getTaskClient().setAuthorizedEntityId("operator");
+        try {
+            this.parent.getTaskClient().start(taskId);
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnairePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        taskActionjButton.setText("Started...");
+        taskActionjButton.setEnabled(false);
+    }//GEN-LAST:event_taskActionjButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField emergencyLocationjTextField;
     private javax.swing.JTextField emergencyTimejTextField;
     private javax.swing.JTextField emergencyTypejTextField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -222,7 +314,9 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
     private javax.swing.JTextField nroOfPeoplejTextField;
     private javax.swing.JTextField patientAgejTextField;
     private javax.swing.JTextField patientGenderjTextField;
+    private javax.swing.JButton selectProcedurejButton;
     private javax.swing.JList suggestedProceduresjList;
+    private javax.swing.JButton taskActionjButton;
     // End of variables declaration//GEN-END:variables
 
     private void configurePanel() {
@@ -249,12 +343,13 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         }
         String[] values = taskinfo.split(",");
         System.out.println("TaskInfo = " + taskinfo);
-        String emergencyType = values[0].trim();
-        String emergencyLocationX = values[1].trim();
-        String emergencyLocationY = values[2].trim();
-        String emergencyDate = values[3].trim();
-        String phoneNumber = values[4].trim();
-        String emergencyNroOfPeople = values[5].trim();
+        emergencyId = Long.valueOf(values[0].trim());
+        String emergencyType = values[1].trim();
+        String emergencyLocationX = values[2].trim();
+        String emergencyLocationY = values[3].trim();
+        String emergencyDate = values[4].trim();
+        String phoneNumber = values[5].trim();
+        String emergencyNroOfPeople = values[6].trim();
         emergencyTimejTextField.setText(emergencyDate);
         emergencyLocationjTextField.setText("X: "+emergencyLocationX +" - Y:"+emergencyLocationY);
         emergencyTypejTextField.setText(emergencyType);
@@ -264,16 +359,16 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         String patientGender = "";
         
         if (emergencyNroOfPeople.equals("1")) {
-            patientAge = values[6].trim();
-            patientGender = values[7].trim();
+            patientAge = values[7].trim();
+            patientGender = values[8].trim();
             patientAgejTextField.setText(patientAge);
             patientGenderjTextField.setText(patientGender);
         }
 
-        String suggestedProceduresString = values[8].trim();
+        String suggestedProceduresString = values[9].trim();
         if (suggestedProceduresString != null && !suggestedProceduresString.equals("")) {
             suggestedProcedures = getSuggestedProceduresNames(suggestedProceduresString);
-            for(int i = 0; i < suggestedProcedures.size(); i++){
+            for(int i = 0; i < suggestedProcedures.size() -1; i++){
                 ((DefaultListModel)suggestedProceduresjList.getModel()).add(i, suggestedProcedures.get(i));
             }
         }
@@ -284,6 +379,7 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
 
     public List<String> getSuggestedProceduresNames(String suggestedProceduresString) {
         String[] namesArray = suggestedProceduresString.split(":");
+        namesArray[0] = namesArray[0].split("\\[")[1];
         return Arrays.asList(namesArray);
     }
 }

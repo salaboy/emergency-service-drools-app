@@ -1,0 +1,26 @@
+package phoneCallPrimaryService.startProcedures;
+
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+
+
+
+rule "Get Information To Start Procedure"
+    salience 20
+    ruleflow-group "start process"
+    when
+        $processInstance: WorkflowProcessInstance()
+
+    then
+        SelectedProcedures selectedProcedures = (SelectedProcedures)$processInstance.getVariable("selectedProcedures");
+        System.out.println("!!!!!!!!!!!!!!!!!>>>>>"+selectedProcedures.getSelectedProceduresString());
+       
+end
+
+
+
+

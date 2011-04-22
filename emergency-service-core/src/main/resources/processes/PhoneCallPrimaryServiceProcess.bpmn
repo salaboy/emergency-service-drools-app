@@ -13,7 +13,7 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   
-  
+  <itemDefinition id="_emergency.idItem" structureRef="Long" />
   <itemDefinition id="_emergency.typeItem" structureRef="String" />
   <itemDefinition id="_emergency.locationxItem" structureRef="String" />
   <itemDefinition id="_emergency.locationyItem" structureRef="String" />
@@ -24,6 +24,7 @@
   <itemDefinition id="_patient.idItem" structureRef="String" />  
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
   <itemDefinition id="_suggestedProcedureItem" structureRef="com.wordpress.salaboy.model.SuggestedProcedures" />
+  <itemDefinition id="_selectedProcedureItem" structureRef="com.wordpress.salaboy.model.SelectedProcedures" />
   
   
 
@@ -31,7 +32,7 @@
 
     <!-- process variables -->
     
-    
+    <property id="emergency.id" itemSubjectRef="_emergency.idItem"/>
     <property id="emergency.type" itemSubjectRef="_emergency.typeItem"/>
     <property id="emergency.locationx" itemSubjectRef="_emergency.locationxItem"/>
     <property id="emergency.locationy" itemSubjectRef="_emergency.locationyItem"/>
@@ -41,6 +42,7 @@
     <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
     <property id="call" itemSubjectRef="_callItem"/>
     <property id="suggestedProcedures" itemSubjectRef="_suggestedProcedureItem"/>
+    <property id="selectedProcedures" itemSubjectRef="_selectedProcedureItem"/>
    
     
 
@@ -100,7 +102,7 @@
       <dataInputAssociation>
         <targetRef>_2_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">#{call.date}, #{call.phoneNumber}</from>
+          <from xs:type="tFormalExpression">#{call.date}, #{call.phoneNumber}, #{call.x}, #{call.y}</from>
           <to xs:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
@@ -155,6 +157,7 @@
       <ioSpecification>
         <dataInput id="_4_callInput" name="call" />
         <dataInput id="_4_suggestedProceduresInput" name="suggestedProcedures" />
+        <dataInput id="_4_emergency.idInput" name="emergency.id" />
         <dataInput id="_4_emergency.typeInput" name="emergency.type" />
         <dataInput id="_4_emergency.locationxInput" name="emergency.locationx" />
         <dataInput id="_4_emergency.locationyInput" name="emergency.locationy" />
@@ -166,9 +169,11 @@
         <dataInput id="_4_ContentInput" name="Content" />
         <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_PriorityInput" name="Priority" />
+        <dataOutput id="_4_selectedProceduresOutput" name="selectedProcedures" />
         <inputSet>
           <dataInputRefs>_4_callInput</dataInputRefs>
           <dataInputRefs>_4_suggestedProceduresInput</dataInputRefs>
+          <dataInputRefs>_4_emergency.idInput</dataInputRefs>
           <dataInputRefs>_4_emergency.typeInput</dataInputRefs>
           <dataInputRefs>_4_emergency.locationxInput</dataInputRefs>
           <dataInputRefs>_4_emergency.locationyInput</dataInputRefs>
@@ -182,6 +187,7 @@
           <dataInputRefs>_4_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
+            <dataOutputRefs>_4_selectedProceduresOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
        <dataInputAssociation>
@@ -191,6 +197,10 @@
        <dataInputAssociation>
         <sourceRef>suggestedProcedures</sourceRef>
         <targetRef>_4_suggestedProceduresInput</targetRef>
+      </dataInputAssociation>
+       <dataInputAssociation>
+        <sourceRef>emergency.id</sourceRef>
+        <targetRef>_4_emergency.idInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>emergency.type</sourceRef>
@@ -234,7 +244,7 @@
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{call.date},  #{call.phoneNumber}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures.getSuggestedProceduresString()}</from>
+          <from xs:type="tFormalExpression"> #{emergency.id}, #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{call.date},  #{call.phoneNumber}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures.getSuggestedProceduresString()}</from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
@@ -252,6 +262,10 @@
           <to xs:type="tFormalExpression">_4_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_selectedProceduresOutput</sourceRef>
+        <targetRef>selectedProcedures</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>control</formalExpression>
@@ -260,6 +274,7 @@
     </userTask>
    
     <businessRuleTask id="_5" name="Start Selected Process" g:ruleFlowGroup="start process" />
+    
     <endEvent id="_6" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
