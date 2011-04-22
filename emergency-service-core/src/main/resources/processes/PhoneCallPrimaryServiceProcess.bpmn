@@ -234,7 +234,7 @@
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{call.phoneNumber},  #{suggestedProcedures.getSuggestedProceduresString()}</from>
+          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{call.date},  #{call.phoneNumber}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures.getSuggestedProceduresString()}</from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
