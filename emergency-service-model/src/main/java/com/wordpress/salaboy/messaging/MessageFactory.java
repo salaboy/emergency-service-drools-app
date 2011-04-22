@@ -42,7 +42,7 @@ public class MessageFactory {
             QueueQuery queueQuery = session.queueQuery(new SimpleString(queueName));
             
             if (!queueQuery.isExists()){
-                session.createQueue(queueName, queueName, true);
+                session.createQueue(queueName, queueName);
             }
             session.close();
         } catch (HornetQException ex) {
