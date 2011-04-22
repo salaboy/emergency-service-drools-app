@@ -5,9 +5,8 @@
 package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.messaging.MessageConsumerFactory;
+import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.messaging.MessageProducer;
-import com.wordpress.salaboy.messaging.MessageProducerFactory;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -51,7 +50,7 @@ public class HornetQMessageTest {
         MessageServerSingleton.getInstance().start();
 
         //Consumer Configuration
-        consumer = MessageConsumerFactory.createMessageConsumer("events");
+        consumer = MessageFactory.createMessageConsumer("events");
     }
 
     @After
@@ -62,7 +61,7 @@ public class HornetQMessageTest {
 
     @Test
     public void hornetQSimple() throws HornetQException {
-        MessageProducer producer = MessageProducerFactory.createMessageProducer("events");
+        MessageProducer producer = MessageFactory.createMessageProducer("events");
 
         String message = "Hello HornetQ!";
         producer.sendMessage(message);
@@ -99,7 +98,7 @@ public class HornetQMessageTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        MessageProducer producer = MessageProducerFactory.createMessageProducer("events");
+        MessageProducer producer = MessageFactory.createMessageProducer("events");
 
         ksession.setGlobal("messageProducer", producer);
         

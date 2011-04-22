@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 
+import com.wordpress.salaboy.messaging.MessageProducer;
+import com.wordpress.salaboy.messaging.MessageFactory;
 
 
 rule "Initialize Emergency"
@@ -34,6 +37,11 @@ rule "Initialize Emergency"
         $processInstance.setVariable("emergency.id",emergency.getId());
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
+
+        //Notify about the new Emergency
+        MessageProducer producer = MessageFactory.createMessageProducer("worldMessages");
+        producer.sendMessage(new EmergencyDetailsMessage(emergency));
+        producer.stop();
 end
 
 

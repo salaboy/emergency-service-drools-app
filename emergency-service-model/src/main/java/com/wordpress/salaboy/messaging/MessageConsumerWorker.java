@@ -4,8 +4,6 @@
  */
 package com.wordpress.salaboy.messaging;
 
-import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.messaging.MessageConsumerFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
@@ -21,7 +19,7 @@ public class MessageConsumerWorker extends Thread{
     private boolean stopExecution;
 
     public MessageConsumerWorker(String queueName, MessageConsumerWorkerHandler handler) {
-        consumer = MessageConsumerFactory.createMessageConsumer(queueName);
+        consumer = MessageFactory.createMessageConsumer(queueName);
         this.handler = handler;
     }
     

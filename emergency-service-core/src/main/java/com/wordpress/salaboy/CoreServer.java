@@ -8,6 +8,7 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.PhoneCallsMGMTService;
 import java.util.HashMap;
@@ -70,20 +71,21 @@ public class CoreServer {
         createRemoteNode();
         //Starting Human Task Server
         HumanTaskServerService.getInstance().initTaskServer();
+        
         //Start Workers
-        startWorkers();
+        startQueuesWorkers();
         
         
     }
 
-    private void startWorkers() {
+    private void startQueuesWorkers() {
         try {
             
             //Phone Calls Worker
-            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("phoneCalls", new MessageConsumerWorkerHandler<Call>() {
+            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("phoneCalls", new MessageConsumerWorkerHandler<IncomingCallMessage>() {
                 @Override
-                public void handleMessage(Call call) {
-                    PhoneCallsMGMTService.getInstance().newPhoneCall(call);
+                public void handleMessage(IncomingCallMessage incomingCallMessage) {
+                    PhoneCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
                 }
             }); 
             
