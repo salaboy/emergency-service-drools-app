@@ -49,7 +49,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     //private CityMapUI game;
     //Panels
     private PhoneCallsPanel phoneCallsPanel;
-    private AmbulanceControlPanel ambulanceControlPanel;
+    private ControlSuggestedProceduresPanel ambulanceControlPanel;
     private CurrentEmergenciesPanel currentEmergenciesPanel;
 
 //    private static UserTaskListUI ui = new UserTaskListUI();
@@ -73,7 +73,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         phoneCallsPanel = new PhoneCallsPanel(this);
         currentEmergenciesPanel = new CurrentEmergenciesPanel(this);
-        ambulanceControlPanel = new AmbulanceControlPanel(this);
+        ambulanceControlPanel = new ControlSuggestedProceduresPanel(this);
         this.mainJTabbedPane.add(this.phoneCallsPanel, 0);
         this.mainJTabbedPane.add(this.ambulanceControlPanel, 1);
         this.mainJTabbedPane.add(this.currentEmergenciesPanel, 2);

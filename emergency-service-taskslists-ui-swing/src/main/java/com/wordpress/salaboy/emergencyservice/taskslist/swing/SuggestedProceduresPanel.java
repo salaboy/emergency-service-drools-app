@@ -10,18 +10,26 @@
  */
 package com.wordpress.salaboy.emergencyservice.taskslist.swing;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.example.ws_ht.api.TAttachment;
+import org.example.ws_ht.api.TAttachmentInfo;
+import org.example.ws_ht.api.TTaskAbstract;
+import org.jbpm.task.Content;
 
 /**
  *
  * @author salaboy
  */
 public class SuggestedProceduresPanel extends javax.swing.JPanel {
-    private AmbulanceControlPanel parent;
+    private ControlSuggestedProceduresPanel parent;
     private List<String> suggestedProcedures;
     /** Creates new form SuggestedProceduresPanel */
-    public SuggestedProceduresPanel(AmbulanceControlPanel parent) {
+    public SuggestedProceduresPanel(ControlSuggestedProceduresPanel parent) {
         this.parent = parent;
         initComponents();
     }
@@ -161,7 +169,28 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
     private javax.swing.JTable peopleInvolvedjTable;
     private javax.swing.JList suggestedProceduresjList;
     // End of variables declaration//GEN-END:variables
-    public void configurePanel(String taskinfo) {
+    private void configurePanel() {
+         String taskinfo = "";
+
+        try {
+            ObjectInputStream ois = null;
+
+
+            List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
+            TTaskAbstract taskAbstract = taskAbstracts.get(0);
+
+
+
+            List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(taskAbstract.getId());
+            TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
+            TAttachment attachment = this.parent.getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
+            ois = new ObjectInputStream(bais);
+            taskinfo = (String) ois.readObject();
+        } catch (Exception ex) {
+            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String[] values= taskinfo.split(",");
         System.out.println("TaskInfo = "+taskinfo);
         String emergencyType = values[0].trim(); 

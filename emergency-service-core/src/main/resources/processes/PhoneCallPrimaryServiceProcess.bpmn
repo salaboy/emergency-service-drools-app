@@ -54,13 +54,16 @@
         <dataInput id="_2_ContentInput" name="Content" />
         <dataInput id="_2_TaskNameInput" name="TaskName" />
         <dataInput id="_2_PriorityInput" name="Priority" />
+        <dataInput id="_2_callInput" name="call" />
         <dataOutput id="_2_emergency.typeOutput" name="emergency.type" />
         <dataOutput id="_2_patient.genderOutput" name="patient.gender" />
         <dataOutput id="_2_emergency.locationxOutput" name="emergency.locationx" />
         <dataOutput id="_2_emergency.locationyOutput" name="emergency.locationy" />
         <dataOutput id="_2_emergency.nroofpeopleOutput" name="emergency.nroofpeople" />
         <dataOutput id="_2_patient.ageOutput" name="patient.age" />
+        
         <inputSet>
+          <dataInputRefs>_2_callInput</dataInputRefs>
           <dataInputRefs>_2_CommentInput</dataInputRefs>
           <dataInputRefs>_2_SkippableInput</dataInputRefs>
           <dataInputRefs>_2_ContentInput</dataInputRefs>
@@ -76,6 +79,10 @@
           <dataOutputRefs>_2_patient.ageOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_2_callInput</targetRef>
+      </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_CommentInput</targetRef>
         <assignment>
@@ -93,14 +100,14 @@
       <dataInputAssociation>
         <targetRef>_2_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"></from>
+          <from xs:type="tFormalExpression">#{call.date}, #{call.phoneNumber}</from>
           <to xs:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">#{call.getTimestamp()} Ask For Emergency Information #{call.getPhoneNumber()} </from>
+          <from xs:type="tFormalExpression">#{call.date}  - Emergency Minimal Questionnaire -> #{call.phoneNumber} </from>
           <to xs:type="tFormalExpression">_2_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
@@ -141,10 +148,12 @@
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
+    
     <businessRuleTask id="_3" name="Suggest Process For This Emergency" g:ruleFlowGroup="suggest process" />
     
     <userTask id="_4" name="Accept or Decline Suggestion" >
       <ioSpecification>
+        <dataInput id="_4_callInput" name="call" />
         <dataInput id="_4_suggestedProceduresInput" name="suggestedProcedures" />
         <dataInput id="_4_emergency.typeInput" name="emergency.type" />
         <dataInput id="_4_emergency.locationxInput" name="emergency.locationx" />
@@ -158,6 +167,7 @@
         <dataInput id="_4_TaskNameInput" name="TaskName" />
         <dataInput id="_4_PriorityInput" name="Priority" />
         <inputSet>
+          <dataInputRefs>_4_callInput</dataInputRefs>
           <dataInputRefs>_4_suggestedProceduresInput</dataInputRefs>
           <dataInputRefs>_4_emergency.typeInput</dataInputRefs>
           <dataInputRefs>_4_emergency.locationxInput</dataInputRefs>
@@ -174,6 +184,10 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
+       <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_4_callInput</targetRef>
+      </dataInputAssociation>
        <dataInputAssociation>
         <sourceRef>suggestedProcedures</sourceRef>
         <targetRef>_4_suggestedProceduresInput</targetRef>
@@ -220,7 +234,7 @@
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{suggestedProcedures.getSuggestedProceduresString()}</from>
+          <from xs:type="tFormalExpression"> #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}, #{call.phoneNumber},  #{suggestedProcedures.getSuggestedProceduresString()}</from>
           <to xs:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
