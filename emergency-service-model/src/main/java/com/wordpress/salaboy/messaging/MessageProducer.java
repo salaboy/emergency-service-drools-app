@@ -31,6 +31,7 @@ public class MessageProducer {
             producerSession = factory.createSession();
             producer = producerSession.createProducer(queueName);
             producerSession.start();
+            factory.close();
         } catch (HornetQException ex) {
             Logger.getLogger(MessageProducer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,10 +67,19 @@ public class MessageProducer {
         }
     }
     
+    public void sendMessageAndDie(Object object) throws HornetQException{
+        try{
+            this.sendMessage(object);
+        } finally{
+            this.stop();
+        }
+    }
+    
     public void stop() throws HornetQException{
         producer.close();
         producerSession.stop();
         producerSession.close();
+        System.out.println("PRODUCER CLOSED!");
     }
     
 }

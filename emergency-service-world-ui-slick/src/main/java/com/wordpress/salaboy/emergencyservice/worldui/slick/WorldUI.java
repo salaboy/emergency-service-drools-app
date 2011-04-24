@@ -181,8 +181,7 @@ public class WorldUI extends BasicGame {
         
         try {
             MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
-            messageProducer.sendMessage(new IncomingCallMessage(call));
-            messageProducer.stop();
+            messageProducer.sendMessageAndDie(new IncomingCallMessage(call));
         } catch (HornetQException ex) {
             Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
         }
