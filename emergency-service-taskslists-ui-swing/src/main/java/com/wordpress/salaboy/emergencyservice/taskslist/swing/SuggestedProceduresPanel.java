@@ -27,7 +27,6 @@ import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TStatus;
 import org.example.ws_ht.api.TTask;
-import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
@@ -324,15 +323,9 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
         try {
             ObjectInputStream ois = null;
 
-
-            List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
-            TTaskAbstract taskAbstract = taskAbstracts.get(0);
-
-
-
-            List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(taskAbstract.getId());
+            List<TAttachmentInfo> attachmentsInfo = this.parent.getTaskClient().getAttachmentInfos(this.taskId);
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
-            TAttachment attachment = this.parent.getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
+            TAttachment attachment = this.parent.getTaskClient().getAttachments(this.taskId, firstAttachmentInfo.getName()).get(0);
 
             ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
             ois = new ObjectInputStream(bais);
