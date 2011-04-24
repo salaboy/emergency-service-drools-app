@@ -35,6 +35,9 @@ import org.example.ws_ht.api.TTaskAbstract;
 public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implements Refreshable {
 
     private UserTaskListUI parent;
+    
+    //the list of tasks
+    private List<TTaskAbstract> taskAbstracts;
 
     /** Creates new form PhoneCallsPanel */
     public ControlSuggestedProceduresPanel(UserTaskListUI parent) {
@@ -83,9 +86,9 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
                 return types [columnIndex];
             }
         });
-        ambulanceControlsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        ambulanceControlsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         ambulanceControlsJTable.setName("Control Operator"); // NOI18N
-        ambulanceControlsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
+        ambulanceControlsJTable.getTableHeader().setReorderingAllowed(false);
         ambulanceControlsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ambulanceControlsJTablerowClick(evt);
@@ -124,7 +127,7 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
                         .addComponent(jLabel11))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                        .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(refreshJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -142,7 +145,7 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
                 .addContainerGap()
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(refreshJButton)
@@ -156,7 +159,7 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
     private void ambulanceControlsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambulanceControlsJTablerowClick
         //System.out.println("ID from EVT"+evt.getID());
         int selected = ambulanceControlsJTable.rowAtPoint(evt.getPoint());
-        String id = ambulanceControlsJTable.getModel().getValueAt(selected, 0).toString();
+        String id = this.taskAbstracts.get(selected).getId();
         this.emergencyProcedureSuggestionSelected(id);
 
     }//GEN-LAST:event_ambulanceControlsJTablerowClick
@@ -174,7 +177,6 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
     public void refresh() {
 
 
-        List<TTaskAbstract> taskAbstracts = null;
         try {
             taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
         } catch (IllegalArgumentFault ex) {
@@ -191,11 +193,13 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
             tableModel.removeRow(0);
         }
 
+        int i = 0;
         for (TTaskAbstract taskAbstract : taskAbstracts) {
-            String id = taskAbstract.getId();
             String name = taskAbstract.getName().toString();
-            tableModel.addRow(new Object[]{id, name});
+            tableModel.addRow(new Object[]{++i, name});
         }
+        
+        ambulanceControlsJTable.getColumnModel().getColumn(0).setMaxWidth(25);
     }
     private JDialog callPopup;
 
@@ -215,7 +219,7 @@ public class ControlSuggestedProceduresPanel extends javax.swing.JPanel implemen
     public void sendAmbulance() throws IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
         this.callPopup.setVisible(false);
 
-
+        //TODO: get(0) !!
         List<TTaskAbstract> taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "control", "", null, "", "", "", 0, 0);
         TTaskAbstract taskAbstract = taskAbstracts.get(0);
 
