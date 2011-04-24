@@ -22,11 +22,11 @@ public class WorldKeyListener implements KeyListener {
     @Override
     public void keyPressed(int i, char c) {
         this.worldUI.getCurrentRenderer().onKeyPressed(i, c);
-        //KeyboardPulseEventGenerator.getInstance().generateEvent(c);
     }
 
     @Override
     public void keyReleased(int i, char c) {
+        this.worldUI.getCurrentRenderer().onKeyReleased(i, c);
     }
 
     @Override

@@ -45,7 +45,11 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
             this.ui.goToGlobalMap();
         }
     }
-
+    
+    public void onKeyReleased(int code, char key) {
+        
+    }
+    
     public void onClick(int button, int x, int y, int count) {
         if (Input.MOUSE_LEFT_BUTTON == button){
             for (Entry<Long, GraphicableEmergency> entry : ui.getEmergencies().entrySet()) {
@@ -56,6 +60,9 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
                 }
             }
         }
+    }
+
+    public void update(GameContainer gc, int delta) {
     }
 
 }

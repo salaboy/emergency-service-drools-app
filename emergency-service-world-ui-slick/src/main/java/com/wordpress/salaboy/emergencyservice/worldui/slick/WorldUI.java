@@ -73,6 +73,7 @@ public class WorldUI extends BasicGame {
     @Override
     public void update(GameContainer gc, int delta)
             throws SlickException {
+        this.currentRenderer.update(gc, delta);
     }
 
     @Override
@@ -207,5 +208,7 @@ public class WorldUI extends BasicGame {
     public EmergencyRenderer getCurrentRenderer() {
         return currentRenderer;
     }
+    
+    
     
 }
