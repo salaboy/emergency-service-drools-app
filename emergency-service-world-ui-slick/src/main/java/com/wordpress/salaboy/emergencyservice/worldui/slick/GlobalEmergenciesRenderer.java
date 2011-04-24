@@ -30,4 +30,5 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
             g.drawAnimation(renderEmergency.getAnimation(), renderEmergency.getPolygon().getX(), renderEmergency.getPolygon().getY());
         }
     }
+
 }

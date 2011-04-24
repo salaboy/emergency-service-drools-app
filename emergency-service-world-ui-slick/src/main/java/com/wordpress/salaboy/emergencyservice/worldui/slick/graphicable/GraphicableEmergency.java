@@ -17,6 +17,7 @@ public class GraphicableEmergency implements Graphicable{
     private Animation animation;
     private int callX;
     private int callY;
+    private long callId;
     
     public GraphicableEmergency() {
     }
@@ -39,8 +40,16 @@ public class GraphicableEmergency implements Graphicable{
         return this.polygon;
     }
 
+    public long getCallId() {
+        return callId;
+    }
+    
     public int getCallX() {
         return callX;
+    }
+
+    public void setCallId(long callId) {
+        this.callId = callId;
     }
 
     public void setCallX(int callX) {

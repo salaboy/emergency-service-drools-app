@@ -7,6 +7,7 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.Ambulance;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +43,7 @@ public class WorldUI extends BasicGame {
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
     private EmergencyRenderer currentRenderer;
     private GlobalEmergenciesRenderer globalRenderer = new GlobalEmergenciesRenderer();
-    private Map<Long, EmergencyRenderer> renderers = new HashMap<Long, EmergencyRenderer>();
+    private Map<Long, ParticularEmergencyRenderer> renderers = new HashMap<Long, ParticularEmergencyRenderer>();
 
     public WorldUI() {
         super("City Map");
@@ -195,5 +196,10 @@ public class WorldUI extends BasicGame {
     
     public void goToGlobalMap(){
         this.currentRenderer = this.globalRenderer;
+    }
+    
+    //TODO: change ambulance to a DTO if needed
+    public void assignVehicleToEmergency(long callId, Ambulance vehicle){
+        this.renderers.get(callId).addVehicle(vehicle);
     }
 }
