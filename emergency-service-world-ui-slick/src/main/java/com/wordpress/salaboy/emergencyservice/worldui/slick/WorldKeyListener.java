@@ -24,6 +24,8 @@ public class WorldKeyListener implements KeyListener {
     public void keyPressed(int i, char c) {
         if (Input.KEY_SPACE == i){
             this.worldUI.addRandomEmergency();
+        }else if(Input.KEY_ESCAPE == i){
+            this.worldUI.goToGlobalMap();
         }else{
             KeyboardPulseEventGenerator.getInstance().generateEvent(c);
         }

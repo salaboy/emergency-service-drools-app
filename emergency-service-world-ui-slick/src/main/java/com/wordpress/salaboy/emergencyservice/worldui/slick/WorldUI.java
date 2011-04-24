@@ -40,10 +40,13 @@ public class WorldUI extends BasicGame {
     private Map<Long, GraphicableEmergency> emergencies = new HashMap<Long, GraphicableEmergency>();
     public static SpriteSheet hospitalSheet;
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
+    private EmergencyRenderer currentRenderer;
+    private GlobalEmergenciesRenderer globalRenderer = new GlobalEmergenciesRenderer();
+    private Map<Long, EmergencyRenderer> renderers = new HashMap<Long, EmergencyRenderer>();
 
     public WorldUI() {
         super("City Map");
-
+        this.currentRenderer = globalRenderer;
     }
 
     @Override
@@ -81,16 +84,11 @@ public class WorldUI extends BasicGame {
         //clear the renderCommands list
         renderCommands.clear();
 
-        for (GraphicableEmergency renderEmergency : emergencies.values()) {
-            g.draw(renderEmergency.getPolygon());
-        }
+        this.currentRenderer.renderPolygon(this, gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
 
-        for (GraphicableEmergency renderEmergency : emergencies.values()) {
-            g.drawAnimation(renderEmergency.getAnimation(), renderEmergency.getPolygon().getX(), renderEmergency.getPolygon().getY());
-        }
-
+        this.currentRenderer.renderAnimation(this, gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
 
@@ -172,8 +170,12 @@ public class WorldUI extends BasicGame {
         Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
         int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
         BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-        emergencies.put(call.getId(), GraphicableFactory.newEmergency(call));
+        
+        GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(call);
+        emergencies.put(call.getId(), newEmergency);
 
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(newEmergency));
+        
         try {
             MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
             messageProducer.sendMessage(new IncomingCallMessage(call));
@@ -187,7 +189,11 @@ public class WorldUI extends BasicGame {
         return emergencies;
     }
 
-    void emergencyClicked(Long callId) {
-        System.out.println("EMERGENCY CLICKED!");
+    public void emergencyClicked(Long callId) {
+        this.currentRenderer = renderers.get(callId);
+    }
+    
+    public void goToGlobalMap(){
+        this.currentRenderer = this.globalRenderer;
     }
 }
