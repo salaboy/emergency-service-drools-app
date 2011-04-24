@@ -8,9 +8,7 @@ import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 
-import com.wordpress.salaboy.messaging.MessageProducer;
-import com.wordpress.salaboy.messaging.MessageFactory;
-
+import com.wordpress.salaboy.services.CityService;
 
 rule "Initialize Emergency"
     salience 20
@@ -39,9 +37,7 @@ rule "Initialize Emergency"
         insert(new SuggestedProcedures(emergency.getId()));
 
         //Notify about the new Emergency
-        MessageProducer producer = MessageFactory.createMessageProducer("worldMessages");
-        producer.sendMessage(new EmergencyDetailsMessage(emergency));
-        producer.stop();
+        CityService.getInstance().newEmergencyDefined(emergency);
 end
 
 

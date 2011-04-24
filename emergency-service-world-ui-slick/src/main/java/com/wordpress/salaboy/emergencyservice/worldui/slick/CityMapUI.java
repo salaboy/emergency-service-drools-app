@@ -34,7 +34,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
@@ -63,7 +62,7 @@ public class CityMapUI extends BasicGame {
     public static SpriteSheet hospitalSheet;
     
     //Commands to be executed inside update() method
-    private List<Command> uiCommands = Collections.synchronizedList(new ArrayList<Command>());
+    private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
 
     public CityMapUI() {
         super("City Map");
@@ -74,6 +73,7 @@ public class CityMapUI extends BasicGame {
     public void init(GameContainer gc)
             throws SlickException {
         gc.setVSync(true);
+        gc.setAlwaysRender(true);
 
         hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
 
@@ -249,12 +249,12 @@ public class CityMapUI extends BasicGame {
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
 
-        //Execute any uiCommand
-        for (Command command : this.uiCommands) {
+        //Execute any renderCommands
+        for (Command command : this.renderCommands) {
             command.execute();
         }
-        //clear the command list
-        uiCommands.clear();
+        //clear the renderCommands list
+        renderCommands.clear();
 
         for (GraphicableAmbulance renderAmbulance : ambulances) {
             g.draw(renderAmbulance.getPolygon());
@@ -413,8 +413,8 @@ public class CityMapUI extends BasicGame {
 
             @Override
             public void handleMessage(final EmergencyDetailsMessage message) {
-                //Changes emergency sprite
-                uiCommands.add(new Command() {
+                //Changes emergency animation
+                renderCommands.add(new Command() {
                     public void execute() {
                         System.out.println("EmergencyDetailsMessage received");
                         emergencies.get(message.getCallId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
