@@ -87,6 +87,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         } else if (gc.getInput().isKeyDown(Input.KEY_DOWN)){
             this.moveVehicle(Input.KEY_DOWN);
         }
+        
+        //check for collitions
+        checkCornerCollision();
+        checkEmergencyCollision();
+        checkHospitalCollision();
     }
     
     private void moveVehicle(int direction) {
@@ -146,7 +151,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         this.vehicle.getPolygon().setX(playerInitialX);
         this.vehicle.getPolygon().setY(playerInitialY);
         
-        if (entityCollisionWith()) {
+        if (checkEntityCollision()) {
             if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT){
                 playerInitialX -= delta;
             }else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN){
@@ -158,10 +163,61 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     
-    private synchronized boolean entityCollisionWith() {
+    private synchronized boolean checkEntityCollision() {
         for (int i = 0; i < BlockMap.entities.size(); i++) {
             Block entity1 = (Block) BlockMap.entities.get(i);
             if (this.vehicle.getPolygon().intersects(entity1.poly)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public synchronized boolean checkEmergencyCollision(){
+        //if no vehicle, no collition
+        if (this.vehicle == null){
+          return false;  
+        }
+        
+        if (this.vehicle.getPolygon().intersects(emergency.getPolygon())) {
+            //TODO: add custom code. Maybe we should notify the ui about it
+            //and not add a message to the queue here
+            System.out.println("EMERGENCY REACHED!");
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized boolean checkHospitalCollision() {
+        //if no vehicle, no collition
+        if (this.vehicle == null){
+          return false;  
+        }
+        
+        for (int i = 0; i < BlockMap.hospitals.size(); i++) {
+            Block entity1 = (Block) BlockMap.hospitals.get(i);
+            if (this.vehicle.getPolygon().intersects(entity1.poly)) {
+                //TODO: add custom code. Maybe we should notify the ui about it
+                //and not add a message to the queue here
+                System.out.println("HOSPITAL REACHED!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCornerCollision(){
+        //if no vehicle, no collition
+        if (this.vehicle == null){
+          return false;  
+        }
+        
+        for (int i = 0; i < BlockMap.corners.size(); i++) {
+            Block entity1 = (Block) BlockMap.corners.get(i);
+            if (this.vehicle.getPolygon().intersects(entity1.poly)) {
+                //TODO: add custom code. Maybe we should notify the ui about it
+                //and not add a message to the queue here
+                System.out.println("CORNER REACHED!");
                 return true;
             }
         }
