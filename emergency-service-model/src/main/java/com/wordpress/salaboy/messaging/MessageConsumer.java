@@ -67,6 +67,7 @@ public class MessageConsumer {
     public void stop() throws HornetQException {
         consumer.close();
         consumerSession.stop();
+        consumerSession.close();
     }
     
     
