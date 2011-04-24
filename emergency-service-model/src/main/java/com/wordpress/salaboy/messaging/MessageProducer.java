@@ -69,6 +69,7 @@ public class MessageProducer {
     public void stop() throws HornetQException{
         producer.close();
         producerSession.stop();
+        producerSession.close();
     }
     
 }
