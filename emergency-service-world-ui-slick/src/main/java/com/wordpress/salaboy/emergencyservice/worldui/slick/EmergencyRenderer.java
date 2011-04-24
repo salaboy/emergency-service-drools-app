@@ -13,7 +13,9 @@ import org.newdawn.slick.Graphics;
  */
 public interface EmergencyRenderer {
 
-    void renderPolygon(WorldUI ui, GameContainer gc, Graphics g);
-    void renderAnimation(WorldUI ui, GameContainer gc, Graphics g);
+    void renderPolygon(GameContainer gc, Graphics g);
+    void renderAnimation(GameContainer gc, Graphics g);
+    void onKeyPressed(int code, char key);
+    void onClick(int button, int x, int y, int count);
     
 }

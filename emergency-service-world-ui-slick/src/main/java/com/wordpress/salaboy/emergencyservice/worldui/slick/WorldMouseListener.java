@@ -4,11 +4,7 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
-import com.wordpress.salaboy.events.keyboard.KeyboardPulseEventGenerator;
-import java.util.Map.Entry;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
 /**
@@ -27,15 +23,7 @@ public class WorldMouseListener implements MouseListener {
     }
 
     public void mouseClicked(int button, int x, int y, int count) {
-        if (Input.MOUSE_LEFT_BUTTON == button){
-            for (Entry<Long, GraphicableEmergency> entry : this.worldUI.getEmergencies().entrySet()) {
-                if (entry.getValue().getPolygon().contains(x,y)){
-                    this.worldUI.emergencyClicked(entry.getKey());
-                    //assumes that a single click only collides with only one emergency
-                    return;
-                }
-            }
-        }
+        this.worldUI.getCurrentRenderer().onClick(button, x, y, count);
     }
 
     public void mousePressed(int i, int i1, int i2) {

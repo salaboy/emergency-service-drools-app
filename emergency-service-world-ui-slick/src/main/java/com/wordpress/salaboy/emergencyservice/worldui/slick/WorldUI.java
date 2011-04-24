@@ -42,11 +42,12 @@ public class WorldUI extends BasicGame {
     public static SpriteSheet hospitalSheet;
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
     private EmergencyRenderer currentRenderer;
-    private GlobalEmergenciesRenderer globalRenderer = new GlobalEmergenciesRenderer();
+    private GlobalEmergenciesRenderer globalRenderer;
     private Map<Long, ParticularEmergencyRenderer> renderers = new HashMap<Long, ParticularEmergencyRenderer>();
 
     public WorldUI() {
         super("City Map");
+        this.globalRenderer = new GlobalEmergenciesRenderer(this);
         this.currentRenderer = globalRenderer;
     }
 
@@ -85,11 +86,11 @@ public class WorldUI extends BasicGame {
         //clear the renderCommands list
         renderCommands.clear();
 
-        this.currentRenderer.renderPolygon(this, gc, g);
+        this.currentRenderer.renderPolygon(gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
 
-        this.currentRenderer.renderAnimation(this, gc, g);
+        this.currentRenderer.renderAnimation(gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
 
@@ -175,7 +176,7 @@ public class WorldUI extends BasicGame {
         GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(call);
         emergencies.put(call.getId(), newEmergency);
 
-        renderers.put(call.getId(), new ParticularEmergencyRenderer(newEmergency));
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
         
         try {
             MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
@@ -202,4 +203,9 @@ public class WorldUI extends BasicGame {
     public void assignVehicleToEmergency(long callId, Ambulance vehicle){
         this.renderers.get(callId).addVehicle(vehicle);
     }
+
+    public EmergencyRenderer getCurrentRenderer() {
+        return currentRenderer;
+    }
+    
 }
