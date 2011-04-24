@@ -76,6 +76,9 @@ public class GraphicableFactory {
         graphEmergency.setAnimation(myEmergency);
         graphEmergency.setPolygon(myEmergencyPolygon);
         
+        graphEmergency.setCallX(call.getX());
+        graphEmergency.setCallY(call.getY());
+        
         return graphEmergency;
     }
 

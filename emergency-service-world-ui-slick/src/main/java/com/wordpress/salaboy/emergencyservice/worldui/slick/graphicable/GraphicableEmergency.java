@@ -15,6 +15,8 @@ import org.newdawn.slick.geom.Polygon;
 public class GraphicableEmergency implements Graphicable{
     private Polygon polygon;
     private Animation animation;
+    private int callX;
+    private int callY;
     
     public GraphicableEmergency() {
     }
@@ -35,6 +37,22 @@ public class GraphicableEmergency implements Graphicable{
     @Override
     public Polygon getPolygon() {
         return this.polygon;
+    }
+
+    public int getCallX() {
+        return callX;
+    }
+
+    public void setCallX(int callX) {
+        this.callX = callX;
+    }
+
+    public int getCallY() {
+        return callY;
+    }
+
+    public void setCallY(int callY) {
+        this.callY = callY;
     }
 
 }

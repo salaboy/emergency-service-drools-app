@@ -37,13 +37,10 @@ public class WorldUI extends BasicGame {
     // Places for emergencies
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private int[] ys = new int[]{1, 7, 13, 19, 25};
-
-    private Map<Long,GraphicableEmergency> emergencies = new HashMap<Long, GraphicableEmergency>();
-
+    private Map<Long, GraphicableEmergency> emergencies = new HashMap<Long, GraphicableEmergency>();
     public static SpriteSheet hospitalSheet;
-    
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
-    
+
     public WorldUI() {
         super("City Map");
 
@@ -63,7 +60,7 @@ public class WorldUI extends BasicGame {
 
         gc.getInput().addKeyListener(new WorldKeyListener(this));
         gc.getInput().addMouseListener(new WorldMouseListener(this));
-        
+
         registerMessageConsumers();
 
     }
@@ -71,7 +68,6 @@ public class WorldUI extends BasicGame {
     @Override
     public void update(GameContainer gc, int delta)
             throws SlickException {
-
     }
 
     @Override
@@ -134,8 +130,13 @@ public class WorldUI extends BasicGame {
             public void handleMessage(final EmergencyDetailsMessage message) {
                 //Changes emergency animation
                 renderCommands.add(new Command() {
+
                     public void execute() {
                         System.out.println("EmergencyDetailsMessage received");
+                        if (emergencies.get(message.getCallId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getCallId());
+                            return;
+                        }
                         emergencies.get(message.getCallId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
                     }
                 });
@@ -145,26 +146,41 @@ public class WorldUI extends BasicGame {
         phoneCallsWorker.start();
     }
 
-    
-    public void addRandomEmergency(){
-        int randomx = (int) (Math.random() * 10) % 7;
-            int randomy = (int) (Math.random() * 10) % 5;
+    public void addRandomEmergency() {
+        
+        int randomx = 0;
+        int randomy = 0;
+        
+        boolean isFreeSpace = false;
+        //Avoid duplicated places
+        do{
+            randomx = (int) (Math.random() * 10) % 7;
+            randomy = (int) (Math.random() * 10) % 5;
             if (randomx == 1 && randomy == 25) {
                 randomx = 19;
             }
-            System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
-            Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
-            int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
-            BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-            emergencies.put(call.getId(),GraphicableFactory.newEmergency(call));
-            
-            try {
-                MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
-                messageProducer.sendMessage(new IncomingCallMessage(call));
-                messageProducer.stop();
-            } catch (HornetQException ex) {
-                Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+
+            isFreeSpace = true;
+            for (GraphicableEmergency graphicableEmergency : emergencies.values()) {
+                if (graphicableEmergency.getCallX() == randomx && graphicableEmergency.getCallY() == randomy){
+                   isFreeSpace = false; 
+                }
             }
+        } while (!isFreeSpace);
+        
+        System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
+        Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
+        int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
+        BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
+        emergencies.put(call.getId(), GraphicableFactory.newEmergency(call));
+
+        try {
+            MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
+            messageProducer.sendMessage(new IncomingCallMessage(call));
+            messageProducer.stop();
+        } catch (HornetQException ex) {
+            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Map<Long, GraphicableEmergency> getEmergencies() {
@@ -174,5 +190,4 @@ public class WorldUI extends BasicGame {
     void emergencyClicked(Long callId) {
         System.out.println("EMERGENCY CLICKED!");
     }
-    
 }
