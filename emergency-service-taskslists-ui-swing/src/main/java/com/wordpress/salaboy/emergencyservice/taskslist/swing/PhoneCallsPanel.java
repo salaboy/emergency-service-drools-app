@@ -30,7 +30,10 @@ import org.example.ws_ht.api.TTaskAbstract;
 public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallListener, Refreshable {
 
     private UserTaskListUI parent;
-    private UIJTableRefreshManager refreshManager = null;
+
+    //the list of call tasks
+    private List<TTaskAbstract> taskAbstracts;
+    
     /** Creates new form PhoneCallsPanel */
     public PhoneCallsPanel(UserTaskListUI parent) {
         this.parent = parent;
@@ -77,8 +80,8 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             }
         }
     );
-    phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
-    phoneCallsJTable.setPreferredSize(new java.awt.Dimension(280, 100));
+    phoneCallsJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+    phoneCallsJTable.getTableHeader().setReorderingAllowed(false);
     phoneCallsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
         public void mouseClicked(java.awt.event.MouseEvent evt) {
             phoneCallsJTablerowClick(evt);
@@ -124,7 +127,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
                     .addComponent(chk_autoRefresh)
                     .addGap(147, 147, 147))
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                    .addComponent(phoneCallsJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                     .addContainerGap())
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addComponent(jLabel11)
@@ -150,7 +153,7 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     private void phoneCallsJTablerowClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phoneCallsJTablerowClick
         
         int selected = phoneCallsJTable.rowAtPoint(evt.getPoint());
-        String id = phoneCallsJTable.getModel().getValueAt(selected, 0).toString();
+        String id = this.taskAbstracts.get(selected).getId();
         this.callSelected(id);
         
     }//GEN-LAST:event_phoneCallsJTablerowClick
@@ -205,7 +208,6 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
     public void refresh() {
 
         
-        List<TTaskAbstract> taskAbstracts = null;
         try {
             taskAbstracts = this.parent.getTaskClient().getMyTaskAbstracts("", "operator", "", null, "", "", "", 0, 0);
         } catch (IllegalArgumentFault ex) {
@@ -222,11 +224,14 @@ public class PhoneCallsPanel extends javax.swing.JPanel implements IncomingCallL
             tableModel.removeRow(0);
         }
         
+        int i = 0;
         for (TTaskAbstract taskAbstract : taskAbstracts) {
-            String id = taskAbstract.getId();
             String name = taskAbstract.getName().toString();
-            tableModel.addRow(new Object[]{id,name});
+            tableModel.addRow(new Object[]{++i,name});
         }
+        
+        phoneCallsJTable.getColumnModel().getColumn(0).setMaxWidth(25);
+        
     }
 
 }
