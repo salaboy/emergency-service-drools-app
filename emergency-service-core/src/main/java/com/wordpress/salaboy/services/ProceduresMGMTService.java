@@ -5,6 +5,7 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import com.wordpress.salaboy.model.ProcedureRequest;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 
 /**
  *
@@ -77,7 +79,9 @@ public class ProceduresMGMTService {
        
     }
     
-    
+    public void patientPickUpNotification(PatientPickUpEvent event){
+       procedureSessions.get(event.getCallId()).signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);         
+    }
 
     private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(Long callId) throws IOException {
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
@@ -133,5 +137,9 @@ public class ProceduresMGMTService {
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(session));
+    }
+
+    public void patientAtHospitalNotification(PatientAtHospitalEvent event) {
+        procedureSessions.get(event.getCallId()).signalEvent("com.wordpress.salaboy.model.events.PatientAtHospitalEvent", event);         
     }
 }

@@ -14,7 +14,9 @@ import com.wordpress.salaboy.model.Ambulance;
  * @author salaboy
  */
 public class PatientPickUpEvent implements Serializable {
-    private transient Ambulance ambulance;
+    private Long callId;
+    private Long vehicleId;
+    
     private Date time;
     
 
@@ -27,17 +29,26 @@ public class PatientPickUpEvent implements Serializable {
 
     
     
-    public PatientPickUpEvent(Ambulance ambulance, Date time) {
-        this.ambulance = ambulance;
+    public PatientPickUpEvent(Long callId, Long vehicleId, Date time) {
+        this.callId = callId;
+        this.vehicleId = vehicleId;
         this.time = time;
     }
 
-    public Ambulance getAmbulance() {
-        return ambulance;
+    public Long getCallId() {
+        return callId;
     }
 
-    public void setAmbulance(Ambulance ambulance) {
-        this.ambulance = ambulance;
+    public void setCallId(Long callId) {
+        this.callId = callId;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public Date getTime() {

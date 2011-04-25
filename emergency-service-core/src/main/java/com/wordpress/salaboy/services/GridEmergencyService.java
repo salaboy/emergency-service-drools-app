@@ -18,7 +18,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
@@ -115,7 +115,7 @@ public class GridEmergencyService {
         ksession.signalEvent("com.wordpress.salaboy.model.events.PickUpPatientEvent", patientPickUpEvent);
     }
 
-    public void sendPatientAtTheHospitalEvent(PatientAtTheHospitalEvent patientAtTheHospitalEvent, Long id) {
+    public void sendPatientAtTheHospitalEvent(PatientAtHospitalEvent patientAtTheHospitalEvent, Long id) {
         ksession.signalEvent("com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent", patientAtTheHospitalEvent);
         System.out.println("Patient at the HOspital! Event Sent!");
     }

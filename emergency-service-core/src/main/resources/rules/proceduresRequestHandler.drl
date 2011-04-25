@@ -17,7 +17,6 @@ rule "Procedure Request Primary Handler"
         $procedureRequest: ProcedureRequest() from entry-point "procedure request"
 
     then
-        System.out.println("EY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
         
        

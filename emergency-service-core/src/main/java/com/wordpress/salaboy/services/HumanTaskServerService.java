@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.drools.SystemEventListenerFactory;
@@ -42,11 +43,8 @@ public class HumanTaskServerService {
         }
         return instance;
     }
-    public void initTaskServer() throws IOException {
-        if(server != null && server.isRunning()){
-            System.out.println(">>> Server Already Started");
-            return;
-        }
+    public void initTaskServer() {
+       
             
         
         System.out.println(">>> Starting Human Task Server ...");
@@ -86,36 +84,48 @@ public class HumanTaskServerService {
         taskSession.addUser(hospital);
         taskSession.addUser(doctor);
         taskSession.addUser(garageEmergencyService);
-
+        
+        if(server != null && server.isRunning()){
+            System.out.println(">>> Server Already Started");
+            return;
+        }
         server = new MinaTaskServer(taskService);
-        server.start();
+        try {
+           
+            server.start();
+        } catch (IOException ex) {
+            Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(" >>> ERROR: Server Not Started:  "+ex.getMessage());
+        }
         
         
         System.out.println(">>> Human Task Server Started!");
     } 
     
-    public void stopTaskServer() throws Exception{
+    public void stopTaskServer(){
         if(currentClients != null){
             for(String key : currentClients.keySet()){
                 System.out.println(">>> Disconnecting Client = "+key);
-                currentClients.get(key).disconnect();
+                try {
+                    currentClients.get(key).disconnect();
+                } catch (Exception ex) {
+                    Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 currentClients.remove(key);
             }
         }
-        if(server != null && !server.isRunning()){
-            System.out.println(">>> Server Already Stopped!");
-            return;
-        }
+
         
         System.out.println(">>> Stopping Human Task Server ...");
         
         
-        server.getIoAcceptor().unbind();
         
         ds1.close();
         taskSession.dispose();
         
         server.stop();
+        
+   
         
         server = null;
         taskSession = null;

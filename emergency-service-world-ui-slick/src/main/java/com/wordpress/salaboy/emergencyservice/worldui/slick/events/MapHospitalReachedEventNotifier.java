@@ -14,7 +14,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 
 /**
  *
@@ -33,7 +33,7 @@ public class MapHospitalReachedEventNotifier implements WorldEventNotifier {
         Long ambulanceId = ((HospitalReachedNotifierEvent)event).getAmbulanceId();
 
        // AmbulanceMonitorService.getInstance().stop();
-        GridEmergencyService.getInstance().sendPatientAtTheHospitalEvent(new PatientAtTheHospitalEvent(), ambulanceId);
+        GridEmergencyService.getInstance().sendPatientAtTheHospitalEvent(new PatientAtHospitalEvent(), ambulanceId);
 
 
 

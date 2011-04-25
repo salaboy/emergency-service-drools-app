@@ -47,6 +47,7 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        
         HumanTaskServerService.getInstance().stopTaskServer();
     }
 
@@ -54,9 +55,6 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
     public void setUp() throws Exception {
         MessageServerSingleton.getInstance().start();
         consumer = MessageFactory.createMessageConsumer("phoneCalls");
-        
-        //Start one task server
-        
         
         
         this.coreServicesMap = new HashMap();
@@ -105,40 +103,6 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
         
     }
     
-    @Test
-    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException{
-     //   MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
-      //  producer.sendMessage(new Call(1,2,new Date()));
-      //  producer.stop();
-        client =  HumanTaskServerService.getInstance().initTaskClient("client test defaultHeartAttackSimpleTest");
-        
-//        Call call = (Call) consumer.receiveMessage();
-//        assertNotNull(call);
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("call.id", 1L);
-        
-        
-        
-        ProceduresMGMTService.getInstance().newDefaultHeartAttackProcedure((Long)parameters.get("call.id"), parameters);
-        
-        Thread.sleep(4000);
-        
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
-        List<TaskSummary> sums = handler.getResults();
-        assertNotNull(sums);
-        assertEquals(1, sums.size());
-        TaskSummary taskSum = sums.get(0); // getting the first task
-        
-        
-        client.start(taskSum.getId(), "garage_emergency_service", null);
-        
-        
-        
-        client.complete(taskSum.getId(), "garage_emergency_service", null, null);
-        
-        
-        
-    }
+ 
 
 }

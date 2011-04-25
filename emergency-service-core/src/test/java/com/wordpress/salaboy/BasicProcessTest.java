@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import org.junit.Ignore;
