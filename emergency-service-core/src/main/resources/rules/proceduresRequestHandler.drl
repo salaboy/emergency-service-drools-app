@@ -1,0 +1,28 @@
+package procedureRequestsHandler;
+
+
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+
+
+declare ProcedureRequest
+    @role(event)
+end
+
+rule "Procedure Request Primary Handler"
+    salience 20
+    when
+        $procedureRequest: ProcedureRequest() from entry-point "procedure request"
+
+    then
+        System.out.println("EY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+        
+       
+end
+
+
+
+

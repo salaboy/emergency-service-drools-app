@@ -7,8 +7,8 @@ package com.wordpress.salaboy.services;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import com.wordpress.salaboy.MockUserInfo;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -92,13 +92,15 @@ public class HumanTaskServerService {
         
         
         System.out.println(">>> Human Task Server Started!");
-    }
+    } 
     
     public void stopTaskServer() throws Exception{
-       
-        for(String key : currentClients.keySet()){
-            System.out.println(">>> Disconnecting Client = "+key);
-            currentClients.get(key).disconnect();
+        if(currentClients != null){
+            for(String key : currentClients.keySet()){
+                System.out.println(">>> Disconnecting Client = "+key);
+                currentClients.get(key).disconnect();
+                currentClients.remove(key);
+            }
         }
         if(server != null && !server.isRunning()){
             System.out.println(">>> Server Already Stopped!");
@@ -106,7 +108,6 @@ public class HumanTaskServerService {
         }
         
         System.out.println(">>> Stopping Human Task Server ...");
-        System.out.println("????????????? -> "+server.getIoAcceptor().isCloseOnDeactivation());
         
         
         server.getIoAcceptor().unbind();
@@ -142,7 +143,7 @@ public class HumanTaskServerService {
         }
         System.out.println("Client ("+clientName+") Connected after " + retry + " retries");
         if(currentClients == null){
-            currentClients = new HashMap<String, TaskClient>();
+            currentClients = new ConcurrentHashMap<String, TaskClient>();
         }
         currentClients.put(clientName, client);
         return client;

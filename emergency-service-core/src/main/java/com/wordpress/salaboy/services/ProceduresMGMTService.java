@@ -36,6 +36,7 @@ import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
+import com.wordpress.salaboy.model.ProcedureRequest;
 
 /**
  *
@@ -58,7 +59,7 @@ public class ProceduresMGMTService {
         return instance;
     }
 
-    public void newDefaultHeartAttackProcedure(final Long callId) {
+    public void newDefaultHeartAttackProcedure(final Long callId, Map<String, Object> parameters) {
         try {
             procedureSessions.put(callId, createDefaultHeartAttackProcedureSession(callId));
             setWorkItemHandlers(procedureSessions.get(callId));
@@ -72,9 +73,8 @@ public class ProceduresMGMTService {
         } catch (IOException ex) {
             Logger.getLogger(ProceduresMGMTService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("call.id", callId);
-        procedureSessions.get(callId).startProcess("com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure", parameters);
+       procedureSessions.get(callId).getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest("DefaultHeartAttackProcedure", parameters));
+       
     }
     
     
@@ -106,7 +106,8 @@ public class ProceduresMGMTService {
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
-
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
+        
         //   kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/startProcedures.drl").getInputStream())), ResourceType.DRL);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();

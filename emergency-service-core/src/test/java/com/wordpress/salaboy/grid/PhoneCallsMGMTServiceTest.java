@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.grid;
 
+import java.util.Map;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.messaging.MessageFactory;
@@ -106,22 +107,35 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
     
     @Test
     public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException{
-//        MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
-//        producer.sendMessage(new Call(1,2,new Date()));
-//        producer.stop();
-//        
+     //   MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
+      //  producer.sendMessage(new Call(1,2,new Date()));
+      //  producer.stop();
+        client =  HumanTaskServerService.getInstance().initTaskClient("client test defaultHeartAttackSimpleTest");
+        
 //        Call call = (Call) consumer.receiveMessage();
 //        assertNotNull(call);
-        client =  HumanTaskServerService.getInstance().initTaskClient("client test defaultHeartAttackSimpleTest");
-        ProceduresMGMTService.getInstance().newDefaultHeartAttackProcedure(1L);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("call.id", 1L);
         
-        Thread.sleep(1000);
+        
+        
+        ProceduresMGMTService.getInstance().newDefaultHeartAttackProcedure((Long)parameters.get("call.id"), parameters);
+        
+        Thread.sleep(4000);
         
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
         assertNotNull(sums);
         assertEquals(1, sums.size());
+        TaskSummary taskSum = sums.get(0); // getting the first task
+        
+        
+        client.start(taskSum.getId(), "garage_emergency_service", null);
+        
+        
+        
+        client.complete(taskSum.getId(), "garage_emergency_service", null, null);
         
         
         

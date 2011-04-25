@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?> 
 <definitions id="Definition"
              targetNamespace="http://www.jboss.org/drools"
              typeLanguage="http://www.java.com/javaTypes"
@@ -6,18 +5,12 @@
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
              xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
-             xmlns:g="http://www.jboss.org/drools/flow/gpd"
-             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
   
   <itemDefinition id="_call.idItem" structureRef="Long" />
-  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_emergency.vehicleItem" structureRef="com.wordpress.salaboy.model.Vehicle" />
-  <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
-  <!--itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" /-->
+  
 
   <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure" name="Default Heart Attack Procedure" >
 
@@ -25,7 +18,7 @@
     
     <property id="call.id" itemSubjectRef="_call.idItem"/>
     <property id="emergency.vehicle" itemSubjectRef="_emergency.vehicleItem"/>
-    <!--property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/-->
+    
     
 
     <!-- nodes -->
@@ -101,29 +94,9 @@
       </potentialOwner>
     </userTask>
     
-    <scriptTask id="_3" name="Start Ambulance Tracking" scriptFormat="http://www.java.com/java" >
-      <script>
-        System.out.println("Starting Ambulance Tracking System ... ");
-      </script>
-    </scriptTask>
+   
     
-    <!--intermediateCatchEvent id="_4" name="PickUpPatientEvent" >
-      <dataOutput id="_4_patientPickUpOutput" name="event" />
-      <dataOutputAssociation>
-        <sourceRef>_4_patientPickUpOutput</sourceRef>
-        <targetRef>patientPickUpEvent</targetRef>
-      </dataOutputAssociation>
-      <outputSet>
-        <dataOutputRefs>_4_patientPickUpOutput</dataOutputRefs>
-      </outputSet>
-      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientPickUpEvent"/>
-    </intermediateCatchEvent>
-
-    <parallelGateway id="_5" name="Gateway" gatewayDirection="Converging" /-->
-
- 
-
-    <endEvent id="_6" name="EndProcess" >
+    <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
    
@@ -131,9 +104,7 @@
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
-    <sequenceFlow id="_3-_6" sourceRef="_3" targetRef="_6" />
-    <!--sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
-    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" /-->
+    
    
   </process>
 
