@@ -17,7 +17,7 @@ rule "Get Information To Start Procedure"
 
     then
         SelectedProcedures selectedProcedures = (SelectedProcedures)$processInstance.getVariable("selectedProcedures");
-        System.out.println("!!!!!!!!!!!!!!!!!>>>>>"+selectedProcedures.getSelectedProceduresString());
+        
        
 end
 

@@ -11,14 +11,10 @@
 
 package com.wordpress.salaboy.emergencyservice.taskslist.swing;
 
-import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.services.DroolsServices;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.MedicalKit;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;

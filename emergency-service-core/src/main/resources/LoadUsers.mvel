@@ -2,7 +2,8 @@ users = [
        
           'operator'   : new User('operator'),      
           'admin'      : new User('Administrator'),
-          'control'  : new User('control')
+          'control'  : new User('control'), 
+          'garage_emergency_service'  : new User('garage_emergency_service')
         ];       
 
 return users;

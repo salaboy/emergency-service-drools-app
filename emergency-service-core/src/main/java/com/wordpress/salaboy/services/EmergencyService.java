@@ -12,8 +12,6 @@ import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -22,6 +20,9 @@ import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.events.PatientAtTheHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 /**
@@ -40,7 +41,7 @@ public class EmergencyService {
 
     public EmergencyService() {
         this.mapEventsNotifier = new MapEventsNotifier(EmergencyService.logger);
-        ksession = DroolsServices.createSession();
+    //    ksession = DroolsServices.createSession();
         registerHandlers();
         setGlobals();
 

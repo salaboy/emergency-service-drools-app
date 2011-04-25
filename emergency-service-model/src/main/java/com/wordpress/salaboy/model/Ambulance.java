@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author salaboy
  */
-public class Ambulance implements Serializable{
+public class Ambulance implements Vehicle, Serializable{
 
     private Long id;
     private String description;

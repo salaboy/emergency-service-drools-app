@@ -5,6 +5,8 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import java.util.List;
 import org.jbpm.task.query.TaskSummary;
@@ -34,15 +36,17 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
     private MessageConsumer consumer;
     private TaskClient client;
     public PhoneCallsMGMTServiceTest() {
-    
+        
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        HumanTaskServerService.getInstance().initTaskServer();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        HumanTaskServerService.getInstance().stopTaskServer();
     }
 
     @Before
@@ -51,18 +55,20 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
         consumer = MessageFactory.createMessageConsumer("phoneCalls");
         
         //Start one task server
-        HumanTaskHelper.getInstance().taskServerStart();
+        
         
         
         this.coreServicesMap = new HashMap();
         createRemoteNode();
         
-        client =  HumanTaskHelper.getInstance().initTaskClient();
+        
 
     }
 
     @After
     public void tearDown() throws Exception {
+        
+        
         MessageServerSingleton.getInstance().stop();
         if(remoteN1 != null){
             remoteN1.dispose();
@@ -71,11 +77,12 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
             grid1.get(SocketService.class).close();
         }
         
-        HumanTaskHelper.getInstance().taskServerStop();
+        
     }
 
     @Test
     public void phoneCallsMGMTServiceTest() throws HornetQException, InterruptedException{
+        client =  HumanTaskServerService.getInstance().initTaskClient("client test PhoneCallsMGMTServiceTest");
         MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
         producer.sendMessage(new Call(1,2,new Date()));
         producer.stop();
@@ -89,6 +96,29 @@ public class PhoneCallsMGMTServiceTest extends GridBaseTest{
         
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
+        List<TaskSummary> sums = handler.getResults();
+        assertNotNull(sums);
+        assertEquals(1, sums.size());
+        
+        
+        
+    }
+    
+    @Test
+    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException{
+//        MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
+//        producer.sendMessage(new Call(1,2,new Date()));
+//        producer.stop();
+//        
+//        Call call = (Call) consumer.receiveMessage();
+//        assertNotNull(call);
+        client =  HumanTaskServerService.getInstance().initTaskClient("client test defaultHeartAttackSimpleTest");
+        ProceduresMGMTService.getInstance().newDefaultHeartAttackProcedure(1L);
+        
+        Thread.sleep(1000);
+        
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
         assertNotNull(sums);
         assertEquals(1, sums.size());
