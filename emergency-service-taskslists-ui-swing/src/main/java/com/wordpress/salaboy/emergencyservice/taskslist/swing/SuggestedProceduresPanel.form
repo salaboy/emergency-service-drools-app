@@ -43,7 +43,7 @@
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="selectProcedurejButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="63" max="32767" attributes="0"/>
+                              <EmptySpace pref="123" max="32767" attributes="0"/>
                               <Component id="taskActionjButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                           </Group>
@@ -56,12 +56,12 @@
                               </Group>
                               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="emergencyTimejTextField" alignment="0" pref="252" max="32767" attributes="0"/>
-                                  <Component id="emergencyLocationjTextField" alignment="0" pref="252" max="32767" attributes="0"/>
-                                  <Component id="emergencyTypejTextField" alignment="0" pref="252" max="32767" attributes="0"/>
+                                  <Component id="emergencyTimejTextField" alignment="0" pref="265" max="32767" attributes="0"/>
+                                  <Component id="emergencyLocationjTextField" alignment="0" pref="265" max="32767" attributes="0"/>
+                                  <Component id="emergencyTypejTextField" alignment="0" pref="265" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="jSeparator1" alignment="0" pref="324" max="32767" attributes="1"/>
+                          <Component id="jSeparator1" alignment="0" pref="341" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>

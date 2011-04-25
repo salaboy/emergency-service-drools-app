@@ -356,13 +356,36 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
             patientAgejTextField.setText(patientAge);
             patientGenderjTextField.setText(patientGender);
         }
+        
+        //TODO: put this in a global area:
+        String[] procedures = new String[]{
+          "DefaultFireAttackProcedure",  
+          "DefaultHeartAttackProcedure",
+          "DefaultPoliceAttackProcedure"  
+        };
 
+        for (String procedure : procedures) {
+            ((DefaultListModel)suggestedProceduresjList.getModel()).addElement(procedure);
+        }
+        
+        
         String suggestedProceduresString = values[9].trim();
-        if (suggestedProceduresString != null && !suggestedProceduresString.equals("")) {
+        if (suggestedProceduresString != null && !suggestedProceduresString.equals("") && !suggestedProceduresString.trim().startsWith("#{")) {
+            
+            
             suggestedProcedures = getSuggestedProceduresNames(suggestedProceduresString);
-            for(int i = 0; i < suggestedProcedures.size() -1; i++){
-                ((DefaultListModel)suggestedProceduresjList.getModel()).add(i, suggestedProcedures.get(i));
+            int[] selectedIndices = new int[suggestedProcedures.size()];
+            int j = 0;
+            for (String suggestedProcedure : suggestedProcedures) {
+                for (int i = 0; i < procedures.length; i++) {
+                    String procedure = procedures[i];
+                    if (procedure.equals(suggestedProcedure)){
+                        selectedIndices[j++]=i;
+                    }
+                }
             }
+            
+            suggestedProceduresjList.setSelectedIndices(selectedIndices);
         }
         
 
@@ -370,8 +393,15 @@ public class SuggestedProceduresPanel extends javax.swing.JPanel {
     }
 
     public List<String> getSuggestedProceduresNames(String suggestedProceduresString) {
+        suggestedProceduresString = suggestedProceduresString.trim();
+        if (suggestedProceduresString.startsWith("[")){
+            suggestedProceduresString = suggestedProceduresString.substring(1);
+        }
+        if (suggestedProceduresString.endsWith("]")){
+             suggestedProceduresString = suggestedProceduresString.substring(0,suggestedProceduresString.length()-1);
+        }
+        suggestedProceduresString = suggestedProceduresString.trim();
         String[] namesArray = suggestedProceduresString.split(":");
-        namesArray[0] = namesArray[0].split("\\[")[1];
         return Arrays.asList(namesArray);
     }
 }
