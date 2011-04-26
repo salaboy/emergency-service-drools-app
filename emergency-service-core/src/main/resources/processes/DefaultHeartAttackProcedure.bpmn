@@ -14,7 +14,8 @@
 
   
   <itemDefinition id="_call.idItem" structureRef="Long" />
-  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_emergency.priorityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.idItem" structureRef="Long" />
   <itemDefinition id="_emergency.vehicleItem" structureRef="com.wordpress.salaboy.model.Vehicle" />
   <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
   <itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
@@ -25,9 +26,12 @@
     <!-- process variables -->
     
     <property id="call.id" itemSubjectRef="_call.idItem"/>
+    <property id="emergency.id" itemSubjectRef="_emergency.idItem"/>
     <property id="emergency.vehicle" itemSubjectRef="_emergency.vehicleItem"/>
+    <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
     <property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/>
     <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
+    
     
 
     <!-- nodes -->
@@ -41,10 +45,12 @@
         <dataInput id="_2_TaskNameInput" name="TaskName" />
         <dataInput id="_2_PriorityInput" name="Priority" />
         <dataInput id="_2_call.IdInput" name="call.id" />
+        <dataInput id="_2_emergency.IdInput" name="emergency.id" />
         <dataOutput id="_2_emergency.vehicleOutput" name="emergency.vehicle" />
         
         <inputSet>
           <dataInputRefs>_2_call.IdInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.IdInput</dataInputRefs>
           
         </inputSet>
         <outputSet>
@@ -55,6 +61,10 @@
       <dataInputAssociation>
         <sourceRef>call.id</sourceRef>
         <targetRef>_2_call.IdInput</targetRef>
+      </dataInputAssociation>
+       <dataInputAssociation>
+        <sourceRef>emergency.id</sourceRef>
+        <targetRef>_2_emergency.IdInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_CommentInput</targetRef>
@@ -73,7 +83,7 @@
       <dataInputAssociation>
         <targetRef>_2_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">#{call.id}</from>
+          <from xs:type="tFormalExpression">#{call.id}, #{emergency.id}</from>
           <to xs:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
@@ -105,7 +115,9 @@
     
     <scriptTask id="_3" name="Start Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>
-        System.out.println(" >>>>>> Starting Ambulance Tracking System ... ");
+       
+        
+        System.out.println(" >>>>>> Starting Ambulance Tracking System ... Vehicle ID: "+((com.wordpress.salaboy.model.Vehicle)kcontext.getVariable("emergency.vehicle")).getId());
       </script>
     </scriptTask>
     
@@ -132,14 +144,14 @@
         <dataInput id="_6_TaskNameInput" name="TaskName" />
         <dataInput id="_6_PriorityInput" name="Priority" />
         <dataInput id="_6_call.IdInput" name="call.id" />
-        <dataOutput id="_6_emergency.vehicleOutput" name="emergency.vehicle" />
+        <dataOutput id="_6_emergency.priorityOutput" name="emergency.priority" />
         
         <inputSet>
           <dataInputRefs>_6_call.IdInput</dataInputRefs>
           
         </inputSet>
         <outputSet>
-          <dataOutputRefs>_6_emergency.vehicleOutput</dataOutputRefs>
+            <dataOutputRefs>_6_emergency.priorityOutput</dataOutputRefs>
           
         </outputSet>
       </ioSpecification>
@@ -183,8 +195,8 @@
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_6_emergency.vehicleOutput</sourceRef>
-        <targetRef>emergency.vehicle</targetRef>
+        <sourceRef>_6_emergency.priorityOutput</sourceRef>
+        <targetRef>emergency.priority</targetRef>
       </dataOutputAssociation>
       
       <potentialOwner>
@@ -194,28 +206,29 @@
       </potentialOwner>
     </userTask>
 
+    <businessRuleTask id="_7" name="Select Hospital" g:ruleFlowGroup="hospital-selection" />
 
-     <intermediateCatchEvent id="_7" name="PatientAtHospitalEvent" >
-      <dataOutput id="_7_patientAtHospitalOutput" name="event" />
+     <intermediateCatchEvent id="_8" name="PatientAtHospitalEvent" >
+      <dataOutput id="_8_patientAtHospitalOutput" name="event" />
       <dataOutputAssociation>
-        <sourceRef>_7_patientAtHospitalOutput</sourceRef>
+        <sourceRef>_8_patientAtHospitalOutput</sourceRef>
         <targetRef>patientAtHospitalEvent</targetRef>
       </dataOutputAssociation>
       <outputSet>
-        <dataOutputRefs>_7_patientAtHospitalOutput</dataOutputRefs>
+        <dataOutputRefs>_8_patientAtHospitalOutput</dataOutputRefs>
       </outputSet>
       <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientAtHospitalEvent"/>
     </intermediateCatchEvent>
 
-    <parallelGateway id="_8" name="Gateway" gatewayDirection="Converging" />
+    <parallelGateway id="_9" name="Gateway" gatewayDirection="Converging" />
 
-     <scriptTask id="_9" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
+     <scriptTask id="_10" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println(" >>>>>> Stopping Ambulance Tracking System and Reporting! ... ");
       </script>
     </scriptTask>
 
-    <endEvent id="_10" name="EndProcess" >
+    <endEvent id="_11" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
    
@@ -226,10 +239,11 @@
     <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
-    <sequenceFlow id="_6-_8" sourceRef="_6" targetRef="_8" />
-    <sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+    <sequenceFlow id="_7-_9" sourceRef="_7" targetRef="_9" />
     <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
     <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
+    <sequenceFlow id="_10-_11" sourceRef="_10" targetRef="_11" />
    
   </process>
 

@@ -34,6 +34,9 @@ public class Emergency implements Serializable {
         this.id = Emergency.incrementalId.getAndIncrement();
     }
 
+    public Emergency(Long id){
+        this.id = id;
+    }
     public void setNroOfPeople(int nroOfPeople) {
         this.nroOfPeople = nroOfPeople;
     }

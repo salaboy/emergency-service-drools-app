@@ -4,10 +4,12 @@
  */
 package com.wordpress.salaboy.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author salaboy
  */
-public interface Vehicle {
-    
+public interface Vehicle extends Serializable {
+    public Long getId();
 }

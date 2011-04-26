@@ -113,6 +113,7 @@ public class HumanTaskServerService {
                 }
                 currentClients.remove(key);
             }
+            currentClients = null;
         }
 
         
@@ -122,7 +123,7 @@ public class HumanTaskServerService {
         
         ds1.close();
         taskSession.dispose();
-        
+      
         server.stop();
         
    

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author salaboy
  */
-public class Ambulance implements Vehicle, Serializable{
+public class Ambulance implements Vehicle{
 
     private Long id;
     private String description;
@@ -22,16 +22,7 @@ public class Ambulance implements Vehicle, Serializable{
     private float positionY;
     public static AtomicLong incrementalId = new AtomicLong();
     
-//    //Graphicable
-//    
-//    private transient Animation animation;
-//    private transient Polygon polygon;
 
-//    public Ambulance(String description, Date departureTime, Animation animation , Polygon polygon) {
-//        this(description, departureTime);
-//        this.animation = animation;
-//        this.polygon = polygon;
-//    }
 
     public Ambulance(String description, Date departureTime) {
         this.id = Ambulance.incrementalId.getAndIncrement();
@@ -51,6 +42,7 @@ public class Ambulance implements Vehicle, Serializable{
         this.id = id;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -123,22 +115,6 @@ public class Ambulance implements Vehicle, Serializable{
         return "Ambulance{" + "id=" + id + ", description=" + description + ", doctorOnBoard=" + doctorOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
     }
 
-//    public void setAnimation(Animation animation) {
-//        this.animation = animation;
-//    }
-//
-//    public void setPolygon(Polygon polygon) {
-//        this.polygon = polygon;
-//    }
-//
-//    public Animation getAnimation() {
-//        return this.animation;
-//    }
-//
-//    public Polygon getPolygon() {
-//        return this.polygon;
-//    }
-//    
     
     
 }
