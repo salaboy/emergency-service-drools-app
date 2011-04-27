@@ -8,10 +8,17 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.events.keyboard.KeyboardPulseEventGenerator;
+import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.hornetq.api.core.HornetQException;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -24,10 +31,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     private final WorldUI ui;
     private final GraphicableEmergency emergency;
-    private Graphicable vehicle;
+    private Graphicable graphicableVehicle;
+    private Vehicle vehicle;
     private float playerInitialX = 32;
     private float playerInitialY = 400;
-    
     private boolean turbo;
 
     public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
@@ -42,22 +49,23 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     @Override
     public void renderPolygon(GameContainer gc, Graphics g) {
         g.draw(emergency.getPolygon());
-        if (vehicle != null) {
-            g.draw(vehicle.getPolygon());
+        if (graphicableVehicle != null) {
+            g.draw(graphicableVehicle.getPolygon());
         }
     }
 
     public void renderAnimation(GameContainer gc, Graphics g) {
         g.drawAnimation(emergency.getAnimation(), emergency.getPolygon().getX(), emergency.getPolygon().getY());
-        if (vehicle != null) {
-            g.drawAnimation(vehicle.getAnimation(), vehicle.getPolygon().getX(), vehicle.getPolygon().getY());
+        if (graphicableVehicle != null) {
+            g.drawAnimation(graphicableVehicle.getAnimation(), graphicableVehicle.getPolygon().getX(), graphicableVehicle.getPolygon().getY());
         }
     }
 
     public void addVehicle(Vehicle vehicle) {
-        this.vehicle = GraphicableFactory.newVehicle(vehicle);
-        this.playerInitialX = this.vehicle.getPolygon().getX();
-        this.playerInitialY = this.vehicle.getPolygon().getY();
+        this.vehicle = vehicle;
+        this.graphicableVehicle = GraphicableFactory.newVehicle(vehicle);
+        this.playerInitialX = this.graphicableVehicle.getPolygon().getX();
+        this.playerInitialY = this.graphicableVehicle.getPolygon().getY();
     }
 
     public void onKeyPressed(int code, char key) {
@@ -69,46 +77,46 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             addMockFireTruck();
         } else if (Input.KEY_F3 == code) {
             addMockPoliceCar();
-        } else if (Input.KEY_LSHIFT == code){
+        } else if (Input.KEY_LSHIFT == code) {
             this.turbo = true;
-        } else{
+        } else {
             KeyboardPulseEventGenerator.getInstance().generateEvent(key);
         }
-        
+
     }
 
     public void onKeyReleased(int code, char key) {
-        if (Input.KEY_LSHIFT == code){
+        if (Input.KEY_LSHIFT == code) {
             this.turbo = false;
-        } 
+        }
     }
-    
+
     public void onClick(int button, int x, int y, int count) {
     }
 
     public void update(GameContainer gc, int delta) {
-        if (gc.getInput().isKeyDown(Input.KEY_LEFT)){
+        if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
             this.moveVehicle(Input.KEY_LEFT);
-        } else if (gc.getInput().isKeyDown(Input.KEY_RIGHT)){
+        } else if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
             this.moveVehicle(Input.KEY_RIGHT);
-        } else if (gc.getInput().isKeyDown(Input.KEY_UP)){
+        } else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
             this.moveVehicle(Input.KEY_UP);
-        } else if (gc.getInput().isKeyDown(Input.KEY_DOWN)){
+        } else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
             this.moveVehicle(Input.KEY_DOWN);
         }
-        
+
         //check for collitions
         checkCornerCollision();
         checkEmergencyCollision();
         checkHospitalCollision();
     }
-    
+
     private void moveVehicle(int direction) {
-        if (this.vehicle == null) {
+        if (this.graphicableVehicle == null) {
             return;
         }
 
-        int current = this.vehicle.getAnimation().getFrame();
+        int current = this.graphicableVehicle.getAnimation().getFrame();
         int delta = 0;
         switch (direction) {
             case Input.KEY_LEFT:
@@ -145,67 +153,69 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 break;
         }
 
-        this.vehicle.getAnimation().setCurrentFrame(current);
+        this.graphicableVehicle.getAnimation().setCurrentFrame(current);
 
         if (turbo) {
-            delta *=5;
-        } 
-        
-        if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT){
+            delta *= 5;
+        }
+
+        if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
             playerInitialX += delta;
-        }else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN){
+        } else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN) {
             playerInitialY += delta;
         }
-        
-        this.vehicle.getPolygon().setX(playerInitialX);
-        this.vehicle.getPolygon().setY(playerInitialY);
-        
+
+        this.graphicableVehicle.getPolygon().setX(playerInitialX);
+        this.graphicableVehicle.getPolygon().setY(playerInitialY);
+
         if (checkEntityCollision()) {
-            if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT){
+            if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
                 playerInitialX -= delta;
-            }else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN){
+            } else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN) {
                 playerInitialY -= delta;
             }
-            this.vehicle.getPolygon().setX(playerInitialX);
-            this.vehicle.getPolygon().setY(playerInitialY);
+            this.graphicableVehicle.getPolygon().setX(playerInitialX);
+            this.graphicableVehicle.getPolygon().setY(playerInitialY);
         }
     }
 
-    
     private synchronized boolean checkEntityCollision() {
         for (int i = 0; i < BlockMap.entities.size(); i++) {
             Block entity1 = (Block) BlockMap.entities.get(i);
-            if (this.vehicle.getPolygon().intersects(entity1.poly)) {
+            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
                 return true;
             }
         }
         return false;
     }
-    
-    public synchronized boolean checkEmergencyCollision(){
+
+    public synchronized boolean checkEmergencyCollision() {
         //if no vehicle, no collition
-        if (this.vehicle == null){
-          return false;  
+        if (this.graphicableVehicle == null) {
+            return false;
         }
-        
-        if (this.vehicle.getPolygon().intersects(emergency.getPolygon())) {
-            //TODO: add custom code. Maybe we should notify the ui about it
-            //and not add a message to the queue here
-            System.out.println("EMERGENCY REACHED!");
-            return true;
+
+        if (this.graphicableVehicle.getPolygon().intersects(emergency.getPolygon())) {
+            try {
+                System.out.println("EMERGENCY REACHED!");
+                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.vehicle.getId(), this.emergency.getCallId(), new Date()));
+                return true;
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return false;
     }
 
     public synchronized boolean checkHospitalCollision() {
         //if no vehicle, no collition
-        if (this.vehicle == null){
-          return false;  
+        if (this.graphicableVehicle == null) {
+            return false;
         }
-        
+
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (this.vehicle.getPolygon().intersects(entity1.poly)) {
+            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
                 //TODO: add custom code. Maybe we should notify the ui about it
                 //and not add a message to the queue here
                 System.out.println("HOSPITAL REACHED!");
@@ -215,18 +225,22 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         return false;
     }
 
-    public boolean checkCornerCollision(){
+    public boolean checkCornerCollision() {
         //if no vehicle, no collition
-        if (this.vehicle == null){
-          return false;  
+        if (this.graphicableVehicle == null) {
+            return false;
         }
-        
+
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
-            if (this.vehicle.getPolygon().intersects(entity1.poly)) {
-                //TODO: add custom code. Maybe we should notify the ui about it
-                //and not add a message to the queue here
-                System.out.println("CORNER REACHED!");
+            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
+                try {
+                    System.out.println("CORNER REACHED!");
+                    MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.vehicle.getId(), (int)this.graphicableVehicle.getPolygon().getX(), (int)this.graphicableVehicle.getPolygon().getY()));
+                    return true;
+                } catch (HornetQException ex) {
+                    Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 return true;
             }
         }
@@ -240,7 +254,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), ambulance);
     }
-    
+
     private void addMockFireTruck() {
 
         FireTruck fireTruck = new FireTruck("Mock Fire Truck");
@@ -248,7 +262,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), fireTruck);
     }
-    
+
     private void addMockPoliceCar() {
 
         PoliceCar policeCar = new PoliceCar("Mock Police Car");
@@ -256,6 +270,4 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), policeCar);
     }
-
-
 }

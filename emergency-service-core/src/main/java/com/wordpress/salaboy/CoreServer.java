@@ -7,14 +7,14 @@ package com.wordpress.salaboy;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.util.HashMap;
@@ -113,7 +113,18 @@ public class CoreServer {
                     DistributedPeristenceServerService.getInstance()
                                 .storeEmergency(emergencyDetailsMessage.getEmergency());
                 }
+            });
+            
+              //Vehicle Hits an Emergency Selected Worker
+            MessageConsumerWorker vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergency",new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+                @Override
+                public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
+                    ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
+                }
             }); 
+            
+            
+            vehicleHitsEmergencyWorker.start();
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();
             phoneCallsWorker.start();
