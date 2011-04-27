@@ -4,6 +4,8 @@
  */
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.model.Vehicle;
+import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import org.jbpm.task.AccessType;
@@ -31,7 +33,7 @@ import java.util.HashMap;
 import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
@@ -68,9 +70,9 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        InMemoryPersistenceService.getInstance().storeCall(new Call(1,1,new Date()));
-        InMemoryPersistenceService.getInstance().storeEmergency(new Emergency(1L));
-        InMemoryPersistenceService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
+        DistributedPeristenceServerService.getInstance().storeCall(new Call(1,1,new Date()));
+        DistributedPeristenceServerService.getInstance().storeEmergency(new Emergency(1L));
+        DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
         MessageServerSingleton.getInstance().start();
         consumer = MessageFactory.createMessageConsumer("IncomingCall");
 
@@ -143,7 +145,10 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         ObjectOutputStream out = null;
         Map<String, Object> info = new HashMap<String, Object>();
-        info.put("emergency.vehicle", new Ambulance("My Ambulance", new Date()));
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        vehicles.add(new Ambulance("My Ambulance", new Date()));
+        
+        info.put("emergency.vehicles", vehicles);
 
 
         ContentData result = new ContentData();

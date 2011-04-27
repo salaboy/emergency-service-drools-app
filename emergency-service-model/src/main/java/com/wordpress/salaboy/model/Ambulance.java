@@ -13,26 +13,27 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Ambulance implements Vehicle{
 
     private Long id;
-    private String description;
+    
     private Doctor doctorOnBoard;
     private List<MedicalKit> kits;
     private Date departureTime;
     private Date patientPickedUpTime;
     private float positionX;
     private float positionY;
+    private String name;
     public static AtomicLong incrementalId = new AtomicLong();
     
 
 
-    public Ambulance(String description, Date departureTime) {
+    public Ambulance(String name, Date departureTime) {
         this.id = Ambulance.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
         this.departureTime = departureTime;
     }
 
-    public Ambulance(String description) {
+    public Ambulance(String name) {
         this.id = Ambulance.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
     }
     
     
@@ -86,13 +87,7 @@ public class Ambulance implements Vehicle{
         return patientPickedUpTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    
 
     public float getPositionX() {
         return positionX;
@@ -112,7 +107,14 @@ public class Ambulance implements Vehicle{
 
     @Override
     public String toString() {
-        return "Ambulance{" + "id=" + id + ", description=" + description + ", doctorOnBoard=" + doctorOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "Ambulance{" + "id=" + id + ", doctorOnBoard=" + doctorOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + ", name=" + name + '}';
+    }
+
+   
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     

@@ -1,9 +1,6 @@
 package com.wordpress.salaboy.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -13,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PoliceCar implements Vehicle{
 
     private Long id;
-    private String description;
+    private String name;
    
     private Date departureTime;
     private Date emergencyReachedTime;
@@ -23,15 +20,15 @@ public class PoliceCar implements Vehicle{
     
 
 
-    public PoliceCar(String description, Date departureTime) {
+    public PoliceCar(String name, Date departureTime) {
         this.id = PoliceCar.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
         this.departureTime = departureTime;
     }
 
-    public PoliceCar(String description) {
+    public PoliceCar(String name) {
         this.id = PoliceCar.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
     }
     
     
@@ -58,12 +55,12 @@ public class PoliceCar implements Vehicle{
 
    
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String description) {
+        this.name = description;
     }
 
     public float getPositionX() {
@@ -89,13 +86,16 @@ public class PoliceCar implements Vehicle{
     public void setEmergencyReachedTime(Date emergencyReachedTime) {
         this.emergencyReachedTime = emergencyReachedTime;
     }
-    
-    
 
     @Override
     public String toString() {
-        return "PoliceCar{" + "id=" + id + ", description=" + description + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "PoliceCar{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
     }
+    
+    
+
+   
+
 
    
 

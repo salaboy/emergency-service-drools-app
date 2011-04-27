@@ -13,7 +13,7 @@ package com.wordpress.salaboy.emergencyservice.tasklists;
 import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.UIJTableRefreshManager;
 import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.Refreshable;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
-import com.wordpress.salaboy.emergencyservice.taskforms.SelectAmbulanceTaskFormPanel;
+import com.wordpress.salaboy.emergencyservice.taskforms.SelectVehicleTaskFormPanel;
 import com.wordpress.salaboy.api.HumanTaskService;
 import java.util.List;
 import java.util.logging.Level;
@@ -196,7 +196,7 @@ public class SelectVehicleTaskListPanel extends javax.swing.JPanel implements Re
     private JDialog callPopup;
 
     public void selectVehicleTaskSelected(String id) {
-        SelectAmbulanceTaskFormPanel selectAmbulanceTaskForm = new SelectAmbulanceTaskFormPanel(this);
+        SelectVehicleTaskFormPanel selectAmbulanceTaskForm = new SelectVehicleTaskFormPanel(this, getTaskClient(), id);
         callPopup = new JDialog(this.parent, "Info", true);
         callPopup.add(selectAmbulanceTaskForm);
         this.callPopup.setSize(320, 470);

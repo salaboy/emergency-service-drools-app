@@ -12,4 +12,5 @@ import java.io.Serializable;
  */
 public interface Vehicle extends Serializable {
     public Long getId();
+    public String getName();
 }

@@ -76,7 +76,7 @@ public class ProceduresMGMTService {
         } catch (IOException ex) {
             Logger.getLogger(ProceduresMGMTService.class.getName()).log(Level.SEVERE, null, ex);
         }
-       //procedureSessions.get(callId).insert(InMemoryPersistenceService.getInstance().loadEmergency((Long)parameters.get("emergency.id")));
+       
        procedureSessions.get(callId).getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(procedureName, parameters));
        
     }

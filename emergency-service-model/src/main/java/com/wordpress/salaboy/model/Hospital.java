@@ -24,10 +24,7 @@ public class Hospital implements Serializable{
     private float positionX;
     private float positionY;
     private List<Patient> patients;
-    
-//    // graphicable 
-//    private transient Animation animation;
-//    private transient Polygon polygon;
+
     
     public Hospital() {
     }

@@ -12,7 +12,7 @@ declare ProcedureRequest
     @role(event)
 end
 
-rule "Procedure Request Primary Handler - Insert Emergency"
+/*rule "Procedure Request Primary Handler - Insert Emergency"
     salience 20
     when
         $procedureRequest: ProcedureRequest( $emergencyId: parameters['emergency.id'] != null ) from entry-point "procedure request"
@@ -42,7 +42,7 @@ rule "Start Default Heart Attack Procedure"
     then
         kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
         
-end
+end*/
 
 rule "Start Default Heart Attack Procedure if not emergency was found"
     when
@@ -54,14 +54,14 @@ rule "Start Default Heart Attack Procedure if not emergency was found"
         
 end
 
-rule "Start Old Heart Attack Procedure"
-    when
-        $procedureRequest: ProcedureRequest() from entry-point "procedure request"
-        Emergency(type == EmergencyType.HEART_ATTACK)
-        Patient(age  > 60)
+//rule "Start Old Heart Attack Procedure"
+//    when
+//        $procedureRequest: ProcedureRequest() from entry-point "procedure request"
+//        Emergency(type == EmergencyType.HEART_ATTACK)
+//        Patient(age  > 60)
+//        
+//    then
+//        kcontext.getKnowledgeRuntime().startProcess("Old"+$procedureRequest.getProcedure(), $procedureRequest.getParameters());
         
-    then
-        kcontext.getKnowledgeRuntime().startProcess("Old"+$procedureRequest.getProcedure(), $procedureRequest.getParameters());
-        
-end
+//end
 

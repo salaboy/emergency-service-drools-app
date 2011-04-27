@@ -125,18 +125,12 @@
             </outputSet>
           </ioSpecification>
           <dataInputAssociation>
+            <sourceRef>emergency.vehicles</sourceRef>
             <targetRef>_3_emergency.vehiclesInput</targetRef>
-            <assignment>
-                <from xs:type="tFormalExpression">#{emergency.vehicles}</from>
-                <to xs:type="tFormalExpression">_3_emergency.vehiclesInput</to>
-            </assignment>
           </dataInputAssociation>
           <dataInputAssociation>
+             <sourceRef>call.id</sourceRef>
             <targetRef>_3_call.idInput</targetRef>
-            <assignment>
-                <from xs:type="tFormalExpression">#{call.id}</from>
-                <to xs:type="tFormalExpression">_3_call.idInput</to>
-            </assignment>
           </dataInputAssociation>
     </task>
     

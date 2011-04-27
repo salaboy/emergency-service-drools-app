@@ -7,6 +7,8 @@ package com.wordpress.salaboy;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
+import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
@@ -77,6 +79,14 @@ public class CoreServer {
         createRemoteNode();
         //Starting Human Task Server
         HumanTaskServerService.getInstance().initTaskServer();
+        //Init Persistence Service and add all the city entities
+        for(Vehicle vehicle : CityEntities.vehicles){
+            DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
+        }
+        
+        for(Vehicle vehicle : CityEntities.vehicles){
+            DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
+        }
         
         //Start Workers
         startQueuesWorkers();

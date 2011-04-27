@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FireTruck implements Vehicle{
 
     private Long id;
-    private String description;
+    private String name;
     private Date departureTime;
     private Date emergencyReachedTime;
     private float positionX;
@@ -22,15 +22,15 @@ public class FireTruck implements Vehicle{
     
 
 
-    public FireTruck(String description, Date departureTime) {
+    public FireTruck(String name, Date departureTime) {
         this.id = FireTruck.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
         this.departureTime = departureTime;
     }
 
-    public FireTruck(String description) {
+    public FireTruck(String name) {
         this.id = FireTruck.incrementalId.getAndIncrement();
-        this.description = description;
+        this.name = name;
     }
     
     
@@ -63,12 +63,12 @@ public class FireTruck implements Vehicle{
         return emergencyReachedTime;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public float getPositionX() {
@@ -89,7 +89,7 @@ public class FireTruck implements Vehicle{
 
     @Override
     public String toString() {
-        return "FireTruck{" + "id=" + id + ", description=" + description + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
     }
 
    

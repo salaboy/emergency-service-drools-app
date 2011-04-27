@@ -19,6 +19,14 @@ import com.wordpress.salaboy.model.Doctor.DoctorSpeciality;
  */
 public class CityEntities {
     
+    public static final List<Vehicle> vehicles = new ArrayList<Vehicle>(){{
+        add(initializeHeartAttackAmbulance());
+        add(initializeFireAmbulance());
+        add(initializeCarCrashAmbulance());
+    }};
+    
+    
+    
     public static final Map<EmergencyType, List<Ambulance>> ambulances = new HashMap<EmergencyType, List<Ambulance>>() {
 
         {

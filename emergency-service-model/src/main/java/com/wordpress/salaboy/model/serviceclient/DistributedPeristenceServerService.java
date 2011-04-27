@@ -9,6 +9,7 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Vehicle;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -85,8 +86,11 @@ public class DistributedPeristenceServerService {
     }
     
     public Patient loadPatient(Long id){
-        return ((Map<Long,Patient>)this.cache.get("patient")).get(id);
+        return ((Map<Long,Patient>)this.cache.get("patients")).get(id);
     }
    
+    public Collection<Vehicle> getAllVehicles(){
+        return ((Map<Long,Vehicle>)this.cache.get("vehicles")).values();
+    }
     
 }
