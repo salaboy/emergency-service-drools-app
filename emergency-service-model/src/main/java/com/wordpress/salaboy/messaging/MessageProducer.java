@@ -23,13 +23,13 @@ import org.hornetq.api.core.client.ClientSessionFactory;
 public class MessageProducer {
     private ClientSession producerSession;
     private ClientProducer producer;
-    private String queueName;
+    private String addressName;
     
-    public MessageProducer(String queueName, ClientSessionFactory factory) {
-        this.queueName = queueName; 
+    public MessageProducer(String addressName, ClientSessionFactory factory) {
+        this.addressName = addressName; 
         try {
             producerSession = factory.createSession();
-            producer = producerSession.createProducer(queueName);
+            producer = producerSession.createProducer(addressName);
             producerSession.start();
             factory.close();
         } catch (HornetQException ex) {
@@ -38,7 +38,7 @@ public class MessageProducer {
     }
 
     public String getQueueName() {
-        return queueName;
+        return addressName;
     }
     
     public void sendMessage(Object object) throws HornetQException{

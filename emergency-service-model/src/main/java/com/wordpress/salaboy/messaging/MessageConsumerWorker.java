@@ -37,7 +37,7 @@ public class MessageConsumerWorker extends Thread{
         while (!stopExecution){
             try {
                 Object receivedMessage = consumer.receiveMessage();
-                this.handler.handleMessage(receivedMessage);
+                this.handler.handlePrimitiveMessage(receivedMessage);
             } catch (HornetQException ex) {
                 Logger.getLogger(MessageConsumerWorker.class.getName()).log(Level.SEVERE, null, ex);
             }

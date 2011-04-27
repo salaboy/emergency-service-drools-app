@@ -72,7 +72,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         InMemoryPersistenceService.getInstance().storeEmergency(new Emergency(1L));
         InMemoryPersistenceService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
         MessageServerSingleton.getInstance().start();
-        consumer = MessageFactory.createMessageConsumer("phoneCalls");
+        consumer = MessageFactory.createMessageConsumer("IncomingCall");
 
 
         this.coreServicesMap = new HashMap();

@@ -1,6 +1,5 @@
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
-import com.wordpress.salaboy.messaging.MessageProducer;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.AnimationFactory;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
@@ -125,7 +124,7 @@ public class WorldUI extends BasicGame {
 
     private void registerMessageConsumers() {
         //worldMessages queue
-        MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("worldMessages", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+        MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("worldUI", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
 
             @Override
             public void handleMessage(final EmergencyDetailsMessage message) {
@@ -180,8 +179,7 @@ public class WorldUI extends BasicGame {
         renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
         
         try {
-            MessageProducer messageProducer = MessageFactory.createMessageProducer("phoneCalls");
-            messageProducer.sendMessageAndDie(new IncomingCallMessage(call));
+            MessageFactory.sendMessage(new IncomingCallMessage(call));
         } catch (HornetQException ex) {
             Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
         }

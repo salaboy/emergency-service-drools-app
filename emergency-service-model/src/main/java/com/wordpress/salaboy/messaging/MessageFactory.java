@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.messaging;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.hornetq.api.core.HornetQException;
@@ -22,15 +23,20 @@ import org.hornetq.integration.transports.netty.TransportConstants;
  */
 public class MessageFactory {
     
+    public final static String QUEUE_NAME = "BIG_BAG";
     
-    public static MessageConsumer createMessageConsumer(String queueName){
-        createOnDemandQueue(queueName);
-        return new MessageConsumer(queueName, createFactory());
+    public static MessageConsumer createMessageConsumer(String consumerId){
+        createOnDemandQueue(consumerId);
+        return new MessageConsumer(consumerId, createFactory());
     }
     
-    public static MessageProducer createMessageProducer(String queueName){
-        createOnDemandQueue(queueName);
-        return new MessageProducer(queueName, createFactory());
+    public static MessageProducer createMessageProducer(){
+        createOnDemandQueue(QUEUE_NAME);
+        return new MessageProducer(QUEUE_NAME, createFactory());
+    }
+    
+    public static void sendMessage(Serializable message) throws HornetQException{
+        createMessageProducer().sendMessageAndDie(message);
     }
     
     private static void createOnDemandQueue(String queueName){
@@ -40,7 +46,7 @@ public class MessageFactory {
             QueueQuery queueQuery = session.queueQuery(new SimpleString(queueName));
             
             if (!queueQuery.isExists()){
-                session.createQueue(queueName, queueName);
+                session.createQueue(QUEUE_NAME, queueName);
             }
             session.close();
         } catch (HornetQException ex) {

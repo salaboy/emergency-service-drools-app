@@ -50,7 +50,7 @@ public class HornetQMessageTest {
         MessageServerSingleton.getInstance().start();
 
         //Consumer Configuration
-        consumer = MessageFactory.createMessageConsumer("events");
+        consumer = MessageFactory.createMessageConsumer("IncomingCall");
     }
 
     @After
@@ -61,7 +61,7 @@ public class HornetQMessageTest {
 
     @Test
     public void hornetQSimple() throws HornetQException {
-        MessageProducer producer = MessageFactory.createMessageProducer("events");
+        MessageProducer producer = MessageFactory.createMessageProducer();
 
         String message = "Hello HornetQ!";
         producer.sendMessage(message);
@@ -98,7 +98,7 @@ public class HornetQMessageTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        MessageProducer producer = MessageFactory.createMessageProducer("events");
+        MessageProducer producer = MessageFactory.createMessageProducer();
 
         ksession.setGlobal("messageProducer", producer);
         

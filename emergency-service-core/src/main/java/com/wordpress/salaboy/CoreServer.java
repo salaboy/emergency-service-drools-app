@@ -7,10 +7,9 @@ package com.wordpress.salaboy;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.PhoneCallsMGMTService;
+import com.wordpress.salaboy.services.IncomingCallsMGMTService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -82,12 +81,14 @@ public class CoreServer {
         try {
             
             //Phone Calls Worker
-            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("phoneCalls", new MessageConsumerWorkerHandler<IncomingCallMessage>() {
+            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("IncomingCall",new MessageConsumerWorkerHandler<IncomingCallMessage>() {
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
-                    PhoneCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
+                    IncomingCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
                 }
             }); 
+            
+            
             
             phoneCallsWorker.start();
             phoneCallsWorker.join();

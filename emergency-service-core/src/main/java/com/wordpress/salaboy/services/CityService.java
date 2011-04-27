@@ -4,10 +4,6 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.messaging.MessageProducer;
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -38,7 +34,6 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.hornetq.api.core.HornetQException;
 
 /**
  *
@@ -123,14 +118,4 @@ public class CityService {
         return session;
     }
     
-    public void newEmergencyDefined(Emergency emergency){
-        try {
-            //Notify about the new Emergency to worldMessages
-            MessageProducer producer = MessageFactory.createMessageProducer("worldMessages");
-            producer.sendMessage(new EmergencyDetailsMessage(emergency));
-            producer.stop();
-        } catch (HornetQException ex) {
-            throw new IllegalStateException("Error notifying the new Emergency!",ex);
-        }
-    }
 }

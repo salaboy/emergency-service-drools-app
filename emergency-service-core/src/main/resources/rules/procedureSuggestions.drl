@@ -8,6 +8,7 @@ import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
 
+import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.services.CityService;
 
 rule "Initialize Emergency"
@@ -37,7 +38,7 @@ rule "Initialize Emergency"
         insert(new SuggestedProcedures(emergency.getId()));
 
         //Notify about the new Emergency
-        CityService.getInstance().newEmergencyDefined(emergency);
+        MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
 end
 
 

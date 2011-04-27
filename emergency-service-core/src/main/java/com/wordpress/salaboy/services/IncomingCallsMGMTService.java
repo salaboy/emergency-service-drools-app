@@ -43,18 +43,18 @@ import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
  *
  * @author salaboy
  */
-public class PhoneCallsMGMTService {
-    private static PhoneCallsMGMTService instance;
+public class IncomingCallsMGMTService {
+    private static IncomingCallsMGMTService instance;
     private StatefulKnowledgeSession phoneCallMGMTSession;
-    private PhoneCallsMGMTService() {
+    private IncomingCallsMGMTService() {
         init();
         setWorkItemHandlers();
     }
     
     
-    public static PhoneCallsMGMTService getInstance(){
+    public static IncomingCallsMGMTService getInstance(){
         if(instance == null){
-            instance = new PhoneCallsMGMTService();
+            instance = new IncomingCallsMGMTService();
         }
         return instance;
     }
@@ -63,7 +63,7 @@ public class PhoneCallsMGMTService {
         try {
             phoneCallMGMTSession = createPhoneCallsPrimaryServiceSession();
         } catch (IOException ex) {
-            Logger.getLogger(PhoneCallsMGMTService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(IncomingCallsMGMTService.class.getName()).log(Level.SEVERE, null, ex);
         }
         new Thread(new Runnable()       {
 

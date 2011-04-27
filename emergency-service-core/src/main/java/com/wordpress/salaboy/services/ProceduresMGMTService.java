@@ -143,4 +143,5 @@ public class ProceduresMGMTService {
     public void patientAtHospitalNotification(PatientAtHospitalEvent event) {
         procedureSessions.get(event.getCallId()).signalEvent("com.wordpress.salaboy.model.events.PatientAtHospitalEvent", event);         
     }
+
 }
