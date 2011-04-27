@@ -84,10 +84,6 @@ public class CoreServer {
             DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
         }
         
-        for(Vehicle vehicle : CityEntities.vehicles){
-            DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
-        }
-        
         //Start Workers
         startQueuesWorkers();
         

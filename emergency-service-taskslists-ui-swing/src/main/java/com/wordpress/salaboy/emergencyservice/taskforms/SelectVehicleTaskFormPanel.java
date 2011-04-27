@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.example.ws_ht.api.TStatus;
+import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
@@ -67,6 +69,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         selectedVehiclesjTable = new javax.swing.JTable();
+        taskActionjButton = new javax.swing.JButton();
 
         setName("Ambulances"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
@@ -95,6 +98,13 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(selectedVehiclesjTable);
 
+        taskActionjButton.setText("Start");
+        taskActionjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskActionjButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -102,16 +112,14 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel6)
-                            .addContainerGap(187, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
+                    .addComponent(jLabel6)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(sendSelectedVehiclesjButton)
-                            .addContainerGap(106, Short.MAX_VALUE)))))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(taskActionjButton))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,8 +128,10 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
-                .addComponent(sendSelectedVehiclesjButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sendSelectedVehiclesjButton)
+                    .addComponent(taskActionjButton))
                 .addGap(25, 25, 25))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -171,12 +181,37 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         } 
     }//GEN-LAST:event_sendSelectedVehiclesjButtonActionPerformed
 
+    private void taskActionjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskActionjButtonActionPerformed
+        try {
+            TTask task = getTaskClient().getTaskInfo(taskId);
+            TStatus status = task.getStatus();
+            String statusName = status.name();
+            System.out.println("Status of the TASK = "+statusName);
+            //@TODO: check the status and show or not the button!
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getTaskClient().setAuthorizedEntityId("garage_emergency_service");
+        try {
+            getTaskClient().start(taskId);
+        } catch (IllegalArgumentFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessFault ex) {
+            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        taskActionjButton.setText("Started...");
+        taskActionjButton.setEnabled(false);
+}//GEN-LAST:event_taskActionjButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable selectedVehiclesjTable;
     private javax.swing.JButton sendSelectedVehiclesjButton;
+    private javax.swing.JButton taskActionjButton;
     // End of variables declaration//GEN-END:variables
 
     void configurePanel(String taskinfo) {
