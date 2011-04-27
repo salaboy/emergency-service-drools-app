@@ -16,7 +16,7 @@
   <itemDefinition id="_call.idItem" structureRef="Long" />
   <itemDefinition id="_emergency.priorityItem" structureRef="Integer" />
   <itemDefinition id="_emergency.idItem" structureRef="Long" />
-  <itemDefinition id="_emergency.vehicleItem" structureRef="com.wordpress.salaboy.model.Vehicle" />
+  <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
   <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
   <itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
   <itemDefinition id="_patientAtHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.PatientAtHospitalEvent" />
@@ -27,7 +27,7 @@
     
     <property id="call.id" itemSubjectRef="_call.idItem"/>
     <property id="emergency.id" itemSubjectRef="_emergency.idItem"/>
-    <property id="emergency.vehicle" itemSubjectRef="_emergency.vehicleItem"/>
+    <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
     <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
     <property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/>
     <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
@@ -37,7 +37,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     
-     <userTask id="_2" name="Select Ambulance and Dispatch" >
+     <userTask id="_2" name="Select Vehicle and Dispatch" >
       <ioSpecification>
         <dataInput id="_2_CommentInput" name="Comment" />
         <dataInput id="_2_SkippableInput" name="Skippable" />
@@ -46,7 +46,7 @@
         <dataInput id="_2_PriorityInput" name="Priority" />
         <dataInput id="_2_call.IdInput" name="call.id" />
         <dataInput id="_2_emergency.IdInput" name="emergency.id" />
-        <dataOutput id="_2_emergency.vehicleOutput" name="emergency.vehicle" />
+        <dataOutput id="_2_emergency.vehicleOutput" name="emergency.vehicles" />
         
         <inputSet>
           <dataInputRefs>_2_call.IdInput</dataInputRefs>
@@ -103,7 +103,7 @@
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_2_emergency.vehicleOutput</sourceRef>
-        <targetRef>emergency.vehicle</targetRef>
+        <targetRef>emergency.vehicles</targetRef>
       </dataOutputAssociation>
       
       <potentialOwner>
@@ -113,13 +113,32 @@
       </potentialOwner>
     </userTask>
     
-    <scriptTask id="_3" name="Start Ambulance Tracking" scriptFormat="http://www.java.com/java" >
-      <script>
-       
-        
-        System.out.println(" >>>>>> Starting Ambulance Tracking System ... Vehicle ID: "+((com.wordpress.salaboy.model.Vehicle)kcontext.getVariable("emergency.vehicle")).getId());
-      </script>
-    </scriptTask>
+    <task id="_3" name="Dispatch Selected Vehicles" tns:taskName="DispatchSelectedVehicles" >
+          <ioSpecification>
+            <dataInput id="_3_emergency.vehiclesInput" name="emergency.vehicles" />
+            <dataInput id="_3_call.idInput" name="call.id" />
+            <inputSet>
+              <dataInputRefs>_3_emergency.vehiclesInput</dataInputRefs>
+              <dataInputRefs>_3_call.idInput</dataInputRefs>
+            </inputSet>
+            <outputSet>
+            </outputSet>
+          </ioSpecification>
+          <dataInputAssociation>
+            <targetRef>_3_emergency.vehiclesInput</targetRef>
+            <assignment>
+                <from xs:type="tFormalExpression">#{emergency.vehicles}</from>
+                <to xs:type="tFormalExpression">_3_emergency.vehiclesInput</to>
+            </assignment>
+          </dataInputAssociation>
+          <dataInputAssociation>
+            <targetRef>_3_call.idInput</targetRef>
+            <assignment>
+                <from xs:type="tFormalExpression">#{call.id}</from>
+                <to xs:type="tFormalExpression">_3_call.idInput</to>
+            </assignment>
+          </dataInputAssociation>
+    </task>
     
     <intermediateCatchEvent id="_4" name="PickUpPatientEvent" >
       <dataOutput id="_4_patientPickUpOutput" name="event" />

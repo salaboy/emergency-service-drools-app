@@ -39,6 +39,7 @@ import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
+import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 
 /**
  *
@@ -129,6 +130,7 @@ public class ProceduresMGMTService {
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
         
         remoteN1.set("DefaultHeartAttackProcedureSession" + callId, session);
 
