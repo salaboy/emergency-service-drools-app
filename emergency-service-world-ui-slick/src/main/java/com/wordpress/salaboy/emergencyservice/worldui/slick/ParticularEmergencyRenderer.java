@@ -4,11 +4,14 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableAmbulance;
+import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphicable;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.events.keyboard.KeyboardPulseEventGenerator;
 import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.PoliceCar;
+import com.wordpress.salaboy.model.Vehicle;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -21,7 +24,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     private final WorldUI ui;
     private final GraphicableEmergency emergency;
-    private GraphicableAmbulance vehicle;
+    private Graphicable vehicle;
     private float playerInitialX = 32;
     private float playerInitialY = 400;
     
@@ -51,8 +54,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
     }
 
-    public void addVehicle(Ambulance vehicle) {
-        this.vehicle = GraphicableFactory.newAmbulance(vehicle);
+    public void addVehicle(Vehicle vehicle) {
+        this.vehicle = GraphicableFactory.newVehicle(vehicle);
+        this.playerInitialX = this.vehicle.getPolygon().getX();
+        this.playerInitialY = this.vehicle.getPolygon().getY();
     }
 
     public void onKeyPressed(int code, char key) {
@@ -60,6 +65,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             this.ui.goToGlobalMap();
         } else if (Input.KEY_F1 == code) {
             addMockAmbulance();
+        } else if (Input.KEY_F2 == code) {
+            addMockFireTruck();
+        } else if (Input.KEY_F3 == code) {
+            addMockPoliceCar();
         } else if (Input.KEY_LSHIFT == code){
             this.turbo = true;
         } else{
@@ -228,10 +237,24 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         Ambulance ambulance = new Ambulance("Mock Ambulance");
         ambulance.setId(System.currentTimeMillis());
-        ambulance.setPositionX(emergency.getCallX());
-        ambulance.setPositionY(emergency.getCallY());
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), ambulance);
+    }
+    
+    private void addMockFireTruck() {
+
+        FireTruck fireTruck = new FireTruck("Mock Fire Truck");
+        fireTruck.setId(System.currentTimeMillis());
+
+        this.ui.assignVehicleToEmergency(this.emergency.getCallId(), fireTruck);
+    }
+    
+    private void addMockPoliceCar() {
+
+        PoliceCar policeCar = new PoliceCar("Mock Police Car");
+        policeCar.setId(System.currentTimeMillis());
+
+        this.ui.assignVehicleToEmergency(this.emergency.getCallId(), policeCar);
     }
 
 

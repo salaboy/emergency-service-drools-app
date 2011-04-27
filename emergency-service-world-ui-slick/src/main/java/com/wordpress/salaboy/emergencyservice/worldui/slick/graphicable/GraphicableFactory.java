@@ -14,6 +14,8 @@ import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.EmergencyEntityBuilding;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.PoliceCar;
+import com.wordpress.salaboy.model.Vehicle;
 
 /**
  *
@@ -26,6 +28,18 @@ public class GraphicableFactory {
     private static int[] ys = new int[]{1, 7, 13, 19, 25};
     
     
+    
+    public static Graphicable newVehicle(Vehicle vehicle){
+        if (vehicle instanceof Ambulance){
+            return newAmbulance((Ambulance)vehicle);
+        } else if (vehicle instanceof FireTruck){
+            return newFireTruck((FireTruck)vehicle);
+        } else if (vehicle instanceof PoliceCar){
+            return newPoliceCar((PoliceCar)vehicle);
+        }
+        
+        throw new IllegalArgumentException("Unknown Vehicle Type: "+vehicle.getClass().getName());
+    }
     
     
     public static GraphicableAmbulance newAmbulance(Ambulance ambulance){
@@ -60,6 +74,23 @@ public class GraphicableFactory {
         graphFireTruck.setPolygon(myPolygon);
         
         return graphFireTruck;
+    }
+    
+    public static GraphicablePoliceCar newPoliceCar(PoliceCar policeCar){
+        GraphicablePoliceCar graphPoliceCar = new GraphicablePoliceCar(policeCar);
+        
+        Animation myPoliceCar = AnimationFactory.getPoliceCarAnimation();
+        EmergencyEntityBuilding policeDepartment = CityEntities.buildings.get("Police Department");
+        Polygon myPolygon = new Polygon(new float[]{
+                    policeDepartment.getX() * 16, policeDepartment.getY() * 16,
+                    (policeDepartment.getX() * 16) + 28,(policeDepartment.getY() * 16),
+                    (policeDepartment.getX() * 16) + 28, (policeDepartment.getY() * 16) + 28,
+                    (policeDepartment.getX() * 16), (policeDepartment.getY() * 16) + 28
+                });
+        graphPoliceCar.setAnimation(myPoliceCar);
+        graphPoliceCar.setPolygon(myPolygon);
+        
+        return graphPoliceCar;
     }
     
     public static GraphicableHighlightedHospital newHighlightedHospital(Hospital hospital){

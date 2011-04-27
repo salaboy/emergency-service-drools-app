@@ -100,8 +100,8 @@ public class CityEntities {
     
     public static final Map<String, EmergencyEntityBuilding> buildings = new HashMap<String, EmergencyEntityBuilding>(){{
         put("911", new EmergencyServiceCentral("911", 2, 25));
-        put("Police Department", new PoliceDepartment("Police Department", 2,2));
-        put("Firefigthers Department", new FirefigthersDepartment("Firefigthers Department", 25,25));
+        put("Police Department", new PoliceDepartment("Police Department", 15,7));
+        put("Firefighters Department", new FirefigthersDepartment("Firefighters Department", 25,25));
     }};
     
     public static Hospital getHospitalByCoordinates(float x, float y) {

@@ -6,7 +6,7 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Vehicle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +26,8 @@ import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +127,7 @@ public class WorldUI extends BasicGame {
 
     private void registerMessageConsumers() {
         //worldMessages queue
-        MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("worldUI", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+        MessageConsumerWorker emergencyDetailsWorker = new MessageConsumerWorker("emergencyDetails", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
 
             @Override
             public void handleMessage(final EmergencyDetailsMessage message) {
@@ -143,8 +145,17 @@ public class WorldUI extends BasicGame {
                 });
             }
         });
+        
+        MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatched", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
 
-        phoneCallsWorker.start();
+            @Override
+            public void handleMessage(final VehicleDispatchedMessage message) {
+                Vehicle vehicle = DistributedPeristenceServerService.getInstance().loadVehicle(message.getVehicleId());
+                assignVehicleToEmergency(message.getCallId(), vehicle);
+            }
+        });
+
+        vehicleDispatchedWorker.start();
     }
 
     public void addRandomEmergency() {
@@ -198,8 +209,7 @@ public class WorldUI extends BasicGame {
         this.currentRenderer = this.globalRenderer;
     }
     
-    //TODO: change ambulance to a DTO if needed
-    public void assignVehicleToEmergency(long callId, Ambulance vehicle){
+    public void assignVehicleToEmergency(long callId, Vehicle vehicle){
         this.renderers.get(callId).addVehicle(vehicle);
     }
 
