@@ -155,6 +155,8 @@ public class WorldUI extends BasicGame {
             }
         });
 
+        
+        emergencyDetailsWorker.start();
         vehicleDispatchedWorker.start();
     }
 
