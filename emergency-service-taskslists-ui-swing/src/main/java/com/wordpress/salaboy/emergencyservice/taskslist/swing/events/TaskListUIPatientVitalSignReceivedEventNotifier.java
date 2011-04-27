@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.emergencyservice.taskslist.swing.events;
 
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.UserTaskListUI;
+import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.events.NotifierEvent;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;

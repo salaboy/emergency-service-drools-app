@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -39,6 +38,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
 
 /**
  *
@@ -61,7 +61,7 @@ public class ProceduresMGMTService {
         return instance;
     }
 
-    public void newDefaultHeartAttackProcedure(final Long callId, Map<String, Object> parameters) {
+    public void newRequestedProcedure(final Long callId,String procedureName, Map<String, Object> parameters) {
         try {
             procedureSessions.put(callId, createDefaultHeartAttackProcedureSession(callId));
             setWorkItemHandlers(procedureSessions.get(callId));
@@ -75,8 +75,8 @@ public class ProceduresMGMTService {
         } catch (IOException ex) {
             Logger.getLogger(ProceduresMGMTService.class.getName()).log(Level.SEVERE, null, ex);
         }
-       procedureSessions.get(callId).insert(InMemoryPersistenceService.getInstance().loadEmergency((Long)parameters.get("emergency.id")));
-       procedureSessions.get(callId).getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest("DefaultHeartAttackProcedure", parameters));
+       //procedureSessions.get(callId).insert(InMemoryPersistenceService.getInstance().loadEmergency((Long)parameters.get("emergency.id")));
+       procedureSessions.get(callId).getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(procedureName, parameters));
        
     }
     
@@ -109,11 +109,10 @@ public class ProceduresMGMTService {
 
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
 
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
         
-        //   kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/startProcedures.drl").getInputStream())), ResourceType.DRL);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -130,6 +129,7 @@ public class ProceduresMGMTService {
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
+        
         remoteN1.set("DefaultHeartAttackProcedureSession" + callId, session);
 
         return session;

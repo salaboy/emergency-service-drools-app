@@ -107,12 +107,12 @@ public class IncomingCallsMGMTService {
         
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
 
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/PhoneCallPrimaryServiceProcess.bpmn").getInputStream())), ResourceType.BPMN2);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/PhoneCallPrimaryServiceProcess.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/phoneCallsManagement.drl").getInputStream())), ResourceType.DRL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/procedureSuggestions.drl").getInputStream())), ResourceType.DRL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/startProcedures.drl").getInputStream())), ResourceType.DRL);
-       
+        
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
             for (KnowledgeBuilderError error : errors) {

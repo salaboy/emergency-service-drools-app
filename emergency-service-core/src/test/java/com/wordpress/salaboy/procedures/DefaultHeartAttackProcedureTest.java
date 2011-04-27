@@ -31,7 +31,7 @@ import java.util.HashMap;
 import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.services.InMemoryPersistenceService;
+import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
@@ -107,7 +107,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
 
 
-        ProceduresMGMTService.getInstance().newDefaultHeartAttackProcedure((Long) parameters.get("call.id"), parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure((Long) parameters.get("call.id"),"DefaultHeartAttackProcedure", parameters);
 
         Thread.sleep(4000);
 

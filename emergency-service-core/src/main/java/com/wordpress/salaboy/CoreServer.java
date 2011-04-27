@@ -7,9 +7,16 @@ package com.wordpress.salaboy;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
+import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+
 import com.wordpress.salaboy.services.HumanTaskServerService;
+import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -88,9 +95,29 @@ public class CoreServer {
                 }
             }); 
             
+             //Heart Attack Procedure Selected Worker
+            MessageConsumerWorker selectedProcedureWorker = new MessageConsumerWorker("selectedProcedure",new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
+                @Override
+                public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
+                    ProceduresMGMTService.getInstance()
+                                .newRequestedProcedure(selectedProcedureMessage.getCallId(), 
+                                                    selectedProcedureMessage.getProcedureName(),
+                                                    selectedProcedureMessage.getParameters());
+                }
+            }); 
             
-            
+              //Emergency Details Persistence Selected Worker
+            MessageConsumerWorker emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetails",new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+                @Override
+                public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
+                    DistributedPeristenceServerService.getInstance()
+                                .storeEmergency(emergencyDetailsMessage.getEmergency());
+                }
+            }); 
+            emergencyDetailsPersistenceWorker.start();
+            selectedProcedureWorker.start();
             phoneCallsWorker.start();
+            
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,8 +5,8 @@
 
 package com.wordpress.salaboy.emergencyservice.taskslist.swing.events;
 
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.EmergencyFrame;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.UserTaskListUI;
+import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyFrame;
+import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.events.MonitorAlertReceivedNotifierEvent;
 import com.wordpress.salaboy.events.NotifierEvent;
 import com.wordpress.salaboy.events.WorldEventNotifier;

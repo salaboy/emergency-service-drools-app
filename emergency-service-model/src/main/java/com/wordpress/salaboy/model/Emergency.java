@@ -28,7 +28,12 @@ public class Emergency implements Serializable {
     private Call call;
     
     
-    
+    private Emergency(Long id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
+        this.id = id;
+        this.type = type;
+        this.nroOfPeople = nroOfPeople;
+        
+    }
 
     public Emergency() {
         this.id = Emergency.incrementalId.getAndIncrement();

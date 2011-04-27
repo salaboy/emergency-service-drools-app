@@ -22,9 +22,13 @@ import org.newdawn.slick.SpriteSheet;
 public class AnimationFactory {
 
     private static SpriteSheet ambulanceSprite;
+    private static SpriteSheet fireTruckSprite;
+    private static SpriteSheet policeCarSprite;
     private static SpriteSheet genericEmergencySprite;
     private static SpriteSheet highlightedHospitalSprite;
     private static Animation ambulanceAnimation;
+    private static Animation fireTruckAnimation;
+    private static Animation policeCarAnimation;
     private static Animation highlightedHospitalAnimation;
     private static Animation genericEmergencyAnimation;
 
@@ -98,12 +102,34 @@ public class AnimationFactory {
     private static SpriteSheet getAmbulanceSpriteSheet() {
         if (ambulanceSprite == null) {
             try {
-                ambulanceSprite = new SpriteSheet("data/sprites/sprites-ambulancia.png", 32, 32, Color.magenta);
+                ambulanceSprite = new SpriteSheet("data/sprites/ambulance.png", 32, 32, Color.magenta);
             } catch (SlickException ex) {
                 Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return ambulanceSprite;
+    }
+    
+    private static SpriteSheet getFireTruckSpriteSheet() {
+        if (fireTruckSprite == null) {
+            try {
+                fireTruckSprite = new SpriteSheet("data/sprites/fireTruck.png", 32, 32, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return fireTruckSprite;
+    }
+    
+     private static SpriteSheet getPoliceCarSpriteSheet() {
+        if (policeCarSprite == null) {
+            try {
+                policeCarSprite = new SpriteSheet("data/sprites/policeCar.png", 32, 32, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return policeCarSprite;
     }
 
     private static SpriteSheet getHighlightedHospitalSpriteSheet() {
@@ -122,5 +148,35 @@ public class AnimationFactory {
             }
         }
         return genericEmergencySprite;
+    }
+
+    static Animation getFireTruckAnimation() {
+        if (fireTruckAnimation == null) {
+            fireTruckAnimation = new Animation();
+            fireTruckAnimation.setLooping(false);
+            fireTruckAnimation.setAutoUpdate(false);
+
+            for (int row = 0; row < getFireTruckSpriteSheet().getHorizontalCount(); row++) {
+                for (int frame = 0; frame < getFireTruckSpriteSheet().getVerticalCount(); frame++) {
+                    fireTruckAnimation.addFrame(getFireTruckSpriteSheet().getSprite(frame, row), 250);
+                }
+            }
+        }
+        return fireTruckAnimation;
+    }
+    
+    static Animation getPoliceCarAnimation() {
+        if (policeCarAnimation == null) {
+            policeCarAnimation = new Animation();
+            policeCarAnimation.setLooping(false);
+            policeCarAnimation.setAutoUpdate(false);
+
+            for (int row = 0; row < getPoliceCarSpriteSheet().getHorizontalCount(); row++) {
+                for (int frame = 0; frame < getPoliceCarSpriteSheet().getVerticalCount(); frame++) {
+                    policeCarAnimation.addFrame(getPoliceCarSpriteSheet().getSprite(frame, row), 250);
+                }
+            }
+        }
+        return policeCarAnimation;
     }
 }

@@ -38,4 +38,11 @@ public class SelectedProcedures implements Serializable{
         return result;
     }
     
+    public int size(){
+        return selectedProcedures.size();
+    }
+    
+    public String get(int i){
+        return selectedProcedures.get(i);
+    }
 }

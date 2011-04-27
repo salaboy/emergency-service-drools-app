@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.services.EmergencyService;
+import com.wordpress.salaboy.services.old.EmergencyService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

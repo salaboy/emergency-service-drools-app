@@ -62,7 +62,7 @@
             <version>${drools.version}</version>
         </dependency>
         
-         <dependency>
+        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
             <version>${drools.version}</version>
@@ -82,7 +82,7 @@
         </dependency-->
         
         <!-- jBPM5 Dependencies -->
-         <dependency>
+        <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-flow</artifactId>
             <version>${jbpm.version}</version>
@@ -92,7 +92,7 @@
             <artifactId>jbpm-flow-builder</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
             <version>${jbpm.version}</version>
@@ -148,6 +148,15 @@
             <artifactId>hibernate-core</artifactId>
             <version>3.3.0.SP1</version>
         </dependency>
+
+        <!-- Distributed Persistence -->
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>4.1.0.FINAL</version>
+            <type>jar</type>
+        </dependency>
+        
 
         <!-- Transaction Management -->
         <dependency>
@@ -326,4 +335,13 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

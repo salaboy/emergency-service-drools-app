@@ -24,8 +24,9 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.command.Command;
-import com.wordpress.salaboy.model.messages.worldui.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.worldui.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
+import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

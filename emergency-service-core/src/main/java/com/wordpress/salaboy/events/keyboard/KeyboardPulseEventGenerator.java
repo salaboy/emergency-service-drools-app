@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.events.keyboard;
 
-import com.wordpress.salaboy.services.GridEmergencyService;
+import com.wordpress.salaboy.services.old.GridEmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
 import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.model.Ambulance;

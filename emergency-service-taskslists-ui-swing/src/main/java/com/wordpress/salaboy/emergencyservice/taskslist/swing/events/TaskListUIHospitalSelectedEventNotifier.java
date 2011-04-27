@@ -5,9 +5,9 @@
 
 package com.wordpress.salaboy.emergencyservice.taskslist.swing.events;
 
-import com.wordpress.salaboy.CityEntitiesUtils;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.EmergencyFrame;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.EmergencyMonitorPanel;
+import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyFrame;
+import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyMonitorPanel;
 import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 import com.wordpress.salaboy.events.NotifierEvent;
 import com.wordpress.salaboy.events.WorldEventNotifier;
@@ -31,7 +31,7 @@ public class TaskListUIHospitalSelectedEventNotifier implements WorldEventNotifi
         emergencyFrame.getLblDirection().setForeground(Color.green);
         
         
-        Hospital hospital = CityEntitiesUtils.getHospitalById(hospitalId);
+        Hospital hospital = CityEntities.getHospitalById(hospitalId);
         
         int x = (int)hospital.getPositionX();
         int y = (int)hospital.getPositionY();

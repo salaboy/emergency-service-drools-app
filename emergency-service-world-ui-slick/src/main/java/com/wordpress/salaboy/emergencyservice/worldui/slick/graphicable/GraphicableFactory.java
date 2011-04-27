@@ -10,7 +10,9 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.geom.Polygon;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.EmergencyEntityBuilding;
+import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 
 /**
@@ -19,8 +21,7 @@ import com.wordpress.salaboy.model.Hospital;
  */
 public class GraphicableFactory {
     
-    private static int emergencyCentralX = 32;
-    private static int emergencyCentralY = 400;
+    
     private static int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private static int[] ys = new int[]{1, 7, 13, 19, 25};
     
@@ -31,17 +32,34 @@ public class GraphicableFactory {
         GraphicableAmbulance graphAmbulance = new GraphicableAmbulance(ambulance);
         
         Animation myAmbulance = AnimationFactory.getAmbulanceAnimation();
-
+        EmergencyEntityBuilding central = CityEntities.buildings.get("911");
         Polygon myPolygon = new Polygon(new float[]{
-                    emergencyCentralX, emergencyCentralY,
-                    emergencyCentralX + 28, emergencyCentralY,
-                    emergencyCentralX + 28, emergencyCentralY + 28,
-                    emergencyCentralX, emergencyCentralY + 28
+                    central.getX() * 16, central.getY() * 16,
+                    (central.getX() * 16) + 28,(central.getY() * 16),
+                    (central.getX() * 16) + 28, (central.getY() * 16) + 28,
+                    (central.getX() * 16), (central.getY() * 16) + 28
                 });
         graphAmbulance.setAnimation(myAmbulance);
         graphAmbulance.setPolygon(myPolygon);
         
         return graphAmbulance;
+    }
+    
+    public static GraphicableFireTruck newFireTruck(FireTruck fireTruck){
+        GraphicableFireTruck graphFireTruck = new GraphicableFireTruck(fireTruck);
+        
+        Animation myFireTruck = AnimationFactory.getFireTruckAnimation();
+        EmergencyEntityBuilding firefighters = CityEntities.buildings.get("Firefighters Department");
+        Polygon myPolygon = new Polygon(new float[]{
+                    firefighters.getX() * 16, firefighters.getY() * 16,
+                    (firefighters.getX() * 16) + 28,(firefighters.getY() * 16),
+                    (firefighters.getX() * 16) + 28, (firefighters.getY() * 16) + 28,
+                    (firefighters.getX() * 16), (firefighters.getY() * 16) + 28
+                });
+        graphFireTruck.setAnimation(myFireTruck);
+        graphFireTruck.setPolygon(myPolygon);
+        
+        return graphFireTruck;
     }
     
     public static GraphicableHighlightedHospital newHighlightedHospital(Hospital hospital){
