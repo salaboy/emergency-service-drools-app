@@ -15,6 +15,7 @@ public class VehicleDispatchedMessage implements Serializable {
     private Long vehicleId;
 
     public VehicleDispatchedMessage(Long callId, Long vehicleId) {
+        this.callId = callId;
         this.vehicleId = vehicleId;
     }
 

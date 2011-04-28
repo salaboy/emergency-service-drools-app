@@ -120,7 +120,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         assertEquals(1, sums.size());
         TaskSummary taskSum = sums.get(0); // getting the first task
 
-
+        assertEquals(" Select Vehicle For 1 ", taskSum.getName());
         client.start(taskSum.getId(), "garage_emergency_service", null);
 
 

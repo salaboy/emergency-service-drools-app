@@ -28,14 +28,15 @@
    
    <global>
       <transport clusterName="demoCluster"/>
-      <globalJmxStatistics enabled="true"/>
+      <globalJmxStatistics enabled="false" />
+      
    </global>
 
    <default>
-      <jmxStatistics enabled="true"/>
+      <jmxStatistics enabled="false"  />
       <clustering mode="distribution">
          <l1 enabled="true" lifespan="60000"/>
-         <hash numOwners="2" rehashRpcTimeout="120000"/>
+         <hash numOwners="1" rehashRpcTimeout="120000"/>
          <sync/>
       </clustering>
    </default>

@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.infinispan.Cache;
+import org.infinispan.config.Configuration;
+import org.infinispan.config.GlobalConfiguration;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
@@ -23,16 +25,13 @@ import org.infinispan.manager.EmbeddedCacheManager;
  * @author salaboy
  */
 public class DistributedPeristenceServerService {
+
     private static DistributedPeristenceServerService instance;
-    private EmbeddedCacheManager manager;
+    private EmbeddedCacheManager cacheManager;
     private Cache<String, Object> cache;
-    private Map<Long, Call> calls;
-    private Map<Long, Emergency> emergencies;
-    private Map<Long, Vehicle> vehicles;
-    private Map<Long, Patient> patients;
     
-    public static DistributedPeristenceServerService getInstance(){
-        if(instance == null){
+    public static DistributedPeristenceServerService getInstance() {
+        if (instance == null) {
             try {
                 instance = new DistributedPeristenceServerService();
             } catch (IOException ex) {
@@ -41,58 +40,81 @@ public class DistributedPeristenceServerService {
         }
         return instance;
     }
-    
+
     private DistributedPeristenceServerService() throws IOException {
-        manager = new DefaultCacheManager("config.xml");
-        cache = manager.getCache();
-        cache.start();
-        if(cache.size() == 0){
-            this.calls = new ConcurrentHashMap<Long, Call>();
-            this.emergencies = new ConcurrentHashMap<Long, Emergency>();
-            this.vehicles = new ConcurrentHashMap<Long, Vehicle>();
-            this.patients = new ConcurrentHashMap<Long, Patient>();
-            cache.put("calls", this.calls);
-            cache.put("emergencies", this.emergencies);
-            cache.put("vehicles", this.vehicles);
-            cache.put("patients", this.patients);
+        cacheManager = new DefaultCacheManager("config.xml");
+        cache = cacheManager.getCache();
+
+    }
+
+    public EmbeddedCacheManager getCacheManager() {
+        return cacheManager;
+    }
+    
+
+
+    public void storeCall(Call call) {
+        if(this.cache.get("calls") == null){
+           cache.put("calls", new ConcurrentHashMap<Long, Call>());
         }
-        
+        ((Map<Long, Call>) this.cache.get("calls")).put(call.getId(), call);
     }
-    
-    public void storeCall(Call call){
-        ((Map<Long,Call>)this.cache.get("calls")).put(call.getId(), call);
+
+    public void storeEmergency(Emergency emergency) {
+        if(this.cache.get("emergencies") == null){
+           cache.put("emergencies", new ConcurrentHashMap<Long, Call>());
+        }
+        ((Map<Long, Emergency>) this.cache.get("emergencies")).put(emergency.getId(), emergency);
     }
-    
-    public void storeEmergency(Emergency emergency){
-        ((Map<Long,Emergency>)this.cache.get("emergencies")).put(emergency.getId(), emergency);
+
+    public void storeVehicle(Vehicle vehicle) {
+        if(this.cache.get("vehicles") == null){
+           cache.put("vehicles", new ConcurrentHashMap<Long, Call>());
+        }
+        ((Map<Long, Vehicle>) this.cache.get("vehicles")).put(vehicle.getId(), vehicle);
+
     }
-    
-    public void storeVehicle(Vehicle vehicle){
-        ((Map<Long,Vehicle>)this.cache.get("vehicles")).put(vehicle.getId(), vehicle);
-                
+
+    public void storePatient(Patient patient) {
+        if(this.cache.get("patients") == null){
+           cache.put("patients", new ConcurrentHashMap<Long, Call>());
+        }
+        ((Map<Long, Patient>) this.cache.get("patients")).put(patient.getId(), patient);
     }
-    public void storePatient(Patient patient){
-       ((Map<Long,Patient>)this.cache.get("patients")).put(patient.getId(), patient);
+
+    public Call loadCall(Long id) {
+        if(this.cache.get("calls") == null){
+           cache.put("calls", new ConcurrentHashMap<Long, Call>());
+        }
+        return ((Map<Long, Call>) this.cache.get("calls")).get(id);
     }
-    
-    public Call loadCall(Long id){
-        return ((Map<Long,Call>)this.cache.get("calls")).get(id);
+
+    public Emergency loadEmergency(Long id) {
+        if(this.cache.get("emergencies") == null){
+           cache.put("emergencies", new ConcurrentHashMap<Long, Call>());
+        }
+        return ((Map<Long, Emergency>) this.cache.get("emergencies")).get(id);
     }
-    
-    public Emergency loadEmergency(Long id){
-        return ((Map<Long,Emergency>)this.cache.get("emergencies")).get(id);
+
+    public Vehicle loadVehicle(Long id) {
+        if(this.cache.get("vehicles") == null){
+           cache.put("vehicles", new ConcurrentHashMap<Long, Call>());
+        }
+        return ((Map<Long, Vehicle>) this.cache.get("vehicles")).get(id);
     }
-    
-    public Vehicle loadVehicle(Long id){
-        return ((Map<Long,Vehicle>)this.cache.get("vehicles")).get(id);
+
+    public Patient loadPatient(Long id) {
+        if(this.cache.get("patients") == null){
+           cache.put("patients", new ConcurrentHashMap<Long, Call>());
+        }
+        return ((Map<Long, Patient>) this.cache.get("patients")).get(id);
     }
-    
-    public Patient loadPatient(Long id){
-        return ((Map<Long,Patient>)this.cache.get("patients")).get(id);
+
+    public Collection<Vehicle> getAllVehicles() {
+        return ((Map<Long, Vehicle>) this.cache.get("vehicles")).values();
     }
-   
-    public Collection<Vehicle> getAllVehicles(){
-        return ((Map<Long,Vehicle>)this.cache.get("vehicles")).values();
+
+    private int getNodeId() {
+        return (int)Math.random();
     }
-    
 }

@@ -27,6 +27,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import javax.swing.JFrame;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
 
@@ -66,6 +68,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.mainJTabbedPane.add(this.selectAmbulanceTaskListPanel, 2);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
         
+       
     }
 
     /** This method is called from within the constructor to

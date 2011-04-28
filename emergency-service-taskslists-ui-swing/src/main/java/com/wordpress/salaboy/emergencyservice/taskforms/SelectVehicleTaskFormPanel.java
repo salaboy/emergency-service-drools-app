@@ -84,19 +84,6 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
 
         jLabel6.setText("Available Vehicles");
 
-        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
-        int i = 0;
-        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
-            vehicles[i][0] = vehicle.getId();
-            vehicles[i][1] = vehicle.getName();
-            i++;
-        }
-        selectedVehiclesjTable.setModel(new javax.swing.table.DefaultTableModel(
-            vehicles,
-            new String [] {
-                "ID", "Vehicle"
-            }
-        ));
         jScrollPane1.setViewportView(selectedVehiclesjTable);
 
         taskActionjButton.setText("Start");
@@ -128,7 +115,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                             .addComponent(taskActionjButton))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnRefresh))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,7 +126,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRefresh)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sendSelectedVehiclesjButton)
                     .addComponent(taskActionjButton))

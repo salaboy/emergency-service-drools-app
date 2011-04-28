@@ -64,7 +64,11 @@ public class WorldUI extends BasicGame {
         map = new BlockMap("data/cityMap.tmx");
 
         map.initializeCorners();
-
+        
+        AnimationFactory.getAmbulanceSpriteSheet();
+        AnimationFactory.getFireTruckSpriteSheet();
+        AnimationFactory.getPoliceCarSpriteSheet();
+        
         gc.getInput().addKeyListener(new WorldKeyListener(this));
         gc.getInput().addMouseListener(new WorldMouseListener(this));
 

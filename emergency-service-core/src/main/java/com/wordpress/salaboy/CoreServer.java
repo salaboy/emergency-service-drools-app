@@ -81,6 +81,7 @@ public class CoreServer {
         HumanTaskServerService.getInstance().initTaskServer();
         //Init Persistence Service and add all the city entities
         for(Vehicle vehicle : CityEntities.vehicles){
+            System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
             DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
         }
         

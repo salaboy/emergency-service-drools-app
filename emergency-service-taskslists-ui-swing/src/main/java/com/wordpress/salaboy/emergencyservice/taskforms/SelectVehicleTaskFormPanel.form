@@ -36,7 +36,7 @@
                   </Group>
                   <Component id="btnRefresh" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="18" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -49,7 +49,7 @@
               <Component id="jScrollPane1" min="-2" pref="181" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="161" max="32767" attributes="0"/>
+              <EmptySpace pref="162" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="sendSelectedVehiclesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="taskActionjButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -81,14 +81,6 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Component class="javax.swing.JTable" name="selectedVehiclesjTable">
-          <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    vehicles,&#xa;    new String [] {&#xa;        &quot;ID&quot;, &quot;Vehicle&quot;&#xa;    }&#xa;)" type="code"/>
-            </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];&#xa;int i = 0;&#xa;for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){&#xa;   vehicles[i][0] = vehicle.getId();&#xa;   vehicles[i][1] = vehicle.getName();&#xa;   i++;&#xa;}"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

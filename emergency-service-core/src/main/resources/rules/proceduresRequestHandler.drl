@@ -50,6 +50,7 @@ rule "Start Default Heart Attack Procedure if not emergency was found"
         
         
     then
+        System.out.println(">>>>>>>>>>>>>>>>>>>>> KeySet: "+$procedureRequest.getParameters().keySet()+"- Parameters: " + $procedureRequest.getParameters().values() );
         kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
         
 end

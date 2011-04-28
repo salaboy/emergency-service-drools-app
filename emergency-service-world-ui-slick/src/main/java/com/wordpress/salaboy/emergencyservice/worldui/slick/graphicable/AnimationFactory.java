@@ -99,7 +99,7 @@ public class AnimationFactory {
         return emergencyAnimation;
     }
 
-    private static SpriteSheet getAmbulanceSpriteSheet() {
+    public static SpriteSheet getAmbulanceSpriteSheet() {
         if (ambulanceSprite == null) {
             try {
                 ambulanceSprite = new SpriteSheet("data/sprites/ambulance.png", 32, 32, Color.magenta);
@@ -110,7 +110,7 @@ public class AnimationFactory {
         return ambulanceSprite;
     }
     
-    private static SpriteSheet getFireTruckSpriteSheet() {
+    public static SpriteSheet getFireTruckSpriteSheet() {
         if (fireTruckSprite == null) {
             try {
                 fireTruckSprite = new SpriteSheet("data/sprites/fireTruck.png", 32, 32, Color.magenta);
@@ -121,7 +121,7 @@ public class AnimationFactory {
         return fireTruckSprite;
     }
     
-     private static SpriteSheet getPoliceCarSpriteSheet() {
+     public static SpriteSheet getPoliceCarSpriteSheet() {
         if (policeCarSprite == null) {
             try {
                 policeCarSprite = new SpriteSheet("data/sprites/policeCar.png", 32, 32, Color.magenta);
