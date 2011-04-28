@@ -13,7 +13,7 @@ import org.newdawn.slick.geom.Polygon;
  *
  * @author salaboy
  */
-public class GraphicableFireTruck implements Graphicable{
+public class GraphicableFireTruck extends GraphicableVehicle{
     private FireTruck fireTruck;
     private Animation animation;
     private Polygon   polygon;

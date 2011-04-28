@@ -13,7 +13,7 @@ import com.wordpress.salaboy.model.Ambulance;
  *
  * @author salaboy
  */
-public class GraphicableAmbulance implements Graphicable{
+public class GraphicableAmbulance extends GraphicableVehicle{
     private Ambulance ambulance;
     private Animation animation;
     private Polygon   polygon;

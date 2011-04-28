@@ -29,7 +29,7 @@ public class GraphicableFactory {
     
     
     
-    public static Graphicable newVehicle(Vehicle vehicle){
+    public static GraphicableVehicle newVehicle(Vehicle vehicle){
         if (vehicle instanceof Ambulance){
             return newAmbulance((Ambulance)vehicle);
         } else if (vehicle instanceof FireTruck){

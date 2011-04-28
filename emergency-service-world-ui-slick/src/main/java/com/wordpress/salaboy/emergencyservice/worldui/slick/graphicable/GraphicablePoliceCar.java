@@ -13,7 +13,7 @@ import org.newdawn.slick.geom.Polygon;
  *
  * @author salaboy
  */
-public class GraphicablePoliceCar implements Graphicable{
+public class GraphicablePoliceCar extends GraphicableVehicle{
     private PoliceCar policeCar;
     private Animation animation;
     private Polygon   polygon;
