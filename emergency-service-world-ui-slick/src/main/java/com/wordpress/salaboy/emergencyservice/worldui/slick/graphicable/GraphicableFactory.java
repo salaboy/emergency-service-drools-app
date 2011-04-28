@@ -45,7 +45,7 @@ public class GraphicableFactory {
     public static GraphicableAmbulance newAmbulance(Ambulance ambulance){
         GraphicableAmbulance graphAmbulance = new GraphicableAmbulance(ambulance);
         
-        Animation myAmbulance = AnimationFactory.getAmbulanceAnimation();
+        Animation myAmbulance = AnimationFactory.getAmbulanceAnimation().copy();
         EmergencyEntityBuilding central = CityEntities.buildings.get("911");
         Polygon myPolygon = new Polygon(new float[]{
                     central.getX() * 16, central.getY() * 16,
@@ -62,7 +62,7 @@ public class GraphicableFactory {
     public static GraphicableFireTruck newFireTruck(FireTruck fireTruck){
         GraphicableFireTruck graphFireTruck = new GraphicableFireTruck(fireTruck);
         
-        Animation myFireTruck = AnimationFactory.getFireTruckAnimation();
+        Animation myFireTruck = AnimationFactory.getFireTruckAnimation().copy();
         EmergencyEntityBuilding firefighters = CityEntities.buildings.get("Firefighters Department");
         Polygon myPolygon = new Polygon(new float[]{
                     firefighters.getX() * 16, firefighters.getY() * 16,
@@ -79,7 +79,7 @@ public class GraphicableFactory {
     public static GraphicablePoliceCar newPoliceCar(PoliceCar policeCar){
         GraphicablePoliceCar graphPoliceCar = new GraphicablePoliceCar(policeCar);
         
-        Animation myPoliceCar = AnimationFactory.getPoliceCarAnimation();
+        Animation myPoliceCar = AnimationFactory.getPoliceCarAnimation().copy();
         EmergencyEntityBuilding policeDepartment = CityEntities.buildings.get("Police Department");
         Polygon myPolygon = new Polygon(new float[]{
                     policeDepartment.getX() * 16, policeDepartment.getY() * 16,

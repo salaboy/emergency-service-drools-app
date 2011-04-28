@@ -154,7 +154,12 @@ public class WorldUI extends BasicGame {
 
             @Override
             public void handleMessage(final VehicleDispatchedMessage message) {
+                if (emergencies.get(message.getCallId())==null){
+                    System.out.println("Unknown emergency for call Id "+message.getCallId());
+                    return;
+                }
                 Vehicle vehicle = DistributedPeristenceServerService.getInstance().loadVehicle(message.getVehicleId());
+                switchToEmergency(message.getCallId());
                 assignVehicleToEmergency(message.getCallId(), vehicle);
             }
         });
@@ -208,6 +213,10 @@ public class WorldUI extends BasicGame {
     }
 
     public void emergencyClicked(Long callId) {
+        this.switchToEmergency(callId);
+    }
+    
+    private void switchToEmergency(Long callId){
         this.currentRenderer = renderers.get(callId);
     }
     

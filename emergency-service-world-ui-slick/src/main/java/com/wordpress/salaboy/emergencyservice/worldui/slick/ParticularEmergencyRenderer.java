@@ -15,7 +15,11 @@ import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
@@ -31,15 +35,17 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     private final WorldUI ui;
     private final GraphicableEmergency emergency;
-    private Graphicable graphicableVehicle;
-    private Vehicle vehicle;
-    private float playerInitialX = 32;
-    private float playerInitialY = 400;
+    private Graphicable activeGraphicableVehicle;
+    private List<Graphicable> graphicableVehicles;
+    private Vehicle activeVehicle;
+    private Map<Graphicable,Vehicle> vehicles;
     private boolean turbo;
 
     public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
         this.emergency = emergency;
         this.ui = ui;
+        this.vehicles = new HashMap<Graphicable, Vehicle>();
+        this.graphicableVehicles = new ArrayList<Graphicable>();
     }
 
     /**
@@ -49,23 +55,36 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     @Override
     public void renderPolygon(GameContainer gc, Graphics g) {
         g.draw(emergency.getPolygon());
-        if (graphicableVehicle != null) {
-            g.draw(graphicableVehicle.getPolygon());
+        for (Graphicable vehicle : graphicableVehicles) {
+            g.draw(vehicle.getPolygon());
         }
     }
 
     public void renderAnimation(GameContainer gc, Graphics g) {
         g.drawAnimation(emergency.getAnimation(), emergency.getPolygon().getX(), emergency.getPolygon().getY());
-        if (graphicableVehicle != null) {
-            g.drawAnimation(graphicableVehicle.getAnimation(), graphicableVehicle.getPolygon().getX(), graphicableVehicle.getPolygon().getY());
+        for (Graphicable vehicle : graphicableVehicles) {
+            //the active vehicle is rendered at the end
+            if (activeGraphicableVehicle == null || activeGraphicableVehicle != vehicle){
+                g.drawAnimation(vehicle.getAnimation(), vehicle.getPolygon().getX(), vehicle.getPolygon().getY());
+            }
+        }
+        
+        if (activeGraphicableVehicle != null){
+            g.drawAnimation(activeGraphicableVehicle.getAnimation(), activeGraphicableVehicle.getPolygon().getX(), activeGraphicableVehicle.getPolygon().getY());
         }
     }
 
     public void addVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-        this.graphicableVehicle = GraphicableFactory.newVehicle(vehicle);
-        this.playerInitialX = this.graphicableVehicle.getPolygon().getX();
-        this.playerInitialY = this.graphicableVehicle.getPolygon().getY();
+        
+        this.activeGraphicableVehicle = GraphicableFactory.newVehicle(vehicle);
+        
+        vehicle.setPositionX(this.activeGraphicableVehicle.getPolygon().getX());
+        vehicle.setPositionY(this.activeGraphicableVehicle.getPolygon().getY());
+
+        this.vehicles.put(activeGraphicableVehicle,vehicle);
+        this.graphicableVehicles.add(activeGraphicableVehicle);
+        
+        this.activeVehicle = vehicle;
     }
 
     public void onKeyPressed(int code, char key) {
@@ -92,6 +111,13 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     public void onClick(int button, int x, int y, int count) {
+        for (Graphicable graphicable : graphicableVehicles) {
+            if (graphicable.getPolygon().contains(x, y)){
+                this.activeGraphicableVehicle = graphicable;
+                this.activeVehicle = vehicles.get(this.activeGraphicableVehicle);
+                return;
+            }
+        }
     }
 
     public void update(GameContainer gc, int delta) {
@@ -112,11 +138,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     private void moveVehicle(int direction) {
-        if (this.graphicableVehicle == null) {
+        if (this.activeGraphicableVehicle == null) {
             return;
         }
 
-        int current = this.graphicableVehicle.getAnimation().getFrame();
+        int current = this.activeGraphicableVehicle.getAnimation().getFrame();
         int delta = 0;
         switch (direction) {
             case Input.KEY_LEFT:
@@ -153,36 +179,44 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 break;
         }
 
-        this.graphicableVehicle.getAnimation().setCurrentFrame(current);
+        this.activeGraphicableVehicle.getAnimation().setCurrentFrame(current);
+        Vehicle currentVehicle = this.vehicles.get(this.activeGraphicableVehicle);
 
         if (turbo) {
             delta *= 5;
         }
 
+        int playerX = (int) currentVehicle.getPositionX();
+        int playerY = (int) currentVehicle.getPositionY();
+        
         if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
-            playerInitialX += delta;
+            playerX += delta;
         } else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN) {
-            playerInitialY += delta;
+            playerY += delta;
         }
 
-        this.graphicableVehicle.getPolygon().setX(playerInitialX);
-        this.graphicableVehicle.getPolygon().setY(playerInitialY);
-
+        this.activeGraphicableVehicle.getPolygon().setX(playerX);
+        this.activeGraphicableVehicle.getPolygon().setY(playerY);
+        currentVehicle.setPositionX(playerX);
+        currentVehicle.setPositionY(playerY);
+        
         if (checkEntityCollision()) {
             if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
-                playerInitialX -= delta;
+                playerX -= delta;
             } else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN) {
-                playerInitialY -= delta;
+                playerY -= delta;
             }
-            this.graphicableVehicle.getPolygon().setX(playerInitialX);
-            this.graphicableVehicle.getPolygon().setY(playerInitialY);
+            this.activeGraphicableVehicle.getPolygon().setX(playerX);
+            this.activeGraphicableVehicle.getPolygon().setY(playerY);
+            currentVehicle.setPositionX(playerX);
+            currentVehicle.setPositionY(playerY);
         }
     }
 
     private synchronized boolean checkEntityCollision() {
         for (int i = 0; i < BlockMap.entities.size(); i++) {
             Block entity1 = (Block) BlockMap.entities.get(i);
-            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
+            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
                 return true;
             }
         }
@@ -191,14 +225,14 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     public synchronized boolean checkEmergencyCollision() {
         //if no vehicle, no collition
-        if (this.graphicableVehicle == null) {
+        if (this.activeGraphicableVehicle == null) {
             return false;
         }
 
-        if (this.graphicableVehicle.getPolygon().intersects(emergency.getPolygon())) {
+        if (this.activeGraphicableVehicle.getPolygon().intersects(emergency.getPolygon())) {
             try {
                 System.out.println("EMERGENCY REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.vehicle.getId(), this.emergency.getCallId(), new Date()));
+                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), this.emergency.getCallId(), new Date()));
                 return true;
             } catch (HornetQException ex) {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,13 +243,13 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     public synchronized boolean checkHospitalCollision() {
         //if no vehicle, no collition
-        if (this.graphicableVehicle == null) {
+        if (this.activeGraphicableVehicle == null) {
             return false;
         }
 
         for (int i = 0; i < BlockMap.hospitals.size(); i++) {
             Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
+            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
                 //TODO: add custom code. Maybe we should notify the ui about it
                 //and not add a message to the queue here
                 System.out.println("HOSPITAL REACHED!");
@@ -227,16 +261,16 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     public boolean checkCornerCollision() {
         //if no vehicle, no collition
-        if (this.graphicableVehicle == null) {
+        if (this.activeGraphicableVehicle == null) {
             return false;
         }
 
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
-            if (this.graphicableVehicle.getPolygon().intersects(entity1.poly)) {
+            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
                 try {
                     System.out.println("CORNER REACHED!");
-                    MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.vehicle.getId(), (int)this.graphicableVehicle.getPolygon().getX(), (int)this.graphicableVehicle.getPolygon().getY()));
+                    MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.activeVehicle.getId(), (int)this.activeGraphicableVehicle.getPolygon().getX(), (int)this.activeGraphicableVehicle.getPolygon().getY()));
                     return true;
                 } catch (HornetQException ex) {
                     Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);

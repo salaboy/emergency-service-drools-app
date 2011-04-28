@@ -13,4 +13,8 @@ import java.io.Serializable;
 public interface Vehicle extends Serializable {
     public Long getId();
     public String getName();
+    public float getPositionX();
+    public float getPositionY();
+    public void setPositionX(float x);
+    public void setPositionY(float y);
 }
