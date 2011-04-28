@@ -44,7 +44,8 @@ public class DistributedPeristenceServerService {
     
     private DistributedPeristenceServerService() throws IOException {
         manager = new DefaultCacheManager("config.xml");
-        cache = manager.getCache("myPersistence");
+        cache = manager.getCache();
+        cache.start();
         if(cache.size() == 0){
             this.calls = new ConcurrentHashMap<Long, Call>();
             this.emergencies = new ConcurrentHashMap<Long, Emergency>();
@@ -55,7 +56,7 @@ public class DistributedPeristenceServerService {
             cache.put("vehicles", this.vehicles);
             cache.put("patients", this.patients);
         }
-        cache.start();
+        
     }
     
     public void storeCall(Call call){

@@ -65,7 +65,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.mainJTabbedPane.add(this.controlSuggestedProceduresTaskListPanel, 1);
         this.mainJTabbedPane.add(this.selectAmbulanceTaskListPanel, 2);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
-
+        
     }
 
     /** This method is called from within the constructor to
