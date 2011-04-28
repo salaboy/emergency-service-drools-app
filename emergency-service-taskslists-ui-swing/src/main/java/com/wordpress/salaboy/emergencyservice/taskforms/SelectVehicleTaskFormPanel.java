@@ -70,6 +70,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         selectedVehiclesjTable = new javax.swing.JTable();
         taskActionjButton = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setName("Ambulances"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
@@ -105,6 +106,13 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             }
         });
 
+        btnRefresh.setText("Refresh Table");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,7 +126,8 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                             .addComponent(sendSelectedVehiclesjButton)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(taskActionjButton))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRefresh))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -128,7 +137,9 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRefresh)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sendSelectedVehiclesjButton)
                     .addComponent(taskActionjButton))
@@ -205,8 +216,25 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         taskActionjButton.setEnabled(false);
 }//GEN-LAST:event_taskActionjButtonActionPerformed
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
+        int i = 0;
+        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
+            vehicles[i][0] = vehicle.getId();
+            vehicles[i][1] = vehicle.getName();
+            i++;
+        }
+        selectedVehiclesjTable.setModel(new javax.swing.table.DefaultTableModel(
+            vehicles,
+            new String [] {
+                "ID", "Vehicle"
+            }
+        ));
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable selectedVehiclesjTable;

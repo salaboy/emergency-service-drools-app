@@ -55,6 +55,7 @@ public class DistributedPeristenceServerService {
             cache.put("vehicles", this.vehicles);
             cache.put("patients", this.patients);
         }
+        cache.start();
     }
     
     public void storeCall(Call call){
