@@ -79,6 +79,8 @@ public class CoreServer {
         createRemoteNode();
         //Starting Human Task Server
         HumanTaskServerService.getInstance().initTaskServer();
+        //Initializing Distribtued Persistence Service
+        DistributedPeristenceServerService.getInstance();
         //Init Persistence Service and add all the city entities
         for(Vehicle vehicle : CityEntities.vehicles){
             System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.serviceclient.*;
+import org.drools.runtime.process.ProcessInstance;
 
 
 declare ProcedureRequest
@@ -40,7 +41,8 @@ rule "Start Default Heart Attack Procedure"
         Patient(age > 20 && < 60)
         
     then
-        kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+       ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+       insert(pi);
         
 end*/
 
@@ -51,7 +53,9 @@ rule "Start Default Heart Attack Procedure if not emergency was found"
         
     then
         System.out.println(">>>>>>>>>>>>>>>>>>>>> KeySet: "+$procedureRequest.getParameters().keySet()+"- Parameters: " + $procedureRequest.getParameters().values() );
-        kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+        ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+        insert(pi);
+        
         
 end
 

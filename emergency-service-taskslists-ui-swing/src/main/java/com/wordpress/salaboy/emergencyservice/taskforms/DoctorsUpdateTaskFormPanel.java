@@ -12,7 +12,7 @@
 package com.wordpress.salaboy.emergencyservice.taskforms;
 
 import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPanel;
+import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.io.ByteArrayOutputStream;
@@ -36,13 +36,13 @@ import org.jbpm.task.service.ContentData;
  * @author salaboy
  * @author esteban
  */
-public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
+public class DoctorsUpdateTaskFormPanel extends javax.swing.JPanel {
     private HumanTaskService taskClient; 
     private String taskId;
-    private SelectVehicleTaskListPanel parent;
+    private DoctorsUpdateTaskListPanel parent;
     
     /** Creates new form AmbulancePanel */
-    public SelectVehicleTaskFormPanel(SelectVehicleTaskListPanel parent, HumanTaskService taskClient,  String taskId) {
+    public DoctorsUpdateTaskFormPanel(DoctorsUpdateTaskListPanel parent, HumanTaskService taskClient,  String taskId) {
         
         this.parent = parent;
         this.taskClient = taskClient;
@@ -50,9 +50,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         
         initComponents();
         
-//        lblMedBone.setVisible(false);
-//        lblMedFire.setVisible(false);
-//        lblMedHeart.setVisible(false);
+
         
     }
 
@@ -65,40 +63,26 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        sendSelectedVehiclesjButton = new javax.swing.JButton();
+        updateSituationjButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        selectedVehiclesjTable = new javax.swing.JTable();
         taskActionjButton = new javax.swing.JButton();
-        btnRefresh = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
+        severityjComboBox = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        updatedNotesjTextArea = new javax.swing.JTextArea();
 
         setName("Ambulances"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 480));
 
-        sendSelectedVehiclesjButton.setText("Send Selected Vehicle(s)");
-        sendSelectedVehiclesjButton.addActionListener(new java.awt.event.ActionListener() {
+        updateSituationjButton.setText("Update Situation");
+        updateSituationjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendSelectedVehiclesjButtonActionPerformed(evt);
+                updateSituationjButtonActionPerformed(evt);
             }
         });
 
-        jLabel6.setText("Available Vehicles");
-
-        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
-        int i = 0;
-        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
-            vehicles[i][0] = vehicle.getId();
-            vehicles[i][1] = vehicle.getName();
-            i++;
-        }
-        selectedVehiclesjTable.setModel(new javax.swing.table.DefaultTableModel(
-            vehicles,
-            new String [] {
-                "ID", "Vehicle"
-            }
-        ));
-        jScrollPane1.setViewportView(selectedVehiclesjTable);
+        jLabel6.setText("Situation Severity");
 
         taskActionjButton.setText("Start");
         taskActionjButton.addActionListener(new java.awt.event.ActionListener() {
@@ -107,14 +91,15 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             }
         });
 
-        btnRefresh.setText("Refresh Vehicle List");
-        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRefreshActionPerformed(evt);
-            }
-        });
-
         jLabel7.setText("Task Action:");
+
+        severityjComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5" }));
+
+        jLabel8.setText("Notes");
+
+        updatedNotesjTextArea.setColumns(20);
+        updatedNotesjTextArea.setRows(5);
+        jScrollPane1.setViewportView(updatedNotesjTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -123,15 +108,18 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sendSelectedVehiclesjButton)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(taskActionjButton))
-                    .addComponent(btnRefresh))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(severityjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateSituationjButton)
+                    .addComponent(jLabel8))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,31 +128,27 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(taskActionjButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnRefresh)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
-                .addComponent(sendSelectedVehiclesjButton)
-                .addGap(25, 25, 25))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(severityjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
+                .addComponent(updateSituationjButton)
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sendSelectedVehiclesjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendSelectedVehiclesjButtonActionPerformed
+    private void updateSituationjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateSituationjButtonActionPerformed
         ObjectOutputStream out = null;
         try {
-            int[] selected = selectedVehiclesjTable.getSelectedRows();
             
-           List<Vehicle> selectedVehicles = new ArrayList<Vehicle>(selected.length);
-           
-            for(int i = 0; i < selected.length; i++){
-                selectedVehicles.add(DistributedPeristenceServerService.getInstance().loadVehicle((Long)selectedVehiclesjTable.getModel().getValueAt(i, 0)));
-            }
             Map<String, Object> info = new HashMap<String, Object>();
-            info.put("emergency.vehicles", selectedVehicles);
-            
+            info.put("emergency.severity", Integer.valueOf((String)severityjComboBox.getSelectedItem()) );
+            info.put("emergency.updatedNotes", updatedNotesjTextArea.getText());
 
             ContentData result = new ContentData();
             result.setAccessType(AccessType.Inline);
@@ -174,7 +158,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             out.writeObject(info);
             result.setContent(bos.toByteArray());
            
-            getTaskClient().setAuthorizedEntityId("garage_emergency_service");
+            getTaskClient().setAuthorizedEntityId("doctor");
             getTaskClient().complete(this.taskId, result);
             
 
@@ -195,7 +179,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } 
-    }//GEN-LAST:event_sendSelectedVehiclesjButtonActionPerformed
+    }//GEN-LAST:event_updateSituationjButtonActionPerformed
 
     private void taskActionjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskActionjButtonActionPerformed
         try {
@@ -207,7 +191,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         } catch (IllegalArgumentFault ex) {
             Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        getTaskClient().setAuthorizedEntityId("garage_emergency_service");
+        getTaskClient().setAuthorizedEntityId("doctor");
         try {
             getTaskClient().start(taskId);
         } catch (IllegalArgumentFault ex) {
@@ -221,31 +205,16 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         taskActionjButton.setEnabled(false);
 }//GEN-LAST:event_taskActionjButtonActionPerformed
 
-    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
-        int i = 0;
-        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
-            vehicles[i][0] = vehicle.getId();
-            vehicles[i][1] = vehicle.getName();
-            i++;
-        }
-        selectedVehiclesjTable.setModel(new javax.swing.table.DefaultTableModel(
-            vehicles,
-            new String [] {
-                "ID", "Vehicle"
-            }
-        ));
-    }//GEN-LAST:event_btnRefreshActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable selectedVehiclesjTable;
-    private javax.swing.JButton sendSelectedVehiclesjButton;
+    private javax.swing.JComboBox severityjComboBox;
     private javax.swing.JButton taskActionjButton;
+    private javax.swing.JButton updateSituationjButton;
+    private javax.swing.JTextArea updatedNotesjTextArea;
     // End of variables declaration//GEN-END:variables
 
     void configurePanel(String taskinfo) {
