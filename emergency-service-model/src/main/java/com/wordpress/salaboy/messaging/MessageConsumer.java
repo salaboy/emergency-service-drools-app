@@ -28,7 +28,7 @@ public class MessageConsumer {
     public MessageConsumer(String queueName, ClientSessionFactory factory) {
         this.queueName = queueName;
         try {
-            consumerSession = factory.createSession();
+            consumerSession = factory.createSession(true,true);
             consumer = consumerSession.createConsumer(queueName);
             consumerSession.start();
             factory.close();

@@ -11,11 +11,13 @@ import java.io.Serializable;
  * @author esteban
  */
 public class VehicleHitsCornerMessage implements Serializable {
+    private Long callId;
     private Long vehicleId;
     private int cornerX;
     private int cornery;
 
-    public VehicleHitsCornerMessage(Long vehicleId, int cornerX, int cornery) {
+    public VehicleHitsCornerMessage(Long callId, Long vehicleId, int cornerX, int cornery) {
+        this.callId = callId;
         this.vehicleId = vehicleId;
         this.cornerX = cornerX;
         this.cornery = cornery;
@@ -30,7 +32,7 @@ public class VehicleHitsCornerMessage implements Serializable {
         this.cornerX = cornerX;
     }
 
-    public int getCornery() {
+    public int getCornerY() {
         return cornery;
     }
 
@@ -45,5 +47,14 @@ public class VehicleHitsCornerMessage implements Serializable {
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
     }
+
+    public Long getCallId() {
+        return callId;
+    }
+
+    public void setCallId(Long callId) {
+        this.callId = callId;
+    }
      
+    
 }

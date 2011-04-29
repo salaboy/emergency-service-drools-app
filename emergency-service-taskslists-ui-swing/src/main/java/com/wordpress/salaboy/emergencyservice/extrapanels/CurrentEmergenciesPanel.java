@@ -88,14 +88,14 @@ public class CurrentEmergenciesPanel extends javax.swing.JPanel {
         if (ambulanceId == null) {
             //broadcast: pulse emulator
             for (Map.Entry<Long, EmergencyFrame> entry : emergencyFrames.entrySet()) {
-                entry.getValue().getEmergencyMonitorPanel().updateMonitorGraph(pulse);
+             //   entry.getValue().getEmergencyMonitorPanel().updateMonitorGraph(pulse);
             }
-        } else {
-            //direct event
-            EmergencyMonitorPanel emergencyMonitorPanel = this.getEmergencyFrameById(ambulanceId).getEmergencyMonitorPanel();
-            if (emergencyMonitorPanel != null) {
-                emergencyMonitorPanel.updateMonitorGraph(pulse);
-            }
+//        } else {
+//            //direct event
+//            HeartBeatMonitorPanel emergencyMonitorPanel = this.getEmergencyFrameById(ambulanceId).getEmergencyMonitorPanel();
+//            if (emergencyMonitorPanel != null) {
+//                emergencyMonitorPanel.updateMonitorGraph(pulse);
+//            }
         }
     }
 }

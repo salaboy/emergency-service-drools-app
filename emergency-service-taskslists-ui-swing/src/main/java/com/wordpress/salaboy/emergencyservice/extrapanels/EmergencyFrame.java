@@ -33,7 +33,7 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
 
     private UserTaskListUI parent;
     private Ambulance ambulance;
-    public EmergencyMonitorPanel emergencyMonitorPanel;
+//    public HeartBeatMonitorPanel emergencyMonitorPanel;
         
     /** Creates new form EmergencyFrame */
     public EmergencyFrame(UserTaskListUI parent, long ambulanceId) {
@@ -278,9 +278,9 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         return mainTabPanel;
     }
 
-    public EmergencyMonitorPanel getEmergencyMonitorPanel() {
-        return emergencyMonitorPanel;
-    }
+//    public HeartBeatMonitorPanel getEmergencyMonitorPanel() {
+//        return emergencyMonitorPanel;
+//    }
 
     public List<String> getAlerts() {
         return alerts;
@@ -304,9 +304,9 @@ public class EmergencyFrame extends javax.swing.JInternalFrame {
         return lblDirection;
     }
 
-    public void setEmergencyMonitorPanel(EmergencyMonitorPanel emergencyMonitorPanel) {
-        this.emergencyMonitorPanel = emergencyMonitorPanel;
-    }
+//    public void setEmergencyMonitorPanel(HeartBeatMonitorPanel emergencyMonitorPanel) {
+//        this.emergencyMonitorPanel = emergencyMonitorPanel;
+//    }
     
     public void refresh(){
         this.validate();
