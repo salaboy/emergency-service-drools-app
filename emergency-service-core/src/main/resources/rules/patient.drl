@@ -1,0 +1,31 @@
+package patient.wiimote;
+
+import java.util.ArrayList;
+import com.wordpress.salaboy.events.PulseEvent;
+
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
+
+declare PulseEvent
+    @role ( event )
+    @expires ( 20s )
+end
+
+global Long vehicleId;
+global Long callId;
+
+rule "Patient with no vital sign"
+    when
+        Number(doubleValue == 235 ) from accumulate( PulseEvent(processed == false, $pulse: value) over window:time(4s) from entry-point "patientHeartbeats",
+        												average($pulse)) 
+    then
+        //Notify about the new Emergency
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId,"Warning, patient without vital signs ", new java.util.Date()));
+end
+
+rule "Patient heart attack"
+    when
+        ArrayList(size > 10 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
+    then
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId,"Warning, patient suffering a heart attack ", new java.util.Date()));
+end

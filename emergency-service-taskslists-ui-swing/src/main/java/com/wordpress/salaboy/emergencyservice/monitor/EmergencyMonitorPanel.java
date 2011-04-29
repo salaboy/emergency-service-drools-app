@@ -12,16 +12,22 @@ package com.wordpress.salaboy.emergencyservice.monitor;
 
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.model.messages.HeartBeatMessage;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
+import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
+import com.wordpress.salaboy.services.PatientMonitorService;
+import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -34,7 +40,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private ImageIcon map;
     private MessageConsumerWorker gpsWorker;
     private MessageConsumerWorker heartBeatWorker;
+    private MessageConsumerWorker patientMonitorAlertWorker;
     private Long callId;
+    private List<String> alerts = new ArrayList<String>(); 
 
     /** Creates new form EmergencyMonitorPanel */
     public EmergencyMonitorPanel(Long callId) {
@@ -62,6 +70,10 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         lblMap = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstAlerts = new javax.swing.JList();
+        btnClear1 = new javax.swing.JButton();
 
         jPanel1.setName("GPS"); // NOI18N
 
@@ -75,6 +87,37 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
+
+        lstAlerts.setPreferredSize(new java.awt.Dimension(200, 0));
+        jScrollPane3.setViewportView(lstAlerts);
+        lstAlerts.setCellRenderer(new AlertsIconListRenderer());
+
+        btnClear1.setText("Clear");
+        btnClear1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClear1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnClear1)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnClear1))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -82,18 +125,23 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnClear)
-                    .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(75, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClear)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnClear)
-                .addGap(110, 110, 110))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClear))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane.addTab("GPS", jPanel1);
@@ -114,16 +162,25 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         this.loadMapImage();
     }//GEN-LAST:event_btnClearActionPerformed
 
+    private void btnClear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClear1ActionPerformed
+        this.alerts.clear();
+        DefaultListModel emptyModel = new DefaultListModel();
+        this.lstAlerts.setModel(emptyModel);
+    }//GEN-LAST:event_btnClear1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnClear1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JLabel lblMap;
+    private javax.swing.JList lstAlerts;
     // End of variables declaration//GEN-END:variables
 
     private void startQueueListeners(){
-        gpsWorker = new MessageConsumerWorker("vehicleGPS", new MessageConsumerWorkerHandler<VehicleHitsCornerMessage>() {
-
+        gpsWorker = new MessageConsumerWorker("vehicleGPS"+callId, new MessageConsumerWorkerHandler<VehicleHitsCornerMessage>() {
             @Override
             public void handleMessage(VehicleHitsCornerMessage message) {
                 if (message.getCallId().equals(callId)){
@@ -132,8 +189,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             }
         });
         
-        heartBeatWorker = new MessageConsumerWorker("vehicleHeartBeat", new MessageConsumerWorkerHandler<HeartBeatMessage>() {
-
+        heartBeatWorker = new MessageConsumerWorker("vehicleHeartBeat"+callId, new MessageConsumerWorkerHandler<HeartBeatMessage>() {
             @Override
             public void handleMessage(HeartBeatMessage message) {
                 if (message.getCallId().equals(callId)){
@@ -143,6 +199,17 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             
         });
         
+        patientMonitorAlertWorker = new MessageConsumerWorker("patientMonitorAlerts"+callId, new MessageConsumerWorkerHandler<PatientMonitorAlertMessage>() {
+            @Override
+            public void handleMessage(PatientMonitorAlertMessage message) {
+                if (message.getCallId().equals(callId)){
+                    processPatientAlert(message.getVehicleId(), message.getTime(), message.getMessage());
+                }
+            }
+            
+        });
+        
+        patientMonitorAlertWorker.start();
         gpsWorker.start();
         heartBeatWorker.start();
     }
@@ -174,6 +241,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         
         stopPulseEmulator = true;
         
+        if (patientMonitorAlertWorker != null){
+            patientMonitorAlertWorker.stopWorker();
+        }
         if (heartBeatWorker != null){
             heartBeatWorker.stopWorker();
         }
@@ -199,7 +269,19 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         heartBeatWidgets.get(vehicleId).updateMonitorGraph(heartBeatValue);
     }
     
+    private void processPatientAlert(Long vehicleId, Date time, String message) {
+        alerts.add(0,vehicleId+" - " +message);
+        
+        DefaultListModel model = new DefaultListModel();
+        for (String alert : alerts) {
+            model.addElement(alert);
+        }
+        lstAlerts.setModel(model);
+        this.validate();
+    }
+    
     public static void main(String args[]){
+        PatientMonitorService.getInstance().newVehicleDispatched(0L, 0L);
         java.awt.EventQueue.invokeLater(new Runnable()    {
 
             @Override

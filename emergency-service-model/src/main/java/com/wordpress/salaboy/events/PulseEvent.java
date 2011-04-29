@@ -16,6 +16,8 @@ public class PulseEvent implements Serializable{
     
     private boolean processed;
     private int value;
+    private Long vehicleId;
+    private Long callId;
 
     public PulseEvent(int value) {
         this.value = value;
@@ -32,10 +34,26 @@ public class PulseEvent implements Serializable{
     public int getValue() {
         return value;
     }
-    
+
+    public Long getCallId() {
+        return callId;
+    }
+
+    public void setCallId(Long callId) {
+        this.callId = callId;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
     @Override
-    public String toString(){
-        return "[PulseEvent: "+" value = "+this.getValue()+", processed = "+this.isProcessed()+"]";
+    public String toString() {
+        return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + callId + '}';
     }
 
 }

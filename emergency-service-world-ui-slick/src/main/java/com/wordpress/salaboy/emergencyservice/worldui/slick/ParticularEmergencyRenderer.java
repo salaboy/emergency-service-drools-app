@@ -17,7 +17,7 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.messages.HeartBeatMessage;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
