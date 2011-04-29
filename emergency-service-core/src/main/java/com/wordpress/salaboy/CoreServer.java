@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
@@ -13,11 +14,14 @@ import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
+import com.wordpress.salaboy.services.PatientMonitorService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,15 +128,35 @@ public class CoreServer {
                 }
             });
             
-              //Vehicle Hits an Emergency Selected Worker
+            //Vehicle Hits an Emergency Selected Worker
             MessageConsumerWorker vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergency",new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
                 }
-            }); 
+            });
             
+            //Vehicle Dispatched
+            MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedCoreConsumer",new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+                @Override
+                public void handleMessage(VehicleDispatchedMessage message) {
+                    PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
+                }
+            });
             
+            //Heart Beat Received
+            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatCoreConsumer",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+                @Override
+                public void handleMessage(HeartBeatMessage message) {
+                    PulseEvent event = new PulseEvent((int)message.getHeartBeatValue());
+                    event.setCallId(message.getCallId());
+                    event.setVehicleId(message.getVehicleId());
+                    PatientMonitorService.getInstance().newHeartBeatReceived(event);
+                }
+            });
+            
+            heartBeatReceivedWorker.start();
+            vehicleDispatchedWorker.start();
             vehicleHitsEmergencyWorker.start();
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();
