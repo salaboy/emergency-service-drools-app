@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.model.messages;
+package com.wordpress.salaboy.model.messages.patient;
 
 import java.io.Serializable;
 import java.util.Date;
