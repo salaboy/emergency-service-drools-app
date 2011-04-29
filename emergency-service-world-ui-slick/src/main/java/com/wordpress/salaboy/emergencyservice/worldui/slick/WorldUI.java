@@ -6,6 +6,7 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,7 @@ import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
+import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
@@ -59,7 +61,7 @@ public class WorldUI extends BasicGame {
         gc.setVSync(true);
         gc.setAlwaysRender(true);
 
-        hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
+       // hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
 
         map = new BlockMap("data/cityMap.tmx");
 
@@ -134,7 +136,7 @@ public class WorldUI extends BasicGame {
 
     private void registerMessageConsumers() {
         //worldMessages queue
-        MessageConsumerWorker emergencyDetailsWorker = new MessageConsumerWorker("emergencyDetails", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+        MessageConsumerWorker emergencyDetailsWorker = new MessageConsumerWorker("emergencyDetailsWorldUI", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
 
             @Override
             public void handleMessage(final EmergencyDetailsMessage message) {
@@ -168,6 +170,27 @@ public class WorldUI extends BasicGame {
         });
 
         
+        MessageConsumerWorker hospitalSelectedWorker = new MessageConsumerWorker("hospitalSelectedWorldUI", new MessageConsumerWorkerHandler<HospitalSelectedMessage>() {
+
+            @Override
+            public void handleMessage(final HospitalSelectedMessage message) {
+                //Changes emergency animation
+                renderCommands.add(new Command() {
+
+                    public void execute() {
+                       
+                        if (emergencies.get(message.getCallId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getCallId());
+                            return;
+                        }
+                        selectHospitalForEmergency(message.getCallId(), message.getHospital());
+                        
+                    }
+
+                });
+            }
+        });
+        hospitalSelectedWorker.start();
         emergencyDetailsWorker.start();
         vehicleDispatchedWorker.start();
     }
@@ -235,6 +258,9 @@ public class WorldUI extends BasicGame {
         return currentRenderer;
     }
     
+    public void selectHospitalForEmergency(Long callId, Hospital hospital) {
+        this.renderers.get(callId).selectHospital(hospital);               
+    }
     
     
 }

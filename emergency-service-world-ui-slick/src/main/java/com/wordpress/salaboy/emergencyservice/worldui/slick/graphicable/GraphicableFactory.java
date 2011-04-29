@@ -48,7 +48,7 @@ public class GraphicableFactory {
         Animation myAmbulance = AnimationFactory.getAmbulanceAnimation().copy();
         EmergencyEntityBuilding central = CityEntities.buildings.get("911");
         Polygon myPolygon = new Polygon(new float[]{
-                    central.getX() * 16, central.getY() * 16,
+                    (central.getX() * 16), central.getY() * 16,
                     (central.getX() * 16) + 28,(central.getY() * 16),
                     (central.getX() * 16) + 28, (central.getY() * 16) + 28,
                     (central.getX() * 16), (central.getY() * 16) + 28
@@ -100,8 +100,8 @@ public class GraphicableFactory {
 
         Polygon myHospitalPolygon = new Polygon(new float[]{
                     Math.round(hospital.getPositionX()) * 16, Math.round(hospital.getPositionY()) * 16,
-                    Math.round(hospital.getPositionX()) * 16 + 16, Math.round(hospital.getPositionY()) * 16,
-                    Math.round(hospital.getPositionX()) * 16 + 16, Math.round(hospital.getPositionY()) * 16 + 16,
+                    (Math.round(hospital.getPositionX()) * 16) + 16, Math.round(hospital.getPositionY()) * 16,
+                    (Math.round(hospital.getPositionX()) * 16) + 16, Math.round(hospital.getPositionY()) * 16 + 16,
                     Math.round(hospital.getPositionX()) * 16, Math.round(hospital.getPositionY()) * 16 + 16
                 });
         graphHospital.setAnimation(myHospital);

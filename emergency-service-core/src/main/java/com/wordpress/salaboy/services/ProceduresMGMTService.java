@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -38,8 +39,10 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.model.serviceclient.InMemoryPersistenceService;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.conf.AccumulateFunctionOption;
 
 /**
  *
@@ -76,7 +79,7 @@ public class ProceduresMGMTService {
         } catch (IOException ex) {
             Logger.getLogger(ProceduresMGMTService.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+       System.out.println(">>>>>>. Before Starting the process"+DistributedPeristenceServerService.getInstance().loadEmergency((Long)parameters.get("emergency.id")));
        procedureSessions.get(callId).getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(procedureName, parameters));
        
     }
@@ -107,8 +110,9 @@ public class ProceduresMGMTService {
         GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
         GridNode remoteN1 = conn.connect();
 
-
-        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
+        KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
+        kbuilderConf.setOption(AccumulateFunctionOption.get("hospitalDistanceCalculator", new HospitalDistanceCalculator()));
+        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
@@ -133,6 +137,8 @@ public class ProceduresMGMTService {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
+        
+        
         
         remoteN1.set("DefaultHeartAttackProcedureSession" + callId, session);
 

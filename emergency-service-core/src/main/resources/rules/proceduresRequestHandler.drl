@@ -49,10 +49,10 @@ end*/
 rule "Start Default Heart Attack Procedure if not emergency was found"
     when
         $procedureRequest: ProcedureRequest() from entry-point "procedure request"
-        
-        
     then
         System.out.println(">>>>>>>>>>>>>>>>>>>>> KeySet: "+$procedureRequest.getParameters().keySet()+"- Parameters: " + $procedureRequest.getParameters().values() );
+        System.out.println("Emergency -> "+$procedureRequest.getParameters().get("emergency.id"));
+        System.out.println("Emergency Distribtued-> "+DistributedPeristenceServerService.getInstance().loadEmergency((Long)$procedureRequest.getParameters().get("emergency.id")));
         ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
         insert(pi);
         

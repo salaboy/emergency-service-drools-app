@@ -8,17 +8,21 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -87,6 +91,11 @@ public class CoreServer {
             DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
         }
         
+        for(Hospital hospital : CityEntities.hospitals){
+            System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
+            DistributedPeristenceServerService.getInstance().storeHospital(hospital);
+        }
+        
         //Start Workers
         startQueuesWorkers();
         
@@ -116,11 +125,12 @@ public class CoreServer {
             }); 
             
               //Emergency Details Persistence Selected Worker
-            MessageConsumerWorker emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetails",new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+            MessageConsumerWorker emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetailsCoreServer",new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
                     DistributedPeristenceServerService.getInstance()
                                 .storeEmergency(emergencyDetailsMessage.getEmergency());
+                    
                 }
             });
             
@@ -132,7 +142,16 @@ public class CoreServer {
                 }
             }); 
             
+              //Vehicle Hits an Hospital Selected Worker
+            MessageConsumerWorker vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospital",new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+                @Override
+                public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
+                    ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
+                    //Call Patient Monitor Service removeVehicle(vehicleId)
+                }
+            }); 
             
+            vehicleHitsHospitalWorker.start();
             vehicleHitsEmergencyWorker.start();
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();

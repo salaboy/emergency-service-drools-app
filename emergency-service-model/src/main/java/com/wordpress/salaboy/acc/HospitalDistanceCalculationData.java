@@ -6,6 +6,7 @@
 package com.wordpress.salaboy.acc;
 
 import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import java.io.Serializable;
 
@@ -16,15 +17,15 @@ import java.io.Serializable;
 public class HospitalDistanceCalculationData implements Serializable {
 
     private Hospital hospital;
-    private Ambulance ambulance;
+    private Emergency emergency;
 
-    public HospitalDistanceCalculationData(Hospital hospital, Ambulance ambulance) {
+    public HospitalDistanceCalculationData(Hospital hospital, Emergency emergency) {
         this.hospital = hospital;
-        this.ambulance = ambulance;
+        this.emergency = emergency;
     }
 
-    public Ambulance getAmbulance() {
-        return ambulance;
+    public Emergency getEmergency() {
+        return emergency;
     }
 
     public Hospital getHospital() {

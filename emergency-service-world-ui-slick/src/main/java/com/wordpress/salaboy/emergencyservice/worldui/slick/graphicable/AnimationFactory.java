@@ -4,8 +4,6 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
-import com.wordpress.salaboy.emergencyservice.worldui.slick.DELETE_MECityMapUI;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +53,7 @@ public class AnimationFactory {
 
             for (int row = 0; row < getHighlightedHospitalSpriteSheet().getHorizontalCount(); row++) {
                 for (int frame = 0; frame < getHighlightedHospitalSpriteSheet().getVerticalCount(); frame++) {
-                    highlightedHospitalAnimation.addFrame(getHighlightedHospitalSpriteSheet().getSprite(frame, row), 250);
+                    highlightedHospitalAnimation.addFrame(getHighlightedHospitalSpriteSheet().getSprite(row,frame), 250);
                 }
             }
         }
@@ -134,7 +132,11 @@ public class AnimationFactory {
 
     private static SpriteSheet getHighlightedHospitalSpriteSheet() {
         if (highlightedHospitalSprite == null) {
-            highlightedHospitalSprite = WorldUI.hospitalSheet;//new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
+            try {
+                highlightedHospitalSprite = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return highlightedHospitalSprite;
     }

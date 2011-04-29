@@ -10,9 +10,9 @@ import com.wordpress.salaboy.acc.HospitalDistanceCalculationData;
 import org.drools.runtime.process.WorkflowProcessInstance;
 
 import java.util.Map;
-
-import com.wordpress.salaboy.events.MapEventsNotifier;
-import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
 
 
@@ -22,33 +22,32 @@ query "getPatient"
     patient: Patient()
 end
 
-/*rule "Get Emergency Priority"
+rule "Initialize Emergency"
     salience 20
     ruleflow-group "hospital-selection"
     when
        $processInstance: WorkflowProcessInstance() 
     then
-
-end*/
+        Long emergencyId = (Long)$processInstance.getVariable("emergency.id");
+        
+        insert(DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId));
+end
 
 rule "Rank Hospital Speciality that matches EmergencyType"
     
     ruleflow-group "hospital-selection"
     when
         $processInstance: WorkflowProcessInstance()
-     //   $emergency: Emergency($type: type.name)
-        
-        //$selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
-            //hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $ambulance))
+        $emergency: Emergency($type: type.name)
+        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from DistributedPeristenceServerService.getInstance().getAllHospitals(), 
+                hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $emergency))
 
-//        )
-       // $num: Number() from accumulate($hospital: Hospital() from hospitals.values(), sum($hospital))
-        //@TODO add more filters
+        )
+      
 
     then
-        //@TODO use the 
-        System.out.println("I'm fine!! thanks!!!"+$processInstance.getVariable("emergency.updatedNotes"));
-        //System.out.println("Hospital Selected"+$selectedHospital);
-      
+        Long callId = (Long)$processInstance.getVariable("call.id");
+        //Send Hospital Selected Message
+        MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
         
 end

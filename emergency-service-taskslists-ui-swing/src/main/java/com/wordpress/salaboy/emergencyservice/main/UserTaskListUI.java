@@ -448,7 +448,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
             tableModel.removeRow(0);
         }
 
-        for (Hospital hospital : CityEntities.hospitals.values()) {
+        for (Hospital hospital : CityEntities.hospitals) {
             for (Patient patient : hospital.getPatients()) {
                 tableModel.addRow(new Object[]{patient.getId(), patient.getGender(), patient.getAge(), patient.getGender(), hospital.getName()});
 

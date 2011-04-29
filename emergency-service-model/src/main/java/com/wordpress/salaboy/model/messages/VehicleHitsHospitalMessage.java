@@ -12,16 +12,19 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class VehicleHitsEmergencyMessage implements Serializable {
+public class VehicleHitsHospitalMessage implements Serializable {
     private Long vehicleId;
     private Long callId;
     private Date time;
-    
-    public VehicleHitsEmergencyMessage(Long vehicleId, Long callId, Date time) {
+    private Hospital hospital;
+    public VehicleHitsHospitalMessage(Long vehicleId, Hospital hospital, Long callId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
-        this.time = time; 
+        this.time = time;
+        this.hospital = hospital;
     }
+
+    
 
     public Long getCallId() {
         return callId;
@@ -45,6 +48,10 @@ public class VehicleHitsEmergencyMessage implements Serializable {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public Hospital getHospital() {
+        return hospital;
     }
     
 }

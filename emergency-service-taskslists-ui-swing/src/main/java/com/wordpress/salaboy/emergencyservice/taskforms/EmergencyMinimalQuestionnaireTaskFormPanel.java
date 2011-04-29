@@ -268,10 +268,10 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
         System.out.println("TaskInfo = "+taskinfo);
         String timestamp = values[0].trim(); 
         String phoneNumber = values[1].trim(); 
-        String locationX = values[2].trim();
-        String locationY = values[3].trim();
-        locationxjTextField.setText(locationX);
-        locationyjTextField.setText(locationY);
+        Integer locationX = Integer.valueOf(values[2].trim());
+        Integer locationY = Integer.valueOf(values[3].trim());
+        locationxjTextField.setText(locationX.toString());
+        locationyjTextField.setText(locationY.toString());
         phoneCalljLabel.setText("Time: "+timestamp +" - Phone Number: "+phoneNumber);
     }
     
@@ -280,8 +280,8 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
         try {
 
             Map<String, Object> info = new HashMap<String, Object>();
-            info.put("emergency.locationx", locationxjTextField.getText());
-            info.put("emergency.locationy", locationyjTextField.getText());
+            info.put("emergency.locationx", Integer.valueOf(locationxjTextField.getText()));
+            info.put("emergency.locationy", Integer.valueOf(locationyjTextField.getText()));
             info.put("emergency.type", emergencyTypeJComboBox.getModel().getSelectedItem());
             info.put("emergency.nroofpeople", Integer.valueOf(nroOfPeoplejFormattedTextField.getText()));
             if(nroOfPeoplejFormattedTextField.getText().equals("1")){

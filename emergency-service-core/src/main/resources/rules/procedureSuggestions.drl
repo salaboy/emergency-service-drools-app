@@ -19,8 +19,8 @@ rule "Initialize Emergency"
 
     then
         String type = (String)$processInstance.getVariable("emergency.type");
-        String locationX = (String)$processInstance.getVariable("emergency.locationx");
-        String locationY = (String)$processInstance.getVariable("emergency.locationy");
+        Integer locationX = (Integer)$processInstance.getVariable("emergency.locationx");
+        Integer locationY = (Integer)$processInstance.getVariable("emergency.locationy");
         int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
         Call call = (Call)$processInstance.getVariable("call");
         Emergency emergency = new Emergency();
@@ -34,11 +34,14 @@ rule "Initialize Emergency"
             insert(new Patient(patientAge, patientGender));
         }
         $processInstance.setVariable("emergency.id",emergency.getId());
+        
+        //Notify about the new Emergency
+        MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
+
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
 
-        //Notify about the new Emergency
-        MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
+        
 end
 
 

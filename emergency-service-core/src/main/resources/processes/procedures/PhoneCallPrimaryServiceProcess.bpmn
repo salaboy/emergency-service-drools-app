@@ -15,8 +15,8 @@
   
   <itemDefinition id="_emergency.idItem" structureRef="Long" />
   <itemDefinition id="_emergency.typeItem" structureRef="String" />
-  <itemDefinition id="_emergency.locationxItem" structureRef="String" />
-  <itemDefinition id="_emergency.locationyItem" structureRef="String" />
+  <itemDefinition id="_emergency.locationxItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.locationyItem" structureRef="Integer" />
   <itemDefinition id="_emergency.nroofpeopleItem" structureRef="Integer" />
   <itemDefinition id="_patient.ageItem" structureRef="Integer" />
   <itemDefinition id="_patient.genderItem" structureRef="String" />

@@ -65,9 +65,9 @@ public class CityEntities {
     }
     
     public static Hospital getHospitalById(Long id){
-        for (Map.Entry<String, Hospital> entry : hospitals.entrySet()) {
-            if (entry.getValue().getId().compareTo(id) == 0){
-                return entry.getValue();
+        for (Hospital hospital : hospitals) {
+            if (hospital.getId().compareTo(id) == 0){
+                return hospital;
             }
         }
         return null;
@@ -97,11 +97,11 @@ public class CityEntities {
         }
     };
     
-    public static final Map<String, Hospital> hospitals = new HashMap<String, Hospital>(){{
+    public static final List< Hospital> hospitals = new ArrayList<Hospital>(){{
         
-        put("Hosital 01", new Hospital("Hospital 01", 11, 13));
-        put("Hosital 02", new Hospital("Hospital 02", 35, 13));
-        put("Hosital 03", new Hospital("Hospital 03", 17, 25));
+        add(new Hospital("Hospital 01", 11, 13));
+        add(new Hospital("Hospital 02", 35, 13));
+        add(new Hospital("Hospital 03", 17, 25));
        
     
     }};
@@ -113,11 +113,11 @@ public class CityEntities {
     }};
     
     public static Hospital getHospitalByCoordinates(float x, float y) {
-        Collection<Hospital> myhospitals = CityEntities.hospitals.values();
+        
         float newx = Math.round(x/16);
         float newy = Math.round(x/16);
         
-        for(Hospital thishospital : myhospitals){
+        for(Hospital thishospital : CityEntities.hospitals){
             if(thishospital.getPositionX() == newx && thishospital.getPositionY() == newy){
                 return thishospital;
             }

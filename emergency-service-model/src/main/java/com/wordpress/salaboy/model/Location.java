@@ -12,31 +12,31 @@ import java.io.Serializable;
  * @author salaboy
  */
 public class Location implements Serializable{
-    private String locationX;
-    private String locationY;
+    private Integer locationX;
+    private Integer locationY;
 
     public Location() {
     }
 
     
-    public Location(String locationX, String locationY) {
+    public Location(Integer locationX, Integer locationY) {
         this.locationX = locationX;
         this.locationY = locationY;
     }
 
-    public String getLocationX() {
+    public Integer getLocationX() {
         return locationX;
     }
 
-    public void setLocationX(String locationX) {
+    public void setLocationX(Integer locationX) {
         this.locationX = locationX;
     }
 
-    public String getLocationY() {
+    public Integer getLocationY() {
         return locationY;
     }
 
-    public void setLocationY(String locationY) {
+    public void setLocationY(Integer locationY) {
         this.locationY = locationY;
     }
 

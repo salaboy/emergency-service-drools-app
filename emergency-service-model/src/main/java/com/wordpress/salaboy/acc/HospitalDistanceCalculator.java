@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.acc;
 
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -50,10 +50,10 @@ public class HospitalDistanceCalculator implements AccumulateFunction, Serializa
         
         HospitalDistanceCalculationData data = (HospitalDistanceCalculationData)value;
         Hospital currentHospital = data.getHospital();
-        Ambulance ambulance = data.getAmbulance();
+        Emergency emergency = data.getEmergency();
         
-        float difX = currentHospital.getPositionX() - ambulance.getPositionX(); 
-        float difY = currentHospital.getPositionY() - ambulance.getPositionY(); 
+        float difX = currentHospital.getPositionX() - emergency.getLocation().getLocationX();
+        float difY = currentHospital.getPositionY() - emergency.getLocation().getLocationY();
         
         double difTotal = Math.sqrt(Math.pow(((double)difX),2d) + Math.pow(((double)difY),2d));
 

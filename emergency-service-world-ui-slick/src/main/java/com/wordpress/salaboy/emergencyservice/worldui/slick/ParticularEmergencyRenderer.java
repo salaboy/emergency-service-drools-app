@@ -7,15 +7,19 @@ package com.wordpress.salaboy.emergencyservice.worldui.slick;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphicable;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
+import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableHighlightedHospital;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableVehicle;
 import com.wordpress.salaboy.events.keyboard.KeyboardPulseEventGenerator;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,7 +43,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private GraphicableVehicle activeGraphicableVehicle;
     private List<GraphicableVehicle> graphicableVehicles;
     private Vehicle activeVehicle;
-    private Map<Graphicable,Vehicle> vehicles;
+    private Map<Graphicable, Vehicle> vehicles;
+    private GraphicableHighlightedHospital selectedHospital;
     private boolean turbo;
 
     public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
@@ -59,33 +64,43 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         for (Graphicable vehicle : graphicableVehicles) {
             g.draw(vehicle.getPolygon());
         }
+        if (selectedHospital != null) {
+            g.draw(selectedHospital.getPolygon());
+        }
     }
 
     public void renderAnimation(GameContainer gc, Graphics g) {
         g.drawAnimation(emergency.getAnimation(), emergency.getPolygon().getX(), emergency.getPolygon().getY());
         for (Graphicable vehicle : graphicableVehicles) {
             //the active vehicle is rendered at the end
-            if (activeGraphicableVehicle == null || activeGraphicableVehicle != vehicle){
+            if (activeGraphicableVehicle == null || activeGraphicableVehicle != vehicle) {
                 g.drawAnimation(vehicle.getAnimation(), vehicle.getPolygon().getX(), vehicle.getPolygon().getY());
             }
         }
-        
-        if (activeGraphicableVehicle != null){
+
+        if (activeGraphicableVehicle != null) {
             g.drawAnimation(activeGraphicableVehicle.getAnimation(), activeGraphicableVehicle.getPolygon().getX(), activeGraphicableVehicle.getPolygon().getY());
+        }
+        if (selectedHospital != null) {
+            g.drawAnimation(selectedHospital.getAnimation(), selectedHospital.getPolygon().getX() - 32, selectedHospital.getPolygon().getY() - 80);
         }
     }
 
     public void addVehicle(Vehicle vehicle) {
-        
+
         this.activeGraphicableVehicle = GraphicableFactory.newVehicle(vehicle);
-        
+
         vehicle.setPositionX(this.activeGraphicableVehicle.getPolygon().getX());
         vehicle.setPositionY(this.activeGraphicableVehicle.getPolygon().getY());
 
-        this.vehicles.put(activeGraphicableVehicle,vehicle);
+        this.vehicles.put(activeGraphicableVehicle, vehicle);
         this.graphicableVehicles.add(activeGraphicableVehicle);
-        
+
         this.activeVehicle = vehicle;
+    }
+
+    public void selectHospital(Hospital hospital) {
+        selectedHospital = GraphicableFactory.newHighlightedHospital(hospital);
     }
 
     public void onKeyPressed(int code, char key) {
@@ -97,6 +112,12 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             addMockFireTruck();
         } else if (Input.KEY_F3 == code) {
             addMockPoliceCar();
+        } else if (Input.KEY_F4 == code) {
+            selectMockHospital(0L);
+        } else if (Input.KEY_F5 == code) {
+            selectMockHospital(1L);
+        } else if (Input.KEY_F6 == code) {
+            selectMockHospital(2L);
         } else if (Input.KEY_LSHIFT == code) {
             this.turbo = true;
         } else {
@@ -113,7 +134,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     public void onClick(int button, int x, int y, int count) {
         for (GraphicableVehicle graphicable : graphicableVehicles) {
-            if (graphicable.getPolygon().contains(x, y)){
+            if (graphicable.getPolygon().contains(x, y)) {
                 this.activeGraphicableVehicle = graphicable;
                 this.activeVehicle = vehicles.get(this.activeGraphicableVehicle);
                 return;
@@ -189,7 +210,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         int playerX = (int) currentVehicle.getPositionX();
         int playerY = (int) currentVehicle.getPositionY();
-        
+
         if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
             playerX += delta;
         } else if (direction == Input.KEY_UP || direction == Input.KEY_DOWN) {
@@ -200,7 +221,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         this.activeGraphicableVehicle.getPolygon().setY(playerY);
         currentVehicle.setPositionX(playerX);
         currentVehicle.setPositionY(playerY);
-        
+
         if (checkEntityCollision()) {
             if (direction == Input.KEY_LEFT || direction == Input.KEY_RIGHT) {
                 playerX -= delta;
@@ -231,52 +252,46 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
 
         boolean collides = false;
-        
+
         collides = this.activeGraphicableVehicle.getPolygon().intersects(emergency.getPolygon());
-        
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAnEmergency() && !this.activeGraphicableVehicle.isAlreadyHitAnEmergency()){
+
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAnEmergency() && !this.activeGraphicableVehicle.isAlreadyHitAnEmergency()) {
             try {
                 this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);
                 System.out.println("EMERGENCY REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), this.emergency.getCallId(),new Date()));
+                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), this.emergency.getCallId(), new Date()));
             } catch (HornetQException ex) {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         this.activeGraphicableVehicle.setIsCollidingWithAnEmergency(collides);
-        
+
         return collides;
-        
+
     }
 
     public synchronized boolean checkHospitalCollision() {
-        //if no vehicle, no collision
+
+
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
-
-        Block collidesWith = null; 
-        for (int i = 0; i < BlockMap.hospitals.size(); i++) {
-            Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
-                collidesWith = entity1;
-                break;
+        if (this.selectedHospital == null) {
+            return false;
+        }
+        if (this.activeGraphicableVehicle.getPolygon().intersects(selectedHospital.getPolygon())) {
+            try {
+                System.out.println("Hospital REACHED!");
+                MessageFactory.sendMessage(new VehicleHitsHospitalMessage(this.activeVehicle.getId(), selectedHospital.getHospital(), this.emergency.getCallId(), new Date()));
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
+            return true;
         }
-        
-        boolean collides = collidesWith != null;
-        
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAHospital()){
-            //TODO: add custom code. Maybe we should notify the ui about it
-            //and not add a message to the queue here
-            System.out.println("HOSPITAL REACHED!");
-        }
-        
-        this.activeGraphicableVehicle.setIsCollidingWithAHospital(collides);
-        
-        
-        return collides;
+        return false;
+
+
     }
 
     public boolean checkCornerCollision() {
@@ -285,7 +300,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             return false;
         }
 
-        Block collidesWith = null; 
+        Block collidesWith = null;
         for (int i = 0; i < BlockMap.corners.size(); i++) {
             Block entity1 = (Block) BlockMap.corners.get(i);
             if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
@@ -293,21 +308,21 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 break;
             }
         }
-        
+
         boolean collides = collidesWith != null;
-        
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithACorner()){
+
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithACorner()) {
             try {
                 System.out.println("CORNER REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.activeVehicle.getId(), (int)collidesWith.poly.getX(), (int)collidesWith.poly.getY()));
+                MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.activeVehicle.getId(), (int) collidesWith.poly.getX(), (int) collidesWith.poly.getY()));
             } catch (HornetQException ex) {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         this.activeGraphicableVehicle.setIsCollidingWithACorner(collides);
-        
-        
+
+
         return collides;
     }
 
@@ -333,5 +348,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         policeCar.setId(System.currentTimeMillis());
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), policeCar);
+    }
+
+    private void selectMockHospital(Long hospitalId) {
+        Hospital mock = DistributedPeristenceServerService.getInstance().loadHospital(hospitalId);
+        selectHospital(mock);
     }
 }
