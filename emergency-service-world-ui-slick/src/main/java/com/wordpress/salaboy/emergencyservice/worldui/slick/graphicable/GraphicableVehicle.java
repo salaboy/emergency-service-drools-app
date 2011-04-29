@@ -16,6 +16,7 @@ public abstract class GraphicableVehicle implements Graphicable {
     private boolean isCollidingWithACorner;
     private boolean isCollidingWithAnEmergency;
     private boolean isCollidingWithAHospital;
+    private boolean alreadyHitAnEmergency;
 
     public boolean isIsCollidingWithACorner() {
         return isCollidingWithACorner;
@@ -40,6 +41,13 @@ public abstract class GraphicableVehicle implements Graphicable {
     public void setIsCollidingWithAnEmergency(boolean isCollidingWithAnEmergency) {
         this.isCollidingWithAnEmergency = isCollidingWithAnEmergency;
     }
-    
+
+    public boolean isAlreadyHitAnEmergency() {
+        return alreadyHitAnEmergency;
+    }
+
+    public void setAlreadyHitAnEmergency(boolean alreadyHitAnEmergency) {
+        this.alreadyHitAnEmergency = alreadyHitAnEmergency;
+    }
     
 }

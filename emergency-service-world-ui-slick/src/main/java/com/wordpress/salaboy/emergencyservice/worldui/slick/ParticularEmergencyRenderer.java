@@ -15,7 +15,9 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +132,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             this.moveVehicle(Input.KEY_DOWN);
         }
 
-        //check for collitions
+        //check for collisions
         checkCornerCollision();
         checkEmergencyCollision();
         checkHospitalCollision();
@@ -223,7 +225,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     public synchronized boolean checkEmergencyCollision() {
-        //if no vehicle, no collition
+        //if no vehicle, no collision
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
@@ -232,10 +234,14 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         
         collides = this.activeGraphicableVehicle.getPolygon().intersects(emergency.getPolygon());
         
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAnEmergency()){
-            //TODO: add custom code. Maybe we should notify the ui about it
-            //and not add a message to the queue here
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAnEmergency() && !this.activeGraphicableVehicle.isAlreadyHitAnEmergency()){
+            try {
+                this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);
                 System.out.println("EMERGENCY REACHED!");
+                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), this.emergency.getCallId(),new Date()));
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         this.activeGraphicableVehicle.setIsCollidingWithAnEmergency(collides);
@@ -245,7 +251,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     public synchronized boolean checkHospitalCollision() {
-        //if no vehicle, no collition
+        //if no vehicle, no collision
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
@@ -274,7 +280,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     public boolean checkCornerCollision() {
-        //if no vehicle, no collition
+        //if no vehicle, no collision
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
