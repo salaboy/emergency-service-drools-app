@@ -14,7 +14,8 @@
 
   
   <itemDefinition id="_call.idItem" structureRef="Long" />
-  <itemDefinition id="_emergency.priorityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
   <itemDefinition id="_emergency.idItem" structureRef="Long" />
   <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
   <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
@@ -28,7 +29,8 @@
     <property id="call.id" itemSubjectRef="_call.idItem"/>
     <property id="emergency.id" itemSubjectRef="_emergency.idItem"/>
     <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
-    <property id="emergency.priority" itemSubjectRef="_emergency.priorityItem"/>
+    <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
+    <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/>
     <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
     
@@ -157,20 +159,27 @@
         <dataInput id="_6_TaskNameInput" name="TaskName" />
         <dataInput id="_6_PriorityInput" name="Priority" />
         <dataInput id="_6_call.IdInput" name="call.id" />
-        <dataOutput id="_6_emergency.priorityOutput" name="emergency.priority" />
+        <dataInput id="_6_emergency.IdInput" name="emergency.id" />
+        <dataOutput id="_6_emergency.severityOutput" name="emergency.severity" />
+        <dataOutput id="_6_emergency.updatedNotesOutput" name="emergency.updatedNotes" />
         
         <inputSet>
           <dataInputRefs>_6_call.IdInput</dataInputRefs>
-          
+          <dataInputRefs>_6_emergency.IdInput</dataInputRefs>
         </inputSet>
         <outputSet>
-            <dataOutputRefs>_6_emergency.priorityOutput</dataOutputRefs>
+            <dataOutputRefs>_6_emergency.severityOutput</dataOutputRefs>
+            <dataOutputRefs>_6_emergency.updatedNotesOutput</dataOutputRefs>
           
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
         <sourceRef>call.id</sourceRef>
         <targetRef>_6_call.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency.id</sourceRef>
+        <targetRef>_6_emergency.IdInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_CommentInput</targetRef>
@@ -196,7 +205,7 @@
       <dataInputAssociation>
         <targetRef>_6_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> Select Vehicle For #{call.id} </from>
+          <from xs:type="tFormalExpression"> Doctor's Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
           <to xs:type="tFormalExpression">_6_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
@@ -208,10 +217,13 @@
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_6_emergency.priorityOutput</sourceRef>
-        <targetRef>emergency.priority</targetRef>
+        <sourceRef>_6_emergency.severityOutput</sourceRef>
+        <targetRef>emergency.severity</targetRef>
       </dataOutputAssociation>
-      
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.updatedNotesOutput</sourceRef>
+        <targetRef>emergency.updatedNotes</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>doctor</formalExpression>

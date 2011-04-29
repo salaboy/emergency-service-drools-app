@@ -18,6 +18,7 @@ import com.wordpress.salaboy.emergencyservice.extrapanels.About;
 import com.wordpress.salaboy.emergencyservice.extrapanels.EventGeneratorsConfigPanel;
 import com.wordpress.salaboy.emergencyservice.extrapanels.ServersStatusPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.ControlSuggestedProceduresTaskListPanel;
+import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPanel;
 import java.util.logging.Level;
@@ -27,7 +28,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import javax.swing.JFrame;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
@@ -45,27 +45,27 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private IncomingPhoneCallsTaskListPanel phoneCallsTaskListPanel;
     private ControlSuggestedProceduresTaskListPanel controlSuggestedProceduresTaskListPanel;
     private SelectVehicleTaskListPanel selectAmbulanceTaskListPanel;
+    private DoctorsUpdateTaskListPanel doctorsUpdateTaskListPanel;
   
 
 
     /** Creates new form UserUI */
     public UserTaskListUI() {
         initComponents();
-        
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
         initTaskClient();
-
+        
+        
+        //Initializing Distribtued Persistence Service
+        DistributedPeristenceServerService.getInstance();
         
         phoneCallsTaskListPanel = new IncomingPhoneCallsTaskListPanel(this);
         controlSuggestedProceduresTaskListPanel = new ControlSuggestedProceduresTaskListPanel(this);
         selectAmbulanceTaskListPanel = new SelectVehicleTaskListPanel(this);
+        doctorsUpdateTaskListPanel = new DoctorsUpdateTaskListPanel(this);
         this.mainJTabbedPane.add(this.phoneCallsTaskListPanel, 0);
         this.mainJTabbedPane.add(this.controlSuggestedProceduresTaskListPanel, 1);
         this.mainJTabbedPane.add(this.selectAmbulanceTaskListPanel, 2);
+        this.mainJTabbedPane.add(this.doctorsUpdateTaskListPanel, 3);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
         
        

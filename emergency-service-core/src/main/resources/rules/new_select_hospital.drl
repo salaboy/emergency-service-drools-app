@@ -14,40 +14,40 @@ import java.util.Map;
 import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 
-global Map hospitals;
-global MapEventsNotifier mapEventsNotifier;
+
+
 
 query "getPatient"
     //@TODO add more filters per process/emergency
     patient: Patient()
 end
 
-rule "Get Emergency Priority"
+/*rule "Get Emergency Priority"
     salience 20
-    ruleflow-group "hospital_selection"
+    ruleflow-group "hospital-selection"
     when
        $processInstance: WorkflowProcessInstance() 
     then
 
-end
+end*/
 
 rule "Rank Hospital Speciality that matches EmergencyType"
     
-    ruleflow-group "hospital_selection"
+    ruleflow-group "hospital-selection"
     when
         $processInstance: WorkflowProcessInstance()
-        $emergency: Emergency($type: type.name)
-        $ambulance: Ambulance()
+     //   $emergency: Emergency($type: type.name)
+        
         //$selectedHospital: Hospital() from accumulate ($hospital: Hospital() from hospitals.values(), 
             //hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $ambulance))
 
 //        )
-        $num: Number() from accumulate($hospital: Hospital() from hospitals.values(), sum($hospital))
+       // $num: Number() from accumulate($hospital: Hospital() from hospitals.values(), sum($hospital))
         //@TODO add more filters
 
     then
         //@TODO use the 
-        System.out.println("I'm fine!! thanks!!!"+$num);
+        System.out.println("I'm fine!! thanks!!!"+$processInstance.getVariable("emergency.updatedNotes"));
         //System.out.println("Hospital Selected"+$selectedHospital);
       
         

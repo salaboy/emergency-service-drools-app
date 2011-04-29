@@ -71,7 +71,10 @@ public class WorldUI extends BasicGame {
         
         gc.getInput().addKeyListener(new WorldKeyListener(this));
         gc.getInput().addMouseListener(new WorldMouseListener(this));
-
+        
+        //Initializing Distribtued Persistence Service
+        DistributedPeristenceServerService.getInstance();
+        
         registerMessageConsumers();
 
     }
