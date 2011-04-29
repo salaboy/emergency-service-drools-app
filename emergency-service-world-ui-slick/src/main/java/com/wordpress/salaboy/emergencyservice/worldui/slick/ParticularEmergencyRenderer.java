@@ -5,6 +5,7 @@
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphicable;
+import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableHighlightedHospital;
@@ -16,15 +17,16 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
@@ -106,6 +108,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     public void onKeyPressed(int code, char key) {
         if (Input.KEY_ESCAPE == code) {
             this.ui.goToGlobalMap();
+        } else if (Input.KEY_Q == code) {
+            this.sendHeartBeat(new Random().nextInt(50));
+        } else if (Input.KEY_W == code) {
+            this.sendHeartBeat(-1 * new Random().nextInt(50));
         } else if (Input.KEY_F1 == code) {
             addMockAmbulance();
         } else if (Input.KEY_F2 == code) {
@@ -277,21 +283,28 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
-        if (this.selectedHospital == null) {
-            return false;
-        }
-        if (this.activeGraphicableVehicle.getPolygon().intersects(selectedHospital.getPolygon())) {
-            try {
-                System.out.println("Hospital REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsHospitalMessage(this.activeVehicle.getId(), selectedHospital.getHospital(), this.emergency.getCallId(), new Date()));
-            } catch (HornetQException ex) {
-                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+
+        Block collidesWith = null;
+        for (int i = 0; i < BlockMap.hospitals.size(); i++) {
+            Block entity1 = (Block) BlockMap.hospitals.get(i);
+            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
+                collidesWith = entity1;
+                break;
             }
-            return true;
         }
-        return false;
+
+        boolean collides = collidesWith != null;
+
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAHospital()) {
+            //TODO: add custom code. Maybe we should notify the ui about it
+            //and not add a message to the queue here
+            System.out.println("HOSPITAL REACHED!");
+        }
+
+        this.activeGraphicableVehicle.setIsCollidingWithAHospital(collides);
 
 
+        return collides;
     }
 
     public boolean checkCornerCollision() {
@@ -314,7 +327,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (collides && !this.activeGraphicableVehicle.isIsCollidingWithACorner()) {
             try {
                 System.out.println("CORNER REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.activeVehicle.getId(), (int) collidesWith.poly.getX(), (int) collidesWith.poly.getY()));
+                MessageFactory.sendMessage(new VehicleHitsCornerMessage(this.emergency.getCallId(), this.activeVehicle.getId(), (int) collidesWith.poly.getX(), (int) collidesWith.poly.getY()));
             } catch (HornetQException ex) {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -350,8 +363,23 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), policeCar);
     }
 
-    private void selectMockHospital(Long hospitalId) {
-        Hospital mock = DistributedPeristenceServerService.getInstance().loadHospital(hospitalId);
+    private void sendHeartBeat(int pulse) {
+        //only if the active vehicle is an ambulance
+        if (this.activeGraphicableVehicle == null || !(this.activeGraphicableVehicle instanceof GraphicableAmbulance)){
+            return;
+        }
+        
+        pulse += 235;
+        try {
+            this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);
+            MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), pulse, new Date()));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void selectMockHospital(long l) {
+        Hospital mock = DistributedPeristenceServerService.getInstance().loadHospital(l);
         selectHospital(mock);
     }
 }

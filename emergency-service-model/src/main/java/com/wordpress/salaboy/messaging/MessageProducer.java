@@ -28,7 +28,7 @@ public class MessageProducer {
     public MessageProducer(String addressName, ClientSessionFactory factory) {
         this.addressName = addressName; 
         try {
-            producerSession = factory.createSession();
+            producerSession = factory.createSession(true,true);
             producer = producerSession.createProducer(addressName);
             producerSession.start();
             factory.close();
@@ -79,7 +79,6 @@ public class MessageProducer {
         producer.close();
         producerSession.stop();
         producerSession.close();
-        System.out.println("PRODUCER CLOSED!");
     }
     
 }

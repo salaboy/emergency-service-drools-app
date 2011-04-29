@@ -1,6 +1,5 @@
 package com.wordpress.salaboy.emergencyservice.extrapanels;
 
-import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyMonitorPanel;
 import com.wordpress.salaboy.events.MapEventsNotifier;
 import com.wordpress.salaboy.services.old.GridEmergencyService;
 import com.wordpress.salaboy.events.PatientVitalSignNotifierEvent;
@@ -74,7 +73,7 @@ public class AmbulanceMonitorService {
                     GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(evt, null));
                     Thread.sleep(1000);
                 } catch (Exception ex) {
-                    Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AmbulanceMonitorService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

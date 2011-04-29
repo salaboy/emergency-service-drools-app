@@ -7,7 +7,7 @@ package com.wordpress.salaboy.emergencyservice.taskslist.swing.events;
 
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyFrame;
-import com.wordpress.salaboy.emergencyservice.extrapanels.EmergencyMonitorPanel;
+//import com.wordpress.salaboy.emergencyservice.monitor.HeartBeatMonitorPanel;
 import com.wordpress.salaboy.events.HospitalSelectedNotifierEvent;
 import com.wordpress.salaboy.events.NotifierEvent;
 import com.wordpress.salaboy.events.WorldEventNotifier;
@@ -40,7 +40,7 @@ public class TaskListUIHospitalSelectedEventNotifier implements WorldEventNotifi
         
         emergencyFrame.getLblDirection().setText(text);
         System.out.println("\t\tTaskListUIHospitalSelectedEventNotifier ("+this+") adding a new monitor panel");
-        emergencyFrame.setEmergencyMonitorPanel(new EmergencyMonitorPanel(emergencyFrame));
+        //emergencyFrame.setEmergencyMonitorPanel(new HeartBeatMonitorPanel(emergencyFrame));
         
         System.out.println("Hospital Selected = "+hospital.toString());
        // UserTaskListUI.getInstance().getGame().addHospital(GraphicableFactory.newHighlightedHospital(CityEntitiesUtils.getHospitalById(hospitalId)));
