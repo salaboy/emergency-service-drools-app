@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author salaboy
  */
-public class HospitalSelectedMessage implements Serializable{
+public class HospitalSelectedMessage implements Serializable, EmergencyInterchangeMessage{
     private Hospital hospital;
     private Long callId;
 
@@ -35,6 +35,12 @@ public class HospitalSelectedMessage implements Serializable{
     public void setHospital(Hospital hospital) {
         this.hospital = hospital;
     }
+
+    @Override
+    public String toString() {
+        return "HospitalSelectedMessage{" + "hospital=" + hospital + ", callId=" + callId + '}';
+    }
+    
     
     
     

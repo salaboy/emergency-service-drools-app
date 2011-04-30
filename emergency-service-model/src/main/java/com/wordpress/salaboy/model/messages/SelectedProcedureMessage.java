@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author salaboy
  */
-public class SelectedProcedureMessage implements Serializable{
+public class SelectedProcedureMessage implements Serializable, EmergencyInterchangeMessage{
     private String procedureName;
     private Long callId;
     private Map<String, Object> parameters;
@@ -23,6 +23,7 @@ public class SelectedProcedureMessage implements Serializable{
         this.parameters = parameters;
     }
 
+    @Override
     public Long getCallId() {
         return callId;
     }
@@ -46,6 +47,12 @@ public class SelectedProcedureMessage implements Serializable{
     public Object getParameter(String key){
         return parameters.get(key);
     }
+
+    @Override
+    public String toString() {
+        return "SelectedProcedureMessage{" + "procedureName=" + procedureName + ", callId=" + callId + ", parameters=" + parameters + '}';
+    }
+    
     
     
     

@@ -4,11 +4,11 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
-import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.reporting.Report;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -50,12 +50,7 @@ public class DistributedPeristenceServerService {
         return cacheManager;
     }
 
-    public void storeCall(Call call) {
-        if (this.cache.get("calls") == null) {
-            cache.put("calls", new ConcurrentHashMap<Long, Call>());
-        }
-        ((Map<Long, Call>) this.cache.get("calls")).put(call.getId(), call);
-    }
+    
 
     public void storeEmergency(Emergency emergency) {
         if (this.cache.get("emergencies") == null) {
@@ -79,12 +74,7 @@ public class DistributedPeristenceServerService {
         ((Map<Long, Patient>) this.cache.get("patients")).put(patient.getId(), patient);
     }
 
-    public Call loadCall(Long id) {
-        if (this.cache.get("calls") == null) {
-            cache.put("calls", new ConcurrentHashMap<Long, Call>());
-        }
-        return ((Map<Long, Call>) this.cache.get("calls")).get(id);
-    }
+  
 
     public Emergency loadEmergency(Long id) {
         if (this.cache.get("emergencies") == null) {
@@ -127,5 +117,33 @@ public class DistributedPeristenceServerService {
 
     public Collection<Hospital> getAllHospitals() {
         return ((Map<Long, Hospital>) this.cache.get("hospitals")).values();
+    }
+    
+    public void addEntryToReport(Long callId, String entry){
+        if (this.cache.get("reports") == null) {
+            cache.put("reports", new ConcurrentHashMap<Long, Report>());
+        }
+        if(((Map<Long, Report>)cache.get("reports")).get(callId) == null){
+            ((Map<Long, Report>)cache.get("reports")).put(callId, new Report());
+        }
+        ((Map<Long, Report>)cache.get("reports")).get(callId).addEntry(entry);
+        
+    }
+    
+    public Report getReportByCallId(Long callId){
+        if (this.cache.get("reports") == null) {
+            cache.put("reports", new ConcurrentHashMap<Long, Report>());
+        }
+        if(((Map<Long, Report>)cache.get("reports")).get(callId) == null){
+            ((Map<Long, Report>)cache.get("reports")).put(callId, new Report());
+        }
+        return ((Map<Long, Report>)cache.get("reports")).get(callId);
+    }
+    
+    public Collection<Emergency> getAllEmergencies(){
+        if(cache.get("emergencies") == null){
+            cache.put("emergencies", new ConcurrentHashMap<Long, Emergency>());
+        }
+        return ((Map<Long, Emergency>)cache.get("emergencies")).values();
     }
 }

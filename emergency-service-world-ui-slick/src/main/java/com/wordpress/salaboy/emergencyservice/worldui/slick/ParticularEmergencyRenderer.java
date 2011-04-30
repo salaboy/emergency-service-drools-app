@@ -20,6 +20,7 @@ import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,7 @@ import org.hornetq.api.core.HornetQException;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Polygon;
 
 /**
  *
@@ -284,27 +286,31 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             return false;
         }
 
-        Block collidesWith = null;
-        for (int i = 0; i < BlockMap.hospitals.size(); i++) {
-            Block entity1 = (Block) BlockMap.hospitals.get(i);
-            if (this.activeGraphicableVehicle.getPolygon().intersects(entity1.poly)) {
-                collidesWith = entity1;
-                break;
+        if (this.selectedHospital == null) {
+            return false;
+        }
+        Polygon collidesWith = null;
+        if (this.activeGraphicableVehicle.getPolygon().intersects(selectedHospital.getPolygon())) {
+
+
+            
+            collidesWith = selectedHospital.getPolygon();
+
+        }
+        boolean collides = collidesWith != null;
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAHospital()) {
+            System.out.println("Hospital REACHED!");
+            try {
+                MessageFactory.sendMessage(new VehicleHitsHospitalMessage(this.activeVehicle.getId(), selectedHospital.getHospital(), this.emergency.getCallId(), new Date()));
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        boolean collides = collidesWith != null;
-
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAHospital()) {
-            //TODO: add custom code. Maybe we should notify the ui about it
-            //and not add a message to the queue here
-            System.out.println("HOSPITAL REACHED!");
-        }
-
         this.activeGraphicableVehicle.setIsCollidingWithAHospital(collides);
 
-
         return collides;
+
+
     }
 
     public boolean checkCornerCollision() {
@@ -365,10 +371,10 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     private void sendHeartBeat(int pulse) {
         //only if the active vehicle is an ambulance
-        if (this.activeGraphicableVehicle == null || !(this.activeGraphicableVehicle instanceof GraphicableAmbulance)){
+        if (this.activeGraphicableVehicle == null || !(this.activeGraphicableVehicle instanceof GraphicableAmbulance)) {
             return;
         }
-        
+
         pulse += 235;
         try {
             this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);

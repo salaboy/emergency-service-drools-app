@@ -15,6 +15,7 @@ import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
@@ -49,23 +50,17 @@ import org.drools.grid.service.directory.impl.WhitePagesLocalConfiguration;
 import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
 
 /**
- *
+ * @author salaboy
  * @author esteban
  */
 public class CoreServer {
 
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-    protected Grid grid1;
-    protected GridNode remoteN1;
+    protected static Grid grid1;
+    protected static GridNode remoteN1;
     
     
     public static void main(String[] args) throws Exception {
-        new CoreServer().startServer();
-    }
-
-    public void startServer() throws Exception {
-        MessageServerSingleton.getInstance().start();
-        
         Runtime.getRuntime().addShutdownHook(new Thread(){
 
             @Override
@@ -82,6 +77,14 @@ public class CoreServer {
                 }
             }
         });
+        new CoreServer().startServer();
+         
+    }
+
+    public void startServer() throws Exception {
+        MessageServerSingleton.getInstance().start();
+        
+       
         //Starting Grid View
         createRemoteNode();
         //Starting Human Task Server
@@ -107,9 +110,9 @@ public class CoreServer {
 
     private void startQueuesWorkers() {
         try {
-            
+             
             //Phone Calls Worker
-            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("IncomingCall",new MessageConsumerWorkerHandler<IncomingCallMessage>() {
+            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("IncomingCallCoreServer",new MessageConsumerWorkerHandler<IncomingCallMessage>() {
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
                     IncomingCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
@@ -117,7 +120,7 @@ public class CoreServer {
             }); 
             
              //Heart Attack Procedure Selected Worker
-            MessageConsumerWorker selectedProcedureWorker = new MessageConsumerWorker("selectedProcedure",new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
+            MessageConsumerWorker selectedProcedureWorker = new MessageConsumerWorker("selectedProcedureCoreServer",new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
                     ProceduresMGMTService.getInstance()
@@ -131,6 +134,7 @@ public class CoreServer {
             MessageConsumerWorker emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetailsCoreServer",new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
+                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisting Emergency "+emergencyDetailsMessage.getEmergency());
                     DistributedPeristenceServerService.getInstance()
                                 .storeEmergency(emergencyDetailsMessage.getEmergency());
                     
@@ -138,7 +142,7 @@ public class CoreServer {
             });
             
             //Vehicle Hits an Emergency Selected Worker
-            MessageConsumerWorker vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergency",new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+            MessageConsumerWorker vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyCoreServer",new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
@@ -147,7 +151,7 @@ public class CoreServer {
             
 
               //Vehicle Hits an Hospital Selected Worker
-            MessageConsumerWorker vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospital",new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+            MessageConsumerWorker vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalCoreServer",new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                     ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
@@ -158,7 +162,7 @@ public class CoreServer {
             vehicleHitsHospitalWorker.start();
 
             //Vehicle Dispatched
-            MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedCoreConsumer",new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+            MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedCoreServer",new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
                 @Override
                 public void handleMessage(VehicleDispatchedMessage message) {
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
@@ -166,7 +170,7 @@ public class CoreServer {
             });
             
             //Heart Beat Received
-            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatCoreConsumer",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatCoreServer",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
                 @Override
                 public void handleMessage(HeartBeatMessage message) {
                     PulseEvent event = new PulseEvent((int)message.getHeartBeatValue());
@@ -176,9 +180,17 @@ public class CoreServer {
                 }
             });
             
+             MessageConsumerWorker reportingWorker = new MessageConsumerWorker("reportingCoreServer",new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
+                @Override
+                public void handleMessage(EmergencyInterchangeMessage message) {
+                    System.out.println("Adding Entry To report: "+message.getCallId() +"- Entry:"+ message.toString());
+                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
+                }
+            });
+            
+            reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
-
             vehicleHitsEmergencyWorker.start();
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();

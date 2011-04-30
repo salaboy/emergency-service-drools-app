@@ -249,7 +249,10 @@
 
      <scriptTask id="_10" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>
-        System.out.println(" >>>>>> Stopping Ambulance Tracking System and Reporting! ... ");
+        System.out.println(" >>>>>> Stopping Ambulance Tracking System -> Report: ");
+        System.out.println(" >>>>>> "+com.wordpress.salaboy.model.serviceclient
+                                    .DistributedPeristenceServerService.getInstance()
+                                        .getReportByCallId((Long)kcontext.getVariable("call.id")).getReportString());
       </script>
     </scriptTask>
 

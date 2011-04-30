@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class VehicleHitsEmergencyMessage implements Serializable {
+public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInterchangeMessage {
     private Long vehicleId;
     private Long callId;
     private Date time;
@@ -23,6 +23,7 @@ public class VehicleHitsEmergencyMessage implements Serializable {
         this.time = time; 
     }
 
+    @Override
     public Long getCallId() {
         return callId;
     }
@@ -46,5 +47,12 @@ public class VehicleHitsEmergencyMessage implements Serializable {
     public void setTime(Date time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "VehicleHitsEmergencyMessage{" + "vehicleId=" + vehicleId + ", callId=" + callId + ", time=" + time + '}';
+    }
+    
+    
     
 }

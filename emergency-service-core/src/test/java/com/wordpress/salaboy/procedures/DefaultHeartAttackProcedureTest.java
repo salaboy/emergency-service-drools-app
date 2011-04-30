@@ -70,7 +70,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        DistributedPeristenceServerService.getInstance().storeCall(new Call(1,1,new Date()));
+//        DistributedPeristenceServerService.getInstance().storeCall(new Call(1,1,new Date()));
         DistributedPeristenceServerService.getInstance().storeEmergency(new Emergency(1L));
         DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
         MessageServerSingleton.getInstance().start();

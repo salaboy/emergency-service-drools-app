@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class VehicleDispatchedMessage implements Serializable {
+public class VehicleDispatchedMessage implements Serializable ,EmergencyInterchangeMessage{
     private Long callId;
     private Long vehicleId;
 
@@ -19,6 +19,7 @@ public class VehicleDispatchedMessage implements Serializable {
         this.vehicleId = vehicleId;
     }
 
+    @Override
     public Long getCallId() {
         return callId;
     }
@@ -34,6 +35,12 @@ public class VehicleDispatchedMessage implements Serializable {
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
     }
+
+    @Override
+    public String toString() {
+        return "VehicleDispatchedMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + '}';
+    }
+    
     
      
 }

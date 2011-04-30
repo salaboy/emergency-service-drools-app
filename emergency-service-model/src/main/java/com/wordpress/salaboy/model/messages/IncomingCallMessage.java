@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class IncomingCallMessage implements Serializable {
+public class IncomingCallMessage implements Serializable, EmergencyInterchangeMessage {
     private Call call;
 
     public IncomingCallMessage(Call call) {
@@ -25,5 +25,17 @@ public class IncomingCallMessage implements Serializable {
     public void setCall(Call call) {
         this.call = call;
     }
+
+    @Override
+    public Long getCallId() {
+        return this.call.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "IncomingCallMessage{" + "call=" + call + '}';
+    }
+    
+    
     
 }

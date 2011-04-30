@@ -14,6 +14,7 @@ import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.emergencyservice.dashboard.EmergenciesDashboard;
 import com.wordpress.salaboy.emergencyservice.extrapanels.About;
 import com.wordpress.salaboy.emergencyservice.extrapanels.EventGeneratorsConfigPanel;
 import com.wordpress.salaboy.emergencyservice.extrapanels.ServersStatusPanel;
@@ -96,6 +97,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         btnRefreshReport = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         menuItemConfigreEventGenerators = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -267,6 +269,19 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
+        jMenuItem2.setText("Emergency Dashboard");
+        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuItem2MouseClicked(evt);
+            }
+        });
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem2);
+
         jMenuItem1.setText("Wii Mote Binding");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -428,17 +443,28 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        java.awt.EventQueue.invokeLater(new Runnable()    {
-
-            @Override
+//        java.awt.EventQueue.invokeLater(new Runnable()    {
+//
+//            @Override
+//            public void run() {
+//                JFrame jFrame = new JFrame();
+//                jFrame.add( new ServersStatusPanel(getTaskClient()));
+//                jFrame.setSize(300, 600);
+//                jFrame.setVisible(true);
+//            }
+//        });
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                JFrame jFrame = new JFrame();
-                jFrame.add( new ServersStatusPanel(getTaskClient()));
-                jFrame.setSize(300, 600);
-                jFrame.setVisible(true);
+                new EmergenciesDashboard().setVisible(true);
+                
             }
-        });
+         });
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jMenuItem2MouseClicked
 
     public void refreshPatientsTable() {
         DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
@@ -484,6 +510,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;

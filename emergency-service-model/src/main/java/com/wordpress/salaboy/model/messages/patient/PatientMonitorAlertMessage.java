@@ -17,7 +17,7 @@ public class PatientMonitorAlertMessage implements Serializable {
     private String message;
     private Date time;
 
-    public PatientMonitorAlertMessage(Long callId, Long vehicleId, Date time, String message) {
+    public PatientMonitorAlertMessage(Long callId, Long vehicleId, String message, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;

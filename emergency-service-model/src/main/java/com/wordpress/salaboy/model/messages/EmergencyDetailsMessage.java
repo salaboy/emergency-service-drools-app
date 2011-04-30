@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class EmergencyDetailsMessage implements Serializable {
+public class EmergencyDetailsMessage implements Serializable, EmergencyInterchangeMessage {
     private Emergency emergency;
     
 
@@ -36,13 +36,22 @@ public class EmergencyDetailsMessage implements Serializable {
 
    
 
-    public long getCallId() {
+    @Override
+    public Long getCallId() {
         return emergency.getCall().getId();
     }
 
     public Emergency getEmergency() {
         return emergency;
     }
+
+    @Override
+    public String toString() {
+        return "EmergencyDetailsMessage{" + "emergency=" + emergency + '}';
+    }
+
+    
+  
 
    
     
