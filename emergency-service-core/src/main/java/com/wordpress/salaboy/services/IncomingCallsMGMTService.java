@@ -60,6 +60,7 @@ public class IncomingCallsMGMTService {
     }
 
     private void init() {
+        System.out.println(">>> Initializing First Response Incomming Calls Service ...");
         try {
             phoneCallMGMTSession = createPhoneCallsPrimaryServiceSession();
         } catch (IOException ex) {
@@ -71,6 +72,7 @@ public class IncomingCallsMGMTService {
                 phoneCallMGMTSession.fireUntilHalt();
             }
         }).start();
+        System.out.println(">>> First Response Incomming Calls Service Running ...");
     }
     
     private WorkingMemoryEntryPoint getPhoneCallsEntryPoint(){
@@ -129,7 +131,7 @@ public class IncomingCallsMGMTService {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         remoteN1.set("phoneCallsManagementSession", session);
-
+ 
         return session;
         
     }

@@ -56,6 +56,7 @@ public class MessageProducer {
             clientMessage.getBodyBuffer().writeInt(data.length);
             clientMessage.getBodyBuffer().writeBytes(data);
             producer.send(clientMessage);
+            
         } catch (IOException ex) {
             Logger.getLogger(MessageProducer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

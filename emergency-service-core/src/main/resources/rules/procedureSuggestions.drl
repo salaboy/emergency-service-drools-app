@@ -16,7 +16,7 @@ rule "Initialize Emergency"
     ruleflow-group "suggest process"
     when
         $processInstance: WorkflowProcessInstance()
-
+        
     then
         String type = (String)$processInstance.getVariable("emergency.type");
         Integer locationX = (Integer)$processInstance.getVariable("emergency.locationx");

@@ -83,22 +83,11 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         jDialog1 = new javax.swing.JDialog();
         jDialog2 = new javax.swing.JDialog();
+        jPanel1 = new javax.swing.JPanel();
         mainJTabbedPane = new javax.swing.JTabbedPane();
-        hospitalJPanel = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        patientJTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        managerjPanel = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        pnlReport = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstReports = new javax.swing.JList();
-        btnClearReport = new javax.swing.JButton();
-        btnRefreshReport = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         menuItemConfigreEventGenerators = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
@@ -136,138 +125,28 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
         mainJTabbedPane.setPreferredSize(new java.awt.Dimension(300, 400));
 
-        hospitalJPanel.setPreferredSize(new java.awt.Dimension(300, 400));
-
-        patientJTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Id", "Name", "Age", "Gender", "Hospital"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Long.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class,
-                java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        patientJTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                selectPatientToAccept(evt);
-            }
-        });
-        jScrollPane4.setViewportView(patientJTable1);
-
-        jButton1.setText("Refresh");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout hospitalJPanelLayout = new org.jdesktop.layout.GroupLayout(hospitalJPanel);
-        hospitalJPanel.setLayout(hospitalJPanelLayout);
-        hospitalJPanelLayout.setHorizontalGroup(
-            hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(hospitalJPanelLayout.createSequentialGroup()
-                .add(hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
-                    .add(hospitalJPanelLayout.createSequentialGroup()
-                        .add(146, 146, 146)
-                        .add(jButton1)))
-                .addContainerGap())
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 359, Short.MAX_VALUE)
+            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
-        hospitalJPanelLayout.setVerticalGroup(
-            hospitalJPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(hospitalJPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 257, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(jButton1)
-                .addContainerGap(115, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 503, Short.MAX_VALUE)
+            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
-        mainJTabbedPane.addTab("Hospital", hospitalJPanel);
-
-        pnlReport.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                pnlReportComponentShown(evt);
-            }
-        });
-
-        jScrollPane1.setViewportView(lstReports);
-
-        btnClearReport.setText("Clear");
-        btnClearReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearReportActionPerformed(evt);
-            }
-        });
-
-        btnRefreshReport.setText("Refresh");
-        btnRefreshReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRefreshReportActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout pnlReportLayout = new org.jdesktop.layout.GroupLayout(pnlReport);
-        pnlReport.setLayout(pnlReportLayout);
-        pnlReportLayout.setHorizontalGroup(
-            pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-            .add(pnlReportLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(btnRefreshReport)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnClearReport)
-                .addContainerGap(155, Short.MAX_VALUE))
-        );
-        pnlReportLayout.setVerticalGroup(
-            pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(pnlReportLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(pnlReportLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnRefreshReport)
-                    .add(btnClearReport))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Reports", pnlReport);
-
-        org.jdesktop.layout.GroupLayout managerjPanelLayout = new org.jdesktop.layout.GroupLayout(managerjPanel);
-        managerjPanel.setLayout(managerjPanelLayout);
-        managerjPanelLayout.setHorizontalGroup(
-            managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(managerjPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        managerjPanelLayout.setVerticalGroup(
-            managerjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(managerjPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.getAccessibleContext().setAccessibleName("Reports");
-
-        mainJTabbedPane.addTab("Manager", managerjPanel);
-
-        fileMenu.setText("File");
+        fileMenu.setText("Emergency Services");
 
         jMenuItem2.setText("Emergency Dashboard");
         jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -281,14 +160,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
             }
         });
         fileMenu.add(jMenuItem2);
-
-        jMenuItem1.setText("Wii Mote Binding");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem1);
 
         menuItemConfigreEventGenerators.setText("Configure Event Generators");
         menuItemConfigreEventGenerators.addActionListener(new java.awt.event.ActionListener() {
@@ -335,17 +206,11 @@ public class UserTaskListUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
-                .addContainerGap())
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
-                .addContainerGap())
+            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -354,10 +219,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
-
-    private void selectPatientToAccept(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectPatientToAccept
-        // TODO add your handling code here:
-    }//GEN-LAST:event_selectPatientToAccept
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
@@ -382,43 +243,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        refreshPatientsTable();
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()    {
-
-            @Override
-            public void run() {
-               // new WiiMoteOptions(game).setVisible(true);
-
-            }
-        });
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void refreshReportList() {
-        DefaultListModel model = new DefaultListModel();
+       // DefaultListModel model = new DefaultListModel();
 //        for (String message : GridEmergencyService.logger.getLogs()) {
 //            model.addElement(message);
 //        }
 
-        this.lstReports.setModel(model);
+//        this.lstReports.setModel(model);
     }
-
-    private void btnClearReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearReportActionPerformed
-      //  GridEmergencyService.logger.clearMessages();
-        this.refreshReportList();
-    }//GEN-LAST:event_btnClearReportActionPerformed
-
-    private void pnlReportComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pnlReportComponentShown
-        this.refreshReportList();
-    }//GEN-LAST:event_pnlReportComponentShown
-
-    private void btnRefreshReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshReportActionPerformed
-        this.refreshReportList();
-    }//GEN-LAST:event_btnRefreshReportActionPerformed
 
     private void menuItemConfigreEventGeneratorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigreEventGeneratorsActionPerformed
         
@@ -467,22 +299,22 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2MouseClicked
 
     public void refreshPatientsTable() {
-        DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
-
-        int rowCount = tableModel.getRowCount();
-        for (int i = 0; i < rowCount; i++) {
-            tableModel.removeRow(0);
-        }
-
-        for (Hospital hospital : CityEntities.hospitals) {
-            for (Patient patient : hospital.getPatients()) {
-                tableModel.addRow(new Object[]{patient.getId(), patient.getGender(), patient.getAge(), patient.getGender(), hospital.getName()});
-
-            }
-
-        }
-
-
+//        DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
+//
+//        int rowCount = tableModel.getRowCount();
+//        for (int i = 0; i < rowCount; i++) {
+//            tableModel.removeRow(0);
+//        }
+//
+//        for (Hospital hospital : CityEntities.hospitals) {
+//            for (Patient patient : hospital.getPatients()) {
+//                tableModel.addRow(new Object[]{patient.getId(), patient.getGender(), patient.getAge(), patient.getGender(), hospital.getName()});
+//
+//            }
+//
+//        }
+//
+//
 
 
     }
@@ -500,27 +332,16 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JButton btnClearReport;
-    private javax.swing.JButton btnRefreshReport;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JPanel hospitalJPanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JList lstReports;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane mainJTabbedPane;
-    private javax.swing.JPanel managerjPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuItemConfigreEventGenerators;
-    public javax.swing.JTable patientJTable1;
-    private javax.swing.JPanel pnlReport;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskClient() {

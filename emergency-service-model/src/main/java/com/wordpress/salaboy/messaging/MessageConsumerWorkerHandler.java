@@ -20,13 +20,12 @@ public abstract class MessageConsumerWorkerHandler<T>{
     }
     
     public void handlePrimitiveMessage(Object content){
-        
         if (type.isAssignableFrom(content.getClass())){
             this.handleMessage((T)content);
         }
         
     }
-    
+        
     public abstract void handleMessage(T content);
     
 }

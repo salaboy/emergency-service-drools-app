@@ -15,7 +15,6 @@ import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.api.core.client.ClientSessionFactory;
-import org.hornetq.api.core.client.MessageHandler;
 
 /**
  *
@@ -25,6 +24,7 @@ public class MessageConsumer {
     private ClientSession consumerSession;
     private ClientConsumer consumer;
     private String queueName;
+
     public MessageConsumer(String queueName, ClientSessionFactory factory) {
         this.queueName = queueName;
         try {

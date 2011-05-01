@@ -65,7 +65,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         this.tblGenerators.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(combo));
         
         //Heart Beat Received
-            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatTest",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
                 @Override
                 public void handleMessage(HeartBeatMessage message) {
                     outputjTextArea.insert(System.currentTimeMillis()+" - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);

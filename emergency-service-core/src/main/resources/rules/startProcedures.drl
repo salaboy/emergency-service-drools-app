@@ -14,8 +14,9 @@ rule "Get Information To Start Procedure"
     salience 20
     ruleflow-group "start process"
     when
-        $processInstance: WorkflowProcessInstance()
         $emergency: Emergency()
+        $processInstance: WorkflowProcessInstance()
+        
     then
         SelectedProcedures selectedProcedures = (SelectedProcedures)$processInstance.getVariable("selectedProcedures");
         Call call = (Call)$processInstance.getVariable("call");

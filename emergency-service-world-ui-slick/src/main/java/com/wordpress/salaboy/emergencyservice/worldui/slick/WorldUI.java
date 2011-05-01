@@ -155,7 +155,7 @@ public class WorldUI extends BasicGame {
             }
         });
         
-        MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatched", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+        MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedWorldUI", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
 
             @Override
             public void handleMessage(final VehicleDispatchedMessage message) {

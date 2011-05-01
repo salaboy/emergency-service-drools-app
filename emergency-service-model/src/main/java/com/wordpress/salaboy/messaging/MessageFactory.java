@@ -23,7 +23,7 @@ import org.hornetq.integration.transports.netty.TransportConstants;
  */
 public class MessageFactory {
     
-    public final static String QUEUE_NAME = "BIG_BAG";
+    public final static String ADDR_NAME = "BIG_BAG";
     
     public static MessageConsumer createMessageConsumer(String consumerId){
         createOnDemandQueue(consumerId);
@@ -31,8 +31,8 @@ public class MessageFactory {
     }
     
     public static MessageProducer createMessageProducer(){
-        createOnDemandQueue(QUEUE_NAME);
-        return new MessageProducer(QUEUE_NAME, createFactory());
+        createOnDemandQueue(ADDR_NAME);
+        return new MessageProducer(ADDR_NAME, createFactory());
     }
     
     public static void sendMessage(Serializable message) throws HornetQException{
@@ -41,12 +41,12 @@ public class MessageFactory {
     
     private static void createOnDemandQueue(String queueName){
         try {
-            ClientSession session = createFactory().createSession();
+            ClientSession session = createFactory().createSession(true, true);
             
             QueueQuery queueQuery = session.queueQuery(new SimpleString(queueName));
             
             if (!queueQuery.isExists()){
-                session.createQueue(QUEUE_NAME, queueName);
+                session.createQueue(ADDR_NAME, queueName);
             }
             session.close();
         } catch (HornetQException ex) {

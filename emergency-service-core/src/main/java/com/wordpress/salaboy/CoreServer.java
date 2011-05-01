@@ -89,8 +89,9 @@ public class CoreServer {
             }
         });
         
+        
         coreServer.startServer();
-
+        
     }
 
     public void startServer() throws Exception {
@@ -114,6 +115,9 @@ public class CoreServer {
             DistributedPeristenceServerService.getInstance().storeHospital(hospital);
         }
 
+        //Init First Response Service
+        IncomingCallsMGMTService.getInstance();
+        
         //Start Workers
         startQueuesWorkers();
 

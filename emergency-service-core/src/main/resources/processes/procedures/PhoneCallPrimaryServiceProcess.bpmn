@@ -251,7 +251,7 @@
       <dataInputAssociation>
         <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Accept or Decline Suggested Process ->  #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}</from>
+          <from xs:type="tFormalExpression">Suggested Process ->  #{emergency.type}, #{emergency.locationx}, #{emergency.locationy}, #{emergency.nroofpeople}, #{patient.age}, #{patient.gender}</from>
           <to xs:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
