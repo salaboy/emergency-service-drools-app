@@ -35,7 +35,7 @@ import org.drools.grid.service.directory.impl.GridServiceDescriptionImpl;
 import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatefulKnowledgeSession; 
 
 /**
  * keeps a session per vehicle

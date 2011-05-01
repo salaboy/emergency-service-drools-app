@@ -10,6 +10,7 @@
  */
 package com.wordpress.salaboy.emergencyservice.dashboard;
 
+import com.wordpress.salaboy.emergencyservice.monitor.EmergencyMonitorPanel;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 
@@ -20,6 +21,7 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 public class LiveEmergencyReport extends javax.swing.JFrame {
     private Long emergencyId;
     private Emergency emergency;
+    private EmergencyMonitorPanel monitor;
     /** Creates new form LiveEmergencyReport */
     public LiveEmergencyReport(Long emergencyId) {
         this.emergencyId = emergencyId;
@@ -27,6 +29,7 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
         this.emergency = DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId);
         System.out.println(">>>>>>>The emergency selected -> "+emergency);
         initComponents();
+        configure();
     }
 
     /** This method is called from within the constructor to
@@ -38,12 +41,12 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        contextjDesktopPane = new javax.swing.JDesktopPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         auditLogjTextArea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        monitorjPanel = new javax.swing.JPanel();
 
         auditLogjTextArea.setColumns(20);
         auditLogjTextArea.setRows(5);
@@ -61,18 +64,31 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
             }
         });
 
+        monitorjPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0))), null)));
+
+        org.jdesktop.layout.GroupLayout monitorjPanelLayout = new org.jdesktop.layout.GroupLayout(monitorjPanel);
+        monitorjPanel.setLayout(monitorjPanelLayout);
+        monitorjPanelLayout.setHorizontalGroup(
+            monitorjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 573, Short.MAX_VALUE)
+        );
+        monitorjPanelLayout.setVerticalGroup(
+            monitorjPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 237, Short.MAX_VALUE)
+        );
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(contextjDesktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
-                    .add(jLabel1)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
-                    .add(jLabel2)
-                    .add(jButton1))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, monitorjPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel2)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButton1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -80,9 +96,9 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .add(20, 20, 20)
                 .add(jLabel1)
-                .add(18, 18, 18)
-                .add(contextjDesktopPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 221, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(monitorjPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel2)
                 .add(5, 5, 5)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -102,10 +118,16 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea auditLogjTextArea;
-    private javax.swing.JDesktopPane contextjDesktopPane;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel monitorjPanel;
     // End of variables declaration//GEN-END:variables
+
+    private void configure() {
+        monitor = new EmergencyMonitorPanel(emergency.getCall().getId());
+        monitorjPanel.add(monitor);
+        this.validate();
+    }
 }

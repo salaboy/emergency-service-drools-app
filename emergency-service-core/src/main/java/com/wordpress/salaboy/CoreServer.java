@@ -59,7 +59,7 @@ public class CoreServer {
     protected static Grid grid1;
     protected static GridNode remoteN1;
     //CurrentWorkers
-    private MessageConsumerWorker reportingWorker;
+    //  private MessageConsumerWorker reportingWorker;
     private MessageConsumerWorker heartBeatReceivedWorker;
     private MessageConsumerWorker vehicleDispatchedWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
@@ -201,16 +201,16 @@ public class CoreServer {
                 }
             });
 
-            reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
+//            reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
+//
+//                @Override
+//                public void handleMessage(EmergencyInterchangeMessage message) {
+//                    System.out.println("Adding Entry To report: " + message.getCallId() + "- Entry:" + message.toString());
+//                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
+//                }
+//            });
 
-                @Override
-                public void handleMessage(EmergencyInterchangeMessage message) {
-                    System.out.println("Adding Entry To report: " + message.getCallId() + "- Entry:" + message.toString());
-                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
-                }
-            });
-
-            reportingWorker.start();
+            //reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
             vehicleHitsEmergencyWorker.start();
@@ -226,9 +226,9 @@ public class CoreServer {
     }
 
     private void stopWorkers() {
-        if(reportingWorker != null ){
-            reportingWorker.stopWorker();
-        }
+//        if(reportingWorker != null ){
+//            reportingWorker.stopWorker();
+//        }
         if(heartBeatReceivedWorker != null){
             heartBeatReceivedWorker.stopWorker();
         }

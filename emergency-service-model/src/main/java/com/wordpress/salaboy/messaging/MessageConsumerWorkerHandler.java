@@ -4,6 +4,8 @@
  */
 package com.wordpress.salaboy.messaging;
 
+import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.lang.reflect.ParameterizedType;
 
 /**
@@ -20,6 +22,8 @@ public abstract class MessageConsumerWorkerHandler<T>{
     }
     
     public void handlePrimitiveMessage(Object content){
+        System.out.println("Adding Entry To report: " +((EmergencyInterchangeMessage)content).getCallId() + "- Entry:" + ((EmergencyInterchangeMessage)content).toString());
+        DistributedPeristenceServerService.getInstance().addEntryToReport(((EmergencyInterchangeMessage)content).getCallId(), ((EmergencyInterchangeMessage)content).toString());
         if (type.isAssignableFrom(content.getClass())){
             this.handleMessage((T)content);
         }
