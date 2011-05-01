@@ -154,7 +154,7 @@ public class CoreServer {
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
                     System.out.println(">>>>>>>>>>>>>>>>>>>> Persisting Emergency " + emergencyDetailsMessage.getEmergency());
                     DistributedPeristenceServerService.getInstance().storeEmergency(emergencyDetailsMessage.getEmergency());
-
+                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisted Emergency " +  DistributedPeristenceServerService.getInstance().loadEmergency(emergencyDetailsMessage.getEmergency().getId()));
                 }
             });
 

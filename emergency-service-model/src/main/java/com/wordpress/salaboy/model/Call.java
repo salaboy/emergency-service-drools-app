@@ -15,8 +15,6 @@ public class Call implements Serializable{
 
     private Long id;
     private Date date;
-    
-    private Emergency emergency;
     private Long processId;
     private String phoneNumber;
     public static AtomicLong incrementalId = new AtomicLong();
@@ -29,9 +27,6 @@ public class Call implements Serializable{
 
     public Call(int x, int y, Date date) {
         calendar = Calendar.getInstance();
-        
-        
-        
         this.id = Call.incrementalId.getAndIncrement();
         this.date = date;
         this.phoneNumber = generateRandomePhoneNumber();
@@ -68,14 +63,6 @@ public class Call implements Serializable{
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Emergency getEmergency() {
-        return emergency;
-    }
-
-    public void setEmergency(Emergency emergency) {
-        this.emergency = emergency;
     }
 
     public Long getId() {
@@ -118,16 +105,14 @@ public class Call implements Serializable{
         this.y = y;
     }
 
-   
-    
-    
-
     @Override
     public String toString() {
-        return "Call{" + "id=" + id + ", date=" + date + ", emergency=" + emergency + ", processId=" + processId + ", phoneNumber=" + phoneNumber + ", x=" + x + ", y=" + y + '}';
+        return "Call{" + "id=" + id + ", date=" + date + ", processId=" + processId + ", phoneNumber=" + phoneNumber + ", x=" + x + ", y=" + y + ", time=" + time + "'}'";
     }
 
-    
    
+    
+    
+
     
 }

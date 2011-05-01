@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.model.messages.patient;
 
+import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class PatientMonitorAlertMessage implements Serializable {
+public class PatientMonitorAlertMessage implements Serializable, EmergencyInterchangeMessage {
     private Long callId;
     private Long vehicleId;
     private String message;

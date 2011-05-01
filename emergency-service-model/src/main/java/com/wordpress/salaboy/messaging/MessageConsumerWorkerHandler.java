@@ -22,8 +22,8 @@ public abstract class MessageConsumerWorkerHandler<T>{
     }
     
     public void handlePrimitiveMessage(Object content){
-        System.out.println("Adding Entry To report: " +((EmergencyInterchangeMessage)content).getCallId() + "- Entry:" + ((EmergencyInterchangeMessage)content).toString());
-        DistributedPeristenceServerService.getInstance().addEntryToReport(((EmergencyInterchangeMessage)content).getCallId(), ((EmergencyInterchangeMessage)content).toString());
+//        System.out.println("Adding Entry To report: " +((EmergencyInterchangeMessage)content).getCallId() + "- Entry:" + ((EmergencyInterchangeMessage)content).toString());
+//        DistributedPeristenceServerService.getInstance().addEntryToReport(((EmergencyInterchangeMessage)content).getCallId(), ((EmergencyInterchangeMessage)content).toString());
         if (type.isAssignableFrom(content.getClass())){
             this.handleMessage((T)content);
         }

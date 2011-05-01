@@ -62,7 +62,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             }
         }
         
-        this.tblGenerators.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(combo));
+       
         
         //Heart Beat Received
             MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
@@ -71,6 +71,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                     outputjTextArea.insert(System.currentTimeMillis()+" - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);
                 }
             });
+            heartBeatReceivedWorker.start();
     }
 
     /** This method is called from within the constructor to
@@ -82,74 +83,20 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblGenerators = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
         btnWiiMoteLookup = new javax.swing.JButton();
-        btnApplyConfiguration = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        btnStopWiiMoteLookup = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         outputjTextArea = new javax.swing.JTextArea();
-        jSeparator2 = new javax.swing.JSeparator();
-        jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        btnStopWiiMoteLookup = new javax.swing.JButton();
 
-        tblGenerators.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"Mouse", "Ambulance - 0"}
-            },
-            new String [] {
-                "Generator", "Ambulance"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblGenerators.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblGenerators);
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wii Mote Bindings", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
         btnWiiMoteLookup.setText("Start WiiMote Binding");
         btnWiiMoteLookup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnWiiMoteLookupActionPerformed(evt);
-            }
-        });
-
-        btnApplyConfiguration.setText("Use Keyboard");
-        btnApplyConfiguration.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnApplyConfigurationActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Event Generators");
-
-        jLabel2.setText("Actions");
-
-        outputjTextArea.setColumns(20);
-        outputjTextArea.setRows(5);
-        jScrollPane2.setViewportView(outputjTextArea);
-
-        jLabel3.setText("Output");
-
-        jButton1.setText("Clear");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
             }
         });
 
@@ -160,6 +107,55 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setText("Clear");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnWiiMoteLookup)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnStopWiiMoteLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnWiiMoteLookup)
+                    .addComponent(btnStopWiiMoteLookup)
+                    .addComponent(jButton1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Output", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+
+        outputjTextArea.setColumns(20);
+        outputjTextArea.setRows(5);
+        jScrollPane2.setViewportView(outputjTextArea);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,68 +163,20 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnWiiMoteLookup)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnStopWiiMoteLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnApplyConfiguration)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnWiiMoteLookup)
-                    .addComponent(btnStopWiiMoteLookup)
-                    .addComponent(btnApplyConfiguration))
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnApplyConfigurationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyConfigurationActionPerformed
-        int rowCount = this.tblGenerators.getModel().getRowCount();
-        KeyboardPulseEventGenerator keyboardPulseEventGenerator = KeyboardPulseEventGenerator.getInstance();
-        keyboardPulseEventGenerator.resetConfigurations();
-        for (int i = 0; i < rowCount; i++) {
-            String generator = (String) this.tblGenerators.getValueAt(i, 0);
-            Long ambulanceId = Long.parseLong(this.tblGenerators.getValueAt(i, 1).toString().split("-")[1].trim());
-            Ambulance ambulance = CityEntities.getAmbulanceById(ambulanceId);
-            
-            if (generator.startsWith("Keyboard")){
-               //magic parser
-               String[] keys = generator.substring("Keyboard['".length(),generator.length()-1).replace("'", "").split(","); 
-               keyboardPulseEventGenerator.addConfiguration(keys[0].charAt(0), keys[1].charAt(0), ambulance);
-            }else{
-                //TODO: salaboy must add wiimote support ;)
-            }
-        }
-    }//GEN-LAST:event_btnApplyConfigurationActionPerformed
 
     private void btnWiiMoteLookupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWiiMoteLookupActionPerformed
         // TODO add your handling code here:
@@ -258,19 +206,13 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnApplyConfiguration;
     private javax.swing.JButton btnStopWiiMoteLookup;
     private javax.swing.JButton btnWiiMoteLookup;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextArea outputjTextArea;
-    private javax.swing.JTable tblGenerators;
     // End of variables declaration//GEN-END:variables
     private Mote mote = null;
     private SimpleMoteFinder simpleMoteFinder;
@@ -308,7 +250,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                 if (evt.getY() > 225) {
                     
                     try {
-                        outputjTextArea.insert(System.currentTimeMillis()+" - Y = "+evt.getY()+"! \n", 0);
+                        //outputjTextArea.insert(System.currentTimeMillis()+" - Y = "+evt.getY()+"! \n", 0);
                         //MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), evt.getY(), new Date()));
                         MessageFactory.sendMessage(new HeartBeatMessage(0L, 0L, evt.getY(), new Date()));                  
                     } catch (HornetQException ex) {

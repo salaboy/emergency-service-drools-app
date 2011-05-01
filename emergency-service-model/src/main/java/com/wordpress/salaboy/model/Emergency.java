@@ -24,7 +24,6 @@ public class Emergency implements Serializable {
     private EmergencyType type;
     private Location location;
     private int nroOfPeople;
-    private Date approximateTime;
     private Call call;
     
     
@@ -50,14 +49,7 @@ public class Emergency implements Serializable {
         return nroOfPeople;
     }
     
-    public Date getApproximateTime() {
-        return approximateTime;
-    }
-
-    public void setApproximateTime(Date approximateTime) {
-        this.approximateTime = approximateTime;
-    }
-
+  
     public Call getCall() {
         return call;
     }
@@ -96,7 +88,7 @@ public class Emergency implements Serializable {
 
     @Override
     public String toString() {
-        return "Emergency{" + "id=" + id + ", call=" + call + ", location=" + location + ", type=" + type + ", approximateTime=" + approximateTime + '}';
+        return "Emergency{" + "id=" + id + ", call=" + call + ", location=" + location + ", type=" + type + "'}'";
     }
     
     

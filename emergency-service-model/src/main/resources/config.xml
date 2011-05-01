@@ -36,7 +36,7 @@
       <jmxStatistics enabled="false"  />
       <clustering mode="distribution">
          <l1 enabled="true" lifespan="60000"/>
-         <hash numOwners="1" rehashRpcTimeout="120000"/>
+         <hash numOwners="3" rehashRpcTimeout="60000"/>
          <sync/>
       </clustering>
    </default>
