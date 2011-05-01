@@ -8,7 +8,9 @@ import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
+import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
@@ -157,7 +159,7 @@ public class CoreServer {
                     System.out.println(">>>>>>>>>>>>>>>>>>>> Persisted Emergency " +  DistributedPeristenceServerService.getInstance().loadEmergency(emergencyDetailsMessage.getEmergency().getId()));
                 }
             });
-
+            
             //Vehicle Hits an Emergency Selected Worker
             vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyCoreServer", new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
 
