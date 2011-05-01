@@ -58,10 +58,19 @@ public class CoreServer {
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
     protected static Grid grid1;
     protected static GridNode remoteN1;
-    
-    
+    //CurrentWorkers
+    private MessageConsumerWorker reportingWorker;
+    private MessageConsumerWorker heartBeatReceivedWorker;
+    private MessageConsumerWorker vehicleDispatchedWorker;
+    private MessageConsumerWorker vehicleHitsHospitalWorker;
+    private MessageConsumerWorker vehicleHitsEmergencyWorker;
+    private MessageConsumerWorker emergencyDetailsPersistenceWorker;
+    private MessageConsumerWorker selectedProcedureWorker;
+    private MessageConsumerWorker phoneCallsWorker;
+
     public static void main(String[] args) throws Exception {
-        Runtime.getRuntime().addShutdownHook(new Thread(){
+        final CoreServer coreServer = new CoreServer();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
@@ -72,19 +81,22 @@ public class CoreServer {
                     grid1.get(SocketService.class).close();
                     HumanTaskServerService.getInstance().stopTaskServer();
                     System.out.println("Core Server Stopped! ");
+                    coreServer.stopWorkers();
                 } catch (Exception ex) {
+                    System.out.println("Something goes wrong with the shutdown! ->"+ex.getMessage());
                     Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        new CoreServer().startServer();
-         
+        
+        coreServer.startServer();
+
     }
 
     public void startServer() throws Exception {
         MessageServerSingleton.getInstance().start();
-        
-       
+
+
         //Starting Grid View
         createRemoteNode();
         //Starting Human Task Server
@@ -92,117 +104,152 @@ public class CoreServer {
         //Initializing Distribtued Persistence Service
         DistributedPeristenceServerService.getInstance();
         //Init Persistence Service and add all the city entities
-        for(Vehicle vehicle : CityEntities.vehicles){
+        for (Vehicle vehicle : CityEntities.vehicles) {
             System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
             DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
         }
-        
-        for(Hospital hospital : CityEntities.hospitals){
+
+        for (Hospital hospital : CityEntities.hospitals) {
             System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
             DistributedPeristenceServerService.getInstance().storeHospital(hospital);
         }
-        
+
         //Start Workers
         startQueuesWorkers();
-        
-        
+
+
     }
 
     private void startQueuesWorkers() {
         try {
-             
+
             //Phone Calls Worker
-            MessageConsumerWorker phoneCallsWorker = new MessageConsumerWorker("IncomingCallCoreServer",new MessageConsumerWorkerHandler<IncomingCallMessage>() {
+            phoneCallsWorker = new MessageConsumerWorker("IncomingCallCoreServer", new MessageConsumerWorkerHandler<IncomingCallMessage>() {
+
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
                     IncomingCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
                 }
-            }); 
-            
-             //Heart Attack Procedure Selected Worker
-            MessageConsumerWorker selectedProcedureWorker = new MessageConsumerWorker("selectedProcedureCoreServer",new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
+            });
+
+            //Heart Attack Procedure Selected Worker
+            selectedProcedureWorker = new MessageConsumerWorker("selectedProcedureCoreServer", new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
+
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
-                    ProceduresMGMTService.getInstance()
-                                .newRequestedProcedure(selectedProcedureMessage.getCallId(), 
-                                                    selectedProcedureMessage.getProcedureName(),
-                                                    selectedProcedureMessage.getParameters());
-                }
-            }); 
-            
-              //Emergency Details Persistence Selected Worker
-            MessageConsumerWorker emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetailsCoreServer",new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
-                @Override
-                public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
-                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisting Emergency "+emergencyDetailsMessage.getEmergency());
-                    DistributedPeristenceServerService.getInstance()
-                                .storeEmergency(emergencyDetailsMessage.getEmergency());
-                    
+                    ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getCallId(),
+                            selectedProcedureMessage.getProcedureName(),
+                            selectedProcedureMessage.getParameters());
                 }
             });
-            
+
+            //Emergency Details Persistence Selected Worker
+            emergencyDetailsPersistenceWorker = new MessageConsumerWorker("emergencyDetailsCoreServer", new MessageConsumerWorkerHandler<EmergencyDetailsMessage>() {
+
+                @Override
+                public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
+                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisting Emergency " + emergencyDetailsMessage.getEmergency());
+                    DistributedPeristenceServerService.getInstance().storeEmergency(emergencyDetailsMessage.getEmergency());
+
+                }
+            });
+
             //Vehicle Hits an Emergency Selected Worker
-            MessageConsumerWorker vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyCoreServer",new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+            vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyCoreServer", new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
                 }
             });
-            
 
-              //Vehicle Hits an Hospital Selected Worker
-            MessageConsumerWorker vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalCoreServer",new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+
+            //Vehicle Hits an Hospital Selected Worker
+            vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalCoreServer", new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                     ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
                     //Call Patient Monitor Service removeVehicle(vehicleId)
                 }
-            }); 
-            
-            vehicleHitsHospitalWorker.start();
+            });
+
+
 
             //Vehicle Dispatched
-            MessageConsumerWorker vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedCoreServer",new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+            vehicleDispatchedWorker = new MessageConsumerWorker("vehicleDispatchedCoreServer", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+
                 @Override
                 public void handleMessage(VehicleDispatchedMessage message) {
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
                 }
             });
-            
+
             //Heart Beat Received
-            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatCoreServer",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+            heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatCoreServer", new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+
                 @Override
                 public void handleMessage(HeartBeatMessage message) {
-                    PulseEvent event = new PulseEvent((int)message.getHeartBeatValue());
+                    PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
                     event.setCallId(message.getCallId());
                     event.setVehicleId(message.getVehicleId());
                     PatientMonitorService.getInstance().newHeartBeatReceived(event);
                 }
             });
-            
-             MessageConsumerWorker reportingWorker = new MessageConsumerWorker("reportingCoreServer",new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
+
+            reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
+
                 @Override
                 public void handleMessage(EmergencyInterchangeMessage message) {
-                    System.out.println("Adding Entry To report: "+message.getCallId() +"- Entry:"+ message.toString());
+                    System.out.println("Adding Entry To report: " + message.getCallId() + "- Entry:" + message.toString());
                     DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
                 }
             });
-            
+
             reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
             vehicleHitsEmergencyWorker.start();
+            vehicleHitsHospitalWorker.start();
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();
             phoneCallsWorker.start();
-            
+
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     protected void createRemoteNode() {
+
+    private void stopWorkers() {
+        if(reportingWorker != null ){
+            reportingWorker.stopWorker();
+        }
+        if(heartBeatReceivedWorker != null){
+            heartBeatReceivedWorker.stopWorker();
+        }
+        if(vehicleDispatchedWorker!= null){
+            vehicleDispatchedWorker.stopWorker();
+        }
+        if(vehicleHitsEmergencyWorker != null){
+            vehicleHitsEmergencyWorker.stopWorker();
+        }
+        if(vehicleHitsHospitalWorker != null){
+            vehicleHitsHospitalWorker.stopWorker();
+        }
+        if(emergencyDetailsPersistenceWorker != null){
+            emergencyDetailsPersistenceWorker.stopWorker();
+        }
+        if(selectedProcedureWorker != null){
+            selectedProcedureWorker.stopWorker();
+        }
+        if(phoneCallsWorker != null){
+            phoneCallsWorker.stopWorker();
+        }
+        
+    }
+
+    protected void createRemoteNode() {
         grid1 = new GridImpl(new HashMap<String, Object>());
         configureGrid1(grid1,
                 8000,
@@ -255,5 +302,4 @@ public class CoreServer {
         conf.configure(grid);
 
     }
-
 }

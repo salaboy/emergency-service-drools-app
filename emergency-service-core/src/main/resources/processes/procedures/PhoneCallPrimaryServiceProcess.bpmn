@@ -109,7 +109,7 @@
       <dataInputAssociation>
         <targetRef>_2_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">#{call.date}  - Emergency Minimal Questionnaire -> #{call.phoneNumber} </from>
+          <from xs:type="tFormalExpression">#{call.date} - #{call.phoneNumber} -> Phone Ringing!</from>
           <to xs:type="tFormalExpression">_2_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>

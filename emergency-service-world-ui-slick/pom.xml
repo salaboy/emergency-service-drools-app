@@ -52,7 +52,7 @@
                         <argument>-Dd32</argument>
                         <argument>-classpath</argument>
                         <classpath/>
-                        <argument>com.wordpress.salaboy.emergencyservice.worldui.slick.CityMapUI</argument>
+                        <argument>com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI</argument>
                     </arguments>  
                 </configuration>
             </plugin>

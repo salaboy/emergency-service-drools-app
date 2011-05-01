@@ -3,6 +3,7 @@ package com.wordpress.salaboy.model;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -14,17 +15,23 @@ public class Call implements Serializable{
 
     private Long id;
     private Date date;
+    
     private Emergency emergency;
     private Long processId;
     private String phoneNumber;
     public static AtomicLong incrementalId = new AtomicLong();
     private int x; //location detected from the phonenumber :)
     private int y; //location detected from the phonenumber :)
-    
+    private String time;
+    private transient Calendar calendar;
     
     
 
     public Call(int x, int y, Date date) {
+        calendar = Calendar.getInstance();
+        
+        
+        
         this.id = Call.incrementalId.getAndIncrement();
         this.date = date;
         this.phoneNumber = generateRandomePhoneNumber();
@@ -39,6 +46,24 @@ public class Call implements Serializable{
 
     public Date getDate() {
         return date;
+    }
+
+    public void setTime(String timeString) {
+        this.time = timeString;
+    }
+    
+    
+
+    public String getTime() {
+        time = "";
+        calendar.setTimeInMillis(this.date.getTime());
+        time += calendar.get(Calendar.MONTH)+"/"
+                + calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH)+ " - "
+                + calendar.get(Calendar.HOUR)+":"
+                + calendar.get(Calendar.MINUTE)+":"
+                + calendar.get(Calendar.SECOND);
+       
+        return time;
     }
 
     public void setDate(Date date) {
@@ -92,6 +117,10 @@ public class Call implements Serializable{
     public void setY(int y) {
         this.y = y;
     }
+
+   
+    
+    
 
     @Override
     public String toString() {
