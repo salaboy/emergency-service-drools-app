@@ -13,6 +13,7 @@ package com.wordpress.salaboy.emergencyservice.extrapanels;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.intel.bluetooth.BlueCoveImpl;
+import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.SimpleMoteFinder;
 import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.WiiMoteOptions;
 import com.wordpress.salaboy.model.CityEntities;
@@ -250,9 +251,11 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                 if (evt.getY() > 225) {
                     
                     try {
-                        //outputjTextArea.insert(System.currentTimeMillis()+" - Y = "+evt.getY()+"! \n", 0);
-                        //MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), evt.getY(), new Date()));
-                        MessageFactory.sendMessage(new HeartBeatMessage(0L, 0L, evt.getY(), new Date()));                  
+                        Long callId = UserTaskListUI.LAST_CALL_ID;
+                        Long vehicleId = UserTaskListUI.LAST_DISPATCHED_VEHICLE_ID;
+                        if (callId != null && vehicleId != null){
+                            MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, evt.getY(), new Date()));                  
+                        }
                     } catch (HornetQException ex) {
                         Logger.getLogger(WiiMoteOptions.class.getName()).log(Level.SEVERE, null, ex);
                     }

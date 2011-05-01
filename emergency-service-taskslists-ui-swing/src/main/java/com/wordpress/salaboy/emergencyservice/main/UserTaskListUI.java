@@ -10,25 +10,22 @@
  */
 package com.wordpress.salaboy.emergencyservice.main;
 
-import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.emergencyservice.dashboard.EmergenciesDashboard;
 import com.wordpress.salaboy.emergencyservice.extrapanels.About;
 import com.wordpress.salaboy.emergencyservice.extrapanels.EventGeneratorsConfigPanel;
-import com.wordpress.salaboy.emergencyservice.extrapanels.ServersStatusPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.ControlSuggestedProceduresTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPanel;
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 import javax.swing.JTabbedPane;
-import javax.swing.table.DefaultTableModel;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import javax.swing.JFrame;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
@@ -40,7 +37,10 @@ import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClie
 public class UserTaskListUI extends javax.swing.JFrame {
 
     private HumanTaskService humanTaskServiceClient;
-    private static final long DEFAULT_WAIT_TIME = 5000;
+    
+    public static Long LAST_CALL_ID = null;
+    public static Long LAST_DISPATCHED_VEHICLE_ID = null;
+    
     
     //Task Lists Panels
     private IncomingPhoneCallsTaskListPanel phoneCallsTaskListPanel;
@@ -48,13 +48,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private SelectVehicleTaskListPanel selectAmbulanceTaskListPanel;
     private DoctorsUpdateTaskListPanel doctorsUpdateTaskListPanel;
   
+    private MessageConsumerWorker vehicleDispatchedWorker;
 
 
     /** Creates new form UserUI */
     public UserTaskListUI() {
         initComponents();
         initTaskClient();
-        
+        initMessageWorkers();
         
         //Initializing Distribtued Persistence Service
         DistributedPeristenceServerService.getInstance();
@@ -68,6 +69,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.mainJTabbedPane.add(this.selectAmbulanceTaskListPanel, 2);
         this.mainJTabbedPane.add(this.doctorsUpdateTaskListPanel, 3);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
+        
         
        
     }
@@ -443,5 +445,31 @@ public class UserTaskListUI extends javax.swing.JFrame {
    // public CityMapUI getGame() {
 //        return game;
   //  }
+
+    
+    private void initMessageWorkers() {
+        vehicleDispatchedWorker = new MessageConsumerWorker("TaskListUIVehicleDispatchedWorker", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
+
+            @Override
+            public void handleMessage(VehicleDispatchedMessage message) {
+                //store only the last vehicle and call id. This is going to
+                //be used later by the wiimote event generator.
+                LAST_CALL_ID = message.getCallId();
+                LAST_DISPATCHED_VEHICLE_ID = message.getVehicleId();
+            }
+        });
+    
+        vehicleDispatchedWorker.start();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (vehicleDispatchedWorker != null){
+            vehicleDispatchedWorker.stopWorker();
+        }
+    }
+ 
+    
     
 }
