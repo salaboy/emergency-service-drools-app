@@ -18,6 +18,9 @@ public class SimpleMoteFinder implements MoteFinderListener {
 		log.info("SimpleMoteFinder received notification of a found mote.");
 		this.mote = mote;
 		this.mote.rumble(2000l);
+                boolean[] player = new boolean[4];
+                player[0] = true;
+                this.mote.setPlayerLeds(player);
 		String blueId = this.mote.getBluetoothAddress();
 		System.out.println("Bluethooth id = "+blueId);
 		synchronized(lock) {
@@ -28,7 +31,6 @@ public class SimpleMoteFinder implements MoteFinderListener {
 	public Mote findMote() {
 		if (finder == null) {
 			finder = MyMoteFinder.getMoteFinder();
-			//finder.bluetoothAddressCache.add("0023CC8AD195"); //0023CC8AD195	
 			finder.addMoteFinderListener(this);
 		}
 		finder.startDiscovery();
@@ -37,9 +39,19 @@ public class SimpleMoteFinder implements MoteFinderListener {
 				lock.wait();
 			}
 		} catch (InterruptedException ex) {
+                    System.out.println(">>>> ex:"+ex.getMessage());
 			return null;
 		}
+                finder.stopDiscovery();
 		return mote;
 	}
+        
+        public void stopFind(){
+            if(mote != null){
+                mote.disconnect();
+            }
+            
+            finder.stopDiscovery();
+        }
 
 }

@@ -12,12 +12,18 @@
 package com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import motej.Mote;
 import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
 import motej.event.MoteDisconnectedEvent;
 import motej.event.MoteDisconnectedListener;
 import motej.request.ReportModeRequest;
+import org.hornetq.api.core.HornetQException;
 
 /**
  *
@@ -124,16 +130,21 @@ public class WiiMoteOptions extends javax.swing.JFrame {
                 
                 if (evt.getY() > 225) {
                     jTextArea1.insert("sended " + evt.getY() + " heartbeat\n", 0);
-//                    if(AmbulanceMonitorService.getInstance().isRunning()){
-//                        // add the ambulanceId
-//                        GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(evt.getY()), 0L));
-//                        //AmbulanceMonitorService.getInstance().sendNotification(y, y, y);
-//                    }
+                    try {
+                        //MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), evt.getY(), new Date()));
+                        MessageFactory.sendMessage(new HeartBeatMessage(0L, 0L, evt.getY(), new Date()));                  
+                    } catch (HornetQException ex) {
+                        Logger.getLogger(WiiMoteOptions.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     
                     
                 }
             }
-            
+    //         if(AmbulanceMonitorService.getInstance().isRunning()){
+    //                        // add the ambulanceId
+    //                        GridEmergencyService.getInstance().getMapEventsNotifier().notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_BEAT_RECEIVED, new PatientVitalSignNotifierEvent(new PulseEvent(evt.getY()), 0L));
+    //                    }
+    //                    }
             
         };
         MoteDisconnectedListener<Mote> disconnectedListener = new MoteDisconnectedListener<Mote>(){

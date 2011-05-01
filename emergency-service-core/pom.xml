@@ -216,24 +216,7 @@
         </dependency>
       	
        
-        <!-- Wii mote + bluetooth -->
-        <dependency>
-            <groupId>motej</groupId>
-            <artifactId>motej-library</artifactId>
-            <version>0.9-2008.02.05-patched</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.bluecove</groupId>
-            <artifactId>bluecove-gpl</artifactId>
-            <version>2.1.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.bluecove</groupId>
-            <artifactId>bluecove</artifactId>
-            <version>2.1.0</version>
-            <type>jar</type>
-        </dependency>
+        
 
       
         <!-- HornetQ dependencies -->
@@ -285,10 +268,6 @@
             <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
         
-        <repository>
-            <id>OW2</id>
-            <url>http://maven.ow2.org/maven2/</url>
-        </repository>
         <repository>
             <id>PlugTree</id>
             <name>PlugTree-Snapshots-CloudBees</name>

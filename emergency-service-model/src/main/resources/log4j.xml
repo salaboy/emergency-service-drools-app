@@ -88,7 +88,6 @@
       <priority value="FATAL"/>
    </category>
 
-  
    
    <category name="org.infinispan.config.InfinispanConfiguration">
       <priority value="INFO"/>
