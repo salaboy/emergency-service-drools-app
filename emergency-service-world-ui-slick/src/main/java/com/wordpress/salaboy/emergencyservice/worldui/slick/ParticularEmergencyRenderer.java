@@ -348,7 +348,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private void addMockAmbulance() {
 
         Ambulance ambulance = new Ambulance("Mock Ambulance");
-        ambulance.setId(System.currentTimeMillis());
+        ambulance.setId(0L);
+        //ambulance.setId(System.currentTimeMillis());
 
         this.ui.assignVehicleToEmergency(this.emergency.getCallId(), ambulance);
     }

@@ -12,10 +12,11 @@ package com.wordpress.salaboy.emergencyservice.monitor;
 
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
-import com.wordpress.salaboy.services.PatientMonitorService;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -25,12 +26,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import org.hornetq.api.core.HornetQException;
 
 /**
  *
@@ -66,26 +69,14 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        lblMap = new javax.swing.JLabel();
-        btnClear = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lstAlerts = new javax.swing.JList();
         btnClear1 = new javax.swing.JButton();
-
-        jPanel1.setName("GPS"); // NOI18N
-
-        lblMap.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lblMap.setPreferredSize(new java.awt.Dimension(305, 208));
-
-        btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
-            }
-        });
+        jTabbedPane = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        lblMap = new javax.swing.JLabel();
+        btnClear = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
 
@@ -107,7 +98,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnClear1)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -118,29 +109,39 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addComponent(btnClear1))
         );
 
+        jPanel1.setName("GPS"); // NOI18N
+        jPanel1.setPreferredSize(new java.awt.Dimension(200, 200));
+
+        lblMap.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblMap.setPreferredSize(new java.awt.Dimension(305, 208));
+
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClear)))
-                .addContainerGap())
+                .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnClear)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClear))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addComponent(btnClear)
+                .addGap(184, 184, 184))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -150,11 +151,15 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -257,7 +262,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         this.lblMap.setIcon(map);
     }
     
-    private Map<Long,HeartBeatWidget> heartBeatWidgets = new HashMap<Long, HeartBeatWidget>();
+    private Map<Long,HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<Long, HeartBeatWidget>();
     private void processHeartBeat(Long vehicleId, double heartBeatValue, Date time) {
         if (!heartBeatWidgets.containsKey(vehicleId)){
             HeartBeatWidget widget = new HeartBeatWidget();
@@ -280,8 +285,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         this.validate();
     }
     
-    public static void main(String args[]){
-        PatientMonitorService.getInstance().newVehicleDispatched(0L, 0L);
+    public static void main(String args[]) throws HornetQException{
+        //PatientMonitorService.getInstance().newVehicleDispatched(0L, 0L);
+        MessageFactory.sendMessage(new VehicleDispatchedMessage(0L, 0L));
         java.awt.EventQueue.invokeLater(new Runnable()    {
 
             @Override
@@ -303,8 +309,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             public void run() {
                 while (!stopPulseEmulator){
                     try {
-                        for (HeartBeatWidget heartBeatWidget : heartBeatWidgets.values()) {
-                            heartBeatWidget.updateMonitorGraph(235);
+                        for (Long vehicleId : heartBeatWidgets.keySet()) {
+                            try {
+                                MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 235, new Date()));
+                            } catch (HornetQException ex) {
+                                Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {

@@ -20,12 +20,12 @@ rule "Patient with no vital sign"
         												average($pulse)) 
     then
         //Notify about the new Emergency
-        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId,"Warning, patient without vital signs ", new java.util.Date()));
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId, new java.util.Date(), "Warning, patient without vital signs "));
 end
 
 rule "Patient heart attack"
     when
-        ArrayList(size > 10 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
+        ArrayList(size > 5 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
     then
-        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId,"Warning, patient suffering a heart attack ", new java.util.Date()));
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId, new java.util.Date(), "Warning, patient suffering a heart attack "));
 end

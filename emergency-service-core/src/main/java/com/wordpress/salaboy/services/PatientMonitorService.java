@@ -89,7 +89,7 @@ public class PatientMonitorService {
             throw new IllegalArgumentException("Unknown vehicle "+event.getVehicleId()+". Did you dispatched it?");
         }
         
-        sessions.get(event.getVehicleId()).insert(event);
+        sessions.get(event.getVehicleId()).getWorkingMemoryEntryPoint("patientHeartbeats").insert(event);
     }
     
     private StatefulKnowledgeSession createPatientMonitorSession(Long vehicleId) throws IOException {
@@ -117,7 +117,9 @@ public class PatientMonitorService {
 
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
 
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.drl").getInputStream())), ResourceType.DRL);
+        //kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.drl").getInputStream())), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.dsl").getInputStream())), ResourceType.DSL);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.dslr").getInputStream())), ResourceType.DSLR);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
