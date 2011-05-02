@@ -77,11 +77,11 @@
    -->
 
    <category name="org.infinispan">
-      <priority value="DEBUG"/>
+      <priority value="INFO"/>
    </category>
 
    <category name="org.jboss.tm">
-      <priority value="DEBUG"/>
+      <priority value="INFO"/>
    </category>
 
    <category name="org.jgroups">
@@ -90,7 +90,7 @@
 
    
    <category name="org.infinispan.config.InfinispanConfiguration">
-      <priority value="DEBUG"/>
+      <priority value="INFO"/>
    </category>
 
    <!-- ======================= -->

@@ -16,6 +16,7 @@ import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
@@ -44,6 +45,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private MessageConsumerWorker gpsWorker;
     private MessageConsumerWorker heartBeatWorker;
     private MessageConsumerWorker patientMonitorAlertWorker;
+    private MessageConsumerWorker ambulanceHitsHospitalAlertWorker;
     private Long callId;
     private List<String> alerts = new ArrayList<String>(); 
 
@@ -212,6 +214,17 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             
         });
         
+        ambulanceHitsHospitalAlertWorker = new MessageConsumerWorker("ambulanceHitsHospital"+callId, new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+            @Override
+            public void handleMessage(VehicleHitsHospitalMessage message) {
+                if (message.getCallId().equals(callId)){
+                    cleanupPanel();
+                }
+            }
+            
+        });
+        
+        ambulanceHitsHospitalAlertWorker.start();
         patientMonitorAlertWorker.start();
         gpsWorker.start();
         heartBeatWorker.start();
@@ -252,6 +265,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         }
         if (gpsWorker != null){
             gpsWorker.stopWorker();
+        }
+          if (ambulanceHitsHospitalAlertWorker != null){
+            ambulanceHitsHospitalAlertWorker.stopWorker();
         }
     }
     

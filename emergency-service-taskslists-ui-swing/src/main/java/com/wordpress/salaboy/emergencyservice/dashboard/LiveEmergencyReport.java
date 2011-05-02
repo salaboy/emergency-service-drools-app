@@ -105,7 +105,9 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
             // TODO add your handling code here:
+        System.out.println(">>> Report: "+DistributedPeristenceServerService.getInstance().getReportByCallId(this.emergency.getCall().getId()).getReportString());
         auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().getReportByCallId(this.emergency.getCall().getId()).getReportString());
+        pack();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     

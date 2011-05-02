@@ -56,5 +56,12 @@ public class PatientMonitorAlertMessage implements Serializable, EmergencyInterc
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "PatientMonitorAlertMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", message=" + message + ", time=" + time + '}';
+    }
+    
+    
     
 }

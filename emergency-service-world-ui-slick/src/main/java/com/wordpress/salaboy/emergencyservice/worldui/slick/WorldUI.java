@@ -205,8 +205,8 @@ public class WorldUI extends BasicGame {
         do{
             randomx = (int) (Math.random() * 10) % 7;
             randomy = (int) (Math.random() * 10) % 5;
-            if (randomx == 1 && randomy == 25) {
-                randomx = 19;
+            if (randomx == 0 && randomy == 4) {
+                randomx = 4;
             }
 
             isFreeSpace = true;

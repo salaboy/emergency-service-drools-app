@@ -57,5 +57,10 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
     }
+
+    @Override
+    public String toString() {
+        return "HeartBeatMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", heartBeatValue=" + heartBeatValue + ", time=" + time + '}';
+    }
     
 }

@@ -61,7 +61,7 @@ public class CoreServer {
     protected static Grid grid1;
     protected static GridNode remoteN1;
     //CurrentWorkers
-    //  private MessageConsumerWorker reportingWorker;
+    private MessageConsumerWorker reportingWorker;
     private MessageConsumerWorker heartBeatReceivedWorker;
     private MessageConsumerWorker vehicleDispatchedWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
@@ -154,9 +154,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
-                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisting Emergency " + emergencyDetailsMessage.getEmergency());
                     DistributedPeristenceServerService.getInstance().storeEmergency(emergencyDetailsMessage.getEmergency());
-                    System.out.println(">>>>>>>>>>>>>>>>>>>> Persisted Emergency " +  DistributedPeristenceServerService.getInstance().loadEmergency(emergencyDetailsMessage.getEmergency().getId()));
                 }
             });
             
@@ -203,16 +201,15 @@ public class CoreServer {
                 }
             });
 
-//            reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
-//
-//                @Override
-//                public void handleMessage(EmergencyInterchangeMessage message) {
-//                    System.out.println("Adding Entry To report: " + message.getCallId() + "- Entry:" + message.toString());
-//                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
-//                }
-//            });
+            reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
 
-            //reportingWorker.start();
+                @Override
+                public void handleMessage(EmergencyInterchangeMessage message) {
+                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
+                }
+            });
+
+            reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
             vehicleHitsEmergencyWorker.start();
@@ -228,9 +225,9 @@ public class CoreServer {
     }
 
     private void stopWorkers() {
-//        if(reportingWorker != null ){
-//            reportingWorker.stopWorker();
-//        }
+        if(reportingWorker != null ){
+            reportingWorker.stopWorker();
+        }
         if(heartBeatReceivedWorker != null){
             heartBeatReceivedWorker.stopWorker();
         }
