@@ -13,11 +13,16 @@ package com.wordpress.salaboy.emergencyservice.monitor;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
+import com.wordpress.salaboy.services.PatientMonitorService;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
+import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -41,24 +46,28 @@ import org.hornetq.api.core.HornetQException;
  * @author esteban
  */
 public class EmergencyMonitorPanel extends javax.swing.JPanel {
+
     private ImageIcon map;
     private MessageConsumerWorker gpsWorker;
     private MessageConsumerWorker heartBeatWorker;
     private MessageConsumerWorker patientMonitorAlertWorker;
-    private MessageConsumerWorker ambulanceHitsHospitalAlertWorker;
+    private MessageConsumerWorker vehicleHitsEmergencyWorker;
+    private MessageConsumerWorker vehicleHitsHospitalWorker;
     private Long callId;
-    private List<String> alerts = new ArrayList<String>(); 
+    private List<String> alerts = new ArrayList<String>();
+    private Map<Long, Boolean> vehicleHitEmergency = new HashMap<Long, Boolean>();
+    private Map<Long, Boolean> vehicleHitHospital = new HashMap<Long, Boolean>();
 
     /** Creates new form EmergencyMonitorPanel */
     public EmergencyMonitorPanel(Long callId) {
         this.callId = callId;
-        
+
         initComponents();
-        
+
         loadMapImage();
-        
+
         startQueueListeners();
-        
+
         startPulseEmulator();
     }
 
@@ -172,7 +181,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         DefaultListModel emptyModel = new DefaultListModel();
         this.lstAlerts.setModel(emptyModel);
     }//GEN-LAST:event_btnClear1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClear1;
@@ -184,113 +192,152 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private javax.swing.JList lstAlerts;
     // End of variables declaration//GEN-END:variables
 
-    private void startQueueListeners(){
-        gpsWorker = new MessageConsumerWorker("vehicleGPS"+callId, new MessageConsumerWorkerHandler<VehicleHitsCornerMessage>() {
+    private void startQueueListeners() {
+        gpsWorker = new MessageConsumerWorker("vehicleGPS" + callId, new MessageConsumerWorkerHandler<VehicleHitsCornerMessage>() {
+
             @Override
             public void handleMessage(VehicleHitsCornerMessage message) {
-                if (message.getCallId().equals(callId)){
+                if (message.getCallId().equals(callId)) {
                     paintVehiclePosition(message.getVehicleId(), message.getCornerX(), message.getCornerY());
                 }
             }
         });
-        
-        heartBeatWorker = new MessageConsumerWorker("vehicleHeartBeat"+callId, new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+
+        heartBeatWorker = new MessageConsumerWorker("vehicleHeartBeat" + callId, new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+
             @Override
             public void handleMessage(HeartBeatMessage message) {
-                if (message.getCallId().equals(callId)){
+                if (message.getCallId().equals(callId)) {
                     processHeartBeat(message.getVehicleId(), message.getHeartBeatValue(), message.getTime());
                 }
             }
-            
         });
-        
-        patientMonitorAlertWorker = new MessageConsumerWorker("patientMonitorAlerts"+callId, new MessageConsumerWorkerHandler<PatientMonitorAlertMessage>() {
+
+        patientMonitorAlertWorker = new MessageConsumerWorker("patientMonitorAlerts" + callId, new MessageConsumerWorkerHandler<PatientMonitorAlertMessage>() {
+
             @Override
             public void handleMessage(PatientMonitorAlertMessage message) {
-                if (message.getCallId().equals(callId)){
+                if (message.getCallId().equals(callId)) {
                     processPatientAlert(message.getVehicleId(), message.getTime(), message.getMessage());
                 }
             }
-            
         });
-        
-        ambulanceHitsHospitalAlertWorker = new MessageConsumerWorker("ambulanceHitsHospital"+callId, new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+
+        //Vehicle Hits an Emergency Selected Worker
+        vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyMonitorPanel"+callId, new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+
             @Override
-            public void handleMessage(VehicleHitsHospitalMessage message) {
-                if (message.getCallId().equals(callId)){
-                    cleanupPanel();
-                }
+            public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
+                vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
+                ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
             }
-            
         });
-        
-        ambulanceHitsHospitalAlertWorker.start();
+
+
+        //Vehicle Hits an Hospital Selected Worker
+        vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalMonitorPanel"+callId, new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+
+            @Override
+            public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
+                vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
+                ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
+                cleanupPanel();
+                PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
+            }
+        });
+
+        vehicleHitsEmergencyWorker.start();
+        vehicleHitsHospitalWorker.start();
         patientMonitorAlertWorker.start();
         gpsWorker.start();
         heartBeatWorker.start();
     }
-    
     private Map<Long, Point> lastVehiclePosition = new HashMap<Long, Point>();
     private Map<Long, Color> vehicleColors = new HashMap<Long, Color>();
-    private Color[] colors = {Color.BLUE,Color.YELLOW, Color.RED, Color.GREEN, Color.ORANGE, Color.PINK};
-    private void paintVehiclePosition(Long vehicleId, int x, int y){
-        x = x/2;
-        y = y/2;
-        
-        if (!lastVehiclePosition.containsKey(vehicleId)){
-            lastVehiclePosition.put(vehicleId, new Point(x, y) );
+    private Color[] colors = {Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN, Color.ORANGE, Color.PINK};
+
+    private void paintVehiclePosition(Long vehicleId, int x, int y) {
+        x = x / 2;
+        y = y / 2;
+
+        if (!lastVehiclePosition.containsKey(vehicleId)) {
+            lastVehiclePosition.put(vehicleId, new Point(x, y));
             vehicleColors.put(vehicleId, colors[vehicleColors.size()]);
             return;
         }
-        
-        
+
+
         Point lastPoint = lastVehiclePosition.get(vehicleId);
         Graphics graphics = lblMap.getGraphics();
         graphics.setColor(vehicleColors.get(vehicleId));
-        graphics.drawLine(lastPoint.x,lastPoint.y,x, y);
-        
-        
-        lastVehiclePosition.put(vehicleId, new Point(x, y) );
+        graphics.drawLine(lastPoint.x, lastPoint.y, x, y);
+
+
+        lastVehiclePosition.put(vehicleId, new Point(x, y));
     }
-    
-    public void cleanupPanel(){
-        
+
+    public void cleanupPanel() {
+
         stopPulseEmulator = true;
-        
-        if (patientMonitorAlertWorker != null){
+
+        if (vehicleHitsEmergencyWorker != null) {
+            vehicleHitsEmergencyWorker.stopWorker();
+        }
+        if (vehicleHitsHospitalWorker != null) {
+            vehicleHitsHospitalWorker.stopWorker();
+        }
+        if (patientMonitorAlertWorker != null) {
             patientMonitorAlertWorker.stopWorker();
         }
-        if (heartBeatWorker != null){
+        if (heartBeatWorker != null) {
             heartBeatWorker.stopWorker();
         }
-        if (gpsWorker != null){
+        if (gpsWorker != null) {
             gpsWorker.stopWorker();
         }
-          if (ambulanceHitsHospitalAlertWorker != null){
-            ambulanceHitsHospitalAlertWorker.stopWorker();
-        }
     }
-    
+
     private void loadMapImage() {
         map = new ImageIcon(this.getClass().getClassLoader().getResource("png/CityMap.png"));
         this.lblMap.setIcon(map);
     }
-    
-    private Map<Long,HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<Long, HeartBeatWidget>();
+    private Map<Long, HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<Long, HeartBeatWidget>();
+
     private void processHeartBeat(Long vehicleId, double heartBeatValue, Date time) {
-        if (!heartBeatWidgets.containsKey(vehicleId)){
+        //only if the vehicle already hit the emergency, but it doesnt
+        //hit the hospital yet;
+        Boolean hitEmergency = vehicleHitEmergency.get(vehicleId);
+        Boolean hitHospital = vehicleHitHospital.get(vehicleId);
+
+        if (hitEmergency == null) {
+            hitEmergency = false;
+        }
+        
+        if (hitHospital == null) {
+            hitHospital = false;
+        }
+
+        if (!hitEmergency){
+            return;
+        }
+        
+        if (hitHospital){
+            return;
+        }
+
+        if (!heartBeatWidgets.containsKey(vehicleId)) {
             HeartBeatWidget widget = new HeartBeatWidget();
-            jTabbedPane.add("Ambulance "+vehicleId,widget.getChartPanel());
+            jTabbedPane.add("Ambulance " + vehicleId, widget.getChartPanel());
             jTabbedPane.setSelectedComponent(widget.getChartPanel());
             heartBeatWidgets.put(vehicleId, widget);
         }
-        
+
         heartBeatWidgets.get(vehicleId).updateMonitorGraph(heartBeatValue);
     }
-    
+
     private void processPatientAlert(Long vehicleId, Date time, String message) {
-        alerts.add(0,vehicleId+" - " +message);
-        
+        alerts.add(0, vehicleId + " - " + message);
+
         DefaultListModel model = new DefaultListModel();
         for (String alert : alerts) {
             model.addElement(alert);
@@ -298,30 +345,30 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         lstAlerts.setModel(model);
         this.validate();
     }
-    
-    public static void main(String args[]) throws HornetQException{
+
+    public static void main(String args[]) throws HornetQException {
         //PatientMonitorService.getInstance().newVehicleDispatched(0L, 0L);
         MessageFactory.sendMessage(new VehicleDispatchedMessage(0L, 0L));
-        java.awt.EventQueue.invokeLater(new Runnable()    {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 JFrame jFrame = new JFrame();
-                jFrame.add( new EmergencyMonitorPanel(0L));
+                jFrame.add(new EmergencyMonitorPanel(0L));
                 jFrame.setSize(400, 400);
                 jFrame.setVisible(true);
                 jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             }
         });
     }
-
     private boolean stopPulseEmulator = false;
+
     private void startPulseEmulator() {
-        new Thread(){
+        new Thread() {
 
             @Override
             public void run() {
-                while (!stopPulseEmulator){
+                while (!stopPulseEmulator) {
                     try {
                         for (Long vehicleId : heartBeatWidgets.keySet()) {
                             try {
@@ -336,7 +383,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                     }
                 }
             }
-            
         }.start();
     }
 }

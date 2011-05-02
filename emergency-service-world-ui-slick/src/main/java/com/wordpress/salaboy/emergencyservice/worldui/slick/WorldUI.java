@@ -124,14 +124,8 @@ public class WorldUI extends BasicGame {
 
     }
 
-    public synchronized void removeEmergency(long id) {
-        for (GraphicableEmergency emergency : this.emergencies.values()) {
-            //TODO: GraphicalbeEmergency no longer has the emergency as attribute
-            //if(emergency.getEmergency().getId().compareTo(id) == 0 ){
-            //    this.emergencies.remove(emergency);
-            //}
-            throw new IllegalStateException("TODO: GraphicalbeEmergency no longer has the emergency as attribute");
-        }
+    public synchronized void removeEmergency(long callId) {
+        this.emergencies.remove(callId);
     }
 
     private void registerMessageConsumers() {

@@ -8,16 +8,14 @@ import com.wordpress.salaboy.events.PulseEvent;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.CityEntities;
-import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
@@ -60,6 +58,11 @@ public class CoreServer {
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
     protected static Grid grid1;
     protected static GridNode remoteN1;
+    
+    
+    private Map<Long,Boolean> vehicleHitEmergency = new HashMap<Long, Boolean> ();
+    private Map<Long,Boolean> vehicleHitHospital = new HashMap<Long, Boolean> ();
+    
     //CurrentWorkers
     private MessageConsumerWorker reportingWorker;
     private MessageConsumerWorker heartBeatReceivedWorker;
@@ -163,6 +166,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
+                    vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
                     ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
                 }
             });
@@ -173,6 +177,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
+                    vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
                     ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
                     //Call Patient Monitor Service removeVehicle(vehicleId)
                 }
@@ -185,6 +190,8 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleDispatchedMessage message) {
+                    vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
+                    vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
                 }
             });
@@ -194,10 +201,21 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(HeartBeatMessage message) {
-                    PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
-                    event.setCallId(message.getCallId());
-                    event.setVehicleId(message.getVehicleId());
-                    PatientMonitorService.getInstance().newHeartBeatReceived(event);
+                    //Only notify if the vehicle already hit the emergency 
+                    //but it doesnt hit the hospital
+                    Boolean hitEmergency = vehicleHitEmergency.get(message.getVehicleId());
+                    Boolean hitHospital = vehicleHitHospital.get(message.getVehicleId());
+                    
+                    if (hitEmergency == null || hitHospital == null){
+                        return;
+                    }
+                    
+                    if (hitEmergency && !hitHospital){
+                        PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
+                        event.setCallId(message.getCallId());
+                        event.setVehicleId(message.getVehicleId());
+                        PatientMonitorService.getInstance().newHeartBeatReceived(event);
+                    }
                 }
             });
 
