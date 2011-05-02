@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.events.PulseEvent;
+import com.wordpress.salaboy.model.events.PulseEvent;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
@@ -193,6 +193,11 @@ public class CoreServer {
                     vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
 
@@ -226,7 +231,7 @@ public class CoreServer {
                     DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
                 }
             });
-
+ 
             reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();

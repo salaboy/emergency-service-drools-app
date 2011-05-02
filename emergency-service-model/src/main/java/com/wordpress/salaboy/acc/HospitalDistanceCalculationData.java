@@ -5,7 +5,6 @@
 
 package com.wordpress.salaboy.acc;
 
-import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import java.io.Serializable;

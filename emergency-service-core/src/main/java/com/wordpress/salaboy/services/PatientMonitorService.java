@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.events.PulseEvent;
+import com.wordpress.salaboy.model.events.PulseEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;

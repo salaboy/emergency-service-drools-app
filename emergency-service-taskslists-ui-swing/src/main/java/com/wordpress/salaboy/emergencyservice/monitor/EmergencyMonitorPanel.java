@@ -23,7 +23,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import com.wordpress.salaboy.util.AlertsIconListRenderer;
+import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;

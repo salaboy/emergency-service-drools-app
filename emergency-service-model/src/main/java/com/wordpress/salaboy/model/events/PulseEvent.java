@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.wordpress.salaboy.events;
+package com.wordpress.salaboy.model.events;
 
 import java.io.Serializable;
 

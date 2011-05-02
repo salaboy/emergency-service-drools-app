@@ -245,14 +245,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void refreshReportList() {
-       // DefaultListModel model = new DefaultListModel();
-//        for (String message : GridEmergencyService.logger.getLogs()) {
-//            model.addElement(message);
-//        }
-
-//        this.lstReports.setModel(model);
-    }
+  
 
     private void menuItemConfigreEventGeneratorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigreEventGeneratorsActionPerformed
         
@@ -276,23 +269,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2MenuKeyPressed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-//        java.awt.EventQueue.invokeLater(new Runnable()    {
-//
-//            @Override
-//            public void run() {
-//                JFrame jFrame = new JFrame();
-//                jFrame.add( new ServersStatusPanel(getTaskClient()));
-//                jFrame.setSize(300, 600);
-//                jFrame.setVisible(true);
-//            }
-//        });
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EmergenciesDashboard().setVisible(true);
-                
-            }
-         });
+    
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseClicked
@@ -300,26 +277,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenuItem2MouseClicked
 
-    public void refreshPatientsTable() {
-//        DefaultTableModel tableModel = ((DefaultTableModel) this.patientJTable1.getModel());
-//
-//        int rowCount = tableModel.getRowCount();
-//        for (int i = 0; i < rowCount; i++) {
-//            tableModel.removeRow(0);
-//        }
-//
-//        for (Hospital hospital : CityEntities.hospitals) {
-//            for (Patient patient : hospital.getPatients()) {
-//                tableModel.addRow(new Object[]{patient.getId(), patient.getGender(), patient.getAge(), patient.getGender(), hospital.getName()});
-//
-//            }
-//
-//        }
-//
-//
-
-
-    }
+ 
 
     /**
      * @param args the command line arguments
@@ -354,80 +312,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
         humanTaskServiceClient.initializeService();
     }
 
-//    public void setUIMap(CityMapUI game) {
-//        this.game = game;
-     
-
-  //  }
 
     public void callHandled() {
         this.phoneCallsTaskListPanel.refresh();
 
     }
 
-//    public void sendAmbulance(EmergencyType emergencyType, Long ambulanceId) {
-//        this.currentEmergenciesPanel.addNewEmergency(ambulanceId);
-//        mainJTabbedPane.setSelectedComponent(this.currentEmergenciesPanel);
-//        
-//       
-//
-//        //@TODO: NOTE: I Don't like this approach because the UI is deciding something that the process should do, not at HT level
-//     //   this.game.addAmbulance(GraphicableFactory.newAmbulance(CityEntitiesUtils.getAmbulanceById(ambulanceId)));
-////        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION, 
-////                            new MapAmbulancePositionUpdatedEventNotifier());
-////        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.AMBULANCE_POSITION,
-////                new TaskListUIAmbulancePositionUpdatedEventNotifier(this.currentEmergenciesPanel));
-////        GridEmergencyService.getInstance().getMapEventsNotifier().addWorldEventNotifier(EventType.EMERGENCY_REACHED,
-////                new TaskListUIEmergencyReachedEventNotifier());
-////
-////        GridEmergencyService.getInstance().getEmergencyReachedNotified().put(ambulanceId, false);
-//
-//    }
 
-    public void medicalEvaluationCompleted(int priority, String comment) {
-//        try {
-//
-//            List<TTaskAbstract> taskAbstracts = getTaskClient().getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
-//            TTaskAbstract taskAbstract = taskAbstracts.get(0);
-//
-//
-//            getTaskClient().setAuthorizedEntityId("doctor");
-//            getTaskClient().start(taskAbstract.getId());
-//
-//
-//            List<TAttachmentInfo> attachmentsInfo = getTaskClient().getAttachmentInfos(taskAbstract.getId());
-//            TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
-//            TAttachment attachment = getTaskClient().getAttachments(taskAbstract.getId(), firstAttachmentInfo.getName()).get(0);
-//            
-//            System.out.println("Content= " + attachment.getValue());
-//            
-//            
-//            ByteArrayInputStream bais = new ByteArrayInputStream(((Content)attachment.getValue()).getContent());
-//            ObjectInputStream ois = new ObjectInputStream(bais);
-//            String taskinfo2 = (String) ois.readObject();
-//
-//            System.out.println("TaskInfo 2= " + taskinfo2);
-//            HashMap<String, Object> info = new HashMap<String, Object>();
-//
-//
-//            info.put("emergency.priority", String.valueOf(priority));
-//            ContentData result = new ContentData();
-//            result.setAccessType(AccessType.Inline);
-//            result.setType("java.util.Map");
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            ObjectOutputStream out = new ObjectOutputStream(bos);
-//            out.writeObject(info);
-//            out.close();
-//            result.setContent(bos.toByteArray());
-//            
-//            
-//            getTaskClient().setAuthorizedEntityId("doctor");
-//            getTaskClient().complete(taskAbstract.getId(), result);
-//
-//        } catch (Exception e) {
-//            Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, e);
-//        }
-    }
+
 
     public JTabbedPane getMainJTabbedPane() {
         return mainJTabbedPane;
@@ -438,13 +330,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         return humanTaskServiceClient;
     }
 
-//    public CurrentEmergenciesPanel getCurrentEmergenciesPanel() {
-//        return currentEmergenciesPanel;
-//    }
 
-   // public CityMapUI getGame() {
-//        return game;
-  //  }
 
     
     private void initMessageWorkers() {

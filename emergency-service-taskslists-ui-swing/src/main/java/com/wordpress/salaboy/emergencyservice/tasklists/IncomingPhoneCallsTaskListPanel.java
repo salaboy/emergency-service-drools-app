@@ -15,8 +15,6 @@ import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.UIJTableR
 import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.Refreshable;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.emergencyservice.taskforms.EmergencyMinimalQuestionnaireTaskFormPanel;
-import com.wordpress.salaboy.call.CallManager;
-import com.wordpress.salaboy.call.IncomingCallListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +22,6 @@ import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import com.wordpress.salaboy.model.Call;
 import org.example.ws_ht.api.TTaskAbstract;
 
 /**
