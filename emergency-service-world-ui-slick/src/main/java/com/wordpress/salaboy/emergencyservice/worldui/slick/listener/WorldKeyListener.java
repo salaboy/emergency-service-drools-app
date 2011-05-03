@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.emergencyservice.worldui.slick;
+package com.wordpress.salaboy.emergencyservice.worldui.slick.listener;
 
+import com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
@@ -15,7 +16,7 @@ public class WorldKeyListener implements KeyListener {
 
     private final WorldUI worldUI;
 
-    WorldKeyListener(WorldUI cityMapUI) {
+    public WorldKeyListener(WorldUI cityMapUI) {
         this.worldUI = cityMapUI;
     }
 

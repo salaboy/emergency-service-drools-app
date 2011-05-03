@@ -4,39 +4,12 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.services.old.EmergencyService;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Content;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

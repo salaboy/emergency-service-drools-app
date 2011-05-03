@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.util;
+package com.wordpress.salaboy.emergencyservice.util;
 
 import java.awt.Color;
 import java.awt.Component;

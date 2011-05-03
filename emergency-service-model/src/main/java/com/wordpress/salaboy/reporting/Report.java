@@ -13,7 +13,7 @@ import java.util.List;
  * @author salaboy
  */
 public class Report implements Serializable{
-    private List<String> entries = new ArrayList<String>(100);
+    private List<String> entries = new ArrayList<String>();
 
     public Report() {
     }
@@ -22,6 +22,16 @@ public class Report implements Serializable{
     public void addEntry(String entry){
         entries.add(entry);
     }
+
+    public List<String> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<String> entries) {
+        this.entries = entries;
+    }
+    
+    
     
     public String getReportString(){
         String result = "";
@@ -30,4 +40,11 @@ public class Report implements Serializable{
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Report{" + "entries=" + entries + '}';
+    }
+    
+    
 }

@@ -5,7 +5,6 @@
 package com.wordpress.salaboy.services;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import com.wordpress.salaboy.MockUserInfo;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,8 +66,6 @@ public class HumanTaskServerService {
 
         taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         taskSession = taskService.createSession();
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
 
         User operator = new User("operator");
         User driver = new User("control");

@@ -10,7 +10,6 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphica
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableHighlightedHospital;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableVehicle;
-import com.wordpress.salaboy.events.keyboard.KeyboardPulseEventGenerator;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.FireTruck;
@@ -136,8 +135,6 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             selectMockHospital(2L);
         } else if (Input.KEY_LSHIFT == code) {
             this.turbo = true;
-        } else {
-            KeyboardPulseEventGenerator.getInstance().generateEvent(key);
         }
 
     }
