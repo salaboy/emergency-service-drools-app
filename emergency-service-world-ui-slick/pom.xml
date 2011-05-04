@@ -36,24 +36,16 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <!--argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument-->
-                        <argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument>
-                        <argument>-Dd32</argument>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI</argument>
-                    </arguments>  
+		    <executable>java</executable>
+		    <arguments>
+			<argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument>
+		    	<!--argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument-->
+			<argument>-Dd32</argument>
+			<argument>-classpath</argument>
+			<classpath/>
+                    	<argument>com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI</argument>
+		    </arguments>
                 </configuration>
             </plugin>
         </plugins>
