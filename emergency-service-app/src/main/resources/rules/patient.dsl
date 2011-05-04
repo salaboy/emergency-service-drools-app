@@ -1,4 +1,0 @@
-[condition][]The average pulse is {p} in the last {s} seconds=Number(doubleValue == {p} ) from accumulate( PulseEvent(processed == false, $pulse: value) over window:time({s}s) from entry-point "patientHeartbeats",	average($pulse))
-[condition][]The pulse is greater than {p}/{s} seconds=ArrayList(size > {p} ) from collect( PulseEvent( processed == false, $pulse: value) over window:time({s}s) from entry-point "patientHeartbeats")
-[consequence][]Send 'No Signal Signs' Alert=mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EventType.NO_VITAL_SIGNS, new MonitorAlertReceivedNotifierEvent("Warning, patient without vital signs ", $emergency.getId()));
-[consequence][]Send 'Heart Attack' Alert=mapEventsNotifier.notifyMapEventsListeners(MapEventsNotifier.EventType.HEART_ATTACK, new MonitorAlertReceivedNotifierEvent("Warning, patient suffering a heart attack ", $emergency.getId()));

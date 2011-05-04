@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>emergency-service</artifactId>
+        <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+    <artifactId>emergency-service-world-ui-slick</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Emergency Service - World UI (Slick 2D)</name>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+    <!-- UI Dependencies --> 
+        <dependency>
+            <groupId>slick</groupId>
+            <artifactId>slick</artifactId>
+            <version>274</version>
+        </dependency>  
+      
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+		    <executable>java</executable>
+		    <arguments>
+			<argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument>
+		    	<!--argument>-Djava.library.path=/Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/</argument-->
+			<argument>-Dd32</argument>
+			<argument>-classpath</argument>
+			<classpath/>
+                    	<argument>com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI</argument>
+		    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    
+    </build>
+    
+    <repositories>
+        <repository>
+        
+            <id>slickrepo</id>
+            <name>slickrepo</name>
+            <url>http://slick.cokeandcode.com/mavenrepo/</url>
+        </repository>
+        <repository>
+        
+            <id>jboss</id>
+            <name>jboss</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        
+        <repository>
+            <id>OW2</id>
+            <url>http://maven.ow2.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>PlugTree</id>
+            <name>PlugTree-Snapshots-CloudBees</name>
+            <url>https://repository-plugtree.forge.cloudbees.com/snapshot/</url>
+            <!--snapshots-->
+                <!--enabled>true</enabled-->
+                <!--updatePolicy>always</updatePolicy-->
+            <!--/snapshots-->
+        </repository>
+
+    </repositories>
+</project>

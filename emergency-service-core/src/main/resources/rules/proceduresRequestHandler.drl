@@ -1,0 +1,64 @@
+package procedureRequestsHandler;
+
+
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.serviceclient.*;
+import org.drools.runtime.process.ProcessInstance;
+
+
+declare ProcedureRequest
+    @role(event)
+end
+
+
+rule "Start Default Heart Attack Procedure if not emergency was found"
+    when
+        $procedureRequest: ProcedureRequest() from entry-point "procedure request"
+    then
+        ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+        insert(pi);
+        
+        
+end
+
+
+
+// THE FOLLOWING RULES ARE NOT WORKING NOW!!!
+
+/*rule "Procedure Request Primary Handler - Insert Emergency"
+    salience 20
+    when
+        $procedureRequest: ProcedureRequest( $emergencyId: parameters['emergency.id'] != null ) from entry-point "procedure request"
+
+    then
+        System.out.println("Inserting Emergency ->"+DistributedPeristenceServerService.getInstance().loadEmergency((Long)$emergencyId));
+        insert(DistributedPeristenceServerService.getInstance().loadEmergency((Long)$emergencyId));
+       
+end
+
+rule "Procedure Request Primary Handler - Insert Patient"
+    salience 10
+    when
+        Emergency(nroOfPeople == 1)
+        $procedureRequest: ProcedureRequest( $patientId: parameters['patient.id'] != null ) from entry-point "procedure request"
+    then
+        System.out.println("Inserting Patient ->"+DistributedPeristenceServerService.getInstance().loadPatient((Long)$patientId));
+        insert(DistributedPeristenceServerService.getInstance().loadPatient((Long)$patientId));
+end
+
+rule "Start Default Heart Attack Procedure"
+    when
+        $procedureRequest: ProcedureRequest() from entry-point "procedure request"
+        Emergency(type == EmergencyType.HEART_ATTACK)
+        Patient(age > 20 && < 60)
+        
+    then
+       ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
+       insert(pi);
+        
+end*/
+
+

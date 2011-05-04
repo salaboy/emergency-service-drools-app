@@ -1,0 +1,30 @@
+package patient.wiimote;
+
+import java.util.ArrayList;
+import com.wordpress.salaboy.model.events.PulseEvent;
+
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
+
+declare PulseEvent
+    @role ( event )
+    @expires ( 20s )
+end
+
+global Long vehicleId;
+global Long callId;
+
+
+rule "Patient with no vital sign"
+    when
+        The average pulse is 235 in the last 4 seconds
+    then
+        Send Alert: "Warning, patient without vital signs"
+end
+
+rule "Patient heart attack"
+    when
+        The pulse is greater than 10/1 seconds
+    then
+        Send Alert: "Warning, patient suffering a heart attack"
+end

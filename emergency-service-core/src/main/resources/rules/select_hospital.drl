@@ -1,0 +1,53 @@
+package hospitalselectionrules;
+
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Ambulance;
+
+import com.wordpress.salaboy.acc.HospitalDistanceCalculationData;
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+import java.util.Map;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+
+
+
+
+query "getPatient"
+    //@TODO add more filters per process/emergency
+    patient: Patient()
+end
+
+rule "Initialize Emergency"
+    salience 20
+    ruleflow-group "hospital-selection"
+    when
+       $processInstance: WorkflowProcessInstance() 
+    then
+        Long emergencyId = (Long)$processInstance.getVariable("emergency.id");
+        
+        insert(DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId));
+end
+
+rule "Rank Hospital Speciality that matches EmergencyType"
+    
+    ruleflow-group "hospital-selection"
+    when
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency($type: type.name)
+        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from DistributedPeristenceServerService.getInstance().getAllHospitals(), 
+                hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $emergency))
+
+        )
+      
+
+    then
+        Long callId = (Long)$processInstance.getVariable("call.id");
+        //Send Hospital Selected Message
+        MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
+        
+end

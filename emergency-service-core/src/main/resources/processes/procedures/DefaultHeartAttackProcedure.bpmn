@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  
+  <itemDefinition id="_call.idItem" structureRef="Long" />
+  <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
+  <itemDefinition id="_emergency.idItem" structureRef="Long" />
+  <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
+  <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
+  <itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
+  <itemDefinition id="_patientAtHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.PatientAtHospitalEvent" />
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure" name="Default Heart Attack Procedure" >
+
+    <!-- process variables -->
+    
+    <property id="call.id" itemSubjectRef="_call.idItem"/>
+    <property id="emergency.id" itemSubjectRef="_emergency.idItem"/>
+    <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
+    <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
+    <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
+    <property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/>
+    <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
+    
+    
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    
+     <userTask id="_2" name="Select Vehicle and Dispatch" >
+      <ioSpecification>
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_ContentInput" name="Content" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_PriorityInput" name="Priority" />
+        <dataInput id="_2_call.IdInput" name="call.id" />
+        <dataInput id="_2_emergency.IdInput" name="emergency.id" />
+        <dataOutput id="_2_emergency.vehicleOutput" name="emergency.vehicles" />
+        
+        <inputSet>
+          <dataInputRefs>_2_call.IdInput</dataInputRefs>
+          <dataInputRefs>_2_emergency.IdInput</dataInputRefs>
+          
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_emergency.vehicleOutput</dataOutputRefs>
+          
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call.id</sourceRef>
+        <targetRef>_2_call.IdInput</targetRef>
+      </dataInputAssociation>
+       <dataInputAssociation>
+        <sourceRef>emergency.id</sourceRef>
+        <targetRef>_2_emergency.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{call.id}, #{emergency.id}</from>
+          <to xs:type="tFormalExpression">_2_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"> Select Vehicle For #{call.id} </from>
+          <to xs:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_2_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.vehicleOutput</sourceRef>
+        <targetRef>emergency.vehicles</targetRef>
+      </dataOutputAssociation>
+      
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>garage_emergency_service</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    
+    <task id="_3" name="Dispatch Selected Vehicles" tns:taskName="DispatchSelectedVehicles" >
+          <ioSpecification>
+            <dataInput id="_3_emergency.vehiclesInput" name="emergency.vehicles" />
+            <dataInput id="_3_call.idInput" name="call.id" />
+            <inputSet>
+              <dataInputRefs>_3_emergency.vehiclesInput</dataInputRefs>
+              <dataInputRefs>_3_call.idInput</dataInputRefs>
+            </inputSet>
+            <outputSet>
+            </outputSet>
+          </ioSpecification>
+          <dataInputAssociation>
+            <sourceRef>emergency.vehicles</sourceRef>
+            <targetRef>_3_emergency.vehiclesInput</targetRef>
+          </dataInputAssociation>
+          <dataInputAssociation>
+             <sourceRef>call.id</sourceRef>
+            <targetRef>_3_call.idInput</targetRef>
+          </dataInputAssociation>
+    </task>
+    
+    <intermediateCatchEvent id="_4" name="PickUpPatientEvent" >
+      <dataOutput id="_4_patientPickUpOutput" name="event" />
+      <dataOutputAssociation>
+        <sourceRef>_4_patientPickUpOutput</sourceRef>
+        <targetRef>patientPickUpEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_4_patientPickUpOutput</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientPickUpEvent"/>
+    </intermediateCatchEvent>
+
+    <parallelGateway id="_5" name="Gateway" gatewayDirection="Converging" />
+
+ 
+     <userTask id="_6" name="Check Patient Status and Update the Central" >
+      <ioSpecification>
+        <dataInput id="_6_CommentInput" name="Comment" />
+        <dataInput id="_6_SkippableInput" name="Skippable" />
+        <dataInput id="_6_ContentInput" name="Content" />
+        <dataInput id="_6_TaskNameInput" name="TaskName" />
+        <dataInput id="_6_PriorityInput" name="Priority" />
+        <dataInput id="_6_call.IdInput" name="call.id" />
+        <dataInput id="_6_emergency.IdInput" name="emergency.id" />
+        <dataOutput id="_6_emergency.severityOutput" name="emergency.severity" />
+        <dataOutput id="_6_emergency.updatedNotesOutput" name="emergency.updatedNotes" />
+        
+        <inputSet>
+          <dataInputRefs>_6_call.IdInput</dataInputRefs>
+          <dataInputRefs>_6_emergency.IdInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+            <dataOutputRefs>_6_emergency.severityOutput</dataOutputRefs>
+            <dataOutputRefs>_6_emergency.updatedNotesOutput</dataOutputRefs>
+          
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call.id</sourceRef>
+        <targetRef>_6_call.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency.id</sourceRef>
+        <targetRef>_6_emergency.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_6_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_6_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_ContentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">#{call.id}</from>
+          <to xs:type="tFormalExpression">_6_ContentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"> Doctor's Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
+          <to xs:type="tFormalExpression">_6_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_6_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.severityOutput</sourceRef>
+        <targetRef>emergency.severity</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.updatedNotesOutput</sourceRef>
+        <targetRef>emergency.updatedNotes</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>doctor</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+    <businessRuleTask id="_7" name="Select Hospital" g:ruleFlowGroup="hospital-selection" />
+
+     <intermediateCatchEvent id="_8" name="PatientAtHospitalEvent" >
+      <dataOutput id="_8_patientAtHospitalOutput" name="event" />
+      <dataOutputAssociation>
+        <sourceRef>_8_patientAtHospitalOutput</sourceRef>
+        <targetRef>patientAtHospitalEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_8_patientAtHospitalOutput</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientAtHospitalEvent"/>
+    </intermediateCatchEvent>
+
+    <parallelGateway id="_9" name="Gateway" gatewayDirection="Converging" />
+
+     <scriptTask id="_10" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println(" >>>>>> Stopping Ambulance Tracking System -> Report: ");
+        System.out.println(" >>>>>> "+com.wordpress.salaboy.model.serviceclient
+                                    .DistributedPeristenceServerService.getInstance()
+                                        .getReportByCallId((Long)kcontext.getVariable("call.id")).getReportString());
+      </script>
+    </scriptTask>
+
+    <endEvent id="_11" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+   
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+    <sequenceFlow id="_7-_9" sourceRef="_7" targetRef="_9" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
+    <sequenceFlow id="_10-_11" sourceRef="_10" targetRef="_11" />
+   
+  </process>
+
+</definitions>

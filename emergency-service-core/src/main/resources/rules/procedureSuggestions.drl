@@ -1,0 +1,59 @@
+package phoneCallPrimaryService.procedureSuggestion;
+
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
+
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.services.CityService;
+
+rule "Initialize Emergency"
+    salience 20
+    ruleflow-group "suggest process"
+    when
+        $processInstance: WorkflowProcessInstance()
+        
+    then
+        String type = (String)$processInstance.getVariable("emergency.type");
+        Integer locationX = (Integer)$processInstance.getVariable("emergency.locationx");
+        Integer locationY = (Integer)$processInstance.getVariable("emergency.locationy");
+        int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
+        Call call = (Call)$processInstance.getVariable("call");
+        Emergency emergency = new Emergency();
+        emergency.setLocation(new Location(locationX, locationY));
+        emergency.setType(EmergencyType.valueOf(type));
+        emergency.setNroOfPeople(nroOfPeople);
+        emergency.setCall(call);
+        if(nroOfPeople == 1){
+            int patientAge = (Integer)$processInstance.getVariable("patient.age");
+            String patientGender = (String)$processInstance.getVariable("patient.gender"); 
+            insert(new Patient(patientAge, patientGender));
+        }
+        $processInstance.setVariable("emergency.id",emergency.getId());
+        
+        //Notify about the new Emergency
+        MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
+
+        insert(emergency);
+        insert(new SuggestedProcedures(emergency.getId()));
+
+        
+end
+
+
+rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
+    ruleflow-group "suggest process"
+    when
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency(nroOfPeople == 1)
+        $patient: Patient(age > 20 && < 60)
+        $procedures: SuggestedProcedures(emergencyId == $emergency.id)
+    then
+       $procedures.addProcedureName("DefaultHeartAttackProcedure"); 
+       $processInstance.setVariable("suggestedProcedures",$procedures);
+end
+
