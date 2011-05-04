@@ -16,6 +16,8 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
@@ -387,32 +389,31 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
     
     private void addMockAmbulance() {
-
-        Ambulance ambulance = new Ambulance("Mock Ambulance");
-        ambulance.setId(0L);
-        //ambulance.setId(System.currentTimeMillis());
-
-        this.ui.assignVehicleToEmergency(this.emergency.getCallId(), ambulance);
+        this.addMockVehicle(new Ambulance("Mock Ambulance"));
     }
 
     private void addMockFireTruck() {
-
-        FireTruck fireTruck = new FireTruck("Mock Fire Truck");
-        fireTruck.setId(System.currentTimeMillis());
-
-        this.ui.assignVehicleToEmergency(this.emergency.getCallId(), fireTruck);
+        this.addMockVehicle(new FireTruck("Mock Fire Truck"));
     }
 
     private void addMockPoliceCar() {
-
-        PoliceCar policeCar = new PoliceCar("Mock Police Car");
-        policeCar.setId(System.currentTimeMillis());
-
-        this.ui.assignVehicleToEmergency(this.emergency.getCallId(), policeCar);
+        this.addMockVehicle(new PoliceCar("Mock Police Car"));
+    }
+    
+    private void addMockVehicle(Vehicle vehicle){
+        try {
+            MessageFactory.sendMessage(new VehicleDispatchedMessage(this.emergency.getCallId(), vehicle.getId()));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void selectMockHospital(long l) {
         Hospital mock = DistributedPeristenceServerService.getInstance().loadHospital(l);
-        selectHospital(mock);
+        try {
+            MessageFactory.sendMessage(new HospitalSelectedMessage(this.emergency.getCallId(), mock));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
