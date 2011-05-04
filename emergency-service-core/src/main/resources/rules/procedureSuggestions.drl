@@ -9,7 +9,6 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.services.CityService;
 
 rule "Initialize Emergency"
     salience 20

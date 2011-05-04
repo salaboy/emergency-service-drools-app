@@ -118,7 +118,9 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <argument>-Dd32</argument>
+                        <!-- mac osx for infinispan -->
+                        <!--argument>-Djgroups.bind_addr=127.0.0.1</argument-->
+                        <argument>-d32</argument>
                         <argument>-classpath</argument>
                         <classpath/>
                         <argument>com.wordpress.salaboy.emergencyservice.main.UserTaskListUI</argument>

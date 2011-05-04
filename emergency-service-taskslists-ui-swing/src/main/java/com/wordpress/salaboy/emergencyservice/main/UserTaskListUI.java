@@ -269,7 +269,12 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2MenuKeyPressed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    
+       java.awt.EventQueue.invokeLater(new Runnable()     {
+
+            public void run() {
+                new EmergenciesDashboard().setVisible(true);
+            }
+        }); 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseClicked

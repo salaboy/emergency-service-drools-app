@@ -298,7 +298,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     }
 
     private void loadMapImage() {
-        map = new ImageIcon(this.getClass().getClassLoader().getResource("png/CityMap.png"));
+        map = new ImageIcon(this.getClass().getClassLoader().getResource("data/png/CityMap.png"));
         this.lblMap.setIcon(map);
     }
     private Map<Long, HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<Long, HeartBeatWidget>();

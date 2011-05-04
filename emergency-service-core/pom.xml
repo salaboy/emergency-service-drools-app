@@ -18,8 +18,8 @@
         <jbpm.version>5.0.0</jbpm.version-->
         
         <!-- SNAPSHOTS -->
-        <drools.version>5.2.0-SNAPSHOT</drools.version>
-        <jbpm.version>5.1-SNAPSHOT</jbpm.version>
+        <drools.version>5.3.0-SNAPSHOT</drools.version>
+        <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
         
     </properties>  
 
@@ -297,7 +297,9 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
 		    <executable>java</executable> 
+                    
 		    <arguments>
+                        <!--argument>-Djgroups.bind_addr=127.0.0.1</argument-->
 			<argument>-classpath</argument>
                         <classpath/>
 			<argument>com.wordpress.salaboy.CoreServer</argument>
