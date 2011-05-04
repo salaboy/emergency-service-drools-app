@@ -18,8 +18,8 @@
         <jbpm.version>5.0.0</jbpm.version-->
         
         <!-- SNAPSHOTS -->
-        <drools.version>5.2.0-SNAPSHOT</drools.version>
-        <jbpm.version>5.1-SNAPSHOT</jbpm.version>
+        <drools.version>5.3.0-SNAPSHOT</drools.version>
+        <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
         
     </properties>  
 

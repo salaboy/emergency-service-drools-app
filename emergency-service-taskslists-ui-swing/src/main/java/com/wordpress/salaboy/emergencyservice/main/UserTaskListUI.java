@@ -37,29 +37,24 @@ import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClie
 public class UserTaskListUI extends javax.swing.JFrame {
 
     private HumanTaskService humanTaskServiceClient;
-    
     public static Long LAST_CALL_ID = null;
     public static Long LAST_DISPATCHED_VEHICLE_ID = null;
-    
-    
     //Task Lists Panels
     private IncomingPhoneCallsTaskListPanel phoneCallsTaskListPanel;
     private ControlSuggestedProceduresTaskListPanel controlSuggestedProceduresTaskListPanel;
     private SelectVehicleTaskListPanel selectAmbulanceTaskListPanel;
     private DoctorsUpdateTaskListPanel doctorsUpdateTaskListPanel;
-  
     private MessageConsumerWorker vehicleDispatchedWorker;
-
 
     /** Creates new form UserUI */
     public UserTaskListUI() {
         initComponents();
         initTaskClient();
         initMessageWorkers();
-        
+
         //Initializing Distribtued Persistence Service
         DistributedPeristenceServerService.getInstance();
-        
+
         phoneCallsTaskListPanel = new IncomingPhoneCallsTaskListPanel(this);
         controlSuggestedProceduresTaskListPanel = new ControlSuggestedProceduresTaskListPanel(this);
         selectAmbulanceTaskListPanel = new SelectVehicleTaskListPanel(this);
@@ -69,9 +64,9 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.mainJTabbedPane.add(this.selectAmbulanceTaskListPanel, 2);
         this.mainJTabbedPane.add(this.doctorsUpdateTaskListPanel, 3);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
-        
-        
-       
+
+
+
     }
 
     /** This method is called from within the constructor to
@@ -235,7 +230,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutMenuItemMenuKeyPressed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable()    {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -245,16 +240,14 @@ public class UserTaskListUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-  
-
     private void menuItemConfigreEventGeneratorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigreEventGeneratorsActionPerformed
-        
-        java.awt.EventQueue.invokeLater(new Runnable()    {
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 JFrame jFrame = new JFrame();
-                jFrame.add( new EventGeneratorsConfigPanel());
+                jFrame.add(new EventGeneratorsConfigPanel());
                 jFrame.setSize(300, 600);
                 jFrame.setVisible(true);
             }
@@ -264,26 +257,25 @@ public class UserTaskListUI extends javax.swing.JFrame {
 
     private void jMenuItem2MenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenuItem2MenuKeyPressed
         // TODO add your handling code here:
-         
-        
     }//GEN-LAST:event_jMenuItem2MenuKeyPressed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EmergenciesDashboard().setVisible(true);
+            }
+        });
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseClicked
         // TODO add your handling code here:
-        
     }//GEN-LAST:event_jMenuItem2MouseClicked
-
- 
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable()     {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 new UserTaskListUI().setVisible(true);
@@ -307,32 +299,24 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private void initTaskClient() {
         //humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(new ClassPathResource("conf/human-tasks-services.xml"));
         HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
-        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client", new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
     }
-
 
     public void callHandled() {
         this.phoneCallsTaskListPanel.refresh();
 
     }
 
-
-
-
     public JTabbedPane getMainJTabbedPane() {
         return mainJTabbedPane;
     }
-
 
     public HumanTaskService getTaskClient() {
         return humanTaskServiceClient;
     }
 
-
-
-    
     private void initMessageWorkers() {
         vehicleDispatchedWorker = new MessageConsumerWorker("TaskListUIVehicleDispatchedWorker", new MessageConsumerWorkerHandler<VehicleDispatchedMessage>() {
 
@@ -344,18 +328,15 @@ public class UserTaskListUI extends javax.swing.JFrame {
                 LAST_DISPATCHED_VEHICLE_ID = message.getVehicleId();
             }
         });
-    
+
         vehicleDispatchedWorker.start();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        if (vehicleDispatchedWorker != null){
+        if (vehicleDispatchedWorker != null) {
             vehicleDispatchedWorker.stopWorker();
         }
     }
- 
-    
-    
 }
