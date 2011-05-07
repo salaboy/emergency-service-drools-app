@@ -29,6 +29,7 @@ public class DistributedPeristenceServerService {
 
     private static DistributedPeristenceServerService instance;
     private DefaultCacheManager cacheManager;
+    private String nodeName;
 
     public static DistributedPeristenceServerService getInstance() {
         if (instance == null) {
@@ -41,39 +42,39 @@ public class DistributedPeristenceServerService {
         return instance;
     }
 
-    private DistributedPeristenceServerService() throws IOException {
-        //1.
-        //cacheManager = new DefaultCacheManager("config.xml");
-        
-        //2.
-        //cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault() );
-        
-        //3.
+    private DistributedPeristenceServerService() throws IOException{
+
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
         Configuration cfg = new Configuration();
-        cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
-        cacheManager = new DefaultCacheManager(globalConf, cfg);
 
+        //cfg.setCacheMode(Configuration.CacheMode.REPL_SYNC);
+        cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
+        cfg.setNumOwners(3);
+        cacheManager = new DefaultCacheManager(globalConf, cfg);
+        
     }
 
+   
     public EmbeddedCacheManager getCacheManager() {
         return cacheManager;
     }
-
-    
 
     public void storeEmergency(Emergency emergency) {
         if (this.getCache().get("emergencies") == null) {
             getCache().put("emergencies", new ConcurrentHashMap<Long, Emergency>());
         }
-        ((Map<Long, Emergency>) this.getCache().get("emergencies")).put(emergency.getId(), emergency);
+        Map<Long, Emergency> emergencies = ((Map<Long, Emergency>) this.getCache().get("emergencies"));
+        emergencies.put(emergency.getId(), emergency);
+        this.getCache().put("emergencies",emergencies);
     }
 
     public void storeVehicle(Vehicle vehicle) {
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new ConcurrentHashMap<Long, Vehicle>());
         }
-        ((Map<Long, Vehicle>) this.getCache().get("vehicles")).put(vehicle.getId(), vehicle);
+        Map<Long, Vehicle> vehicles = ((Map<Long, Vehicle>) this.getCache().get("vehicles"));
+        vehicles.put(vehicle.getId(), vehicle);
+        this.getCache().put("vehicles",vehicles);
 
     }
 
@@ -81,10 +82,10 @@ public class DistributedPeristenceServerService {
         if (this.getCache().get("patients") == null) {
             getCache().put("patients", new ConcurrentHashMap<Long, Patient>());
         }
-        ((Map<Long, Patient>) this.getCache().get("patients")).put(patient.getId(), patient);
+        Map<Long, Patient> patients = ((Map<Long, Patient>) this.getCache().get("patients"));
+        patients.put(patient.getId(), patient);
+        this.getCache().put("hospitals",patients);
     }
-
-  
 
     public Emergency loadEmergency(Long id) {
         if (this.getCache().get("emergencies") == null) {
@@ -108,6 +109,9 @@ public class DistributedPeristenceServerService {
     }
 
     public Collection<Vehicle> getAllVehicles() {
+        if (this.getCache().get("vehicles") == null) {
+            getCache().put("vehicles", new ConcurrentHashMap<Long, Vehicle>());
+        }
         return ((Map<Long, Vehicle>) this.getCache().get("vehicles")).values();
     }
 
@@ -115,7 +119,10 @@ public class DistributedPeristenceServerService {
         if (this.getCache().get("hospitals") == null) {
             getCache().put("hospitals", new ConcurrentHashMap<Long, Hospital>());
         }
-        ((Map<Long, Hospital>) this.getCache().get("hospitals")).put(hospital.getId(), hospital);
+        Map<Long, Hospital> hospitals = ((Map<Long, Hospital>) this.getCache().get("hospitals"));
+        hospitals.put(hospital.getId(), hospital);
+        this.getCache().put("hospitals",hospitals);
+        
     }
 
     public Hospital loadHospital(Long id) {
@@ -128,35 +135,38 @@ public class DistributedPeristenceServerService {
     public Collection<Hospital> getAllHospitals() {
         return ((Map<Long, Hospital>) this.getCache().get("hospitals")).values();
     }
-    
-    public void addEntryToReport(Long callId, String entry){
+
+    public void addEntryToReport(Long callId, String entry) {
         if (this.getCache().get("reports") == null) {
             getCache().put("reports", new ConcurrentHashMap<Long, Report>());
         }
-        if(((Map<Long, Report>)getCache().get("reports")).get(callId) == null){
-            ((Map<Long, Report>)getCache().get("reports")).put(callId, new Report());
+        if (((Map<Long, Report>) getCache().get("reports")).get(callId) == null) {
+            ((Map<Long, Report>) getCache().get("reports")).put(callId, new Report());
         }
-        ((Map<Long, Report>)getCache().get("reports")).get(callId).addEntry(entry);
-        
+        Map<Long, Report> reports = ((Map<Long, Report>) this.getCache().get("reports"));
+        reports.get(callId).addEntry(entry);
+        this.getCache().put("reports", reports);
+
     }
-    
-    public Report getReportByCallId(Long callId){
+
+    public Report getReportByCallId(Long callId) {
         if (this.getCache().get("reports") == null) {
             getCache().put("reports", new ConcurrentHashMap<Long, Report>());
         }
-        if(((Map<Long, Report>)getCache().get("reports")).get(callId) == null){
-            ((Map<Long, Report>)getCache().get("reports")).put(callId, new Report());
+        if (((Map<Long, Report>) getCache().get("reports")).get(callId) == null) {
+            ((Map<Long, Report>) getCache().get("reports")).put(callId, new Report());
         }
-        return ((Map<Long, Report>)getCache().get("reports")).get(callId);
+        return ((Map<Long, Report>) getCache().get("reports")).get(callId);
     }
-    
-    public Collection<Emergency> getAllEmergencies(){
-        if(getCache().get("emergencies") == null){
+
+    public Collection<Emergency> getAllEmergencies() {
+        if (getCache().get("emergencies") == null) {
             getCache().put("emergencies", new ConcurrentHashMap<Long, Emergency>());
         }
-        return ((Map<Long, Emergency>)getCache().get("emergencies")).values();
+        return ((Map<Long, Emergency>) getCache().get("emergencies")).values();
     }
-    private Cache<String, Object> getCache(){
+
+    private Cache<String, Object> getCache() {
         return cacheManager.getCache();
     }
 }

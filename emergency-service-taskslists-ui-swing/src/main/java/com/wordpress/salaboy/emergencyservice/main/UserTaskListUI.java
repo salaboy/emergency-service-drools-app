@@ -57,8 +57,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
         initTaskClient();
         initMessageWorkers();
         
-        //Initializing Distribtued Persistence Service
-        DistributedPeristenceServerService.getInstance();
         
         phoneCallsTaskListPanel = new IncomingPhoneCallsTaskListPanel(this);
         controlSuggestedProceduresTaskListPanel = new ControlSuggestedProceduresTaskListPanel(this);
