@@ -15,12 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
+import org.drools.conf.EventProcessingOption;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.GridConnection;
 import org.drools.grid.GridNode;
@@ -37,7 +39,7 @@ import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
+import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
  *
@@ -124,7 +126,9 @@ public class IncomingCallsMGMTService {
             throw new IllegalStateException("Failed to parse knowledge!");
         }
 
-        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase();
+        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+        kbaseConf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
 
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
@@ -137,7 +141,8 @@ public class IncomingCallsMGMTService {
     }
 
     private void setWorkItemHandlers() {
-        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(phoneCallMGMTSession));
+        //phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(phoneCallMGMTSession));
+        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(phoneCallMGMTSession));
     }
     
     

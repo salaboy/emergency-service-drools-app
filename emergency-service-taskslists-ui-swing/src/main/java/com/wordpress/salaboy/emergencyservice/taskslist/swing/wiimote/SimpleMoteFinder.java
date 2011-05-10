@@ -28,9 +28,9 @@ public class SimpleMoteFinder implements MoteFinderListener {
 		}
 	}
 
-	public Mote findMote() {
+	public Mote findMote(String wiiMoteId) {
 		if (finder == null) {
-			finder = MyMoteFinder.getMoteFinder();
+			finder = MyMoteFinder.getMoteFinder(wiiMoteId);
 			finder.addMoteFinderListener(this);
 		}
 		finder.startDiscovery();

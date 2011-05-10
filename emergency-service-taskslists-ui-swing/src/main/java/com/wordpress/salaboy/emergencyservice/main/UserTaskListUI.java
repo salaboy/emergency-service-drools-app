@@ -23,12 +23,11 @@ import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPan
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import javax.swing.JFrame;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5MinaHumanTaskClientConfiguration;
 
 /**
  *
@@ -310,7 +309,8 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private void initTaskClient() {
         //humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(new ClassPathResource("conf/human-tasks-services.xml"));
         HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
-        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
+        //taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 8090));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
     }

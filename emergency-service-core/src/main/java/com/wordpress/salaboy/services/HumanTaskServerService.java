@@ -5,7 +5,6 @@
 package com.wordpress.salaboy.services;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -17,37 +16,41 @@ import org.jbpm.task.User;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.jbpm.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
+import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
 /**
  *
  * @author salaboy
  */
 public class HumanTaskServerService {
+
     private static HumanTaskServerService instance = null;
-    private MinaTaskServer server;
+    //private MinaTaskServer server;
+    private HornetQTaskServer server;
     private EntityManagerFactory emf;
     private TaskService taskService;
     private TaskServiceSession taskSession;
     private PoolingDataSource ds1;
     private Map<String, TaskClient> currentClients;
+
     private HumanTaskServerService() {
     }
-    
-    public static HumanTaskServerService getInstance(){
-        if(instance == null){
+
+    public static HumanTaskServerService getInstance() {
+        if (instance == null) {
             instance = new HumanTaskServerService();
         }
         return instance;
     }
+
     public void initTaskServer() {
-       
-            
-        
+
+
+
         System.out.println(">>> Starting Human Task Server ...");
-       
+
         ds1 = new PoolingDataSource();
         ds1.setUniqueName("jdbc/testDS1");
 
@@ -73,36 +76,39 @@ public class HumanTaskServerService {
         User doctor = new User("doctor");
         User garageEmergencyService = new User("garage_emergency_service");
         User Administrator = new User("Administrator");
-        
-        
+
+
         taskSession.addUser(Administrator);
         taskSession.addUser(operator);
         taskSession.addUser(driver);
         taskSession.addUser(hospital);
         taskSession.addUser(doctor);
         taskSession.addUser(garageEmergencyService);
-        
-        if(server != null && server.isRunning()){
+
+        if (server != null && server.isRunning()) {
             System.out.println(">>> Server Already Started");
             return;
         }
-        server = new MinaTaskServer(taskService);
+        //server = new MinaTaskServer(taskService);
+        server = new HornetQTaskServer(taskService, 8090);
+
         try {
-           
             server.start();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(" >>> ERROR: Server Not Started:  "+ex.getMessage());
+            System.out.println(" >>> ERROR: Server Not Started:  " + ex.getMessage());
         }
-        
-        
+
+
+
+
         System.out.println(">>> Human Task Server Started!");
-    } 
-    
-    public void stopTaskServer(){
-        if(currentClients != null){
-            for(String key : currentClients.keySet()){
-                System.out.println(">>> Disconnecting Client = "+key);
+    }
+
+    public void stopTaskServer() {
+        if (currentClients != null) {
+            for (String key : currentClients.keySet()) {
+                System.out.println(">>> Disconnecting Client = " + key);
                 try {
                     currentClients.get(key).disconnect();
                 } catch (Exception ex) {
@@ -113,29 +119,33 @@ public class HumanTaskServerService {
             currentClients = null;
         }
 
-        
+
         System.out.println(">>> Stopping Human Task Server ...");
-        
-        
-        
+
+
+
         ds1.close();
         taskSession.dispose();
-      
-        server.stop();
-        
-   
-        
+        try {
+            server.stop();
+        } catch (Exception ex) {
+            Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+
         server = null;
         taskSession = null;
         ds1 = null;
-        
+
         System.out.println(">>> Human Task Server Stopped!");
     }
-    
-    public  TaskClient initTaskClient(String clientName) {
-        TaskClient client = new TaskClient(new MinaTaskClientConnector(clientName,
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-        boolean connected = client.connect("127.0.0.1", 9123);
+
+    public TaskClient initTaskClient(String clientName) {
+        TaskClient client = new TaskClient(new HornetQTaskClientConnector(clientName,
+                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        //boolean connected = client.connect("127.0.0.1", 9123);
+        boolean connected = client.connect("127.0.0.1", 8090);
 
         int retry = 0;
         while (!connected) {
@@ -144,13 +154,14 @@ public class HumanTaskServerService {
             } catch (InterruptedException ex) {
                 java.util.logging.Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
             }
-            connected = client.connect("127.0.0.1", 9123);
+            //connected = client.connect("127.0.0.1", 9123);
+            connected = client.connect("127.0.0.1", 8090);
             if (!connected) {
                 retry++;
             }
         }
-        System.out.println("Client ("+clientName+") Connected after " + retry + " retries");
-        if(currentClients == null){
+        System.out.println("Client (" + clientName + ") Connected after " + retry + " retries");
+        if (currentClients == null) {
             currentClients = new ConcurrentHashMap<String, TaskClient>();
         }
         currentClients.put(clientName, client);

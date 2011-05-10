@@ -36,14 +36,15 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.conf.AccumulateFunctionOption;
-
+import org.drools.conf.EventProcessingOption;
+import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 /**
  *
  * @author salaboy
@@ -130,7 +131,9 @@ public class ProceduresMGMTService {
             throw new IllegalStateException("Failed to parse knowledge!");
         }
 
-        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase();
+        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+        kbaseConf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
 
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
@@ -147,7 +150,8 @@ public class ProceduresMGMTService {
     }
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(session));
+        //session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(session));
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 
     public void patientAtHospitalNotification(PatientAtHospitalEvent event) {

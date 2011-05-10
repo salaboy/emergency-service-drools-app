@@ -15,14 +15,12 @@ import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.intel.bluetooth.BlueCoveImpl;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.SimpleMoteFinder;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.WiiMoteOptions;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import java.lang.String;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +39,7 @@ import motej.event.MoteDisconnectedListener;
 import motej.event.StatusInformationListener;
 import motej.request.ReportModeRequest;
 import org.hornetq.api.core.HornetQException;
+import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.SimpleDevicesFinder;
 
 /**
  * @author salaboy
@@ -85,6 +84,9 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         btnWiiMoteLookup = new javax.swing.JButton();
         btnStopWiiMoteLookup = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        wiiMoteIdjTextField = new javax.swing.JTextField();
+        btnListDevices = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -106,6 +108,17 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("Wii Mote Bluetooth Id: ");
+
+        wiiMoteIdjTextField.setText("8C56C54923CA");
+
+        btnListDevices.setText("List Devices");
+        btnListDevices.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListDevicesActionPerformed(evt);
+            }
+        });
+
         jButton1.setText("Clear");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,16 +132,31 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnWiiMoteLookup)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnStopWiiMoteLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnListDevices, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wiiMoteIdjTextField))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnWiiMoteLookup)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnStopWiiMoteLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnListDevices)
+                .addGap(11, 11, 11)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(wiiMoteIdjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnWiiMoteLookup)
                     .addComponent(btnStopWiiMoteLookup)
@@ -146,24 +174,24 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,7 +199,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -203,15 +231,24 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         outputjTextArea.insert(System.currentTimeMillis()+" - Wii mote Disconnected By the user", 0);
     }//GEN-LAST:event_btnStopWiiMoteLookupActionPerformed
 
+    private void btnListDevicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListDevicesActionPerformed
+        // TODO add your handling code here:
+        listDevices();
+        
+    }//GEN-LAST:event_btnListDevicesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnListDevices;
     private javax.swing.JButton btnStopWiiMoteLookup;
     private javax.swing.JButton btnWiiMoteLookup;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea outputjTextArea;
+    private javax.swing.JTextField wiiMoteIdjTextField;
     // End of variables declaration//GEN-END:variables
     private Mote mote = null;
     private SimpleMoteFinder simpleMoteFinder;
@@ -227,13 +264,16 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
             }
         });
     }
-    
+    private void listDevices(){
+       SimpleDevicesFinder devicesFinder = new SimpleDevicesFinder();
+       devicesFinder.findDevices();
+    }
     
      private void initWiiMote() {
         System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
         
         simpleMoteFinder = new SimpleMoteFinder();
-        mote = simpleMoteFinder.findMote();
+        mote = simpleMoteFinder.findMote(wiiMoteIdjTextField.getText());
         if(mote == null){
             outputjTextArea.insert(System.currentTimeMillis()+" - Wii mote not found! \n", 0);
             
@@ -255,7 +295,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                             MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, evt.getY(), new Date()));                  
                         }
                     } catch (HornetQException ex) {
-                        Logger.getLogger(WiiMoteOptions.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(EventGeneratorsConfigPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
                     
