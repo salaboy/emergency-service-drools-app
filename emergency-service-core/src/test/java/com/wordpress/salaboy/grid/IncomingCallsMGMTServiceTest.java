@@ -40,24 +40,32 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        HumanTaskServerService.getInstance().initTaskServer();
+        
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         
-        HumanTaskServerService.getInstance().stopTaskServer();
+        
     }
 
     @Before
     public void setUp() throws Exception {
+        
+        HumanTaskServerService.getInstance().initTaskServer();
+        
         MessageServerSingleton.getInstance().start();
+        
         consumer = MessageFactory.createMessageConsumer("IncomingCall");
         
         
         this.coreServicesMap = new HashMap();
+       
+        
         createRemoteNode();
         
+        
+        client =  HumanTaskServerService.getInstance().initTaskClient();
         
 
     }
@@ -65,6 +73,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
     @After
     public void tearDown() throws Exception {
         
+        HumanTaskServerService.getInstance().stopTaskServer();
         
         MessageServerSingleton.getInstance().stop();
         if(remoteN1 != null){
@@ -79,7 +88,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
 
     @Test
     public void phoneCallsMGMTServiceTest() throws HornetQException, InterruptedException{
-        client =  HumanTaskServerService.getInstance().initTaskClient("client test PhoneCallsMGMTServiceTest");
+        
         MessageProducer producer = MessageFactory.createMessageProducer();
         producer.sendMessage(new Call(1,2,new Date()));
         producer.stop();
@@ -93,7 +102,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
-        List<TaskSummary> sums = handler.getResults();
+         List<TaskSummary> sums = handler.getResults();
         assertNotNull(sums);
         assertEquals(1, sums.size());
         

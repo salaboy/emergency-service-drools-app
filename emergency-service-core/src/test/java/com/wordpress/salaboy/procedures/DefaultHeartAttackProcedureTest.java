@@ -99,7 +99,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         //   MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
         //  producer.sendMessage(new Call(1,2,new Date()));
         //  producer.stop();
-        client = HumanTaskServerService.getInstance().initTaskClient("client test defaultHeartAttackSimpleTest");
+        client = HumanTaskServerService.getInstance().initTaskClient();
 
 //        Call call = (Call) consumer.receiveMessage();
 //        assertNotNull(call);

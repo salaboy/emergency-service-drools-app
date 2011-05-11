@@ -30,7 +30,7 @@ public class MessageServerSingleton {
         configuration.setSecurityEnabled(false);
 
         Map<String, Object> connectionParams = new HashMap<String, Object>();
-        connectionParams.put(TransportConstants.PORT_PROP_NAME, 5446);
+        connectionParams.put(TransportConstants.PORT_PROP_NAME, 8050);
 
         TransportConfiguration transpConf = new TransportConfiguration(NettyAcceptorFactory.class.getName(), connectionParams);
 

@@ -56,7 +56,7 @@ public class MessageFactory {
     
     private static ClientSessionFactory createFactory(){
         Map<String, Object> connectionParams = new HashMap<String, Object>();
-        connectionParams.put(TransportConstants.PORT_PROP_NAME, 5446);
+        connectionParams.put(TransportConstants.PORT_PROP_NAME, 8050);
         TransportConfiguration transportConfiguration = new TransportConfiguration("org.hornetq.integration.transports.netty.NettyConnectorFactory", connectionParams);
         return HornetQClient.createClientSessionFactory(transportConfiguration);
     }

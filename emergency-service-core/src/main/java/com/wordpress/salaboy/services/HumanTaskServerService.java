@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;
@@ -90,10 +91,19 @@ public class HumanTaskServerService {
             return;
         }
         //server = new MinaTaskServer(taskService);
-        server = new HornetQTaskServer(taskService, 8090);
+        server = new HornetQTaskServer(taskService, 8010);
 
         try {
-            server.start();
+       
+            Thread thread = new Thread( server );
+            thread.start();
+
+            
+            
+            while (!server.isRunning()) {
+                System.out.print(".");
+                Thread.sleep(50);
+            }
         } catch (Exception ex) {
             Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(" >>> ERROR: Server Not Started:  " + ex.getMessage());
@@ -101,8 +111,9 @@ public class HumanTaskServerService {
 
 
 
-
-        System.out.println(">>> Human Task Server Started!");
+        if (server.isRunning()) {
+            System.out.println(">>> Human Task Server Started!");
+        }
     }
 
     public void stopTaskServer() {
@@ -141,11 +152,13 @@ public class HumanTaskServerService {
         System.out.println(">>> Human Task Server Stopped!");
     }
 
-    public TaskClient initTaskClient(String clientName) {
-        TaskClient client = new TaskClient(new HornetQTaskClientConnector(clientName,
+    public TaskClient initTaskClient() {
+        TaskClient client = new TaskClient(new HornetQTaskClientConnector("tasksQueue/appclient",
                 new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        
+        
         //boolean connected = client.connect("127.0.0.1", 9123);
-        boolean connected = client.connect("127.0.0.1", 8090);
+        boolean connected = client.connect("127.0.0.1", 8010);
 
         int retry = 0;
         while (!connected) {
@@ -155,16 +168,20 @@ public class HumanTaskServerService {
                 java.util.logging.Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
             }
             //connected = client.connect("127.0.0.1", 9123);
-            connected = client.connect("127.0.0.1", 8090);
+            connected = client.connect("127.0.0.1", 8010);
             if (!connected) {
                 retry++;
             }
         }
-        System.out.println("Client (" + clientName + ") Connected after " + retry + " retries");
+
+
+        System.out.println("Client (" + "tasksQueue" + ") Connected after " + retry + " retries");
         if (currentClients == null) {
             currentClients = new ConcurrentHashMap<String, TaskClient>();
         }
-        currentClients.put(clientName, client);
+        currentClients.put("tasksQueue", client);
+
+
         return client;
     }
 }

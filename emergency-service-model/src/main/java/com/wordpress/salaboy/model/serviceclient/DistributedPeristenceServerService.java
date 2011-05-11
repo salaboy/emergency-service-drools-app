@@ -133,6 +133,9 @@ public class DistributedPeristenceServerService {
     }
 
     public Collection<Hospital> getAllHospitals() {
+        if (this.getCache().get("hospitals") == null) {
+            getCache().put("hospitals", new ConcurrentHashMap<Long, Hospital>());
+        }
         return ((Map<Long, Hospital>) this.getCache().get("hospitals")).values();
     }
 

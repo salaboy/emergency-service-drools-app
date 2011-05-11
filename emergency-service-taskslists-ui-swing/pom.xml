@@ -119,7 +119,7 @@
                     <executable>java</executable>
                     <arguments>
                         <!-- mac osx for infinispan -->
-                        <!--argument>-Djgroups.bind_addr=127.0.0.1</argument-->
+                        <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                         <argument>-d32</argument>
                         <argument>-classpath</argument>
                         <classpath/>

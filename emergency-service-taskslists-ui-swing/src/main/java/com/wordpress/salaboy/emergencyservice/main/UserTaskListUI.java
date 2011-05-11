@@ -310,7 +310,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         //humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(new ClassPathResource("conf/human-tasks-services.xml"));
         HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
         //taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5MinaHumanTaskClientConfiguration("127.0.0.1", 9123));
-        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 8090));
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 8010));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
     }

@@ -24,7 +24,7 @@ end
 
 rule "Patient heart attack"
     when
-        The pulse is greater than 10/1 seconds
+        The pulse is greater than 7/1 seconds
     then
         Send Alert: "Warning, patient suffering a heart attack"
 end

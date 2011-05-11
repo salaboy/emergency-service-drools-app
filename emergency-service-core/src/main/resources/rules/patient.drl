@@ -25,7 +25,7 @@ end
 
 rule "Patient heart attack"
     when
-        ArrayList(size > 10 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
+        ArrayList(size > 7 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
     then
         MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId, "Warning, patient suffering a heart attack ", new java.util.Date()));
 end
