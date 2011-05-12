@@ -56,7 +56,7 @@ import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
 public class CoreServer {
 
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-    protected static Grid grid1;
+    protected static Grid grid;
     protected static GridNode remoteN1;
     
     
@@ -83,7 +83,7 @@ public class CoreServer {
                     System.out.println("Stopping Core Server ... ");
                     MessageServerSingleton.getInstance().stop();
                     remoteN1.dispose();
-                    grid1.get(SocketService.class).close();
+                    grid.get(SocketService.class).close();
                     HumanTaskServerService.getInstance().stopTaskServer();
                     System.out.println("Core Server Stopped! ");
                     coreServer.stopWorkers();
@@ -194,7 +194,7 @@ public class CoreServer {
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(3000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -276,21 +276,21 @@ public class CoreServer {
     }
 
     protected void createRemoteNode() {
-        grid1 = new GridImpl(new HashMap<String, Object>());
-        configureGrid1(grid1,
+        grid = new GridImpl(new HashMap<String, Object>());
+        configureGrid1(grid,
                 8000,
                 null);
 
-        Grid grid2 = new GridImpl(new HashMap<String, Object>());
-        configureGrid1(grid2,
-                -1,
-                grid1.get(WhitePages.class));
+//        Grid grid2 = new GridImpl(new HashMap<String, Object>());
+//        configureGrid1(grid2,
+//                -1,
+//                grid1.get(WhitePages.class));
 
-        GridNode n1 = grid1.createGridNode("n1");
-        grid1.get(SocketService.class).addService("n1", 8000, n1);
+        GridNode n1 = grid.createGridNode("n1");
+        grid.get(SocketService.class).addService("n1", 8000, n1);
 
-        GridServiceDescription<GridNode> n1Gsd = grid2.get(WhitePages.class).lookup("n1");
-        GridConnection<GridNode> conn = grid2.get(ConnectionFactoryService.class).createConnection(n1Gsd);
+        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
+        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
         remoteN1 = conn.connect();
 
     }
