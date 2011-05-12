@@ -17,6 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        
+        <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-core</artifactId>
+        </dependency>
+        
      <!-- Human Tasks - Smart Tasks Dependencies -->
         <dependency>
             <groupId>com.wordpress.salaboy.smarttasks</groupId>
@@ -44,14 +54,6 @@
             <artifactId>swing-layout</artifactId>
             <version>1.0.3</version>
         </dependency>
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        
         
         <!-- Wii mote + bluetooth -->
         <dependency>
@@ -74,34 +76,8 @@
         </dependency>
        
     </dependencies>
-    <repositories>
-       <repository>
-                <id>pyx4me-web-snapshot</id>
-                <url>http://www.pyx4me.com/maven2-snapshot</url>
-                <snapshots>
-                    <enabled>true</enabled>
-                </snapshots>
-                <releases>
-                    <enabled>false</enabled>
-                </releases>
-            </repository>
-       <repository>
-            <id>OW2</id>
-            <url>http://maven.ow2.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>PlugTree</id>
-            <name>PlugTree-Snapshots-CloudBees</name>
-            <url>https://repository-plugtree.forge.cloudbees.com/snapshot/</url>
-            <!--snapshots-->
-                <!--enabled>true</enabled-->
-                <!--updatePolicy>always</updatePolicy-->
-            <!--/snapshots-->
-        </repository>
 
-    </repositories>
-
-	<build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -112,7 +88,7 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-                <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>

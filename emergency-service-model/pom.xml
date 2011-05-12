@@ -2,6 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <artifactId>emergency-service</artifactId>
+        <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    
     <groupId>com.wordpress.salaboy.emergencyservice</groupId>
     <artifactId>emergency-service-model</artifactId>
     <packaging>jar</packaging>
@@ -35,13 +42,6 @@
         </plugins>
     </build>
     
-    <repositories>
-        <repository>
-            <id>jboss</id>
-            <name>jboss</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <!-- Drools Dependencies -->
         <!-- Snapshot API -->
@@ -77,14 +77,6 @@
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.1.5.GA</version>
-        </dependency>
-        
-        <!-- TEST Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
         </dependency>
         
         <dependency>
