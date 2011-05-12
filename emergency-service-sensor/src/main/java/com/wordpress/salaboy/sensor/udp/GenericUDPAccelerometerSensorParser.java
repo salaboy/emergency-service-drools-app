@@ -16,11 +16,15 @@ public class GenericUDPAccelerometerSensorParser implements SensorDataParser  {
     @Override
     public double parseData(String data){
         
-        //split the data using ',' as a separator
-        String[] split = data.split(",");
-       
-        //get the last value of the string
-        return Double.parseDouble(split[split.length-1]);
+        if (data.contains(",")){
+            //split the data using ',' as a separator
+            String[] split = data.split(",");
+
+            //get the last value of the string
+            return Double.parseDouble(split[split.length-1]);
+        }
+        
+        return Double.parseDouble(data);
     }
     
 }
