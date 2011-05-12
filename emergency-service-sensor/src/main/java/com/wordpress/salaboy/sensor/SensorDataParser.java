@@ -8,6 +8,8 @@ package com.wordpress.salaboy.sensor;
  *
  * @author esteban
  */
-public interface SensorHeartBeatParser {
-    public double getHeartBeatValue(String data);
+public interface SensorDataParser {
+    
+    //TODO this method should return a SensorMessage
+    public double parseData(String data);
 }

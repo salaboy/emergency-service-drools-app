@@ -36,29 +36,11 @@
         </plugins>
     </build>
     
-    <repositories>
-        <repository>
-            <id>jboss</id>
-            <name>jboss</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
-
-    
     <dependencies>
         <dependency>
             <groupId>com.wordpress.salaboy.emergencyservice</groupId>
             <artifactId>emergency-service-model</artifactId>
         </dependency>
-        
-        <!-- TEST Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        
     </dependencies>
     <reporting>
         <plugins>

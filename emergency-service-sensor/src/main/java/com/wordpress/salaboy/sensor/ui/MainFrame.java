@@ -10,25 +10,18 @@
  */
 package com.wordpress.salaboy.sensor.ui;
 
-import com.wordpress.salaboy.sensor.HeartBeatMessageProducer;
-import com.wordpress.salaboy.sensor.udp.GenericUDPSensorHeartBeatParser;
-import com.wordpress.salaboy.sensor.udp.UDPSensorServer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author esteban
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    private UDPSensorServer udpServer;
     
+
     /** Creates new form MainFrame */
     public MainFrame() {
-        udpServer = new UDPSensorServer(new HeartBeatMessageProducer(new GenericUDPSensorHeartBeatParser()));
         initComponents();
+        this.tpnlMain.add(new UDPServerPanel());
     }
 
     /** This method is called from within the constructor to
@@ -40,82 +33,24 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        lblIPAddress = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtPort = new javax.swing.JTextField();
-        btnStartStopUDPListener = new javax.swing.JToggleButton();
+        tpnlMain = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("Address:");
-
-        jLabel3.setText("Port:");
-
-        txtPort.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPortActionPerformed(evt);
-            }
-        });
-
-        btnStartStopUDPListener.setText("Start");
-        btnStartStopUDPListener.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStartStopUDPListenerActionPerformed(evt);
-            }
-        });
+        setTitle("Sensor Manager");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnStartStopUDPListener))
-                    .addComponent(lblIPAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(180, Short.MAX_VALUE))
+            .addComponent(tpnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(lblIPAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(btnStartStopUDPListener))
-                .addContainerGap(246, Short.MAX_VALUE))
+            .addComponent(tpnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPortActionPerformed
-
-    private void btnStartStopUDPListenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartStopUDPListenerActionPerformed
-        if (udpServer.isRunning()){
-            this.stopUDPServer();
-        }else{
-            try{
-                int port = Integer.parseInt(txtPort.getText());
-                this.startUDPServer(port);
-            } catch (NumberFormatException ex){
-                JOptionPane.showMessageDialog(null, "'"+txtPort.getText()+"' is not a valid port value. Use an integer.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_btnStartStopUDPListenerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,29 +58,14 @@ public class MainFrame extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 new MainFrame().setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton btnStartStopUDPListener;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel lblIPAddress;
-    private javax.swing.JTextField txtPort;
+    private javax.swing.JTabbedPane tpnlMain;
     // End of variables declaration//GEN-END:variables
 
-    private void startUDPServer(int port) {
-        try {
-            udpServer.startService(null, port);
-        } catch (Exception ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Error Starting UDP Server: "+ex.getMessage() , "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void stopUDPServer() {
-        this.udpServer.stopService();
-    }
 }

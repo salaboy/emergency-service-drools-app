@@ -4,17 +4,17 @@
  */
 package com.wordpress.salaboy.sensor.udp;
 
-import com.wordpress.salaboy.sensor.SensorHeartBeatParser;
+import com.wordpress.salaboy.sensor.SensorDataParser;
 
 
 /**
  *
  * @author esteban
  */
-public class GenericUDPSensorHeartBeatParser implements SensorHeartBeatParser  {
+public class GenericUDPAccelerometerSensorParser implements SensorDataParser  {
     
     @Override
-    public double getHeartBeatValue(String data){
+    public double parseData(String data){
         
         //split the data using ',' as a separator
         String[] split = data.split(",");

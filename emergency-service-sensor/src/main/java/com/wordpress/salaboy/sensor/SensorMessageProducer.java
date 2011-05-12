@@ -13,24 +13,14 @@ import org.hornetq.api.core.HornetQException;
  *
  * @author esteban
  */
-public class HeartBeatMessageProducer {
-    
-    private SensorHeartBeatParser dataParser;
+public class SensorMessageProducer {
 
-    public HeartBeatMessageProducer(SensorHeartBeatParser dataParser) {
-        this.dataParser = dataParser;
-    }
-    
-    public void onRawDataReceived(String data) throws Exception{
-        this.onHeartBeatReceived(dataParser.getHeartBeatValue(data));
-    }
-    
-    public void onHeartBeatReceived(double heartBeat) throws Exception{
+    //TODO: change double attribute to a SensorMessage object
+    public void informMessage(double heartBeat) throws Exception {
         try {
             MessageFactory.sendMessage(new HeartBeatMessage(0L, 0L, heartBeat, new Date()));
         } catch (HornetQException ex) {
             throw new Exception("Unable to add Heart Beat message into queue!", ex);
         }
     }
-    
 }

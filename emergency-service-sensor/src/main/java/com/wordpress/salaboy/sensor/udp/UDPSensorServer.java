@@ -4,7 +4,8 @@
  */
 package com.wordpress.salaboy.sensor.udp;
 
-import com.wordpress.salaboy.sensor.HeartBeatMessageProducer;
+import com.wordpress.salaboy.sensor.SensorDataParser;
+import com.wordpress.salaboy.sensor.SensorMessageProducer;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -24,10 +25,12 @@ public class UDPSensorServer implements Runnable {
     private boolean keepRunning;
     private DatagramSocket socket;
     private int bufferSize;
-    private HeartBeatMessageProducer heartBeatMessageProducer;
+    private SensorDataParser sensorDataParser;
+    private SensorMessageProducer sensorMessageProducer;
 
-    public UDPSensorServer(HeartBeatMessageProducer heartBeatMessageProducer) {
-        this.heartBeatMessageProducer = heartBeatMessageProducer;
+    public UDPSensorServer(SensorDataParser sendorDataParser, SensorMessageProducer sensorMessageProducer) {
+        this.sensorDataParser = sendorDataParser;
+        this.sensorMessageProducer = sensorMessageProducer;
     }
 
     public void startService(String address, int port) throws SocketException, UnknownHostException {
@@ -66,10 +69,12 @@ public class UDPSensorServer implements Runnable {
                 socket.receive(datagramPacket);
                 try {
                     String data = new String(datagramPacket.getData());
-
-                    System.out.println("UDP Data Received= " + data);
-
-                    heartBeatMessageProducer.onRawDataReceived(data);
+                    
+                    Logger.getLogger(UDPSensorServer.class.getName()).log(Level.FINEST, "UDP Data Received= {0}", data);
+                    System.out.println("UDP Data Received= "+ data);
+                    
+                    double message = sensorDataParser.parseData(data);
+                    sensorMessageProducer.informMessage(message);
                 } catch (Exception ex) {
                     Logger.getLogger(UDPSensorServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
