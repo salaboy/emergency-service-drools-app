@@ -16,19 +16,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        
+        <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-model</artifactId>
+        </dependency>
+        
     <!-- UI Dependencies --> 
         <dependency>
             <groupId>slick</groupId>
             <artifactId>slick</artifactId>
             <version>274</version>
         </dependency>  
-      
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     
     <build>
@@ -63,33 +62,4 @@
     
     </build>
     
-    <repositories>
-        <repository>
-        
-            <id>slickrepo</id>
-            <name>slickrepo</name>
-            <url>http://slick.cokeandcode.com/mavenrepo/</url>
-        </repository>
-        <repository>
-        
-            <id>jboss</id>
-            <name>jboss</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-        
-        <repository>
-            <id>OW2</id>
-            <url>http://maven.ow2.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>PlugTree</id>
-            <name>PlugTree-Snapshots-CloudBees</name>
-            <url>https://repository-plugtree.forge.cloudbees.com/snapshot/</url>
-            <!--snapshots-->
-                <!--enabled>true</enabled-->
-                <!--updatePolicy>always</updatePolicy-->
-            <!--/snapshots-->
-        </repository>
-
-    </repositories>
 </project>
