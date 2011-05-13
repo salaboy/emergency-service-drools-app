@@ -91,7 +91,7 @@ public class HumanTaskServerService {
             return;
         }
         //server = new MinaTaskServer(taskService);
-        server = new HornetQTaskServer(taskService, 8010);
+        server = new HornetQTaskServer(taskService, 5446);
 
         try {
        
@@ -158,7 +158,7 @@ public class HumanTaskServerService {
         
         
         //boolean connected = client.connect("127.0.0.1", 9123);
-        boolean connected = client.connect("127.0.0.1", 8010);
+        boolean connected = client.connect("127.0.0.1", 5446);
 
         int retry = 0;
         while (!connected) {
@@ -168,7 +168,7 @@ public class HumanTaskServerService {
                 java.util.logging.Logger.getLogger(HumanTaskServerService.class.getName()).log(Level.SEVERE, null, ex);
             }
             //connected = client.connect("127.0.0.1", 9123);
-            connected = client.connect("127.0.0.1", 8010);
+            connected = client.connect("127.0.0.1", 5446);
             if (!connected) {
                 retry++;
             }
