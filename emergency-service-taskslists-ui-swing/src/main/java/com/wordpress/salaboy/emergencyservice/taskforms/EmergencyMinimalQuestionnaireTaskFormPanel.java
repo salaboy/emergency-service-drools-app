@@ -14,8 +14,6 @@ import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -30,9 +28,7 @@ import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
-import org.jbpm.task.service.ContentData;
 
 /**
  *
@@ -340,7 +336,7 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
     
     private void suggestProcedureJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestProcedureJButtonActionPerformed
         ObjectOutputStream out = null;
-        try {
+        //try {
 
             Map<String, Object> info = new HashMap<String, Object>();
             info.put("emergency.locationx", Integer.valueOf(locationxjTextField.getText()));
@@ -352,35 +348,22 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
                 info.put("patient.gender", genderjComboBox.getModel().getSelectedItem());
             }
 
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            result.setContent(bos.toByteArray());
+
            
             getTaskClient().setAuthorizedEntityId("operator");
-            getTaskClient().complete(this.taskId.toString(), result);
+            try {
+                getTaskClient().complete(this.taskId.toString(), info);
+            } catch (IllegalArgumentFault ex) {
+                Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalStateFault ex) {
+                Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessFault ex) {
+                Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
 
             this.parent.hideDialog();
 
-        } catch (IllegalArgumentFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalStateFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessFault ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
 
     }//GEN-LAST:event_suggestProcedureJButtonActionPerformed
 

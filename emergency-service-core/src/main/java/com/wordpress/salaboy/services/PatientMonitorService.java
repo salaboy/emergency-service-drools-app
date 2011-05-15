@@ -123,6 +123,8 @@ public class PatientMonitorService {
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.dsl").getInputStream())), ResourceType.DSL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/patient.dslr").getInputStream())), ResourceType.DSLR);
 
+        
+        
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
             for (KnowledgeBuilderError error : errors) {
@@ -135,7 +137,7 @@ public class PatientMonitorService {
         kbaseConf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
         
-        
+
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();

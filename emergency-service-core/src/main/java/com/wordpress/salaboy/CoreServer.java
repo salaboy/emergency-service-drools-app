@@ -22,6 +22,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
 import com.wordpress.salaboy.services.PatientMonitorService;
@@ -56,7 +57,7 @@ import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
 public class CoreServer {
 
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-    protected static Grid grid1;
+    protected static Grid grid;
     protected static GridNode remoteN1;
     
     
@@ -83,7 +84,7 @@ public class CoreServer {
                     System.out.println("Stopping Core Server ... ");
                     MessageServerSingleton.getInstance().stop();
                     remoteN1.dispose();
-                    grid1.get(SocketService.class).close();
+                    grid.get(SocketService.class).close();
                     HumanTaskServerService.getInstance().stopTaskServer();
                     System.out.println("Core Server Stopped! ");
                     coreServer.stopWorkers();
@@ -119,7 +120,7 @@ public class CoreServer {
             DistributedPeristenceServerService.getInstance().storeHospital(hospital);
         }
 
-        //Init First Response Service
+        //Init First Response Service, just to have one instance ready for new phone calls
         IncomingCallsMGMTService.getInstance();
         
         //Start Workers
@@ -140,7 +141,7 @@ public class CoreServer {
                 }
             });
 
-            //Heart Attack Procedure Selected Worker
+            //Procedure Selected Worker
             selectedProcedureWorker = new MessageConsumerWorker("selectedProcedureCoreServer", new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
 
                 @Override
@@ -160,13 +161,14 @@ public class CoreServer {
                 }
             });
             
-            //Vehicle Hits an Emergency Selected Worker
+           //Vehicle Hits an Emergency Selected Worker
             vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyCoreServer", new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
 
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
+                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsEmergencyMessage.getCallId()))
+                            .patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
                 }
             });
 
@@ -177,10 +179,11 @@ public class CoreServer {
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
+                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsHospitalMessage.getCallId()))
+                            .patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
                     //Call Patient Monitor Service removeVehicle(vehicleId)
                 }
-            });
+            }); 
 
 
 
@@ -192,11 +195,11 @@ public class CoreServer {
                     vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
                     PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+//                    try {
+//                        Thread.sleep(3000);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
                 }
             });
 
@@ -275,21 +278,17 @@ public class CoreServer {
     }
 
     protected void createRemoteNode() {
-        grid1 = new GridImpl(new HashMap<String, Object>());
-        configureGrid1(grid1,
+        grid = new GridImpl(new HashMap<String, Object>());
+        configureGrid1(grid,
                 8000,
                 null);
 
-        Grid grid2 = new GridImpl(new HashMap<String, Object>());
-        configureGrid1(grid2,
-                -1,
-                grid1.get(WhitePages.class));
 
-        GridNode n1 = grid1.createGridNode("n1");
-        grid1.get(SocketService.class).addService("n1", 8000, n1);
+        GridNode n1 = grid.createGridNode("n1");
+        grid.get(SocketService.class).addService("n1", 8000, n1);
 
-        GridServiceDescription<GridNode> n1Gsd = grid2.get(WhitePages.class).lookup("n1");
-        GridConnection<GridNode> conn = grid2.get(ConnectionFactoryService.class).createConnection(n1Gsd);
+        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
+        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
         remoteN1 = conn.connect();
 
     }

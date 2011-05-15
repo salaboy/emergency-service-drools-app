@@ -229,7 +229,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             @Override
             public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                 vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
+                //ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
             }
         });
 
@@ -240,7 +240,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             @Override
             public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                 vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
+                //ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
                 cleanupPanel();
                 PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
             }

@@ -17,11 +17,15 @@ rule "Initialize Emergency"
         $processInstance: WorkflowProcessInstance()
         
     then
+        
         String type = (String)$processInstance.getVariable("emergency.type");
+        
         Integer locationX = (Integer)$processInstance.getVariable("emergency.locationx");
         Integer locationY = (Integer)$processInstance.getVariable("emergency.locationy");
         int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
+        System.out.println("type = "+type+" , locationX = "+locationX+", locationY ="+locationY+", nroOfPeople = "+nroOfPeople);
         Call call = (Call)$processInstance.getVariable("call");
+        System.out.println("call = "+call);
         Emergency emergency = new Emergency();
         emergency.setLocation(new Location(locationX, locationY));
         emergency.setType(EmergencyType.valueOf(type));

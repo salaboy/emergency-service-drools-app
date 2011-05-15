@@ -48,12 +48,13 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
     private List<String> suggestedProcedures;
     private Long emergencyId;
     private String taskId;
+
     /** Creates new form SuggestedProceduresPanel */
-    public SuggestedProceduresTaskFormPanel(ControlSuggestedProceduresTaskListPanel parent, HumanTaskService taskClient,  String id) {
+    public SuggestedProceduresTaskFormPanel(ControlSuggestedProceduresTaskListPanel parent, HumanTaskService taskClient, String id) {
         this.parent = parent;
         this.taskClient = taskClient;
         this.taskId = id;
-        
+
         initComponents();
         configurePanel();
     }
@@ -300,46 +301,33 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void selectProcedurejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectProcedurejButtonActionPerformed
-        ObjectOutputStream out = null;
+
+
+        int[] selected = suggestedProceduresjList.getSelectedIndices();
+        SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
+        for (int i = 0; i < selected.length; i++) {
+            selectedProcedures.addSelectedProcedureName((String) suggestedProceduresjList.getModel().getElementAt(selected[i]));
+        }
+        Map<String, Object> info = new HashMap<String, Object>();
+        info.put("selectedProcedures", selectedProcedures);
+
+
+
+        getTaskClient().setAuthorizedEntityId("control");
         try {
-            int[] selected = suggestedProceduresjList.getSelectedIndices();
-            SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
-            for(int i = 0; i < selected.length; i++){
-                selectedProcedures.addSelectedProcedureName((String)suggestedProceduresjList.getModel().getElementAt(selected[i]));
-            }
-            Map<String, Object> info = new HashMap<String, Object>();
-            info.put("selectedProcedures", selectedProcedures);
-            
-
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            result.setContent(bos.toByteArray());
-           
-            getTaskClient().setAuthorizedEntityId("control");
-            getTaskClient().complete(this.taskId, result);
-            
-
-            this.parent.hideDialog();
-
+            getTaskClient().complete(this.taskId, info);
         } catch (IllegalArgumentFault ex) {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateFault ex) {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessFault ex) {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
+        }
+
+
+        this.parent.hideDialog();
+
+
     }//GEN-LAST:event_selectProcedurejButtonActionPerformed
 
     private void taskActionjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskActionjButtonActionPerformed
@@ -347,7 +335,7 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
             TTask task = getTaskClient().getTaskInfo(taskId);
             TStatus status = task.getStatus();
             String statusName = status.name();
-            System.out.println("Status of the TASK = "+statusName);
+            System.out.println("Status of the TASK = " + statusName);
             //@TODO: check the status and show or not the button!
         } catch (IllegalArgumentFault ex) {
             Logger.getLogger(EmergencyMinimalQuestionnaireTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -369,7 +357,6 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
     private void patientAgejTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patientAgejTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_patientAgejTextFieldActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField emergencyLocationjTextField;
     private javax.swing.JTextField emergencyTimejTextField;
@@ -420,62 +407,62 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
         String phoneNumber = values[5].trim();
         String emergencyNroOfPeople = values[6].trim();
         emergencyTimejTextField.setText(emergencyDate);
-        emergencyLocationjTextField.setText("X: "+emergencyLocationX +" - Y:"+emergencyLocationY);
+        emergencyLocationjTextField.setText("X: " + emergencyLocationX + " - Y:" + emergencyLocationY);
         emergencyTypejTextField.setText(emergencyType);
         nroOfPeoplejTextField.setText(emergencyNroOfPeople);
-        
+
         String patientAge = "";
         String patientGender = "";
-        
+
         if (emergencyNroOfPeople.equals("1")) {
             patientAge = values[7].trim();
             patientGender = values[8].trim();
             patientAgejTextField.setText(patientAge);
             patientGenderjTextField.setText(patientGender);
         }
-        
+
         //TODO: put this in a global area:
         String[] procedures = new String[]{
-          "DefaultFireAttackProcedure",  
-          "DefaultHeartAttackProcedure",
-          "DefaultPoliceAttackProcedure"  
+            "DefaultFireAttackProcedure",
+            "DefaultHeartAttackProcedure",
+            "DefaultPoliceAttackProcedure"
         };
 
         for (String procedure : procedures) {
-            ((DefaultListModel)suggestedProceduresjList.getModel()).addElement(procedure);
+            ((DefaultListModel) suggestedProceduresjList.getModel()).addElement(procedure);
         }
-        
-        
+
+
         String suggestedProceduresString = values[9].trim();
         if (suggestedProceduresString != null && !suggestedProceduresString.equals("") && !suggestedProceduresString.trim().startsWith("#{")) {
-            
-            
+
+
             suggestedProcedures = getSuggestedProceduresNames(suggestedProceduresString);
             int[] selectedIndices = new int[suggestedProcedures.size()];
             int j = 0;
             for (String suggestedProcedure : suggestedProcedures) {
                 for (int i = 0; i < procedures.length; i++) {
                     String procedure = procedures[i];
-                    if (procedure.equals(suggestedProcedure)){
-                        selectedIndices[j++]=i;
+                    if (procedure.equals(suggestedProcedure)) {
+                        selectedIndices[j++] = i;
                     }
                 }
             }
-            
+
             suggestedProceduresjList.setSelectedIndices(selectedIndices);
         }
-        
+
 
 
     }
 
     public List<String> getSuggestedProceduresNames(String suggestedProceduresString) {
         suggestedProceduresString = suggestedProceduresString.trim();
-        if (suggestedProceduresString.startsWith("[")){
+        if (suggestedProceduresString.startsWith("[")) {
             suggestedProceduresString = suggestedProceduresString.substring(1);
         }
-        if (suggestedProceduresString.endsWith("]")){
-             suggestedProceduresString = suggestedProceduresString.substring(0,suggestedProceduresString.length()-1);
+        if (suggestedProceduresString.endsWith("]")) {
+            suggestedProceduresString = suggestedProceduresString.substring(0, suggestedProceduresString.length() - 1);
         }
         suggestedProceduresString = suggestedProceduresString.trim();
         String[] namesArray = suggestedProceduresString.split(":");

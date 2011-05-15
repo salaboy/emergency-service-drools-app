@@ -207,16 +207,16 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             info.put("emergency.vehicles", selectedVehicles);
             
 
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            result.setContent(bos.toByteArray());
+//            ContentData result = new ContentData();
+//            result.setAccessType(AccessType.Inline);
+//            result.setType("java.util.Map");
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            out = new ObjectOutputStream(bos);
+//            out.writeObject(info);
+//            result.setContent(bos.toByteArray());
            
             getTaskClient().setAuthorizedEntityId("garage_emergency_service");
-            getTaskClient().complete(this.taskId, result);
+            getTaskClient().complete(this.taskId, info);
             
 
             this.parent.hideDialog();
@@ -227,8 +227,8 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessFault ex) {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
@@ -290,9 +290,9 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
     private javax.swing.JButton taskActionjButton;
     // End of variables declaration//GEN-END:variables
 
-    void configurePanel(String taskinfo) {
-        String[] values= taskinfo.split(",");
-       // String doctorId = values[0].trim(); 
+//    void configurePanel(String taskinfo) {
+//        String[] values= taskinfo.split(",");
+//       // String doctorId = values[0].trim(); 
        // String ambulanceId = values[1].trim(); 
 //        String patientAge = values[0].trim(); 
 //        String patientGender = values[1].trim(); 
@@ -327,7 +327,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         
 //        this.medicalKitsJInternalFrame.validate();
         
-    }
+//    }
 
     private HumanTaskService getTaskClient() {
         return this.taskClient;

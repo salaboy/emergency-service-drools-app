@@ -199,16 +199,16 @@ public class DoctorsUpdateTaskFormPanel extends javax.swing.JPanel {
             info.put("emergency.severity", Integer.valueOf((String)severityjComboBox.getSelectedItem()) );
             info.put("emergency.updatedNotes", updatedNotesjTextArea.getText());
 
-            ContentData result = new ContentData();
-            result.setAccessType(AccessType.Inline);
-            result.setType("java.util.Map");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            out = new ObjectOutputStream(bos);
-            out.writeObject(info);
-            result.setContent(bos.toByteArray());
+//            ContentData result = new ContentData();
+//            result.setAccessType(AccessType.Inline);
+//            result.setType("java.util.Map");
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            out = new ObjectOutputStream(bos);
+//            out.writeObject(info);
+//            result.setContent(bos.toByteArray());
            
             getTaskClient().setAuthorizedEntityId("doctor");
-            getTaskClient().complete(this.taskId, result);
+            getTaskClient().complete(this.taskId, info);
             
 
             this.parent.hideDialog();
@@ -219,8 +219,8 @@ public class DoctorsUpdateTaskFormPanel extends javax.swing.JPanel {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessFault ex) {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();

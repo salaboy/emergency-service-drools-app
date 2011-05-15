@@ -22,14 +22,13 @@ query "getPatient"
     patient: Patient()
 end
 
-rule "Initialize Emergency"
+rule "Load Emergency"
     salience 20
     ruleflow-group "hospital-selection"
     when
        $processInstance: WorkflowProcessInstance() 
     then
         Long emergencyId = (Long)$processInstance.getVariable("emergency.id");
-        
         insert(DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId));
 end
 

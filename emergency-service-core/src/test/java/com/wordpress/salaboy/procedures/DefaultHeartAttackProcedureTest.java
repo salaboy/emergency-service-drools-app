@@ -4,40 +4,43 @@
  */
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.Call;
+import org.example.ws_ht.api.TAttachment;
+import org.example.ws_ht.api.TAttachmentInfo;
+import org.example.ws_ht.api.TTask;
+import org.example.ws_ht.api.TTaskAbstract;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.api.HumanTaskServiceFactory;
+import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
 import com.wordpress.salaboy.model.Vehicle;
 import java.util.ArrayList;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.service.ContentData;
+import org.example.ws_ht.api.wsdl.IllegalAccessFault;
+import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
+import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Call;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import org.jbpm.task.Content;
-import org.jbpm.task.Task;
 import java.util.Date;
-import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import org.drools.grid.SocketService;
 import java.util.Map;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import com.wordpress.salaboy.grid.*;
 import java.util.List;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskClient;
 import java.util.HashMap;
 import com.wordpress.salaboy.messaging.MessageConsumer;
+import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
 import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import org.hornetq.api.core.HornetQException;
-import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,7 +55,8 @@ import static org.junit.Assert.*;
 public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     private MessageConsumer consumer;
-    private TaskClient client;
+    private HumanTaskService humanTaskServiceClient;
+    
 
     public DefaultHeartAttackProcedureTest() {
     }
@@ -70,15 +74,28 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
-//        DistributedPeristenceServerService.getInstance().storeCall(new Call(1,1,new Date()));
-        DistributedPeristenceServerService.getInstance().storeEmergency(new Emergency(1L));
+        Emergency emergency = new Emergency(1L);
+        emergency.setCall(new Call(1,2,new Date()));
+        emergency.setLocation(new Location(1,2));
+        emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
+        emergency.setNroOfPeople(1);
+        DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
+        DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
         DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
         MessageServerSingleton.getInstance().start();
-        consumer = MessageFactory.createMessageConsumer("IncomingCall");
+
 
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
+
+        HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
+
+
+        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client", new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 5446));
+
+        humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
+        humanTaskServiceClient.initializeService();
 
     }
 
@@ -94,109 +111,85 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
     }
 
     @Test
-    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException {
+    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
 
-        //   MessageProducer producer = MessageFactory.createMessageProducer("phoneCalls");
-        //  producer.sendMessage(new Call(1,2,new Date()));
-        //  producer.stop();
-        client = HumanTaskServerService.getInstance().initTaskClient();
 
-//        Call call = (Call) consumer.receiveMessage();
-//        assertNotNull(call);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call.id", 1L);
         parameters.put("emergency.id", 1L);
 
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure((Long) parameters.get("call.id"),"DefaultHeartAttackProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure((Long) parameters.get("call.id"), "DefaultHeartAttackProcedure", parameters);
 
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
-        List<TaskSummary> sums = handler.getResults();
-        assertNotNull(sums);
-        assertEquals(1, sums.size());
-        TaskSummary taskSum = sums.get(0); // getting the first task
-
-        assertEquals(" Select Vehicle For 1 ", taskSum.getName());
-        client.start(taskSum.getId(), "garage_emergency_service", null);
+        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "garage_emergency_service", "", null, "", "", "", 0, 0);
+        assertNotNull(taskAbstracts);
+        assertEquals(1, taskAbstracts.size());
+        TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
+        assertEquals(" Select Vehicle For 1 ", taskAbstract.getName().getLocalPart());
+        
 
 
         // I need to get the Content Data and check the values of the Emergency and Call Ids.
         // Using that I need to select one vehicle ID from the list of all the vehicles. 
-        BlockingGetTaskResponseHandler getTaskHandler = new BlockingGetTaskResponseHandler();
-        client.getTask(taskSum.getId(), getTaskHandler);
-        Task realTask = getTaskHandler.getTask();
-        assertNotNull(realTask);
-        long contentId = realTask.getTaskData().getDocumentContentId();
-        BlockingGetContentResponseHandler getContentHandler = new BlockingGetContentResponseHandler();
-        client.getContent(contentId, getContentHandler);
 
-        Content content = getContentHandler.getContent();
+        TTask task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
+        assertNotNull(task);
+        
+        humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
+        humanTaskServiceClient.start(task.getId());
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
+        List<TAttachmentInfo> attachmentsInfo = humanTaskServiceClient.getAttachmentInfos(task.getId());
+        TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
+        TAttachment attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
         ObjectInputStream ois = new ObjectInputStream(bais);
         String taskinfo = (String) ois.readObject();
-        assertNotNull(taskinfo);
-        System.out.println("Task Info: " + taskinfo);
-        assertNotNull(taskinfo, "1,1");
+        assertNotNull(taskinfo, "1,1"); 
 
-        ObjectOutputStream out = null;
+        
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         vehicles.add(new Ambulance("My Ambulance", new Date()));
-        
         info.put("emergency.vehicles", vehicles);
-
-
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.util.Map");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        out = new ObjectOutputStream(bos);
-        out.writeObject(info);
-        result.setContent(bos.toByteArray());
-
-
-        client.complete(taskSum.getId(), "garage_emergency_service", result, null);
-
-
-
-        ProceduresMGMTService.getInstance().patientPickUpNotification(new PatientPickUpEvent(1L, 1L, new Date()));
+        
+        
+        humanTaskServiceClient.complete(task.getId(), info);
 
         Thread.sleep(4000);
+        
+        ((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L)).patientPickUpNotification(new PatientPickUpEvent(1L, 1L, new Date()));
 
-        handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
-        sums = handler.getResults();
-        assertNotNull(sums);
-        assertEquals(1, sums.size());
-        taskSum = sums.get(0); // getting the first task
-
-        client.start(taskSum.getId(), "doctor", null);
-
-         out = null;
+        Thread.sleep(4000);
+        
+        humanTaskServiceClient.setAuthorizedEntityId("doctor");
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
+        assertNotNull(taskAbstracts);
+        assertEquals(1, taskAbstracts.size());
+        taskAbstract = taskAbstracts.get(0); 
+        
+        task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
+        assertNotNull(task);
+        
+        humanTaskServiceClient.start(task.getId());
+        
         info = new HashMap<String, Object>();
         info.put("emergency.priority", 1);
+        
+        humanTaskServiceClient.complete(task.getId(), info);
 
-
-        result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.util.Map");
-        bos = new ByteArrayOutputStream();
-        out = new ObjectOutputStream(bos);
-        out.writeObject(info);
-        result.setContent(bos.toByteArray());
-
-        client.complete(taskSum.getId(), "doctor", result, null);
 
         Thread.sleep(4000);
 
-        ProceduresMGMTService.getInstance().patientAtHospitalNotification(new PatientAtHospitalEvent(1L, 1L, 1L, new Date()));
+        ((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L))
+                        .patientAtHospitalNotification(new PatientAtHospitalEvent(1L, 1L, 1L, new Date()));
 
         Thread.sleep(4000);
+        
+        
 
 
     }
