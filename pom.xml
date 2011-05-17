@@ -78,10 +78,10 @@
             <id>PlugTree</id>
             <name>PlugTree-Snapshots-CloudBees</name>
             <url>https://repository-plugtree.forge.cloudbees.com/snapshot/</url>
-            <!--snapshots-->
-                <!--enabled>true</enabled-->
-                <!--updatePolicy>always</updatePolicy-->
-            <!--/snapshots-->
+            <snapshots>
+                <enabled>true</enabled-->
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
 
     </repositories>
