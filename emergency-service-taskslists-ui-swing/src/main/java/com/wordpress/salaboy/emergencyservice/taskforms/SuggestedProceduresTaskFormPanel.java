@@ -391,9 +391,7 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
             TAttachment attachment = getTaskClient().getAttachments(this.taskId, firstAttachmentInfo.getName()).get(0);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
-            ois = new ObjectInputStream(bais);
-            taskinfo = (String) ois.readObject();
+            taskinfo = (String)((Map)attachment.getValue()).get("Content");
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }

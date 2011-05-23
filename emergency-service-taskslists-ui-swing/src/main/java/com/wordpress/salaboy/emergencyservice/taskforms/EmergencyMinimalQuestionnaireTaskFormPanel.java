@@ -10,10 +10,6 @@
  */
 package com.wordpress.salaboy.emergencyservice.taskforms;
 
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
-import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
-import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -21,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TStatus;
@@ -28,7 +25,10 @@ import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.Content;
+
+import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
+import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
 
 /**
  *
@@ -317,9 +317,7 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
             TAttachment attachment = getTaskClient().getAttachments(this.taskId, firstAttachmentInfo.getName()).get(0);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
-            ois = new ObjectInputStream(bais);
-            taskinfo = (String) ois.readObject();
+            taskinfo = (String)((Map)attachment.getValue()).get("Content");
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }

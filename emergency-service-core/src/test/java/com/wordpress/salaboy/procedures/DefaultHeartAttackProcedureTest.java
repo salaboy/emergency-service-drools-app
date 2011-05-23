@@ -4,49 +4,50 @@
  */
 package com.wordpress.salaboy.procedures;
 
-import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.model.Call;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.grid.SocketService;
 import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.TTaskAbstract;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.api.HumanTaskServiceFactory;
-import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
-import com.wordpress.salaboy.model.Vehicle;
-import java.util.ArrayList;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Emergency;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import org.jbpm.task.Content;
-import java.util.Date;
-import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import org.drools.grid.SocketService;
-import java.util.Map;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.grid.*;
-import java.util.List;
-import java.util.HashMap;
-import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
 import org.hornetq.api.core.HornetQException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.api.HumanTaskServiceFactory;
+import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.grid.GridBaseTest;
+import com.wordpress.salaboy.messaging.MessageConsumer;
+import com.wordpress.salaboy.messaging.MessageServerSingleton;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
+import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
+import com.wordpress.salaboy.services.HumanTaskServerService;
+import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 
 /**
  *
@@ -145,10 +146,9 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
         TAttachment attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(((Content) attachment.getValue()).getContent());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        String taskinfo = (String) ois.readObject();
-        assertNotNull(taskinfo, "1,1"); 
+        String value = (String)((Map)attachment.getValue()).get("Content");
+        
+        assertNotNull(value, "1,1"); 
 
         
         Map<String, Object> info = new HashMap<String, Object>();
