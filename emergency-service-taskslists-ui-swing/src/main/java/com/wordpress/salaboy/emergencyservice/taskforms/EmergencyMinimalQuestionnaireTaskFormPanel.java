@@ -29,6 +29,10 @@ import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.Patient;
 
 /**
  *
@@ -308,7 +312,7 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
     }// </editor-fold>//GEN-END:initComponents
 
     private void configure(){
-        String taskinfo = "";
+        Map taskinfo = null;
 
         try {
             ObjectInputStream ois = null;
@@ -317,33 +321,42 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
             TAttachment attachment = getTaskClient().getAttachments(this.taskId, firstAttachmentInfo.getName()).get(0);
 
-            taskinfo = (String)((Map)attachment.getValue()).get("Content");
+            taskinfo = (Map)attachment.getValue();
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String[] values= taskinfo.split(",");
-        System.out.println("TaskInfo = "+taskinfo);
-        String timestamp = values[0].trim(); 
-        String phoneNumber = values[1].trim(); 
-        Integer locationX = Integer.valueOf(values[2].trim());
-        Integer locationY = Integer.valueOf(values[3].trim());
+        call = (Call) taskinfo.get("call");
+
+        String timestamp = call.getDate().toString(); 
+        String phoneNumber = call.getPhoneNumber(); 
+        Integer locationX = call.getX();
+        Integer locationY = call.getY();
         locationxjTextField.setText(locationX.toString());
         locationyjTextField.setText(locationY.toString());
         phoneCalljLabel.setText("Time: "+timestamp +" - Phone Number: "+phoneNumber);
     }
+    
+    Call call = null;
     
     private void suggestProcedureJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestProcedureJButtonActionPerformed
         ObjectOutputStream out = null;
         //try {
 
             Map<String, Object> info = new HashMap<String, Object>();
-            info.put("emergency.locationx", Integer.valueOf(locationxjTextField.getText()));
-            info.put("emergency.locationy", Integer.valueOf(locationyjTextField.getText()));
-            info.put("emergency.type", emergencyTypeJComboBox.getModel().getSelectedItem());
-            info.put("emergency.nroofpeople", Integer.valueOf(nroOfPeoplejFormattedTextField.getText()));
+            Emergency emergency = new Emergency();
+            Location location = new Location();
+            location.setLocationX(Integer.valueOf(locationxjTextField.getText()));
+            location.setLocationY(Integer.valueOf(locationyjTextField.getText()));
+			emergency.setLocation(location);
+            emergency.setNroOfPeople(Integer.valueOf(nroOfPeoplejFormattedTextField.getText()));
+            emergency.setType((String) emergencyTypeJComboBox.getModel().getSelectedItem());
+            emergency.setCall(call);
+            info.put("emergency", emergency);
             if(nroOfPeoplejFormattedTextField.getText().equals("1")){
-                info.put("patient.age", Integer.valueOf(ageJTextField.getText()));
-                info.put("patient.gender", genderjComboBox.getModel().getSelectedItem());
+            	Patient patient = new Patient();
+            	patient.setAge(Integer.valueOf(ageJTextField.getText()));
+            	patient.setGender((String)genderjComboBox.getModel().getSelectedItem());
+                info.put("patient", patient);
             }
 
 

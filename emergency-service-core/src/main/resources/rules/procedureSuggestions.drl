@@ -17,34 +17,17 @@ rule "Initialize Emergency"
         $processInstance: WorkflowProcessInstance()
         
     then
-        
-        String type = (String)$processInstance.getVariable("emergency.type");
-        
-        Integer locationX = (Integer)$processInstance.getVariable("emergency.locationx");
-        Integer locationY = (Integer)$processInstance.getVariable("emergency.locationy");
-        int nroOfPeople = (Integer)$processInstance.getVariable("emergency.nroofpeople");
-        System.out.println("type = "+type+" , locationX = "+locationX+", locationY ="+locationY+", nroOfPeople = "+nroOfPeople);
-        Call call = (Call)$processInstance.getVariable("call");
-        System.out.println("call = "+call);
-        Emergency emergency = new Emergency();
-        emergency.setLocation(new Location(locationX, locationY));
-        emergency.setType(EmergencyType.valueOf(type));
-        emergency.setNroOfPeople(nroOfPeople);
-        emergency.setCall(call);
-        if(nroOfPeople == 1){
-            int patientAge = (Integer)$processInstance.getVariable("patient.age");
-            String patientGender = (String)$processInstance.getVariable("patient.gender"); 
-            insert(new Patient(patientAge, patientGender));
+        Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+        if(emergency.getNroOfPeople() == 1){
+            Patient patient = (Patient)$processInstance.getVariable("patient");
+            insert(patient);
         }
         $processInstance.setVariable("emergency.id",emergency.getId());
-        
         //Notify about the new Emergency
         MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
-
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
 
-        
 end
 
 

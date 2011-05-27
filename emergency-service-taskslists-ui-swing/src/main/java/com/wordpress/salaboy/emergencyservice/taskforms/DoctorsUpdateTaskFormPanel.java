@@ -221,13 +221,7 @@ public class DoctorsUpdateTaskFormPanel extends javax.swing.JPanel {
             Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (IOException ex) {
 //            Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SuggestedProceduresTaskFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
+        }
     }//GEN-LAST:event_updateSituationjButtonActionPerformed
 
     private void taskActionjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskActionjButtonActionPerformed

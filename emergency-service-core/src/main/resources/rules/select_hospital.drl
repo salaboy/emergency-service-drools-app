@@ -1,6 +1,7 @@
 package hospitalselectionrules;
 
 import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Ambulance;
@@ -28,8 +29,8 @@ rule "Load Emergency"
     when
        $processInstance: WorkflowProcessInstance() 
     then
-        Long emergencyId = (Long)$processInstance.getVariable("emergency.id");
-        insert(DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId));
+        Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+        insert(emergency);
 end
 
 rule "Rank Hospital Speciality that matches EmergencyType"
@@ -45,7 +46,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
       
 
     then
-        Long callId = (Long)$processInstance.getVariable("call.id");
+        Long callId = ((Call)$processInstance.getVariable("call")).getId();
         //Send Hospital Selected Message
         MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
         

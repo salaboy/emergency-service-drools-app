@@ -5,6 +5,7 @@
 package com.wordpress.salaboy.workitemhandlers;
 
 import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import java.util.List;
@@ -23,7 +24,7 @@ public class DispatchSelectedVehiclesWorkItemHandler implements WorkItemHandler{
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        Long callId = (Long) workItem.getParameter("call.id");
+        Long callId = ((Call) workItem.getParameter("call")).getId();
         List<Vehicle> vehicles = (List<Vehicle>) workItem.getParameter("emergency.vehicles");
         for (Vehicle vehicle : vehicles) {
             try {

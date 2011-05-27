@@ -22,8 +22,8 @@ rule "Get Information To Start Procedure"
         Call call = (Call)$processInstance.getVariable("call");
         for(int i = 0; i < selectedProcedures.size(); i++){
             Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("emergency.id", $emergency.getId());
-            parameters.put("call.id", call.getId());
+            parameters.put("emergency", $emergency);
+            parameters.put("call", call);
             MessageFactory.sendMessage(new SelectedProcedureMessage(selectedProcedures.get(i), call.getId(),  parameters));
         }
         

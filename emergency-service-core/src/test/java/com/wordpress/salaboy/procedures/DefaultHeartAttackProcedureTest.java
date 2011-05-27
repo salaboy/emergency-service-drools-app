@@ -73,10 +73,14 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         HumanTaskServerService.getInstance().stopTaskServer();
     }
 
+    Emergency emergency = null;
+    Call call = null;
     @Before
     public void setUp() throws Exception {
-        Emergency emergency = new Emergency(1L);
-        emergency.setCall(new Call(1,2,new Date()));
+        emergency = new Emergency(1L);
+        call = new Call(1,2,new Date());
+        call.setId(1L);
+        emergency.setCall(call);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
@@ -116,12 +120,12 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("call.id", 1L);
-        parameters.put("emergency.id", 1L);
+        parameters.put("call", call);
+        parameters.put("emergency", emergency);
 
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure((Long) parameters.get("call.id"), "DefaultHeartAttackProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "DefaultHeartAttackProcedure", parameters);
 
         Thread.sleep(5000);
 

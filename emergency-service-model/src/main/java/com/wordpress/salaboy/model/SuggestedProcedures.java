@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,14 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class SuggestedProcedures {
+public class SuggestedProcedures implements Serializable{
+	
+	
+    /**
+	 * 
+	 */
+    private static final long serialVersionUID = 1L;
+
     private List<String> procedures = new ArrayList<String>();
     
     private Long emergencyId;

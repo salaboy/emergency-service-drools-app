@@ -13,7 +13,12 @@ package com.wordpress.salaboy.emergencyservice.taskforms;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.emergencyservice.tasklists.ControlSuggestedProceduresTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.SelectedProcedures;
+import com.wordpress.salaboy.model.SuggestedProcedures;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -382,7 +387,7 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void configurePanel() {
-        String taskinfo = "";
+        Map taskinfo = null;
 
         try {
             ObjectInputStream ois = null;
@@ -391,19 +396,18 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
             TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
             TAttachment attachment = getTaskClient().getAttachments(this.taskId, firstAttachmentInfo.getName()).get(0);
 
-            taskinfo = (String)((Map)attachment.getValue()).get("Content");
+            taskinfo = (Map)attachment.getValue();
         } catch (Exception ex) {
             Logger.getLogger(UserTaskListUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String[] values = taskinfo.split(",");
         System.out.println("TaskInfo = " + taskinfo);
-        emergencyId = Long.valueOf(values[0].trim());
-        String emergencyType = values[1].trim();
-        String emergencyLocationX = values[2].trim();
-        String emergencyLocationY = values[3].trim();
-        String emergencyDate = values[4].trim();
-        String phoneNumber = values[5].trim();
-        String emergencyNroOfPeople = values[6].trim();
+        Emergency emergency = (Emergency) taskinfo.get("emergency");
+        emergencyId = emergency.getId();
+        String emergencyType = emergency.getType().name();
+        String emergencyLocationX = emergency.getLocation().getLocationX().toString();
+        String emergencyLocationY = emergency.getLocation().getLocationY().toString();
+        String emergencyDate = emergency.getCall().getDate().toString();
+        String emergencyNroOfPeople = String.valueOf(emergency.getNroOfPeople());
         emergencyTimejTextField.setText(emergencyDate);
         emergencyLocationjTextField.setText("X: " + emergencyLocationX + " - Y:" + emergencyLocationY);
         emergencyTypejTextField.setText(emergencyType);
@@ -413,8 +417,9 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
         String patientGender = "";
 
         if (emergencyNroOfPeople.equals("1")) {
-            patientAge = values[7].trim();
-            patientGender = values[8].trim();
+        	Patient patient = (Patient) taskinfo.get("patient");
+            patientAge = String.valueOf(patient.getAge());
+            patientGender = patient.getGender();
             patientAgejTextField.setText(patientAge);
             patientGenderjTextField.setText(patientGender);
         }
@@ -431,7 +436,7 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
         }
 
 
-        String suggestedProceduresString = values[9].trim();
+        String suggestedProceduresString = ((SuggestedProcedures)taskinfo.get("suggestedProcedures")).getSuggestedProceduresString();
         if (suggestedProceduresString != null && !suggestedProceduresString.equals("") && !suggestedProceduresString.trim().startsWith("#{")) {
 
 
