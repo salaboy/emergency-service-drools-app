@@ -15,7 +15,6 @@ import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.emergencyservice.dashboard.EmergenciesDashboard;
 import com.wordpress.salaboy.emergencyservice.extrapanels.About;
-import com.wordpress.salaboy.emergencyservice.extrapanels.EventGeneratorsConfigPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.ControlSuggestedProceduresTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.IncomingPhoneCallsTaskListPanel;
@@ -28,7 +27,6 @@ import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskC
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
-import javax.swing.JFrame;
 
 /**
  *
@@ -83,7 +81,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        menuItemConfigreEventGenerators = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -128,12 +125,12 @@ public class UserTaskListUI extends javax.swing.JFrame {
             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 503, Short.MAX_VALUE)
+            .add(0, 507, Short.MAX_VALUE)
             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -155,14 +152,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
             }
         });
         fileMenu.add(jMenuItem2);
-
-        menuItemConfigreEventGenerators.setText("Configure Event Generators");
-        menuItemConfigreEventGenerators.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemConfigreEventGeneratorsActionPerformed(evt);
-            }
-        });
-        fileMenu.add(menuItemConfigreEventGenerators);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -238,21 +227,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void menuItemConfigreEventGeneratorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigreEventGeneratorsActionPerformed
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                JFrame jFrame = new JFrame();
-                jFrame.add(new EventGeneratorsConfigPanel());
-                jFrame.setSize(300, 600);
-                jFrame.setVisible(true);
-            }
-        });
-
-    }//GEN-LAST:event_menuItemConfigreEventGeneratorsActionPerformed
-
     private void jMenuItem2MenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenuItem2MenuKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem2MenuKeyPressed
@@ -293,7 +267,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem menuItemConfigreEventGenerators;
     // End of variables declaration//GEN-END:variables
 
     private void initTaskClient() {

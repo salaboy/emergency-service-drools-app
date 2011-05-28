@@ -33,6 +33,19 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-d32</argument>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>com.wordpress.salaboy.sensor.ui.MainFrame</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
@@ -40,6 +53,31 @@
         <dependency>
             <groupId>com.wordpress.salaboy.emergencyservice</groupId>
             <artifactId>emergency-service-model</artifactId>
+        </dependency>
+        
+        <!-- Wii mote + bluetooth -->
+        <dependency>
+            <groupId>motej</groupId>
+            <artifactId>motej-library</artifactId>
+            <version>0.9-2008.02.05-patched</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.bluecove</groupId>
+            <artifactId>bluecove-gpl</artifactId>
+            <version>2.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.bluecove</groupId>
+            <artifactId>bluecove</artifactId>
+            <version>2.1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <reporting>

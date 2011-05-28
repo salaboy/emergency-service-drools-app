@@ -35,10 +35,12 @@ public class UDPServerPanel extends javax.swing.JPanel {
     private UDPSensorServer udpServer;
     
     private MessageConsumerWorker accelerometerListener;
+    private SensorMessageProducer sensorMessageProducer;
     
     /** Creates new form UDPServerPanel */
-    public UDPServerPanel() {
-        udpServer = new UDPSensorServer(new GenericUDPAccelerometerSensorParser(), new SensorMessageProducer());
+    public UDPServerPanel(SensorMessageProducer sensorMessageProducer) {
+        this.sensorMessageProducer = sensorMessageProducer;
+        udpServer = new UDPSensorServer(new GenericUDPAccelerometerSensorParser(), this.sensorMessageProducer );
         initComponents();
         this.setComponentPopupMenu(new JPopupMenu("Options"){
             {

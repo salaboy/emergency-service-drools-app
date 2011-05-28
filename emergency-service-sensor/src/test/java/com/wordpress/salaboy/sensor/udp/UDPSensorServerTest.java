@@ -111,8 +111,12 @@ class MockSensorDataParser implements SensorDataParser{
 }
 
 class MockSensorMessageProducer extends SensorMessageProducer{
-
+    
     private List<Double> informedMessages = new ArrayList<Double>();
+
+    public MockSensorMessageProducer() {
+        super(null);
+    }
 
     @Override
     public void informMessage(double heartBeat) throws Exception {

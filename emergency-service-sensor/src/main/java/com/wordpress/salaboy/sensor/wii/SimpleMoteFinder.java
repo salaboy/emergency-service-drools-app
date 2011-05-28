@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote;
+package com.wordpress.salaboy.sensor.wii;
 
 
 import motej.Mote;
@@ -11,9 +11,10 @@ public class SimpleMoteFinder implements MoteFinderListener {
 
 	private Logger log = LoggerFactory.getLogger(SimpleMoteFinder.class);
 	private MyMoteFinder finder;
-	private Object lock = new Object();
+	private final Object lock = new Object();
 	private Mote mote;
 
+    @Override
 	public void moteFound(Mote mote) {
 		log.info("SimpleMoteFinder received notification of a found mote.");
 		this.mote = mote;

@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote;
+package com.wordpress.salaboy.sensor.wii;
 
 /*
  * Copyright 2007-2008 Volker Fritzsch
@@ -15,7 +15,6 @@ package com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote;
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.intel.bluetooth.BlueCoveImpl;
 import com.intel.bluetooth.DebugLog;
-import java.util.Properties;
 
 /**
  * 
@@ -46,12 +44,12 @@ import java.util.Properties;
  * @author Volker Fritzsch
  * @author Christoph Krichenbauer
  */
-public class MyDeviceFinder {
-    
+public class MyMoteFinder {
+    public static String wiiMoteId;
     // initialization on demand holder idiom
     private static class SingletonHolder {
 
-        private static final MyDeviceFinder INSTANCE = new MyDeviceFinder();
+        private static final MyMoteFinder INSTANCE = new MyMoteFinder();
     }
 
     /**
@@ -59,7 +57,7 @@ public class MyDeviceFinder {
      * 
      * @return WiimoteFinder
      */
-    public static MyDeviceFinder getDeviceFinder() {
+    public static MyMoteFinder getMoteFinder(String wiiMoteId) {
         try {
             // disable PSM minimum flag because the wiimote has a PSM below 0x1001
             //System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
@@ -68,20 +66,20 @@ public class MyDeviceFinder {
             BlueCoveImpl.setConfigProperty(BlueCoveConfigProperties.PROPERTY_INQUIRY_DURATION, "5000" );
             BlueCoveImpl.setConfigProperty(BlueCoveConfigProperties.PROPERTY_CONNECT_TIMEOUT, "10000" );
             
-            
+            MyMoteFinder.wiiMoteId = wiiMoteId;
             
             DebugLog.setDebugEnabled(false);
             
             SingletonHolder.INSTANCE.localDevice = LocalDevice.getLocalDevice();
             SingletonHolder.INSTANCE.discoveryAgent = SingletonHolder.INSTANCE.localDevice.getDiscoveryAgent();
-            
-            
+            //SingletonHolder.INSTANCE.bluetoothAddressCache.add("8C56C54923CA");
+            SingletonHolder.INSTANCE.bluetoothAddressCache.add(MyMoteFinder.wiiMoteId);
             return SingletonHolder.INSTANCE;
         } catch (BluetoothStateException ex) {
             throw new RuntimeException(ex);
         }
     }
-    private Logger log = LoggerFactory.getLogger(MyDeviceFinder.class);
+    private Logger log = LoggerFactory.getLogger(MyMoteFinder.class);
     private EventListenerList listenerList = new EventListenerList();
     private DiscoveryAgent discoveryAgent;
     public Set<String> bluetoothAddressCache = new HashSet<String>();
@@ -103,22 +101,48 @@ public class MyDeviceFinder {
     protected final DiscoveryListener listener = new DiscoveryListener() {
 
         public void deviceDiscovered(final RemoteDevice device, DeviceClass clazz) {
-            if (log.isInfoEnabled()) {
-                try {
-                    log.info("found device: " + device.getFriendlyName(false)
-                            + " - " + device.getBluetoothAddress() + " - "
-                            + clazz.getMajorDeviceClass() + ":"
-                            + clazz.getMinorDeviceClass() + " - "
-                            + clazz.getServiceClasses());
-                } catch (IOException ex) {
-                    log.error(ex.getMessage(), ex);
-                    throw new RuntimeException(ex);
-                }
+//            if (log.isInfoEnabled()) {
+//                try {
+//                    log.info("found device: " + device.getFriendlyName(false)
+//                            + " - " + device.getBluetoothAddress() + " - "
+//                            + clazz.getMajorDeviceClass() + ":"
+//                            + clazz.getMinorDeviceClass() + " - "
+//                            + clazz.getServiceClasses());
+//                } catch (IOException ex) {
+//                    log.error(ex.getMessage(), ex);
+//                    throw new RuntimeException(ex);
+//                }
+//            }
+
+
+            final String address = device.getBluetoothAddress();
+            //TODO: Add input text to add the Bluetooth Id
+            //salaboy: 0023CC8AD195
+            //black: 8C56C54923CA
+            
+            
+            if (!device.getBluetoothAddress().equals(MyMoteFinder.wiiMoteId)) {
+                log.info("Returning.. bad device!!!");
+                return;
+
             }
 
+            if (bluetoothAddressCache.contains(address)) {
+                Thread connectThread = new Thread("connect: " + address) {
 
-          
-            
+                    public void run() {
+                        Mote mote = new Mote(device);
+                        fireMoteFound(mote);
+                        bluetoothAddressCache.add(address);
+                    }
+                ;
+                };
+ 		connectThread.start();
+
+//                for (DiscoveryListener delegate : discoveryListeners) {
+//                    delegate.deviceDiscovered(device, clazz);
+//                }
+            }
         }
 
         public void inquiryCompleted(int discType) {
@@ -140,7 +164,9 @@ public class MyDeviceFinder {
                 }
             }
 
-
+//            for (DiscoveryListener delegate : discoveryListeners) {
+//                delegate.inquiryCompleted(discType);
+//            }
         }
 
         public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
@@ -161,22 +187,22 @@ public class MyDeviceFinder {
     };
     private LocalDevice localDevice;
 
-    private MyDeviceFinder() {
+    private MyMoteFinder() {
     }
 
-    public void addDeviceFinderListener(DeviceFinderListener listener) {
-        listenerList.add(DeviceFinderListener.class, listener);
+    public void addMoteFinderListener(MoteFinderListener listener) {
+        listenerList.add(MoteFinderListener.class, listener);
     }
 
-    protected void fireDeviceFound(Device device) {
-        DeviceFinderListener[] listeners = listenerList.getListeners(DeviceFinderListener.class);
-        for (DeviceFinderListener l : listeners) {
-            l.deviceFound(device);
+    protected void fireMoteFound(Mote mote) {
+        MoteFinderListener[] listeners = listenerList.getListeners(MoteFinderListener.class);
+        for (MoteFinderListener l : listeners) {
+            l.moteFound(mote);
         }
     }
 
-    public void removeDeviceFinderListener(DeviceFinderListener listener) {
-        listenerList.remove(DeviceFinderListener.class, listener);
+    public void removeMoteFinderListener(MoteFinderListener listener) {
+        listenerList.remove(MoteFinderListener.class, listener);
     }
 
     public void startDiscovery() {

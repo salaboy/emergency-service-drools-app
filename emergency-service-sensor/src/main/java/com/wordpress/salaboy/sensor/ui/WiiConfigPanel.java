@@ -8,26 +8,21 @@
  *
  * Created on Dec 23, 2010, 6:27:03 PM
  */
-
-package com.wordpress.salaboy.emergencyservice.extrapanels;
+package com.wordpress.salaboy.sensor.ui;
 
 import com.intel.bluetooth.BlueCoveConfigProperties;
 import com.intel.bluetooth.BlueCoveImpl;
-import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.SimpleMoteFinder;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
+import com.wordpress.salaboy.sensor.SensorMessageProducer;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import motej.Mote;
 import motej.StatusInformationReport;
 import motej.event.AccelerometerEvent;
@@ -38,19 +33,23 @@ import motej.event.MoteDisconnectedEvent;
 import motej.event.MoteDisconnectedListener;
 import motej.event.StatusInformationListener;
 import motej.request.ReportModeRequest;
-import org.hornetq.api.core.HornetQException;
-import com.wordpress.salaboy.emergencyservice.taskslist.swing.wiimote.SimpleDevicesFinder;
+import com.wordpress.salaboy.sensor.wii.SimpleDevicesFinder;
+import com.wordpress.salaboy.sensor.wii.SimpleMoteFinder;
 
 /**
  * @author salaboy
  * @author esteban
  */
-public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
+public class WiiConfigPanel extends javax.swing.JPanel {
+
+    SensorMessageProducer messageProducer;
 
     /** Creates new form EventGeneratorsConfigPanel */
-    public EventGeneratorsConfigPanel() {
+    public WiiConfigPanel(SensorMessageProducer messageProducer) {
+        this.messageProducer = messageProducer;
+
         initComponents();
-        
+
         JComboBox combo = new JComboBox();
         Collection<List<Ambulance>> ambulances = CityEntities.ambulances.values();
         for (List<Ambulance> listOfAmbulances : ambulances) {
@@ -59,17 +58,19 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                 combo.addItem(item);
             }
         }
-        
-       
-        
+
+
+
         //Heart Beat Received
-            MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote",new MessageConsumerWorkerHandler<HeartBeatMessage>() {
-                @Override
-                public void handleMessage(HeartBeatMessage message) {
-                    outputjTextArea.insert(System.currentTimeMillis()+" - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);
-                }
-            });
-            heartBeatReceivedWorker.start();
+        MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote", new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+
+            @Override
+            public void handleMessage(HeartBeatMessage message) {
+                outputjTextArea.insert(System.currentTimeMillis() + " - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);
+            }
+        });
+
+        heartBeatReceivedWorker.start();
     }
 
     /** This method is called from within the constructor to
@@ -91,6 +92,8 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         outputjTextArea = new javax.swing.JTextArea();
+
+        setName("Wii Mote"); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wii Mote Bindings", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
@@ -146,7 +149,7 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
                                 .addComponent(btnStopWiiMoteLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,8 +211,8 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
     private void btnWiiMoteLookupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWiiMoteLookupActionPerformed
         // TODO add your handling code here:
         initWiiMote();
-        
-        
+
+
     }//GEN-LAST:event_btnWiiMoteLookupActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -219,25 +222,23 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
 
     private void btnStopWiiMoteLookupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopWiiMoteLookupActionPerformed
         // TODO add your handling code here:
-        if(mote != null){
+        if (mote != null) {
             mote.disconnect();
         }
-        if( simpleMoteFinder != null){
+        if (simpleMoteFinder != null) {
             simpleMoteFinder.stopFind();
         }
         BlueCoveImpl.shutdown();
         BlueCoveImpl.shutdownThreadBluetoothStack();
-        
-        outputjTextArea.insert(System.currentTimeMillis()+" - Wii mote Disconnected By the user", 0);
+
+        outputjTextArea.insert(System.currentTimeMillis() + " - Wii mote Disconnected By the user", 0);
     }//GEN-LAST:event_btnStopWiiMoteLookupActionPerformed
 
     private void btnListDevicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListDevicesActionPerformed
         // TODO add your handling code here:
         listDevices();
-        
+
     }//GEN-LAST:event_btnListDevicesActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnListDevices;
     private javax.swing.JButton btnStopWiiMoteLookup;
@@ -252,82 +253,59 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     private Mote mote = null;
     private SimpleMoteFinder simpleMoteFinder;
-    public static void main (String args[]){
-        java.awt.EventQueue.invokeLater(new Runnable()    {
 
-            @Override
-            public void run() {
-                JFrame jFrame = new JFrame();
-                jFrame.add( new EventGeneratorsConfigPanel());
-                jFrame.setSize(400, 500);
-                jFrame.setVisible(true);
-            }
-        });
+    private void listDevices() {
+        SimpleDevicesFinder devicesFinder = new SimpleDevicesFinder();
+        devicesFinder.findDevices();
     }
-    private void listDevices(){
-       SimpleDevicesFinder devicesFinder = new SimpleDevicesFinder();
-       devicesFinder.findDevices();
-    }
-    
-     private void initWiiMote() {
+
+    private void initWiiMote() {
         System.setProperty(BlueCoveConfigProperties.PROPERTY_JSR_82_PSM_MINIMUM_OFF, "true");
-        
+
         simpleMoteFinder = new SimpleMoteFinder();
         mote = simpleMoteFinder.findMote(wiiMoteIdjTextField.getText());
-        if(mote == null){
-            outputjTextArea.insert(System.currentTimeMillis()+" - Wii mote not found! \n", 0);
-            
+        if (mote == null) {
+            outputjTextArea.insert(System.currentTimeMillis() + " - Wii mote not found! \n", 0);
+
+        } else {
+            outputjTextArea.insert(System.currentTimeMillis() + " - Wii mote found! \n", 0);
         }
-        else{
-            outputjTextArea.insert(System.currentTimeMillis()+" - Wii mote found! \n", 0);
-        }
-        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>()   {
+        AccelerometerListener<Mote> listener = new AccelerometerListener<Mote>() {
 
             @Override
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
-                
                 if (evt.getY() > 225) {
-                    
                     try {
-                        Long callId = UserTaskListUI.LAST_CALL_ID;
-                        Long vehicleId = UserTaskListUI.LAST_DISPATCHED_VEHICLE_ID;
-                        if (callId != null && vehicleId != null){
-                            MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, evt.getY(), new Date()));                  
-                        }
-                    } catch (HornetQException ex) {
-                        Logger.getLogger(EventGeneratorsConfigPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        messageProducer.informMessage(evt.getY());
+                    } catch (Exception ex) {
+                        Logger.getLogger(WiiConfigPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-                    
                 }
             }
-            
         };
-        MoteDisconnectedListener<Mote> disconnectedListener = new MoteDisconnectedListener<Mote>(){
+        MoteDisconnectedListener<Mote> disconnectedListener = new MoteDisconnectedListener<Mote>() {
 
             @Override
             public void moteDisconnected(MoteDisconnectedEvent<Mote> mde) {
-                outputjTextArea.insert(System.currentTimeMillis()+" - Wii MOTE DISCONECTED!!!!\n", 0);
+                outputjTextArea.insert(System.currentTimeMillis() + " - Wii MOTE DISCONECTED!!!!\n", 0);
             }
-
         };
-        
+
         CoreButtonListener buttonListener = new CoreButtonListener() {
 
             public void buttonPressed(CoreButtonEvent cbe) {
-                if(cbe.isButtonAPressed()){
-                    outputjTextArea.insert(System.currentTimeMillis()+" - Button A Pressed!\n",0);
+                if (cbe.isButtonAPressed()) {
+                    outputjTextArea.insert(System.currentTimeMillis() + " - Button A Pressed!\n", 0);
                 }
-                if(cbe.isButtonBPressed()){
-                    outputjTextArea.insert(System.currentTimeMillis()+" - Button B Pressed!\n",0);
+                if (cbe.isButtonBPressed()) {
+                    outputjTextArea.insert(System.currentTimeMillis() + " - Button B Pressed!\n", 0);
                 }
             }
         };
-        
+
         StatusInformationListener statusListener = new StatusInformationListener() {
 
             public void statusInformationReceived(StatusInformationReport sir) {
-                
             }
         };
         //mote.addStatusInformationListener(statusListener);
@@ -337,5 +315,4 @@ public class EventGeneratorsConfigPanel extends javax.swing.JPanel {
         mote.addCoreButtonListener(buttonListener);
 
     }
-    
 }
