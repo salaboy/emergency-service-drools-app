@@ -3,27 +3,22 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>emergency-service</artifactId>
         <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+        <artifactId>emergency-service</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+
     <artifactId>emergency-service-taskslists-ui-swing</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <name>Emergency Service - Tasks List UI (Swing)</name>
   
-    <url>http://maven.apache.org</url>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <dependencies>
         
         <dependency>
-            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>emergency-service-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>emergency-service-core</artifactId>
         </dependency>
         
@@ -57,33 +52,5 @@
         
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <!-- mac osx for infinispan -->
-                        <argument>-Djgroups.bind_addr=127.0.0.1</argument>
-                        <argument>-d32</argument>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>com.wordpress.salaboy.emergencyservice.main.UserTaskListUI</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -56,4 +56,40 @@ public class PulseEvent implements Serializable{
         return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + callId + '}';
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PulseEvent other = (PulseEvent) obj;
+        if (this.processed != other.processed) {
+            return false;
+        }
+        if (this.value != other.value) {
+            return false;
+        }
+        if (this.vehicleId != other.vehicleId && (this.vehicleId == null || !this.vehicleId.equals(other.vehicleId))) {
+            return false;
+        }
+        if (this.callId != other.callId && (this.callId == null || !this.callId.equals(other.callId))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 31 * hash + (this.processed ? 1 : 0);
+        hash = 31 * hash + this.value;
+        hash = 31 * hash + (this.vehicleId != null ? this.vehicleId.hashCode() : 0);
+        hash = 31 * hash + (this.callId != null ? this.callId.hashCode() : 0);
+        return hash;
+    }
+    
+    
+
 }
