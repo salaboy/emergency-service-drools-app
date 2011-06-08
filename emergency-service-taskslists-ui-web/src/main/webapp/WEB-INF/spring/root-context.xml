@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="emergency_modelData"
+		class="com.wordpress.salaboy.emergencyservice.web.task.external.ModelDataConnector" />
+
+	<bean id="emergency_configuration"
+		class="com.wordpress.salaboy.smarttasks.formbuilder.utils.spring.ResourceBasedBuilderConfiguration">
+		<constructor-arg index="0" value="classpath:uihelper" />
+		<constructor-arg index="1">
+			<bean class="org.springframework.beans.factory.config.MapFactoryBean">
+				<property name="targetMapClass">
+					<value>java.util.HashMap</value>
+				</property>
+				<property name="sourceMap">
+					<map>
+						<entry key="model">
+							<bean
+								class="com.wordpress.salaboy.emergencyservice.web.task.external.ModelDataConnector" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<bean class="org.springframework.beans.factory.config.SetFactoryBean">
+				<property name="targetSetClass">
+					<value>java.util.HashSet</value>
+				</property>
+				<property name="sourceSet">
+					<list>
+						<bean id="emergency_jbpm5Implementation"
+							class="com.wordpress.salaboy.smarttasks.formbuilder.configuration.saxhandler.JBPM5ConfigurationHandler" />
+						<bean class="com.wordpress.salaboy.smarttasks.formbuilder.configuration.saxhandler.UIHelperConfigurationHandler"/>
+					</list>
+				</property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="3" value="UIHelper.config.xml" />
+	</bean>
+	
+	<bean id="emergency_smart_tasks_builder" class="com.wordpress.salaboy.smarttasks.formbuilder.api.SmartTaskBuilder">
+		<constructor-arg index = "0" ref="emergency_configuration"/>
+	</bean>
+</beans>

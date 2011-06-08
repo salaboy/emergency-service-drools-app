@@ -1,0 +1,57 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+     	{
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Name",
+            "sourceExpresion":"#{task:name}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Phone Call",
+            "sourceExpresion":"#{in:call.phoneNumber}"
+         },
+         {
+            "name":"Call Id",
+            "sourceExpresion":"#{in:call.id}"
+         },
+         {
+            "name":"Call",
+            "sourceExpresion":"#{in:call}"
+         }
+     ],
+     "outputFields": [
+         {
+            "name":"Emergency Type",
+            "sourceExpresion":"#{ext:model.emergencyTypes()}"
+         },
+         {
+            "name":"Location X",
+            "sourceExpresion":"#{in:call.x}"
+         },
+         {
+            "name":"Location Y",
+            "sourceExpresion":"#{in:call.y}"
+         },
+         {
+            "name":"Number Of people",
+            "sourceExpresion":""
+         },
+         {
+            "name":"Gender",
+            "sourceExpresion":"[male,female]"
+         },
+         {
+            "name":"Age",
+            "sourceExpresion":""
+         }
+     ]
+ }
+ ]

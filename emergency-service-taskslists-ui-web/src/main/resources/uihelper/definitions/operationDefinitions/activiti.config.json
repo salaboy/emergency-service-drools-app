@@ -1,0 +1,24 @@
+	[
+		{
+			"name": "READY",
+			"isRoot": "true",
+			"isEnd": "false",
+			"transitions": [
+				{
+					"methodMapping":"claim",
+					"action":"claim" 
+				}
+			]
+		},
+		{
+			"name": "IN_PROGRESS",
+			"isRoot": "false",
+			"isEnd": "false",
+			"transitions": [
+				{
+					"methodMapping":"complete",
+					"action":"complete"
+				}
+			]
+		}
+	]

@@ -1,0 +1,49 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+         {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Name",
+            "sourceExpresion":"#{task:name}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         }
+     ],
+     "outputFields": [
+         {
+            "name":"Output",
+            "sourceExpresion":""
+         }
+     ]
+ },
+ {
+     "profile": "SuperUser",
+     "inputFields": [
+         {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Priority",
+            "sourceExpresion":"#{task:priority}"
+         },
+         {
+            "name":"Name",
+            "sourceExpresion":"#{task:name}"
+         }
+     ],
+     "outputFields": [
+         {
+            "name":"document",
+            "sourceExpresion":""
+         }
+     ]
+     
+ }
+ ]

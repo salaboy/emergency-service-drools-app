@@ -71,7 +71,7 @@
       <dataInputAssociation>
         <targetRef>_2_TaskNameInput</targetRef>
         <assignment>
-          <from xsi:type="tFormalExpression">#{call} -&gt; Phone Ringing!</from>
+          <from xsi:type="tFormalExpression">Call #{call.id} -&gt; Phone Ringing!</from>
           <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
@@ -156,7 +156,7 @@
       <dataInputAssociation>
         <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
-          <from xsi:type="tFormalExpression">Suggested Process -&gt;  #{emergency}, #{patient}</from>
+          <from xsi:type="tFormalExpression">Suggested Process -&gt; #{emergency.id}</from>
           <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>

@@ -22,6 +22,7 @@
         <module>emergency-service-model</module>
         <module>emergency-service-world-ui-slick</module>
         <module>emergency-service-taskslists-ui-swing</module>
+	<module>emergency-service-taskslists-ui-web</module>
         <module>emergency-service-sensor</module>
         <module>run</module>
     </modules>
@@ -42,6 +43,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>emergency-service-taskslists-ui-swing</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>emergency-service-taskslists-ui-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

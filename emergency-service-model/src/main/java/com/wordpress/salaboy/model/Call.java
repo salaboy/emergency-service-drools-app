@@ -23,7 +23,9 @@ public class Call implements Serializable{
     private String time;
     private transient Calendar calendar;
     
-    
+    public Call() {
+		// Needed to be serialized.
+	}
 
     public Call(int x, int y, Date date) {
         calendar = Calendar.getInstance();
@@ -51,6 +53,9 @@ public class Call implements Serializable{
 
     public String getTime() {
         time = "";
+        if (calendar == null) {
+        	calendar = Calendar.getInstance();	
+        }
         calendar.setTimeInMillis(this.date.getTime());
         time += calendar.get(Calendar.MONTH)+"/"
                 + calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH)+ " - "
