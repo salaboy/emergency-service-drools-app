@@ -1,0 +1,30 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+        {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Emergency Type:",
+            "sourceExpresion":"#{in:emergency.type}"
+         }
+     	
+     ],
+     "outputFields": [
+         {
+            "name":"Severity",
+            "sourceExpresion":"[1,2,3,4,5]"
+         },
+         {
+            "name":"Update Situation",
+            "sourceExpresion":""
+         }
+     ]
+ }
+ ]

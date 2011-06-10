@@ -1,0 +1,25 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+         {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Name",
+            "sourceExpresion":"#{task:name}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         }
+     ],
+     "outputFields": [
+        {
+            "name":"Vehicles",
+            "sourceExpresion":"#{ext:cache.distributedService.getAllVehicles()}"
+         }
+      ]
+ }
+ ]

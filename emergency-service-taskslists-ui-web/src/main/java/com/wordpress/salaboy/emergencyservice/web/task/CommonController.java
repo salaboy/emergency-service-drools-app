@@ -13,9 +13,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import com.wordpress.salaboy.smarttasks.formbuilder.api.ConnectionData;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.SmartTaskBuilder;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.TaskListBuilder;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.TaskListDataSet;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskListColumHeaders;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskListsData;
 
 /**
@@ -26,6 +23,9 @@ import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskListsData;
 @Controller
 public class CommonController {
 
+	/**
+	 * The builder is inyected using spring.
+	 */
     @Autowired
     private SmartTaskBuilder helper;
 
@@ -48,21 +48,14 @@ public class CommonController {
     @RequestMapping(value = "/list/{entity}/{profile}", method = RequestMethod.GET)
     public String list(@PathVariable("entity") String entity,
             @PathVariable("profile") String profile, Model model) {
-        ConnectionData connectionData = new ConnectionData();
-        connectionData.setEntityId(entity);
-        helper.connect(connectionData);
-        TaskListBuilder taskListHelper = helper.getTaskListHelper("taskList1",
-                profile);
-        TaskListDataSet set = taskListHelper.getDataSet(0,
-                taskListHelper.getDataCount());
+        helper.connect(new ConnectionData(entity));
+        String stringTaskList = helper.getTaskList(profile);
 
-        TaskListsData taskListdata = (TaskListsData) yaml.load(set.getData());
+        TaskListsData taskListdata = (TaskListsData) yaml.load(stringTaskList);
         Object[][] data = taskListdata.getData();
         model.addAttribute("data", data);
 
-        TaskListColumHeaders columHeaders = (TaskListColumHeaders) yaml
-                .load(taskListHelper.getColumnHeaders());
-        String[] headers = columHeaders.getColumnHeaders();
+        String[] headers = taskListdata.getColumnHeaders();
         model.addAttribute("headers", headers);
         int idIndex = -1;
         for (int i = 0; i < headers.length; i++) {

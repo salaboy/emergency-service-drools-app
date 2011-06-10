@@ -17,6 +17,9 @@ public class MedicalKit implements Serializable{
     private String name;
     private DoctorSpeciality type;
 
+	public MedicalKit() {
+		// Needed for seriailization
+	}
     public MedicalKit(String name, DoctorSpeciality type) {
         this.name = name;
         this.type = type;

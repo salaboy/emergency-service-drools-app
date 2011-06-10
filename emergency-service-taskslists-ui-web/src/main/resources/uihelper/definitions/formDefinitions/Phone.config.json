@@ -41,7 +41,7 @@
             "sourceExpresion":"#{in:call.y}"
          },
          {
-            "name":"Number Of people",
+            "name":"Number Of People",
             "sourceExpresion":""
          },
          {

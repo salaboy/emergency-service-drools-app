@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationException;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
@@ -92,17 +93,27 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         location.setLocationY(Integer.parseInt(data.get("Location Y")));
         emergency.setLocation(location);
         emergency.setNroOfPeople(Integer.valueOf(Integer.parseInt(data
-                .get("Number Of people"))));
+                .get("Number Of People"))));
         emergency.setType(data.get("Emergency Type"));
         emergency.setCall(callsById.get(Integer.parseInt(data.get("callId"))));
         info.put("emergency", emergency);
-        if (data.get("Number Of people").equals("1")) {
+        if (data.get("Number Of People").equals("1")) {
             Patient patient = new Patient();
             patient.setAge(Integer.valueOf(data.get("Age")));
             patient.setGender(data.get("Gender"));
             info.put("patient", patient);
         }
         return info;
+    }
+    
+    @Override
+    protected void validate(Map<String, String> formSubmittedData)
+    		throws FormValidationException {
+    	Integer people = Integer.valueOf(Integer.parseInt(formSubmittedData
+                .get("Number Of People")));
+    	if (!people.equals(1)) {
+    		throw new FormValidationException("Only supported one person form now.");
+    	}
     }
 
 }

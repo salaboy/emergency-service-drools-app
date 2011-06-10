@@ -24,6 +24,9 @@ public class Ambulance implements Vehicle{
     public static AtomicLong incrementalId = new AtomicLong();
     
 
+	public Ambulance() {
+		// Needed for serialization
+	}
 
     public Ambulance(String name, Date departureTime) {
         this.id = Ambulance.incrementalId.getAndIncrement();
@@ -107,7 +110,7 @@ public class Ambulance implements Vehicle{
 
     @Override
     public String toString() {
-        return "Ambulance{" + "id=" + id + ", doctorOnBoard=" + doctorOnBoard + ", kits=" + kits + ", departureTime=" + departureTime + ", patientPickedUpTime=" + patientPickedUpTime + ", positionX=" + positionX + ", positionY=" + positionY + ", name=" + name + '}';
+        return "Ambulance{" + "id=" + id + ", name=" + name + '}';
     }
 
    
@@ -116,6 +119,18 @@ public class Ambulance implements Vehicle{
     public String getName() {
         return this.name;
     }
+
+	public static AtomicLong getIncrementalId() {
+		return incrementalId;
+	}
+
+	public static void setIncrementalId(AtomicLong incrementalId) {
+		Ambulance.incrementalId = incrementalId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
     
     

@@ -89,7 +89,7 @@ public class PoliceCar implements Vehicle{
 
     @Override
     public String toString() {
-        return "PoliceCar{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "PoliceCar{" + "id=" + id + ", name=" + name + '}';
     }
     
     

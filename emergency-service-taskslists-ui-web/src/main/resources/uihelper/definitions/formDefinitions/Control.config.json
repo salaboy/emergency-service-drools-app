@@ -40,8 +40,11 @@
          },
          {
             "name":"EmergencyId",
-            "sourceExpresion":"#{in:emergency.id}",
-            "purpose":"Background"
+            "sourceExpresion":"#{in:emergency.id}"
+         },
+         {
+            "name":"suggestedProcedures",
+            "sourceExpresion":"#{in:suggestedProcedures.getSuggestedProceduresString()}"
          }
      ],
      "outputFields": [

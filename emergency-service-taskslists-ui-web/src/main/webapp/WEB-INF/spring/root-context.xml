@@ -3,9 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<bean id="emergency_modelData"
-		class="com.wordpress.salaboy.emergencyservice.web.task.external.ModelDataConnector" />
-
 	<bean id="emergency_configuration"
 		class="com.wordpress.salaboy.smarttasks.formbuilder.utils.spring.ResourceBasedBuilderConfiguration">
 		<constructor-arg index="0" value="classpath:uihelper" />
@@ -19,6 +16,10 @@
 						<entry key="model">
 							<bean
 								class="com.wordpress.salaboy.emergencyservice.web.task.external.ModelDataConnector" />
+						</entry>
+						<entry key="cache">
+							<bean
+								class="com.wordpress.salaboy.emergencyservice.web.task.external.DistributedService" />
 						</entry>
 					</map>
 				</property>

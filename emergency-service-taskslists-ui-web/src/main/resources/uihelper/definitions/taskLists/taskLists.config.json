@@ -31,6 +31,10 @@
          {
             "header":"Status",
             "sourceExpresion":"#{status}"
+         },
+         {
+            "header":"Doctor msg",
+            "sourceExpresion":"message"
          }
      ]
  },

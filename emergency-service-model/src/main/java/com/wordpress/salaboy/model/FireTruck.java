@@ -89,7 +89,7 @@ public class FireTruck implements Vehicle{
 
     @Override
     public String toString() {
-        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + '}';
+        return "FireTruck{" + "id=" + id + ", name=" + name + '}';
     }
 
    

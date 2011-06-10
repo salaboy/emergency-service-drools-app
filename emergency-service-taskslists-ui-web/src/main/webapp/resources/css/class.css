@@ -22,3 +22,6 @@ table.sample td {
 	background-color: white;
 	-moz-border-radius: 0px 0px 0px 0px;
 }
+div.error {
+	color: red;
+}

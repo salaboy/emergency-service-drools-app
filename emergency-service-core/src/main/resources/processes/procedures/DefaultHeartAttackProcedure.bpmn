@@ -200,7 +200,7 @@
       <dataInputAssociation>
         <targetRef>_6_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> Doctor's Update For Emergency: #{emergency} Phone Call( #{call} )</from>
+          <from xs:type="tFormalExpression"> Doctor's Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
           <to xs:type="tFormalExpression">_6_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>

@@ -12,42 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationException;
-import com.wordpress.salaboy.model.SelectedProcedures;
 
 /**
- * Controller to handle control operator requests.
+ * Controller to handle doctor's update task form.
  * 
  * @author calcacuervo
  */
 @Controller
-public class ControlOperatorController extends AbstractTaskFormController {
+public class DoctorsUpdateController extends AbstractTaskFormController {
+
 	@Override
 	protected void addCustomFormLogic(Model model) {
-		this.emergencyId = (Integer) this.taskInfo.get("EmergencyId");
-		this.taskInfo.remove("EmergencyId");
-		model.addAttribute("suggestedProcedure", this
-				.getCleanSuggestedProcedure((String) this.taskInfo
-						.get("suggestedProcedures")));
-		this.taskInfo.remove("suggestedProcedures");
-
-	}
-
-	private String getCleanSuggestedProcedure(String suggestedProceduresString) {
-		suggestedProceduresString = suggestedProceduresString.trim();
-		if (suggestedProceduresString.startsWith("[")) {
-			suggestedProceduresString = suggestedProceduresString.substring(1);
-		}
-		if (suggestedProceduresString.endsWith("]")) {
-			suggestedProceduresString = suggestedProceduresString.substring(0,
-					suggestedProceduresString.length() - 1);
-		}
-		suggestedProceduresString = suggestedProceduresString.trim();
-		return suggestedProceduresString.split(":")[0].trim();
 	}
 
 	@Override
 	protected String getTaskType() {
-		return "Control";
+		return "Doctor";
 	}
 
 	@Override
@@ -55,18 +35,16 @@ public class ControlOperatorController extends AbstractTaskFormController {
 		return viewPrefix;
 	}
 
-	private static final String viewPrefix = "co_";
+	private static final String viewPrefix = "";
 	private static final Logger logger = LoggerFactory
-			.getLogger(ControlOperatorController.class);
+			.getLogger(DoctorsUpdateController.class);
 
-	public ControlOperatorController() {
+	public DoctorsUpdateController() {
 		super();
 	}
 
-	private Integer emergencyId;
-
 	@Override
-	@RequestMapping(value = "/task/co/{entity}/{profile}/{id}/{name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/do/{entity}/{profile}/{id}/{name}", method = RequestMethod.GET)
 	public String taskInfo(@PathVariable("id") String id,
 			@PathVariable("entity") String entity,
 			@PathVariable("name") String name,
@@ -74,7 +52,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 		return super.taskInfo(id, entity, name, profile, model);
 	}
 
-	@RequestMapping(value = "/task/co/execute/{entity}/{profile}/{id}/{name}/{action}/{document}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/do/execute/{entity}/{profile}/{id}/{name}/{action}/{document}", method = RequestMethod.GET)
 	public String executeTask(@PathVariable("id") String taskId,
 			@PathVariable("action") String action,
 			@PathVariable("entity") String entity,
@@ -85,7 +63,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 				profile, model);
 	}
 
-	@RequestMapping(value = "/task/co/execute/{entity}/{profile}/{id}/{name}/{action}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/do/execute/{entity}/{profile}/{id}/{name}/{action}", method = RequestMethod.GET)
 	public String executeTask(@PathVariable("id") String taskId,
 			@PathVariable("action") String action,
 			@PathVariable("entity") String entity,
@@ -98,21 +76,23 @@ public class ControlOperatorController extends AbstractTaskFormController {
 	protected Map<String, Object> generateOutputForForm(String form,
 			Map<String, String> data) {
 		Map<String, Object> info = new HashMap<String, Object>();
-		SelectedProcedures selectedProcedures = new SelectedProcedures(
-				Long.parseLong(emergencyId.toString()));
-		selectedProcedures.addSelectedProcedureName(data
-				.get("Suggested Procedures"));
-		info.put("selectedProcedures", selectedProcedures);
+		info.put("emergency.severity", Integer.parseInt(data.get("Severity")));
+		info.put("emergency.updatedNotes", data.get("Update Situation"));
 		return info;
 	}
 
 	@Override
 	protected void validate(Map<String, String> formSubmittedData)
 			throws FormValidationException {
-		String selected = formSubmittedData.get("Suggested Procedures");
-		if (selected == null || selected.isEmpty()) {
-			throw new FormValidationException("Not recognized procedure");
+		String notes = formSubmittedData.get("Update Situation");
+		if (notes == null || notes.isEmpty()) {
+			throw new FormValidationException(
+					"Doctor, please include an update!");
 		}
-
+		try {
+			Integer.parseInt(formSubmittedData.get("Severity"));
+		} catch (NumberFormatException nfe) {
+			throw new FormValidationException("Severity must be a number");
+		}
 	}
 }

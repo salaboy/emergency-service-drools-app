@@ -1,6 +1,6 @@
 <head>
 	<title>Task</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/emergency-service-taskslists-ui-web/resources/js/jquery.min.js"></script>
 <script type="text/javascript">
 jQuery.expr[':'].regex = function(elem, index, match) {
     var matchParams = match[3].split(','),
@@ -49,6 +49,7 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 </h1>
 <link rel="stylesheet" type="text/css" href="/emergency-service-taskslists-ui-web/resources/css/class.css" />
 <div class="mydiv" id="statusid"/>
+<#include "task/error.ftl">
 <#include "task/details.ftl">
 <br/>
 <#include "task/form.ftl">

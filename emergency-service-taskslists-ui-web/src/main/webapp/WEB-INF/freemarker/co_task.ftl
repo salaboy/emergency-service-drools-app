@@ -53,7 +53,7 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 <#include "task/error.ftl">
 <#include "task/details.ftl">
 <br/>
-<#include "task/form.ftl">
+<#include "task/co_form.ftl">
 <#include "task/footer.ftl">
 </body>
 </html>

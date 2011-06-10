@@ -7,16 +7,14 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.yaml.snakeyaml.Yaml;
 
+import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationException;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.ConnectionData;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.SmartTaskBuilder;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.TaskFormBuilder;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.TaskOperationsDefinition;
 import com.wordpress.salaboy.smarttasks.formbuilder.api.exception.InvalidTaskException;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskFormInput;
-import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskFormOutput;
+import com.wordpress.salaboy.smarttasks.formbuilder.api.output.TaskForm;
 import com.wordpress.salaboy.smarttasks.metamodel.MetaTaskDecoratorBase;
 import com.wordpress.salaboy.smarttasks.metamodel.MetaTaskDecoratorService;
 
@@ -29,34 +27,62 @@ import com.wordpress.salaboy.smarttasks.metamodel.MetaTaskDecoratorService;
  * 
  */
 public abstract class AbstractTaskFormController {
+
 	public AbstractTaskFormController() {
 		MetaTaskDecoratorService.getInstance().registerDecorator("base",
 				new MetaTaskDecoratorBase());
 	}
 
-	protected abstract String getTaskType();
-
-	protected abstract String getViewPrefix();
-
-	protected abstract void addCustomFormLogic(Model model);
-
+	/**
+	 * Task inputs.
+	 */
 	protected Map<String, Object> taskInfo;
 
+	/**
+	 * Task outputs.
+	 */
 	protected Map<String, Object> taskOutput;
 
+	/**
+	 * Concrete classes will implement this method with the task type they are
+	 * intended to render. This task type will be used to select the form
+	 * configuration with smart tasks.
+	 * 
+	 * @return
+	 */
+	protected abstract String getTaskType();
+
+	/**
+	 * {@link Yaml} instance is used the deserialize the data.
+	 */
 	protected Yaml yaml = new Yaml();
 
+	/**
+	 * Inyected builder.
+	 */
 	@Autowired
 	protected SmartTaskBuilder helper;
 
-	protected TaskFormBuilder taskHelper;
-
+	/**
+	 * This is the main method to show task form. It will put in the model the
+	 * task input and outputs extracted with smart tasks, and also the
+	 * operations to show buttons. This method should be overriden by concrete
+	 * controllers, which will also make additional things and configure the url
+	 * mapping.
+	 * 
+	 * @param id
+	 * @param entity
+	 * @param name
+	 * @param profile
+	 * @param model
+	 * @return
+	 */
 	public String taskInfo(String id, String entity, String name,
 			String profile, Model model) {
 		try {
 			this.getTaskForm(entity, id, profile);
-			TaskOperationsDefinition operationsDef = taskHelper
-					.getTaskOperations();
+			TaskOperationsDefinition operationsDef = helper
+					.getTaskOperations(id);
 			model.addAttribute("operations", operationsDef);
 			model.addAttribute("taskInput", taskInfo);
 			model.addAttribute("taskOutput", taskOutput);
@@ -73,57 +99,109 @@ public abstract class AbstractTaskFormController {
 		return this.getViewPrefix() + "task";
 	}
 
+	/**
+	 * Gets the task form {@link SmartTasksTaskFormBuilder}.
+	 * 
+	 * @param entity
+	 * @param id
+	 * @param profile
+	 * @throws InvalidTaskException
+	 *             if a task is not found
+	 */
 	protected void getTaskForm(String entity, String id, String profile)
 			throws InvalidTaskException {
-		ConnectionData connectionData = new ConnectionData();
-		connectionData.setEntityId(entity);
+		ConnectionData connectionData = new ConnectionData(entity);
 		helper.connect(connectionData);
 		String taskType = this.getTaskType();
-		taskHelper = helper.getTaskSupportHelper(id, taskType, profile);
 
-		String stringTaskInfo = taskHelper.getTaskInput();
-		TaskFormInput deserializedInput = (TaskFormInput) yaml
-				.load(stringTaskInfo);
-		taskInfo = deserializedInput.getInputs();
+		String stringTaskform = helper.getTaskForm(id, taskType, profile);
+		TaskForm deserializedForm = (TaskForm) yaml.load(stringTaskform);
+		taskInfo = deserializedForm.getInputs();
 
-		String stringTaskOutput = taskHelper.getTaskOutput();
-		TaskFormOutput deserializedOutput = (TaskFormOutput) yaml
-				.load(stringTaskOutput);
-		taskOutput = deserializedOutput.getOutputs();
+		taskOutput = deserializedForm.getOutputs();
 	}
 
-	public String executeTask(@PathVariable("id") String taskId,
-			@PathVariable("action") String action,
-			@PathVariable("entity") String entity,
-			@PathVariable("name") String name,
-			@PathVariable("document") String document,
-			@PathVariable("profile") String profile, Model model) {
-		if (taskHelper != null) {
-			try {
-				if ("complete".equalsIgnoreCase(action)) {
-					Map<String, String> map = new HashMap<String, String>();
-					String[] params = document.split(",");
-					for (int i = 0; i < params.length; i++) {
-						String[] param = params[i].split("=");
-						if (param.length == 2 && param[0] != null
-								&& param[1] != null) {
-							map.put(param[0], param[1]);
-						}
+	/**
+	 * Executes a given action over a given task. It assumes it receives the
+	 * data (only for complete action) in the form data1=info1,data2=info2. If
+	 * the action is "complete", it transform this data string with a map, and
+	 * calls an abstract method which will transform this data with task
+	 * specific data.
+	 * 
+	 * @param taskId
+	 * @param action
+	 * @param entity
+	 * @param name
+	 * @param data
+	 * @param profile
+	 * @param model
+	 * @return
+	 */
+	public String executeTask(String taskId, String action, String entity,
+			String name, String data, String profile, Model model) {
+		try {
+			if ("complete".equalsIgnoreCase(action)) {
+				Map<String, String> map = new HashMap<String, String>();
+				String[] params = data.split(",");
+				for (int i = 0; i < params.length; i++) {
+					String[] param = params[i].split("=");
+					if (param.length == 2 && param[0] != null
+							&& param[1] != null) {
+						map.put(param[0], param[1]);
 					}
-
-					taskHelper.executeTaskAction(action,
-							this.generateOutputForForm("", map));
-				} else {
-					taskHelper.executeTaskAction(action, null);
 				}
-			} catch (InvalidTaskException e) {
-				return "redirect:new";
+
+				try {
+					this.validate(map);
+				} catch (FormValidationException ex) {
+					model.addAttribute("validationError", ex.getMessage());
+					return this.taskInfo(taskId, entity, name, profile, model);
+				}
+				Map<String, Object> taskData = this.generateOutputForForm("",
+						map);
+				helper.executeTaskAction(action, taskData, taskId);
+			} else {
+				helper.executeTaskAction(action, null, taskId);
 			}
+		} catch (InvalidTaskException e) {
+			return "redirect:new";
 		}
 		return this.taskInfo(taskId, entity, name, profile, model);
 	}
 
+	/**
+	 * Transform the form data in data valuable for the specific task.
+	 * 
+	 * @param string
+	 * @param map
+	 * @return
+	 */
 	protected abstract Map<String, Object> generateOutputForForm(String string,
 			Map<String, String> map);
 
+	/**
+	 * The view prefix is used it find the .ftl to show the task form. It will
+	 * always try with <prefix>tasl.ftl
+	 * 
+	 * @return
+	 */
+	protected abstract String getViewPrefix();
+
+	/**
+	 * Concrete classes can fill the model with some specific data for it.
+	 * 
+	 * @param model
+	 */
+	protected abstract void addCustomFormLogic(Model model);
+
+	/**
+	 * Validates a given form.
+	 * 
+	 * @param formSubmittedData
+	 * @throws FormValidationException
+	 */
+	protected void validate(Map<String, String> formSubmittedData)
+			throws FormValidationException {
+		// DEFAULT DOES NOTHING
+	}
 }
