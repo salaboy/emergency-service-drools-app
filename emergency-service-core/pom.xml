@@ -236,7 +236,7 @@
         <repository>
             <id>PlugTree</id>
             <name>PlugTree-Snapshots-CloudBees</name>
-            <url>https://repository-plugtree.forge.cloudbees.com/snapshot/</url>
+            <url>https://repository-plugtree-org.forge.cloudbees.com/snapshot/</url>
             <!--snapshots-->
             <!--enabled>true</enabled-->
             <!--updatePolicy>always</updatePolicy-->
