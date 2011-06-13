@@ -31,6 +31,11 @@ public class CommonController {
 
     Yaml yaml = new Yaml();
 
+    @RequestMapping(value = "/")
+    public String home(Model model) {
+        return "redirect:/new/";
+    }
+    
     @RequestMapping(value = "/new/")
     public String start(Model model) {
         return "start";

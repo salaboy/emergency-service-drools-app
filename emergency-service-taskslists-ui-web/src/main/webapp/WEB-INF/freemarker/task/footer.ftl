@@ -1,1 +1,1 @@
-<a href="/emergency-service-taskslists-ui-web/new/">Home</a>
+<a href="${rc.getContextPath()}/new/">Home</a>

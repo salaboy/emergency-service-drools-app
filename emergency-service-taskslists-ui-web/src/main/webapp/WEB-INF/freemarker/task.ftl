@@ -1,6 +1,6 @@
 <head>
 	<title>Task</title>
-<script type="text/javascript" src="/emergency-service-taskslists-ui-web/resources/js/jquery.min.js"></script>
+	<script type="text/javascript" src="${rc.getContextPath()}/static/js/jquery.min.js"></script>
 <script type="text/javascript">
 jQuery.expr[':'].regex = function(elem, index, match) {
     var matchParams = match[3].split(','),
@@ -36,20 +36,25 @@ jQuery.expr[':'].regex = function(elem, index, match) {
    			output = this.name.split('_')[1] + "=" + this.value + "," + output; 
   		});
   	
-			var url = "/emergency-service-taskslists-ui-web/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
+			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
 			window.location = url;
 		}
 	</script>
-	
+	<link rel="stylesheet" type="text/css" href="${rc.getContextPath()}/static/css/screen.css" />
 </head>
 <body onLoad="init()">
-<h1> 
-	<#assign idv="id"/>
+<div class="wrap"> 
+ 
+<div class="head"> 
+	<h1>Emergency Service</h1> 
+    <h5>powered by plugtree</h5> 
+</div> 
+ 
+ 
+<h2> 
 	${name}
-</h1>
-<link rel="stylesheet" type="text/css" href="/emergency-service-taskslists-ui-web/resources/css/class.css" />
-
-<div class="mydiv" id="statusid"/>
+</h2> 
+<div class="mydiv" id="statusid"> 
 <#include "task/error.ftl">
 <#include "task/details.ftl">
 <br/>

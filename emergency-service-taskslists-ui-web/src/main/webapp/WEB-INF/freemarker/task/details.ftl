@@ -1,8 +1,7 @@
-Details:
-<table class="sample">
-	<tr>
+<table>
+	<tbody><tr>
 		<#list taskInput?keys as keys>
-			<td><b>${keys}</b></td>
+			<th><h3>${keys}</h3></th> 
 		</#list>
 	</tr>
 	  <tr>
@@ -26,4 +25,5 @@ Details:
 			</td>
 		</#list>
 		</tr>
+		</tbody>
 </table>

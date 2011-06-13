@@ -1,10 +1,10 @@
-Task Form:
+<h2>Task Form:</h2>
  <FORM action="#" method="post">
     <P>
     <table>
     <#list taskOutput?keys as inputKey>
     <tr>
-     	<td><LABEL for="${inputKey}">${inputKey}: </LABEL></td>
+     	<th><h3><LABEL for="${inputKey}">${inputKey}: </LABEL></h3></th>
      	<#if taskOutput[inputKey]?is_sequence>
 				<td><select name="input_${inputKey}" id="inputKey" <#if taskInput['Status']!='IN_PROGRESS'> disabled=true</#if>>
 					<#list taskOutput[inputKey] as sequenceItem>
