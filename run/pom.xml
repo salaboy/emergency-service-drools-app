@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.wordpress.salaboy.emergencyservice</groupId>
@@ -12,18 +12,18 @@
     <artifactId>emergency-service-run</artifactId>
     <packaging>pom</packaging>
     <name>Emergency Service - Run</name>
-  
-  <properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>6.1.4</jetty.version>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<slf4j.version>1.6.0</slf4j.version>
-		<java.version>1.5</java.version>
-		<junit.version>4.8.2</junit.version>
-	</properties>
-  
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty.version>6.1.4</jetty.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <slf4j.version>1.6.0</slf4j.version>
+        <java.version>1.5</java.version>
+        <junit.version>4.8.2</junit.version>
+    </properties>
+
     <profiles>
-        <!--core-->
+        <!--core -->
         <profile>
             <id>core</id>
             <build>
@@ -39,7 +39,7 @@
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
                                 <argument>-classpath</argument>
-                                <classpath/>
+                                <classpath />
                                 <argument>com.wordpress.salaboy.CoreServer</argument>
                             </arguments>
                         </configuration>
@@ -54,7 +54,7 @@
             </dependencies>
         </profile>
 
-        <!--world-gui-->
+        <!--world-gui -->
         <profile>
             <id>win32</id>
             <activation>
@@ -77,7 +77,7 @@
                 <platform>linux32</platform>
             </properties>
         </profile>
-	<profile>
+        <profile>
             <id>linux64</id>
             <activation>
                 <os>
@@ -107,7 +107,7 @@
             <build>
                 <defaultGoal>dependency:unpack exec:exec</defaultGoal>
                 <plugins>
-                    <!--get slick native lib-->
+                    <!--get slick native lib -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -124,7 +124,7 @@
                             </artifactItems>
                         </configuration>
                     </plugin>
-                    <!--run-->
+                    <!--run -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -134,11 +134,11 @@
                                 <!-- mac osx for infinispan -->
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
-                                <!--argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument-->
+                                <!--argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument -->
                                 <argument>-Djava.library.path=${native.path}/</argument>
-                                <!--<argument>-d32</argument>-->
+                                <!--<argument>-d32</argument> -->
                                 <argument>-classpath</argument>
-                                <classpath/>
+                                <classpath />
                                 <argument>com.wordpress.salaboy.emergencyservice.worldui.slick.WorldUI</argument>
                             </arguments>
                         </configuration>
@@ -169,7 +169,7 @@
             </repositories>
         </profile>
 
-        <!--tasklists-ui-->
+        <!--tasklists-ui -->
         <profile>
             <id>tasklists-ui</id>
             <build>
@@ -185,7 +185,7 @@
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
                                 <argument>-classpath</argument>
-                                <classpath/>
+                                <classpath />
                                 <argument>com.wordpress.salaboy.emergencyservice.main.UserTaskListUI</argument>
                             </arguments>
                         </configuration>
@@ -203,87 +203,97 @@
         <profile>
             <id>tasklists-ui-web</id>
             <build>
-                <defaultGoal>jetty:run-war</defaultGoal>
+                <defaultGoal>exec:exec</defaultGoal>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <id>Run Jetty</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>run.sh</executable>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
                         <artifactId>maven-jetty-plugin</artifactId>
                         <version>6.1.25</version>
                         <configuration>
-                           <webApp>../emergency-service-taskslists-ui-web/target/ui.war</webApp>
+                            <webApp>../emergency-service-taskslists-ui-web/target/ui.war</webApp>
                             <scanIntervalSeconds>3</scanIntervalSeconds>
                             <connectors>
-                                <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                                <connector
+                                    implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                                     <port>8081</port>
                                 </connector>
                             </connectors>
                             <contextPath>emergency-services</contextPath>
-                            
-                                <systemProperties>
-                                    <systemProperty>
-                                        <name>jgroups.bind_addr</name>
-                                        <value>127.0.0.1</value>
-                                    </systemProperty>
-                                    <systemProperty>
-                                        <name>java.net.preferIPv4Stack</name>
-                                        <value>true</value>
-                                    </systemProperty>
-                                </systemProperties> 
-                            
+
+                            <!--systemProperties> <systemProperty> <name>jgroups.bind_addr</name> 
+                                <value>127.0.0.1</value> </systemProperty> <systemProperty> <name>java.net.preferIPv4Stack</name> 
+                                <value>true</value> </systemProperty> </systemProperties -->
+
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
-    
+
     <repositories>
-		<!-- JBoss Repository used for Java EE 6 pieces -->
-		<repository>
-			<id>repository.jboss.org</id>
-			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-		</repository>
+        <!-- JBoss Repository used for Java EE 6 pieces -->
+        <repository>
+            <id>repository.jboss.org</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
 
-		<repository>
-			<id>org.springframework.maven.milestone</id>
-			<name>Spring Maven Milestone Repository</name>
-			<url>http://maven.springframework.org/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+        <repository>
+            <id>org.springframework.maven.milestone</id>
+            <name>Spring Maven Milestone Repository</name>
+            <url>http://maven.springframework.org/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-		<repository>
-			<id>slickrepo</id>
-			<name>slickrepo</name>
-			<url>http://slick.cokeandcode.com/mavenrepo/</url>
-		</repository>
+        <repository>
+            <id>slickrepo</id>
+            <name>slickrepo</name>
+            <url>http://slick.cokeandcode.com/mavenrepo/</url>
+        </repository>
 
-		<repository>
-			<id>jboss</id>
-			<name>jboss</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>
+        <repository>
+            <id>jboss</id>
+            <name>jboss</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
 
-		<repository>
-			<id>OW2</id>
-			<url>http://maven.ow2.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>PlugTree</id>
-			<name>PlugTree-Snapshots-CloudBees</name>
-			<url>https://repository-plugtree-org.forge.cloudbees.com/snapshot/</url>
-			<!--snapshots -->
-			<!--enabled>true</enabled -->
-			<!--updatePolicy>always</updatePolicy -->
-			<!--/snapshots -->
-		</repository>
-		<repository>
-			<id>Sonatype-public</id>
-			<name>SnakeYAML repository</name>
-			<url>http://oss.sonatype.org/content/groups/public/</url>
-		</repository>
+        <repository>
+            <id>OW2</id>
+            <url>http://maven.ow2.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>PlugTree</id>
+            <name>PlugTree-Snapshots-CloudBees</name>
+            <url>https://repository-plugtree-org.forge.cloudbees.com/snapshot/</url>
+            <!--snapshots -->
+            <!--enabled>true</enabled -->
+            <!--updatePolicy>always</updatePolicy -->
+            <!--/snapshots -->
+        </repository>
+        <repository>
+            <id>Sonatype-public</id>
+            <name>SnakeYAML repository</name>
+            <url>http://oss.sonatype.org/content/groups/public/</url>
+        </repository>
 
-	</repositories>
+    </repositories>
 </project>
