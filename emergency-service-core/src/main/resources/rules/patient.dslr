@@ -17,7 +17,7 @@ global Long callId;
 
 rule "Patient with no vital sign"
     when
-        The average pulse is 235 in the last 4 seconds
+        The average pulse is 0 in the last 4 seconds
     then
         Send Alert: "Warning, patient without vital signs"
 end

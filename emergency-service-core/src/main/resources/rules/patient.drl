@@ -16,7 +16,7 @@ global Long callId;
 
 rule "Patient with no vital sign"
     when
-        Number(doubleValue == 235 ) from accumulate( PulseEvent(processed == false, $pulse: value) over window:time(4s) from entry-point "patientHeartbeats",
+        Number(doubleValue == 0 ) from accumulate( PulseEvent(processed == false, $pulse: value) over window:time(4s) from entry-point "patientHeartbeats",
         												average($pulse)) 
     then
         //Notify about the new Emergency
