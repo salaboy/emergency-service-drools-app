@@ -77,6 +77,17 @@
                 <platform>linux32</platform>
             </properties>
         </profile>
+	<profile>
+            <id>linux64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux64</platform>
+            </properties>
+        </profile>
         <profile>
             <id>mac</id>
             <activation>
