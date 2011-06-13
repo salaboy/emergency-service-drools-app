@@ -205,10 +205,10 @@
             <build>
                 <defaultGoal>exec:exec</defaultGoal>
                 <plugins>
-                    <plugin>
+                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.1.1</version>
                         <executions>
                             <execution>
                                 <id>Run Jetty</id>
@@ -218,9 +218,11 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <executable>run.sh</executable>
+                            <executable>mvn</executable>
+                            <commandlineArgs>jetty:run-war -Ptasklists-ui-web -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=127.0.0.1</commandlineArgs>
                         </configuration>
                     </plugin>
+                   
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
                         <artifactId>maven-jetty-plugin</artifactId>
@@ -234,11 +236,8 @@
                                     <port>8081</port>
                                 </connector>
                             </connectors>
+                            
                             <contextPath>emergency-services</contextPath>
-
-                            <!--systemProperties> <systemProperty> <name>jgroups.bind_addr</name> 
-                                <value>127.0.0.1</value> </systemProperty> <systemProperty> <name>java.net.preferIPv4Stack</name> 
-                                <value>true</value> </systemProperty> </systemProperties -->
 
                         </configuration>
                     </plugin>
