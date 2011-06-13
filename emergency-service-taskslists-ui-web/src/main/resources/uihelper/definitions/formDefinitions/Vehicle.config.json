@@ -21,5 +21,32 @@
             "sourceExpresion":"#{ext:cache.distributedService.getAllVehicles()}"
          }
       ]
+ },
+  {
+     "profile": "Detailed",
+     "inputFields": [
+         {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Name",
+            "sourceExpresion":"#{task:name}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Priority",
+            "sourceExpresion":"#{task:priority}"
+         }
+     ],
+     "outputFields": [
+        {
+            "name":"Vehicles",
+            "sourceExpresion":"#{ext:cache.distributedService.getAllVehicles()}"
+         }
+      ]
  }
  ]

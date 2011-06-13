@@ -39,6 +39,11 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
 			window.location = url;
 		}
+		function update() {
+			var perspective = document.getElementById('perspective');
+			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/${user}/"+perspective.value+"/${id}/${name}/";
+			window.location = url;
+		}
 	</script>
 		<link rel="stylesheet" type="text/css" href="${rc.getContextPath()}/static/css/screen.css" />
 </head>
@@ -46,9 +51,10 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 <div class="head">
     <h5>powered by plugtree</h2>
 </div>
- 
+<div class="img-profile">
+<img src="${rc.getContextPath()}/static/image/${user}.png" />
 <h2> 
-	${name}
+	${name} · <span>${user}</span>  · Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
 </h2>
 <div class="mydiv" id="statusid"/>
 <#include "task/error.ftl">

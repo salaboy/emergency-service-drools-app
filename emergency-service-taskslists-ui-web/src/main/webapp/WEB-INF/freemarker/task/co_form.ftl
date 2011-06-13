@@ -16,7 +16,7 @@
 							${sequenceItem}
 						</option>
 					</#list>
-				</select><td>
+				</select></td>
 			<#else>
 				<td><INPUT type="text" name="input_${inputKey}" id="input_${inputKey}" value="${taskOutput[inputKey]}" <#if taskInput['Status']!='IN_PROGRESS'> disabled=true</#if>/></td>
 			</#if>

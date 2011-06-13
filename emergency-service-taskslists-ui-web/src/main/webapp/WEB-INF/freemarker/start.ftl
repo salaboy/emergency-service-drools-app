@@ -4,9 +4,8 @@
 	function getList()
 	{
 	    var name = document.getElementById('user').value;
-	    var profile = document.getElementById('profile').value;
 	
-	    window.location="../list/"+name+"/"+profile;
+	    window.location="../list/"+name+"/Default";
 	}
 	</script> 
     <link rel="stylesheet" type="text/css" href="${rc.getContextPath()}/static/css/screen.css" /> 
@@ -30,15 +29,6 @@
 				<option>control</option>
 				<option>doctor</option>
 				<option>garage_emergency_service</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<th><h3>Profile</h3></td> 
-		<td>
-			<select name="profile" id="profile">
-				<option>Default</option>
-				<option>Superuser</option>
 			</select>
 		</td>
 	</tr>

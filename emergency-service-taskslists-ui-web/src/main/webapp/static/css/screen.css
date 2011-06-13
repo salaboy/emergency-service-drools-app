@@ -64,3 +64,12 @@ th{
 
 .wrap{
 	width:800px;
+}
+.img-profile img{
+	float:left;
+}
+.img-profile h2{
+	margin-bottom:40px;
+	padding-top:25px;
+	padding-left:80px;
+}
