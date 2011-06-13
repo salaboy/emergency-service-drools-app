@@ -70,6 +70,13 @@ public class CommonController {
                 idIndex = i;
             }
         }
+       
+        for (int i = 0; i < headers.length; i++) {
+            String string = headers[i];
+            if (string.equalsIgnoreCase("status")) {
+                model.addAttribute("Idstatus", i);
+            }
+        }
         Map<String, String> taskNames = new HashMap();
         int nameIndex = -1;
         for (int i = 0; i < headers.length; i++) {

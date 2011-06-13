@@ -7,10 +7,9 @@
  
 <div class="wrap"> 
  
-<div class="head"> 
-	<h1>Emergency Service</h1> 
-    <h5>powered by plugtree</h2> 
-</div> 
+<div class="head">
+    <h5>powered by plugtree</h2>
+</div>
 <h2> 
 	Tasks list for user: <span>${user}</span> and Profile: <span>${profile}</span>
 </h2>
@@ -29,7 +28,8 @@
 				<#if i == idIndex>
 					<td><a href="${rc.getContextPath()}/task/${us}/${user}/${profile}/${cell}/${taskNames[cell]}">${cell}</a></td>
 				<#else>
-					<td>${cell}</td>
+					<td <#if i == Idstatus> class="special"</#if>
+					>${cell}</td>
 				</#if>
 				<#assign i=i+1>
 			</#list>
