@@ -45,10 +45,9 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 <body onLoad="init()">
 <div class="wrap"> 
  
-<div class="head"> 
-	<h1>Emergency Service</h1> 
-    <h5>powered by plugtree</h5> 
-</div> 
+<div class="head">
+    <h5>powered by plugtree</h2>
+</div>
  
  
 <h2> 

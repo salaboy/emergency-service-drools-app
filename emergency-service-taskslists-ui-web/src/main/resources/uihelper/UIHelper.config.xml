@@ -4,6 +4,7 @@
     xmlns:jbpm5="http://plugtree.org/smart-tasks/JBPM5"
     xsi:schemaLocation="http://plugtree.org/smart-tasks/JBPM5 http://plugtree.org/smart-tasks/JBPM5.xsd">
     <humanTaskServicesConfigurations>
-        <jbpm5:JBPM5HumanTaskServiceConfiguration name="JBPM5" host="127.0.0.1" port="5446" serverType="hornetq"/>
+        <jbpm5:JBPM5HumanTaskServiceConfiguration name="JBPM5" host="127.0.0.1" 
+            port="5446" serverType="hornetq"/>
     </humanTaskServicesConfigurations>
 </configuration>
