@@ -276,7 +276,7 @@ public class WiiConfigPanel extends javax.swing.JPanel {
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
                 if (evt.getY() > 225) {
                     try {
-                        messageProducer.informMessage(evt.getY());
+                        messageProducer.informMessage(evt.getY() - 235);
                     } catch (Exception ex) {
                         Logger.getLogger(WiiConfigPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
