@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import org.hornetq.api.core.HornetQException;
 
 /**
  *
@@ -284,6 +287,18 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
         ));
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public static void main(String args[])  {
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                
+                new EmergenciesDashboard().setVisible(true);
+                
+            }
+        });
+    }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable emergenciesjTable;

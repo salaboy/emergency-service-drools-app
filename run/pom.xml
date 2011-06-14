@@ -134,7 +134,7 @@
                                 <!-- mac osx for infinispan -->
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
-                                <!--argument>-Djava.library.path=/home/esteban/proyectos/ext/lwjgl-2.1.0/native/linux/</argument -->
+                               
                                 <argument>-Djava.library.path=${native.path}/</argument>
                                 <!--<argument>-d32</argument> -->
                                 <argument>-classpath</argument>
@@ -199,6 +199,68 @@
                 </dependency>
             </dependencies>
         </profile>
+        
+        
+        <!--dashboard-ui -->
+        <profile>
+            <id>dashboard-ui</id>
+            <build>
+                <defaultGoal>exec:exec</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <!-- mac osx for infinispan -->
+                                <argument>-Djgroups.bind_addr=127.0.0.1</argument>
+                                <argument>-Djava.net.preferIPv4Stack=true</argument>
+                                <argument>-classpath</argument>
+                                <classpath />
+                                <argument>com.wordpress.salaboy.emergencyservice.dashboard.EmergenciesDashboard</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>emergency-service-dashboard-ui-swing</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+         <!--sensors -->
+        <profile>
+            <id>sensors</id>
+            <build>
+                <defaultGoal>exec:exec</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-d32</argument>
+                                <argument>-classpath</argument>
+                                <classpath />
+                                <argument>com.wordpress.salaboy.sensor.ui.MainFrame</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>emergency-service-sensor</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
 
         <profile>
             <id>tasklists-ui-web</id>
