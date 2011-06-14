@@ -81,7 +81,7 @@ public class HeartBeatWidget {
 
     public void updateMonitorGraph(double pulse) {
         pulseTimeSeries.removeAgedItems(false);
-        pulseTimeSeries.addOrUpdate(new Millisecond(), pulse - 235);
+        pulseTimeSeries.addOrUpdate(new Millisecond(), pulse);
     }
     
     public ChartPanel getChartPanel(){

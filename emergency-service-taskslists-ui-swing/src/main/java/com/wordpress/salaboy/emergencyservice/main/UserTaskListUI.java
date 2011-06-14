@@ -13,7 +13,6 @@ package com.wordpress.salaboy.emergencyservice.main;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.emergencyservice.dashboard.EmergenciesDashboard;
 import com.wordpress.salaboy.emergencyservice.extrapanels.About;
 import com.wordpress.salaboy.emergencyservice.tasklists.ControlSuggestedProceduresTaskListPanel;
 import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
@@ -80,7 +79,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
         mainJTabbedPane = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -121,7 +119,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 359, Short.MAX_VALUE)
+            .add(0, 361, Short.MAX_VALUE)
             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -134,24 +132,11 @@ public class UserTaskListUI extends javax.swing.JFrame {
             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                    .add(mainJTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
         fileMenu.setText("Emergency Services");
-
-        jMenuItem2.setText("Emergency Dashboard");
-        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenuItem2MouseClicked(evt);
-            }
-        });
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem2);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -231,20 +216,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem2MenuKeyPressed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EmergenciesDashboard().setVisible(true);
-            }
-        });
-
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void jMenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2MouseClicked
-
     /**
      * @param args the command line arguments
      */
@@ -263,7 +234,6 @@ public class UserTaskListUI extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane mainJTabbedPane;
     private javax.swing.JMenuBar menuBar;

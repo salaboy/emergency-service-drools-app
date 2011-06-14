@@ -31,6 +31,11 @@ public class CommonController {
 
     Yaml yaml = new Yaml();
 
+    @RequestMapping(value = "/")
+    public String home(Model model) {
+        return "redirect:/new/";
+    }
+    
     @RequestMapping(value = "/new/")
     public String start(Model model) {
         return "start";
@@ -63,6 +68,13 @@ public class CommonController {
             if (string.equalsIgnoreCase("id")) {
                 model.addAttribute("idIndex", i);
                 idIndex = i;
+            }
+        }
+       
+        for (int i = 0; i < headers.length; i++) {
+            String string = headers[i];
+            if (string.equalsIgnoreCase("status")) {
+                model.addAttribute("Idstatus", i);
             }
         }
         Map<String, String> taskNames = new HashMap();

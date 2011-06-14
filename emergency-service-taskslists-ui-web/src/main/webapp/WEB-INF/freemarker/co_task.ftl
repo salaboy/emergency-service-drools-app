@@ -1,6 +1,6 @@
 <head>
 	<title>Task</title>
-<script type="text/javascript" src="/emergency-service-taskslists-ui-web/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="${rc.getContextPath()}/static/js/jquery.min.js"></script>
 <script type="text/javascript">
 jQuery.expr[':'].regex = function(elem, index, match) {
     var matchParams = match[3].split(','),
@@ -36,19 +36,26 @@ jQuery.expr[':'].regex = function(elem, index, match) {
    			output = this.name.split('_')[1] + "=" + this.value + "," + output; 
   		});
   	
-			var url = "/emergency-service-taskslists-ui-web/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
+			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
+			window.location = url;
+		}
+		function update() {
+			var perspective = document.getElementById('perspective');
+			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/${user}/"+perspective.value+"/${id}/${name}/";
 			window.location = url;
 		}
 	</script>
-	
+		<link rel="stylesheet" type="text/css" href="${rc.getContextPath()}/static/css/screen.css" />
 </head>
 <body onLoad="init()">
-<h1> 
-	<#assign idv="id"/>
-	${name}
-</h1>
-<link rel="stylesheet" type="text/css" href="/emergency-service-taskslists-ui-web/resources/css/class.css" />
-
+<div class="head">
+    <h5>powered by plugtree</h2>
+</div>
+<div class="img-profile">
+<img src="${rc.getContextPath()}/static/image/${user}.png" />
+<h2> 
+	${name} · <span>${user}</span>  · Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
+</h2>
 <div class="mydiv" id="statusid"/>
 <#include "task/error.ftl">
 <#include "task/details.ftl">

@@ -182,6 +182,7 @@ public class CoreServer {
                     ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsHospitalMessage.getCallId()))
                             .patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
                     //Call Patient Monitor Service removeVehicle(vehicleId)
+                    PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
                 }
             }); 
 
