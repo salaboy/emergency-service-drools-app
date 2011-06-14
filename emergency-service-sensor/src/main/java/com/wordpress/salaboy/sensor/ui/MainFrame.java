@@ -43,6 +43,7 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
                 
         this.tpnlMain.add(wiiConfigPanel);
         this.tpnlMain.add(uDPServerPanel);
+        this.tpnlMain.add(new KeySheetPanel());
         
         this.addWindowListener(new WindowAdapter() {
             @Override
