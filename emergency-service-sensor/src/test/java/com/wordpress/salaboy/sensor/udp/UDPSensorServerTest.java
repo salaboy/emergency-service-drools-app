@@ -107,6 +107,11 @@ class MockSensorDataParser implements SensorDataParser{
     public List<String> getParsedData() {
         return parsedData;
     }
+
+    @Override
+    public boolean isValidData(String data) {
+        return true;
+    }
     
 }
 

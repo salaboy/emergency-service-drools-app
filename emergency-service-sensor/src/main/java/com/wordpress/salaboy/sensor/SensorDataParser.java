@@ -10,6 +10,8 @@ package com.wordpress.salaboy.sensor;
  */
 public interface SensorDataParser {
     
+    public boolean isValidData(String data);
+    
     //TODO this method should return a SensorMessage
     public double parseData(String data);
 }

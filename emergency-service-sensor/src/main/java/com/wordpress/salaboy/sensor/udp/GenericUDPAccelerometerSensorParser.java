@@ -26,5 +26,10 @@ public class GenericUDPAccelerometerSensorParser implements SensorDataParser  {
         
         return Double.parseDouble(data);
     }
+
+    @Override
+    public boolean isValidData(String data) {
+        return true;
+    }
     
 }

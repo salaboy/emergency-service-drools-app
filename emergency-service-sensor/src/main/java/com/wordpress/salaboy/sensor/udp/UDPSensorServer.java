@@ -74,16 +74,24 @@ public class UDPSensorServer implements Runnable {
                     String data = new String(datagramPacket.getData());
                     
                     Logger.getLogger(UDPSensorServer.class.getName()).log(Level.FINEST, "UDP Data Received= {0}", data);
-                    System.out.println("UDP Data Received= "+ data);
                     
                     double message = 0D;
                     
+                    boolean validData = false;
+                    
                     synchronized(PARSER_LOCK){
-                         message = sensorDataParser.parseData(data);
+                        validData = sensorDataParser.isValidData(data);
+                        Logger.getLogger(UDPSensorServer.class.getName()).log(Level.FINEST, "\tis valid? {0}", validData);
+                        if (validData){
+                            message = sensorDataParser.parseData(data);
+                        }
+                        Logger.getLogger(UDPSensorServer.class.getName()).log(Level.FINEST, "\tvalue? {0}", message);
                     }
                     
                     synchronized(PRODUCER_LOCK){
-                        sensorMessageProducer.informMessage(message);
+                        if (validData){
+                            sensorMessageProducer.informMessage(message);
+                        }
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(UDPSensorServer.class.getName()).log(Level.SEVERE, null, ex);

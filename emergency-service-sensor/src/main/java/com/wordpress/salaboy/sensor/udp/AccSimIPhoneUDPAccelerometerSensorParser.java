@@ -26,5 +26,11 @@ public class AccSimIPhoneUDPAccelerometerSensorParser implements SensorDataParse
         
         return Double.parseDouble(data);
     }
+
+    @Override
+    public boolean isValidData(String data) {
+        double value= this.parseData(data);
+        return (value < -1.5 || value > 1.5); 
+    }
     
 }

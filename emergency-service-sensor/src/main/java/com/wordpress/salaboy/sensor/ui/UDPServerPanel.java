@@ -47,8 +47,8 @@ public class UDPServerPanel extends javax.swing.JPanel {
     /** Creates new form UDPServerPanel */
     public UDPServerPanel(SensorMessageProducer sensorMessageProducer,boolean offlineMode) {
         udpServer = new UDPSensorServer(new GenericUDPAccelerometerSensorParser(), sensorMessageProducer );
-        this.setOfflineMode(offlineMode);
         initComponents();
+        this.setOfflineMode(offlineMode);
         this.setComponentPopupMenu(new JPopupMenu("Options"){
             {
                 JButton clearButton = new JButton("Clear Messages");
@@ -221,7 +221,7 @@ public class UDPServerPanel extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
                 .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
@@ -334,7 +334,7 @@ public class UDPServerPanel extends javax.swing.JPanel {
         this.offlineMode = offlineMode;
         
         if (this.offlineMode){
-            
+            this.cboUDPDataParserImplementation.setEnabled(false);
             this.stopAccelerometerListener();
             
             lastSensorDataParser = udpServer.getSensorDataParser();
@@ -344,6 +344,11 @@ public class UDPServerPanel extends javax.swing.JPanel {
                 public double parseData(String data) {
                     ((DefaultTableModel)tblUDPEvents.getModel()).insertRow(0,new Object[]{data});
                     return 0;
+                }
+
+                @Override
+                public boolean isValidData(String data) {
+                    return true;
                 }
             });
             
@@ -361,6 +366,7 @@ public class UDPServerPanel extends javax.swing.JPanel {
             this.startAccelerometerListener();
             udpServer.setSensorDataParser(lastSensorDataParser);
             udpServer.setSensorMessageProducer(lastSensorMessageProducer);
+            this.cboUDPDataParserImplementation.setEnabled(true);
         }
     }
 }

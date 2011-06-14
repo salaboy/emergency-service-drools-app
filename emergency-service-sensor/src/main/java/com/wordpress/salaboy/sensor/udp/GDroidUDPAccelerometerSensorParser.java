@@ -26,5 +26,11 @@ public class GDroidUDPAccelerometerSensorParser implements SensorDataParser  {
         
         return Double.parseDouble(data);
     }
+
+    @Override
+    public boolean isValidData(String data) {
+        double value= this.parseData(data);
+        return (value < -6 || value > 6); 
+    }
     
 }
