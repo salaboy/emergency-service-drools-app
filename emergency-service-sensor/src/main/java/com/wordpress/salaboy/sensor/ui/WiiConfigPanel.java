@@ -33,7 +33,6 @@ import motej.event.MoteDisconnectedEvent;
 import motej.event.MoteDisconnectedListener;
 import motej.event.StatusInformationListener;
 import motej.request.ReportModeRequest;
-import com.wordpress.salaboy.sensor.wii.SimpleDevicesFinder;
 import com.wordpress.salaboy.sensor.wii.SimpleMoteFinder;
 
 /**
@@ -42,12 +41,18 @@ import com.wordpress.salaboy.sensor.wii.SimpleMoteFinder;
  */
 public class WiiConfigPanel extends javax.swing.JPanel {
 
-    SensorMessageProducer messageProducer;
+    private SensorMessageProducer messageProducer;
+    
+    private MessageConsumerWorker heartBeatReceivedWorker;
+    
+    private boolean offlineMode;
 
     /** Creates new form EventGeneratorsConfigPanel */
-    public WiiConfigPanel(SensorMessageProducer messageProducer) {
+    public WiiConfigPanel(SensorMessageProducer messageProducer, boolean offlineMode) {
         this.messageProducer = messageProducer;
 
+        this.setOfflineMode(offlineMode);
+        
         initComponents();
 
         JComboBox combo = new JComboBox();
@@ -58,19 +63,7 @@ public class WiiConfigPanel extends javax.swing.JPanel {
                 combo.addItem(item);
             }
         }
-
-
-
-        //Heart Beat Received
-        MessageConsumerWorker heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote", new MessageConsumerWorkerHandler<HeartBeatMessage>() {
-
-            @Override
-            public void handleMessage(HeartBeatMessage message) {
-                outputjTextArea.insert(System.currentTimeMillis() + " - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);
-            }
-        });
-
-        heartBeatReceivedWorker.start();
+        
     }
 
     /** This method is called from within the constructor to
@@ -193,8 +186,8 @@ public class WiiConfigPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -203,8 +196,8 @@ public class WiiConfigPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -255,8 +248,6 @@ public class WiiConfigPanel extends javax.swing.JPanel {
     private SimpleMoteFinder simpleMoteFinder;
 
     private void listDevices() {
-        SimpleDevicesFinder devicesFinder = new SimpleDevicesFinder();
-        devicesFinder.findDevices();
     }
 
     private void initWiiMote() {
@@ -274,6 +265,9 @@ public class WiiConfigPanel extends javax.swing.JPanel {
 
             @Override
             public void accelerometerChanged(AccelerometerEvent<Mote> evt) {
+                if (offlineMode){
+                    return;
+                }
                 if (evt.getY() > 225) {
                     try {
                         messageProducer.informMessage(evt.getY() - 235);
@@ -315,4 +309,41 @@ public class WiiConfigPanel extends javax.swing.JPanel {
         mote.addCoreButtonListener(buttonListener);
 
     }
+    
+    private void initWorkers() {
+        if (this.offlineMode){
+            return;
+        }
+        //Heart Beat Received
+        heartBeatReceivedWorker = new MessageConsumerWorker("heartBeatWiiMote", new MessageConsumerWorkerHandler<HeartBeatMessage>() {
+
+            @Override
+            public void handleMessage(HeartBeatMessage message) {
+                outputjTextArea.insert(System.currentTimeMillis() + " - sended " + message.getHeartBeatValue() + " heartbeat\n", 0);
+            }
+        });
+
+        heartBeatReceivedWorker.start();
+    }
+    
+    private void stopWorkers() {
+        if(heartBeatReceivedWorker != null ){
+            heartBeatReceivedWorker.stopWorker();
+            heartBeatReceivedWorker = null;
+        }
+    }
+
+    public void setOfflineMode(boolean offlineMode) {
+        this.offlineMode = offlineMode;
+        
+        if (this.offlineMode){
+            this.stopWorkers();
+        } else{
+            this.stopWorkers();
+            this.initWorkers();
+        }
+        
+    }
+    
+    
 }

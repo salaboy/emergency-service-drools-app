@@ -27,9 +27,12 @@ public class UDPSensorServer implements Runnable {
     private int bufferSize;
     private SensorDataParser sensorDataParser;
     private SensorMessageProducer sensorMessageProducer;
+    
+    private final Object PARSER_LOCK = new Object(); 
+    private final Object PRODUCER_LOCK = new Object(); 
 
-    public UDPSensorServer(SensorDataParser sendorDataParser, SensorMessageProducer sensorMessageProducer) {
-        this.sensorDataParser = sendorDataParser;
+    public UDPSensorServer(SensorDataParser sensorDataParser, SensorMessageProducer sensorMessageProducer) {
+        this.sensorDataParser = sensorDataParser;
         this.sensorMessageProducer = sensorMessageProducer;
     }
 
@@ -73,8 +76,15 @@ public class UDPSensorServer implements Runnable {
                     Logger.getLogger(UDPSensorServer.class.getName()).log(Level.FINEST, "UDP Data Received= {0}", data);
                     System.out.println("UDP Data Received= "+ data);
                     
-                    double message = sensorDataParser.parseData(data);
-                    sensorMessageProducer.informMessage(message);
+                    double message = 0D;
+                    
+                    synchronized(PARSER_LOCK){
+                         message = sensorDataParser.parseData(data);
+                    }
+                    
+                    synchronized(PRODUCER_LOCK){
+                        sensorMessageProducer.informMessage(message);
+                    }
                 } catch (Exception ex) {
                     Logger.getLogger(UDPSensorServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -89,4 +99,30 @@ public class UDPSensorServer implements Runnable {
     public boolean isRunning(){
         return this.keepRunning;
     }
+
+    public void setSensorDataParser(SensorDataParser sensorDataParser) {
+        synchronized (PARSER_LOCK){
+            this.sensorDataParser = sensorDataParser;
+        }
+    }
+
+    public SensorDataParser getSensorDataParser() {
+        synchronized (PARSER_LOCK){
+            return sensorDataParser;
+        }
+    }
+
+    public SensorMessageProducer getSensorMessageProducer() {
+        synchronized(PRODUCER_LOCK){
+            return sensorMessageProducer;
+        }
+    }
+
+    public void setSensorMessageProducer(SensorMessageProducer sensorMessageProducer) {
+        synchronized(PRODUCER_LOCK){
+            this.sensorMessageProducer = sensorMessageProducer;
+        }
+    }
+    
+    
 }

@@ -39,7 +39,7 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <argument>-d32</argument>
+                        <!--argument>-d32</argument-->
                         <argument>-classpath</argument>
                         <classpath/>
                         <argument>com.wordpress.salaboy.sensor.ui.MainFrame</argument>
