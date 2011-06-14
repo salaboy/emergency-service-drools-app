@@ -13,13 +13,13 @@ package com.wordpress.salaboy.emergencyservice.monitor;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
 import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -33,13 +33,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import org.hornetq.api.core.HornetQException;
 
 /**
  *
  * @author esteban
+ * @author salaboy
  */
 public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
@@ -84,6 +83,10 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         lblMap = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        auditLogjTextArea = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
 
@@ -154,6 +157,38 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
         jTabbedPane.addTab("GPS", jPanel1);
 
+        auditLogjTextArea.setColumns(20);
+        auditLogjTextArea.setRows(5);
+        jScrollPane1.setViewportView(auditLogjTextArea);
+        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().getReportByCallId(this.callId).getReportString());
+
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane.addTab("Live Report", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,11 +214,22 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         DefaultListModel emptyModel = new DefaultListModel();
         this.lstAlerts.setModel(emptyModel);
     }//GEN-LAST:event_btnClear1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().getReportByCallId(this.callId).getReportString());
+        
+}//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea auditLogjTextArea;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClear1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JLabel lblMap;
