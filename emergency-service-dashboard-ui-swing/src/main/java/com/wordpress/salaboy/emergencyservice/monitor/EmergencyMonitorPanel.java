@@ -400,7 +400,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                     try {
                         for (Long vehicleId : heartBeatWidgets.keySet()) {
                             try {
-                                MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 235, new Date()));
+                                MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 0, new Date()));
                             } catch (HornetQException ex) {
                                 Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }
