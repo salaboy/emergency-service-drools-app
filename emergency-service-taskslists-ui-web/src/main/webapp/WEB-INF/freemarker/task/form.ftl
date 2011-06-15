@@ -1,4 +1,4 @@
-<h2>Task Form:</h2>
+<h1>Task Form:</h1>
  <FORM action="#" method="post">
     <P>
     <table>
@@ -19,6 +19,8 @@
     <tr>
     </#list>
     </table>
+    <br>
+    <h1>Operations:</h1>
     <#list operations.getOperationsList() as operation>
     	<INPUT type="button" id="button_${operation}" value=${operation} onClick="buttonClicked('button_${operation}')">
     </#list>

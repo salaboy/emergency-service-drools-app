@@ -50,6 +50,6 @@
 		</tr>
 	</#list>
 </table>
-<a href="../../new/">New List</a>
+<a href="../../new/">Home</a>
 </body>
 </html>
