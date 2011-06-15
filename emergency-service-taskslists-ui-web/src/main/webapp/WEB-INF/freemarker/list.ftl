@@ -17,15 +17,19 @@
  
  
 <h2> 
-	${name} - <span>${user}</span>  - Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
+	<span>${user}</span>  - Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
 </h2> 
 </div>
 
 <#assign us = user?substring(0,2)/>
 <table>
 	<tr>
+		<#assign j=0>
 		<#list headers as headerValue>
-			<th><h3>${headerValue}</h4></th>
+			<#if j != idIndex>
+				<th><h3>${headerValue}</h4></th>
+			</#if>
+			<#assign j=j+1>
 		</#list>
 	</tr>
 	
@@ -34,10 +38,12 @@
 			<#assign i=0>
 			<#list row as cell>
 				<#if i == idIndex>
-					<td><a href="${rc.getContextPath()}/task/${us}/${user}/${profile}/${cell}/${taskNames[cell]}">${cell}</a></td>
+					<#assign tn=taskNames[cell]/>
+					<#assign tid=cell/>
 				<#else>
 					<td <#if i == Idstatus> class="special"</#if>
-					>${cell}</td>
+					>
+					<a href="${rc.getContextPath()}/task/${us}/${user}/${profile}/${tid}/${tn}">${cell}</a></td>
 				</#if>
 				<#assign i=i+1>
 			</#list>
