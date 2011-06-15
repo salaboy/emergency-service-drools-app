@@ -300,6 +300,7 @@
                             </connectors>
                             
                             <contextPath>emergency-services</contextPath>
+                            <tmpDirectory>../emergency-service-taskslists-ui-web/target</tmpDirectory>
 
                         </configuration>
                     </plugin>

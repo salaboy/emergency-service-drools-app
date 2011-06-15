@@ -58,8 +58,9 @@ jQuery.expr[':'].regex = function(elem, index, match) {
  
  
 <h2> 
-	${name} · <span>${user}</span>  · Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
+	${name} - <span>${user}</span>  - Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
 </h2> 
+</div>
 <div class="mydiv" id="statusid"> 
 <#include "task/error.ftl">
 <#include "task/details.ftl">

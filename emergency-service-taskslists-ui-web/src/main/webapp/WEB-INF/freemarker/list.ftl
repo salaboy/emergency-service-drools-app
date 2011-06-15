@@ -10,9 +10,17 @@
 <div class="head">
     <h5>powered by plugtree</h2>
 </div>
+
+
+<div class="img-profile">
+<img src="${rc.getContextPath()}/static/image/${user}.png" />
+ 
+ 
 <h2> 
-	Tasks list for user: <span>${user}</span> and Profile: <span>${profile}</span>
-</h2>
+	${name} - <span>${user}</span>  - Perspective: <select id="perspective" onChange="update()"><option <#if profile == 'Default'> selected=true </#if>> Default</option><option <#if profile == 'Detailed'> selected=true </#if>>Detailed</option></select>
+</h2> 
+</div>
+
 <#assign us = user?substring(0,2)/>
 <table>
 	<tr>
