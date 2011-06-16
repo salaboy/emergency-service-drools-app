@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>emergency-service</artifactId>
+		<groupId>com.wordpress.salaboy.emergencyservice</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.wordpress.salaboy.emergencyservice</groupId>
+	<artifactId>emergency-service-doc</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Emergency Service - Documentation</name>
+	<packaging>pom</packaging>
+	<profiles>
+		<profile>
+            <activation>
+                <property>
+                    <name>BUILD_NUMBER</name>
+                </property>
+            </activation>
+			<id>doc</id>
+			<build>
+				<plugins>
+					<plugin>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.xmlgraphics</groupId>
+								<artifactId>xmlgraphics-commons</artifactId>
+								<version>1.4</version>
+							</dependency>
+						</dependencies>
+						<groupId>com.agilejava.docbkx</groupId>
+						<artifactId>docbkx-maven-plugin</artifactId>
+						<version>2.0.12</version>
+						<executions>
+							<!-- execution> <phase>generate-sources</phase> <id>create-pdf-docs</id> 
+								<goals> <goal>generate-pdf</goal> </goals> <configuration> <includes>book.xml</includes> 
+								<foCustomization>src/docbkx-stylesheet/book-style.xsl</foCustomization> </configuration> 
+								</execution -->
+							<!-- -->
+							<execution>
+								<id>documentation identifier</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<!-- <goal>generate-html</goal> <goal>generate-pdf</goal> <goal>generate-...</goal> -->
+									<goal>generate-html</goal>
+								</goals>
+								<configuration>
+									<!-- per execution configuration -->
+									<includes>book.xml</includes>
+									<draftMode>yes</draftMode>
+									<preProcess>
+										<copy todir="target/docbkx/media">
+											<fileset dir="src/docbkx/media" />
+										</copy>
+									</preProcess>
+								</configuration>
+							</execution>
+						</executions>
+						<configuration>
+							<!-- shared configuration -->
+							<generatedSourceDirectory>${project.build.directory}/docbkx/generated</generatedSourceDirectory>
+							<xincludeSupported>true</xincludeSupported>
+							<paperType>A4</paperType>
+							<fop1Extensions>1</fop1Extensions>
+
+							<!-- htmlCustomization>src/docbkx-stylesheet/book-style.xsl</htmlCustomization -->
+
+							<customizationParameters>
+								<!-- additional XSLT parameters -->
+								<parameter>
+									<name>key</name>
+									<value>value</value>
+								</parameter>
+							</customizationParameters>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>/src/docbkx/media</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+
+	</build>
+
+
+</project>

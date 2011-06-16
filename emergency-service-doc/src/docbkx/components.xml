@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" >
+<chapter>
+	<title>Emergency Service Components</title>
+
+	<section>
+		<title>Components</title>
+		<para>
+			This is an overview of the different components of Emergency Service 
+			project.
+		</para>
+	</section>
+	<section>
+		<title>Model</title>
+		<para>@TODO: Emergency Model Description here</para>
+	</section>
+	<section>
+                <title>Core</title>
+                <para>@TODO: Emergency Core Description here</para>
+        </section>
+	<section>
+                <title>World UI</title>
+                <para>@TODO: Emergency World UI Description here</para>
+        </section>
+	<section>
+                <title>Task List UI - Swing</title>
+                <para>@TODO: Emergency Task List UI - Swing Description here</para>
+        </section>
+	<section>
+                <title>Task List UI - Web</title>
+                <para>@TODO: Emergency Task List UI - WebDescription here</para>
+        </section>
+	<section>
+                <title>Sensor</title>
+                <para>@TODO: Emergency Sensor Description here</para>
+        </section>
+
+</chapter>

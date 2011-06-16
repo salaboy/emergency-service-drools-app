@@ -1,0 +1,3 @@
+This is Smart Tasks Documentation readme.
+
+In order to generate the documentation, run the goal pre-site, and it will generate, the documentation in target/docbkx/html/book.html.

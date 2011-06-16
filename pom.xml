@@ -23,6 +23,7 @@
         <module>emergency-service-taskslists-ui-swing</module>
 	<module>emergency-service-taskslists-ui-web</module>
         <module>emergency-service-sensor</module>
+        <module>emergency-service-doc</module>
         <module>run</module>
     <module>emergency-service-dashboard-ui-swing</module>
   </modules>

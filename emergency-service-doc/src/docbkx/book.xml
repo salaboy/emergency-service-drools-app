@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<book>
+  <title>Emergency Service Documentation</title>
+  <titleabbrev>ESD</titleabbrev>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="book-info.xml"/>
+  <mediaobject>
+    <imageobject>
+      <imagedata depth="3cm" fileref="../media/logo.png"/>
+    </imageobject>
+  </mediaobject>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="preface.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="components.xml"/>
+</book>
