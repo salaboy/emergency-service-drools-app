@@ -1,34 +1,90 @@
-This is Drools Demo Application.
-This application was created to show the Drools Platform Capabilities including:
-Business Process Management
-Business Rules
-Complex Event Processing
+This application was built to show how to architect applications using BPM, a Rule Engine and Complex Event Processing. The aim of the application is to provide a generic architecture to implement flexible solution t hat uses the previous mentioned topics as basic principles.
 
-This is a generic application that can be customized to work of different domains changing only the Domain Object, the Sprites for the Graphical UI, the UI for Human Tasks, the Business Rules and the Business Processes.
+The application is right now decoupled in 7 logical modules that are responsible for different activities. We tried to maintain as decoupled as possible each module to provide a flexible and pluggeable architecture. If you don't like the implementation of one of these modules, you can easily replace it for one that cover all your needs.
 
-We will try to clean and improve the demo application in order to reflect the best practicies to use Drools.
+Each module is a functional block that allow the overall application to run and interact with different services. This allows you to customize each module configuration to run smoothly on your specific environment.
+Main Modules Introduction
 
-www.drools.org
+The following sections describe each module responsibility:
 
-Some configurations Steps:
+Project Modules
 
-Inside the pom.xml file: 
- we use a system variable java.library.path pointing to lwjgl that it's being used to render the city map.
-In my configuration (Mac OSX) it's pointing to /Users/salaboy/MyApplications/lwjgl-2.1.0/native/macosx/ where the native binaries are located. Notice that you must have the 2.1.0 version of lwjgl that you can download from: http://sourceforge.net/projects/java-game-lib/files/Official%20Releases/LWJGL%202.1.0/ that it's being required by slick 2D.
 
-We are also using the parameter to -Dd32 because bluecove (used for Wiimote) it's not supported in 64-bits machines.
+Model
 
-How to run the application:
-1) mvn clean install -skipTests=true
-2) cd emergency-service-app/
-3) mvn exec:exec
+This module contains your domain objects that represent the information that your application is interested to handle. This module now contains some extra utility classes and some WorkItemHandlers that will be used by the core module. I'm planning to create a separate module with these technical assets, but for now they can live there for practical reasons.
+Core
 
-Notice that I'm using MySQL5 inside the persistence configuration (persistence.xml file inside src/main/resources/META-INF). You can change to another database if you want or use H2 in memory db. 
-The schemas that you need to create inside your database are:
- - droolsflowht: for handling human tasks information 
- - droolsflow: for handling the runtime status
-Note: I will rename the schema names in the future.
+The core module contains all the Domain Specific Services interfaces and implementations. This project can be expanded as a multi module pom project in the future for storing one single service per project, allowing more flexibility for deployments.
 
-Notice also that inside the pom.xml file inside the emergency-service-app/ there are multiple references to the lwjgl path. Please update these references with the path where you uncompress the lwjgl native libraries.
+World UI
 
-Enjoy 
+This module allows us to see what is happening in the real world. You need to think about this module as a view of our world that allows to generate interactions. For real implementations this module can be seen as external sources of events that will be directly plugged to the core module with external connectors
+
+Task Lists UI
+
+We currently have two different implementations of this module. This module represent the software that is being used inside the Emergency Services company. You will find in the project source code that a Standalone implementation and a Web Application provide the same functionality. Two more implementations are being created for demonstrating best practices and for mobile phones.
+Running the Application
+
+We first need to download the source code using git from: https://github.com/Salaboy/emergency-service-drools-app
+
+Once you get the source code in your machine go inside the project structure and run:
+
+mvn clean install
+
+This will build all the modules and allow you to start playing with the application. If you get problems with maven dependencies you need to add a new certificate to your JDK to allow maven download snapshots from Plug Tree (org) repositories hosted in cloudbees.com. I strongly recommend you doing this to get always the latest version of our projects.
+
+"Make sure that java trusts the PlugTree repository by adding it's public key to the cacerts file. To do that, follow these steps:
+
+    Browse to https://repository-plugtree.forge.cloudbees.com/snapshot/
+    Select "Tools->Page Info" from the menu.
+    Select the "Security" icon and then click the "View Certificate" button.
+    Select the "Details" tab.
+    In the "Certificate Hierarchy" pane, select "*.forge.cloudbees.com" and then click the "Export..." button at the bottom of the dialog.
+    Save the certificate in a file (I used "publickey.forge.cloudbees.com") and select the "X.509 Certificate (PEM)" format.
+    Execute the following command (you may need to adjust the arguments for alias, keystore, and file based on your installation and where you saved the public key):
+
+sudo keytool -import -alias mail.redhat.com -keystore /usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/security/cacerts -file ~/publickey.forge.cloudbees.com
+
+When prompted, the default keystore password is "changeit". " -> copied from the project wiki: https://github.com/Salaboy/emergency-service-drools-app/wiki/Fedora-14-install
+
+
+The Run Module
+
+We have developed a special module that facilitates running all the application modules. we are planing to create a graphical interface to start up all the modules but it is still work in progress. Right now you can start the application using maven and one terminal per module that you want to start up.
+
+To start up the application there are are some dependency restrictions. We obviously need to start the application core before starting the UIs.
+If we are planing to use an external event generator (sensor) we need to bind it before generating emergencies in the world UI application. If we are not planning to use external sensors we can go ahead without running the sensors module.
+
+Let's run the following modules:
+emergency-service-core, emergency-service-world-ui, emergency-service-tasklist-ui-web
+For starting the application you should open three different terminals/consoles in your computer and have maven installed.
+
+From the first terminal, standing inside the run/ module you need to run:
+mvn -Pcore
+
+Once core is started you can start world ui and task lists web ui.
+
+From a different terminal you need to run: mvn -Pworld-ui
+From a different terminal you need to run: mvn -Ptasklists-ui-web
+Interacting with the application
+
+Now that we have the main three modules running we can start interacting with the application. Let's create and emergency and let's try to solve it. The following video guides you through the Heart Attack Scenario.
+
+Take a look at the following video that explains how to setup the application in your machine and run a simple use case:
+
+
+Useful URLs
+
+Git: http://git-scm.com/
+
+Maven: http://maven.apache.org/download.html
+
+Emergency Services Source Code: https://github.com/Salaboy/emergency-service-drools-app
+
+To clone the source code (for having a local copy of the source code) run in your terminal: 
+
+git clone git://github.com/Salaboy/emergency-service-drools-app.git
+
+Task Lists UI - Web Implementation: http://localhost:8081/emergency-services/
+
