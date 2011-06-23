@@ -347,7 +347,7 @@ public class EmergencyMinimalQuestionnaireTaskFormPanel extends javax.swing.JPan
             Location location = new Location();
             location.setLocationX(Integer.valueOf(locationxjTextField.getText()));
             location.setLocationY(Integer.valueOf(locationyjTextField.getText()));
-			emergency.setLocation(location);
+            emergency.setLocation(location);
             emergency.setNroOfPeople(Integer.valueOf(nroOfPeoplejFormattedTextField.getText()));
             emergency.setType((String) emergencyTypeJComboBox.getModel().getSelectedItem());
             emergency.setCall(call);

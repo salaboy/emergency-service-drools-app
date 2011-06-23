@@ -76,7 +76,7 @@ public class DroolsGridServiceTest {
     }
 
     @Ignore
-    public void hello() {
+    public void helloIgnore() {
         StatefulKnowledgeSession ksession = createSession();
         
         ksession.setGlobal("myGlobalObj", new MyObject("myglobalObj"));
@@ -91,6 +91,7 @@ public class DroolsGridServiceTest {
     }
     @Test
     public void hello(){}
+    
     protected StatefulKnowledgeSession createSession(){
         KnowledgeBuilder kbuilder = remoteN1.get( KnowledgeBuilderFactoryService.class ).newKnowledgeBuilder();
 

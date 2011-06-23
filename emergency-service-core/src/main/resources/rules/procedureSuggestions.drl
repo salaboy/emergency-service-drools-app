@@ -14,20 +14,22 @@ rule "Initialize Emergency"
     salience 20
     ruleflow-group "suggest process"
     when
-        $processInstance: WorkflowProcessInstance()
         
+        $processInstance: WorkflowProcessInstance( )
+        not(Emergency(processInstanceId == $processInstance.id))
     then
         Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
+        System.out.println("Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+((Call)$processInstance.getVariable("call")).getId());
         if(emergency.getNroOfPeople() == 1){
             Patient patient = (Patient)$processInstance.getVariable("patient");
             insert(patient);
         }
+        emergency.setProcessInstanceId($processInstance.getId());
         $processInstance.setVariable("emergency.id",emergency.getId());
         //Notify about the new Emergency
         MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
         insert(emergency);
         insert(new SuggestedProcedures(emergency.getId()));
-
 end
 
 
@@ -35,7 +37,7 @@ rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
     ruleflow-group "suggest process"
     when
         $processInstance: WorkflowProcessInstance()
-        $emergency: Emergency(nroOfPeople == 1)
+        $emergency: Emergency(nroOfPeople == 1, processInstanceId == $processInstance.id)
         $patient: Patient(age > 20 && < 60)
         $procedures: SuggestedProcedures(emergencyId == $emergency.id)
     then

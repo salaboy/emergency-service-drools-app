@@ -13,11 +13,20 @@ end
 
 rule "Single Phone Call Handling"
     when
-        $call: Call() from entry-point "phoneCalls stream"
+      $call: Call(processed == false) from entry-point "phoneCalls stream"
     then
+      $call.setProcessed(true);
       Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("call", $call);
       ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.PhoneCallPrimaryService", parameters);
       insert(pi);
+      update($call);
 end
 
+rule "More than 10 calls .. Generate Alert and trigger Caos Procedure"
+    when
+        $calls: Number( doubleValue > 10 ) from accumulate ($call: Call() over window:time(2m) from entry-point "phoneCalls stream",
+                                                        count($call))
+    then
+        System.out.println("Too much emergencies in the last 2 minutes -> Caos Procedure!");
+end

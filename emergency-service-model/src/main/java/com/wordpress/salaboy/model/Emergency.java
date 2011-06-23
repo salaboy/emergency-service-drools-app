@@ -25,6 +25,7 @@ public class Emergency implements Serializable {
     private Location location;
     private int nroOfPeople;
     private Call call;
+    private long processInstanceId;
     
     
     private Emergency(Long id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
@@ -37,6 +38,16 @@ public class Emergency implements Serializable {
     public Emergency() {
         this.id = Emergency.incrementalId.getAndIncrement();
     }
+
+    public long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+    
+    
 
     public Emergency(Long id){
         this.id = id;
@@ -88,8 +99,10 @@ public class Emergency implements Serializable {
 
     @Override
     public String toString() {
-        return "Emergency{" + "id=" + id + ", call=" + call + ", location=" + location + ", type=" + type + "'}'";
+        return "Emergency{" + "id=" + id + ", type=" + type + ", location=" + location + ", nroOfPeople=" + nroOfPeople + ", call=" + call + ", processInstanceId=" + processInstanceId + '}';
     }
+
+   
     
     
 }
