@@ -74,7 +74,9 @@ public class ProceduresMGMTService {
                 }
             }else if (procedureService instanceof DefaultFireProcedure){
                 DefaultFireProcedure fireProcedure = (DefaultFireProcedure)procedureService;
-                
+                if (event instanceof VehicleHitsEmergencyEvent){
+                    fireProcedure.vehicleReachesEmergencyNotification((VehicleHitsEmergencyEvent)event);
+                }
             }
         }
         

@@ -75,6 +75,7 @@ public class HumanTaskServerService {
         User driver = new User("control");
         User hospital = new User("hospital");
         User doctor = new User("doctor");
+        User firefighter = new User("firefighter");
         User garageEmergencyService = new User("garage_emergency_service");
         User Administrator = new User("Administrator");
 
@@ -84,6 +85,7 @@ public class HumanTaskServerService {
         taskSession.addUser(driver);
         taskSession.addUser(hospital);
         taskSession.addUser(doctor);
+        taskSession.addUser(firefighter);
         taskSession.addUser(garageEmergencyService);
 
         if (server != null && server.isRunning()) {

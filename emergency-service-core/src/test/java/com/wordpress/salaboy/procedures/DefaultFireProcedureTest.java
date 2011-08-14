@@ -4,20 +4,14 @@
  */
 package com.wordpress.salaboy.procedures;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.grid.SocketService;
-import org.example.ws_ht.api.TAttachment;
-import org.example.ws_ht.api.TAttachmentInfo;
-import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
@@ -33,21 +27,22 @@ import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  *
- * @author salaboy
+ * @author esteban
  */
 public class DefaultFireProcedureTest extends GridBaseTest {
 
@@ -116,7 +111,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         }
     }
 
-    //@Test
+    @Test
     public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
 
 
@@ -125,76 +120,38 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         parameters.put("emergency", emergency);
         parameters.put("vehicle", fireTruck);
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "DefaultFireProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), "DefaultFireProcedure", parameters);
 
-        Thread.sleep(5000);
-
-        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "garage_emergency_service", "", null, "", "", "", 0, 0);
-        assertNotNull(taskAbstracts);
-        assertEquals(1, taskAbstracts.size());
-        TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        assertEquals(" Select Vehicle For 1 ", taskAbstract.getName().getLocalPart());
+        //The fire truck doesn't reach the emergency yet. No task for 
+        //the firefighter.
+        humanTaskServiceClient.setAuthorizedEntityId("firefighter");
+        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
         
-
-
-        // I need to get the Content Data and check the values of the Emergency and Call Ids.
-        // Using that I need to select one vehicle ID from the list of all the vehicles. 
-
-        TTask task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
-        assertNotNull(task);
+        Assert.assertTrue(taskAbstracts.isEmpty());
         
-        humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
-        humanTaskServiceClient.start(task.getId());
-
-        List<TAttachmentInfo> attachmentsInfo = humanTaskServiceClient.getAttachmentInfos(task.getId());
-        TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
-        TAttachment attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
-
-        String value = (String)((Map)attachment.getValue()).get("Content");
+        //Now the fire truck arrives to the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
         
-        assertNotNull(value, "1,1"); 
-
+        Thread.sleep(2000);
         
+        //A new task for the firefighter should be there now
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        TTaskAbstract firefighterTask = taskAbstracts.get(0);
+        
+        //The firefighter completes the task
         Map<String, Object> info = new HashMap<String, Object>();
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        vehicles.add(new Ambulance("My Ambulance", new Date()));
-        info.put("emergency.vehicles", vehicles);
-        
-        
-        humanTaskServiceClient.complete(task.getId(), info);
-
-        Thread.sleep(4000);
-        
-        //((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L)).patientPickUpNotification(new PatientPickUpEvent(1L, 1L, new Date()));
-
-        Thread.sleep(4000);
-        
-        humanTaskServiceClient.setAuthorizedEntityId("doctor");
-        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
-        assertNotNull(taskAbstracts);
-        assertEquals(1, taskAbstracts.size());
-        taskAbstract = taskAbstracts.get(0); 
-        
-        task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
-        assertNotNull(task);
-        
-        humanTaskServiceClient.start(task.getId());
-        
-        info = new HashMap<String, Object>();
         info.put("emergency.priority", 1);
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), info);
         
-        humanTaskServiceClient.complete(task.getId(), info);
-
-
-        Thread.sleep(4000);
-
-//        ((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L))
-          //              .patientAtHospitalNotification(new VehicleHitsHospitalEvent(1L, 1L, 1L, new Date()));
-
-        Thread.sleep(4000);
+        Thread.sleep(5000);
+        
+        //TODO: validate that the process has finished
         
         
-
 
     }
 }
