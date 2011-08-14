@@ -6,6 +6,9 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
+import com.wordpress.salaboy.services.workitemhandlers.StartProcedureWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -23,6 +26,7 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.conf.EventProcessingOption;
+import org.drools.event.DebugProcessEventListener;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.GridConnection;
 import org.drools.grid.GridNode;
@@ -86,6 +90,8 @@ public class IncomingCallsMGMTService {
     }
     
     
+    
+    
     private StatefulKnowledgeSession createPhoneCallsPrimaryServiceSession() throws IOException{
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
@@ -111,7 +117,7 @@ public class IncomingCallsMGMTService {
         
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
 
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/PhoneCallPrimaryServiceProcess.bpmn").getInputStream())), ResourceType.BPMN2);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/GenericEmergencyProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/phoneCallsManagement.drl").getInputStream())), ResourceType.DRL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/procedureSuggestions.drl").getInputStream())), ResourceType.DRL);
@@ -141,8 +147,15 @@ public class IncomingCallsMGMTService {
     }
 
     private void setWorkItemHandlers() {
-        //phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(phoneCallMGMTSession));
         phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(phoneCallMGMTSession));
+        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
+        
+    }
+
+    
+    public void allProceduresEnded(AllProceduresEndedEvent event) {
+        phoneCallMGMTSession.signalEvent("com.wordpress.salaboy.model.events.AllProceduresEndedEvent", event);
     }
     
     

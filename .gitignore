@@ -11,3 +11,8 @@ hs_err_pid*.log
 *.tlog
 /emergency-service-app/.settings/
 /emergency-service-domain/.settings/
+/emergency-service-core/.settings/
+/emergency-service-model/.settings/
+/run/.settings/
+/emergency-service-taskslists-ui-swing/.settings/
+/emergency-service-taskslists-ui-web/.settings/

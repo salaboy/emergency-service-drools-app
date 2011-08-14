@@ -12,11 +12,11 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class SelectedProcedures implements Serializable{
+public class AllEndedProcedures implements Serializable{
     
     private List<String> selectedProcedures = new ArrayList<String>();
     private Long emergencyId;
-    public SelectedProcedures(Long emergencyId) {
+    public AllEndedProcedures(Long emergencyId) {
         this.emergencyId = emergencyId;
     }
 
@@ -45,10 +45,4 @@ public class SelectedProcedures implements Serializable{
     public String get(int i){
         return selectedProcedures.get(i);
     }
-
-    public List<String> getSelectedProcedures() {
-        return selectedProcedures;
-    }
-    
-    
 }

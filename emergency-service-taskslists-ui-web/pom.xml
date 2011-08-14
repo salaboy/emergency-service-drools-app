@@ -28,7 +28,7 @@
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-model</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-core</artifactId>
 			<exclusions>
@@ -45,7 +45,7 @@
 					<artifactId>jcl-over-slf4j</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency-->
 		<!-- Bean Validation Dependencies -->
 
 		<dependency>

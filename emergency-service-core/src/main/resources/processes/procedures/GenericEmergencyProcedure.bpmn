@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_activePatientsItem" structureRef="com.wordpress.salaboy.model.ActivePatients" />
+  <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
+  <itemDefinition id="_suggestedProceduresItem" structureRef="com.wordpress.salaboy.model.SuggestedProcedures" />
+  <itemDefinition id="_selectedProceduresItem" structureRef="java.util.List" />
+  <itemDefinition id="_allEndedProceduresItem" structureRef="com.wordpress.salaboy.model.AllEndedProcedures" />
+
+  <itemDefinition id="_7_multiInstanceItemType" structureRef="java.util.List" />
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.GenericEmergencyProcedure" name="Phone Call Primary Service" >
+
+    <!-- process variables -->
+    <property id="emergency" itemSubjectRef="_emergencyItem"/>
+    <property id="activePatients" itemSubjectRef="_activePatientsItem"/>
+    <property id="call" itemSubjectRef="_callItem"/>
+    <property id="suggestedProcedures" itemSubjectRef="_suggestedProceduresItem"/>
+    <property id="selectedProcedures" itemSubjectRef="_selectedProceduresItem"/>
+    <property id="allEndedProcedures" itemSubjectRef="_allEndedProceduresItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <userTask id="_2" name="Ask for Emergency Information" >
+      <ioSpecification>
+        <dataInput id="_2_callInput" name="call" />
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_PriorityInput" name="Priority" />
+        <dataOutput id="_2_emergencyOutput" name="emergency" />
+        <inputSet>
+          <dataInputRefs>_2_callInput</dataInputRefs>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_SkippableInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_2_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_emergencyOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_2_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Call #{call.id} -&gt; Phone Ringing!</from>
+          <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergencyOutput</sourceRef>
+        <targetRef>emergency</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>operator</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <businessRuleTask id="_3" name="Suggest Process For This Emergency" g:ruleFlowGroup="suggest process" >
+    </businessRuleTask>
+    <userTask id="_4" name="Accept or Decline Suggestion" >
+      <ioSpecification>
+        <dataInput id="_4_activePatientsInput" name="activePatients" />
+        <dataInput id="_4_callInput" name="call" />
+        <dataInput id="_4_suggestedProceduresInput" name="suggestedProcedures" />
+        <dataInput id="_4_emergencyInput" name="emergency" />
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_PriorityInput" name="Priority" />
+        <dataOutput id="_4_selectedProceduresOutput" name="selectedProcedures" />
+        <inputSet>
+          <dataInputRefs>_4_activePatientsInput</dataInputRefs>
+          <dataInputRefs>_4_callInput</dataInputRefs>
+          <dataInputRefs>_4_suggestedProceduresInput</dataInputRefs>
+          <dataInputRefs>_4_emergencyInput</dataInputRefs>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_4_selectedProceduresOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>activePatients</sourceRef>
+        <targetRef>_4_activePatientsInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_4_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>suggestedProcedures</sourceRef>
+        <targetRef>_4_suggestedProceduresInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_4_emergencyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Suggested Process -&gt; #{emergency.id}</from>
+          <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_4_selectedProceduresOutput</sourceRef>
+        <targetRef>selectedProcedures</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>control</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_6" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <subProcess id="_7" name="Multiple Instances"  >
+      <ioSpecification>
+        <dataInput id="_7_input" name="MultiInstanceInput" />
+        <inputSet/>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>selectedProcedures</sourceRef>
+        <targetRef>_7_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_7_input</loopDataInputRef>
+        <inputDataItem id="n" itemSubjectRef="_7_multiInstanceItemType"/>
+      </multiInstanceLoopCharacteristics>
+    <!-- nodes -->
+    <startEvent id="_7-2-2" name="Start" />
+    <endEvent id="_7-2-3" name="End" />
+    <task id="_7-2-4" name="Start Procedure" tns:taskName="Start Procedure" >
+      <ioSpecification>
+        <dataInput id="_7-2-4_callInput" name="call" />
+        <dataInput id="_7-2-4_emergencyInput" name="emergency" />
+        <dataInput id="_7-2-4_procedureNameInput" name="procedureName" />
+        <inputSet>
+          <dataInputRefs>_7-2-4_callInput</dataInputRefs>
+          <dataInputRefs>_7-2-4_emergencyInput</dataInputRefs>
+          <dataInputRefs>_7-2-4_procedureNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_7-2-4_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_7-2-4_emergencyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>n</sourceRef>
+        <targetRef>_7-2-4_procedureNameInput</targetRef>
+      </dataInputAssociation>
+    </task>
+    <!-- connections -->
+    <sequenceFlow id="_7-2-4-_7-2-3" sourceRef="_7-2-4" targetRef="_7-2-3" />
+    <sequenceFlow id="_7-2-2-_7-2-4" sourceRef="_7-2-2" targetRef="_7-2-4" />
+    </subProcess>
+    <intermediateCatchEvent id="_8" name="Signal" >
+      <dataOutput id="_8_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_8_Output</sourceRef>
+      <targetRef>allEndedProcedures</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_8_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.AllProceduresEndedEvent"/>
+    </intermediateCatchEvent>
+    <parallelGateway id="_9" name="Gateway" gatewayDirection="Converging" />
+    <task id="_10" name="Report" tns:taskName="Reporting" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    <sequenceFlow id="_10-_6" sourceRef="_10" targetRef="_6" />
+    <sequenceFlow id="_4-_7" sourceRef="_4" targetRef="_7" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_7-_9" sourceRef="_7" targetRef="_9" />
+    <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.GenericEmergencyProcedure" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="67" width="210" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="338" y="67" width="242" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="612" y="67" width="201" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="1387" y="132" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="845" y="16" width="312" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7-2-2" >
+        <dc:Bounds x="875" y="58" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7-2-3" >
+        <dc:Bounds x="1092" y="60" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7-2-4" >
+        <dc:Bounds x="950" y="59" width="117" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" >
+        <dc:Bounds x="1235" y="205" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_9" >
+        <dc:Bounds x="1174" y="132" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_10" >
+        <dc:Bounds x="1255" y="132" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_7-2-4-_7-2-3" >
+        <di:waypoint x="163" y="67" />
+        <di:waypoint x="271" y="68" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7-2-2-_7-2-4" >
+        <di:waypoint x="54" y="66" />
+        <di:waypoint x="163" y="67" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="91" />
+        <di:waypoint x="201" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="201" y="91" />
+        <di:waypoint x="459" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="459" y="91" />
+        <di:waypoint x="712" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10-_6" >
+        <di:waypoint x="1305" y="156" />
+        <di:waypoint x="1411" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_7" >
+        <di:waypoint x="712" y="91" />
+        <di:waypoint x="1001" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8-_9" >
+        <di:waypoint x="1259" y="229" />
+        <di:waypoint x="1198" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7-_9" >
+        <di:waypoint x="1001" y="91" />
+        <di:waypoint x="1198" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9-_10" >
+        <di:waypoint x="1198" y="156" />
+        <di:waypoint x="1305" y="156" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

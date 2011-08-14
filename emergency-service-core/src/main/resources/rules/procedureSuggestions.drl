@@ -20,10 +20,20 @@ rule "Initialize Emergency"
     then
         Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
         System.out.println("Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+((Call)$processInstance.getVariable("call")).getId());
-        if(emergency.getNroOfPeople() == 1){
-            Patient patient = (Patient)$processInstance.getVariable("patient");
+        //if(emergency.getNroOfPeople() == 1){
+        //    Patient patient = (Patient)$processInstance.getVariable("patient");
+        //    System.out.println("Inserting Patient: "+patient);
+        //    insert(patient);
+        //}
+        ActivePatients activePatients = new ActivePatients(emergency.getId());
+        for(int i = 0; i < emergency.getNroOfPeople(); i ++){
+            //I should call the tracking component to attach a new patient and get the ID
+            Patient patient = new Patient();
+            patient.setAge(25); //just to activete the next rule.. we should enter this information in a map -> patientsDetails??
+            activePatients.addPatient(patient);
             insert(patient);
         }
+        $processInstance.setVariable("activePatients",activePatients);
         emergency.setProcessInstanceId($processInstance.getId());
         $processInstance.setVariable("emergency.id",emergency.getId());
         //Notify about the new Emergency
@@ -41,6 +51,7 @@ rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
         $patient: Patient(age > 20 && < 60)
         $procedures: SuggestedProcedures(emergencyId == $emergency.id)
     then
+       System.out.println(">>>>>> Adding a Suggested Procedure: "+"DefaultHeartAttackProcedure");
        $procedures.addProcedureName("DefaultHeartAttackProcedure"); 
        $processInstance.setVariable("suggestedProcedures",$procedures);
 end
