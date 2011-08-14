@@ -25,7 +25,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>knowledge-api</artifactId>
-            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
         <!-- Release API -->

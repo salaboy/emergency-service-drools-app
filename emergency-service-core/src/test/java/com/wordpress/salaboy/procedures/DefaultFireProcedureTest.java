@@ -27,22 +27,19 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.grid.GridBaseTest;
-import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
@@ -52,13 +49,12 @@ import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskC
  *
  * @author salaboy
  */
-public class DefaultHeartAttackProcedureTest extends GridBaseTest {
+public class DefaultFireProcedureTest extends GridBaseTest {
 
-    private MessageConsumer consumer;
     private HumanTaskService humanTaskServiceClient;
     
 
-    public DefaultHeartAttackProcedureTest() {
+    public DefaultFireProcedureTest() {
     }
 
     @BeforeClass
@@ -73,22 +69,28 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
     }
 
     Emergency emergency = null;
+    FireTruck fireTruck = null;
     Call call = null;
+    
     @Before
     public void setUp() throws Exception {
         emergency = new Emergency(1L);
+        
+        fireTruck = new FireTruck("FireTruck 1");
+                
         call = new Call(1,2,new Date());
         call.setId(1L);
+        
         emergency.setCall(call);
         emergency.setLocation(new Location(1,2));
-        emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
+        emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
+        
+        
         DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
         DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
-        DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
+        DistributedPeristenceServerService.getInstance().storeVehicle(fireTruck);
         MessageServerSingleton.getInstance().start();
-
-
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
@@ -114,17 +116,16 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         }
     }
 
-    @Test
+    //@Test
     public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
 
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
+        parameters.put("vehicle", fireTruck);
 
-
-
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "DefaultHeartAttackProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "DefaultFireProcedure", parameters);
 
         Thread.sleep(5000);
 
@@ -164,8 +165,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         Thread.sleep(4000);
         
-        //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(1L, 1L, new Date()));
+        //((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L)).patientPickUpNotification(new PatientPickUpEvent(1L, 1L, new Date()));
 
         Thread.sleep(4000);
         
@@ -188,10 +188,13 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         Thread.sleep(4000);
 
-        //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(1L, new Hospital("Hospital A", 0, 0), 1L, new Date()));
-        
+//        ((DefaultHeartAttackProcedure) ProceduresMGMTService.getInstance().getProcedureService(1L))
+          //              .patientAtHospitalNotification(new VehicleHitsHospitalEvent(1L, 1L, 1L, new Date()));
+
         Thread.sleep(4000);
+        
+        
+
 
     }
 }

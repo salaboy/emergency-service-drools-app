@@ -7,34 +7,31 @@ package com.wordpress.salaboy.model.events;
 
 import java.io.Serializable;
 import java.util.Date;
-import com.wordpress.salaboy.model.Ambulance;
 
 /**
  *
- * @author salaboy
+ * @author esteban
  */
-public class PatientPickUpEvent implements Serializable {
+public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
     private Long callId;
     private Long vehicleId;
     
     private Date time;
-    
 
-    public PatientPickUpEvent() {
+    public FireTruckOutOfWaterEvent() {
     }
 
-    public PatientPickUpEvent(Date time) {
+    public FireTruckOutOfWaterEvent(Date time) {
         this.time = time;
     }
-
     
-    
-    public PatientPickUpEvent(Long callId, Long vehicleId, Date time) {
+    public FireTruckOutOfWaterEvent(Long callId, Long vehicleId, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;
     }
 
+    @Override
     public Long getCallId() {
         return callId;
     }

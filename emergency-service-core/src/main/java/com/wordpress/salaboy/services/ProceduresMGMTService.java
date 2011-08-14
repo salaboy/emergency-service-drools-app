@@ -4,7 +4,15 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.events.CallEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  *
@@ -13,10 +21,10 @@ import java.util.Map;
 public class ProceduresMGMTService {
 
     private static ProceduresMGMTService instance;
-    private Map<Long, ProcedureService> procedureService;
+    private Map<Long, List<ProcedureService>> proceduresByCall;
 
     private ProceduresMGMTService() {
-        procedureService = new HashMap<Long, ProcedureService>();
+        proceduresByCall = new HashMap<Long, List<ProcedureService>>();
 
     }
 
@@ -28,12 +36,59 @@ public class ProceduresMGMTService {
     }
 
     public void newRequestedProcedure(final Long callId, String procedureName, Map<String, Object> parameters) {
-
-        procedureService.put(callId, ProcedureServiceFactory.createProcedureService(callId, procedureName, parameters));
+        
+        if (!proceduresByCall.containsKey(callId)){
+            proceduresByCall.put(callId, new ArrayList<ProcedureService>());
+        }
+        
+        List<ProcedureService> procedures = proceduresByCall.get(callId);
+        procedures.add(ProcedureServiceFactory.createProcedureService(callId, procedureName, parameters));
 
     }
+ 
+    /**
+     * Notifies all procedures of an emergency about a particular message.
+     * The emergency is taken from {@link EmergencyInterchangeMessage#getCallId()}
+     * Here is where message -> event -> service mapping is created
+     * @param callId
+     * @param message
+     * @return 
+     */
+    public void notifyProcedures(EmergencyInterchangeMessage message){
+        
+        Long callId = message.getCallId();
+        
+        //convert from Message to CallEvent
+        CallEvent event = this.convertMessageToEvent(message);
+        
+        //notify each of the processes involved in the call
+        for (ProcedureService procedureService : this.proceduresByCall.get(callId)) {
+            
+            //TODO: change all these logic to something that doesn't hurts my eyes :)
+            if (procedureService instanceof DefaultHeartAttackProcedure){
+                DefaultHeartAttackProcedure heartAttackProcedure = (DefaultHeartAttackProcedure)procedureService;
+                if (event instanceof VehicleHitsEmergencyEvent){
+                    heartAttackProcedure.patientPickUpNotification((VehicleHitsEmergencyEvent)event);
+                }else if( event instanceof VehicleHitsHospitalEvent){
+                    heartAttackProcedure.patientAtHospitalNotification((VehicleHitsHospitalEvent)event);
+                }
+            }else if (procedureService instanceof DefaultFireProcedure){
+                DefaultFireProcedure fireProcedure = (DefaultFireProcedure)procedureService;
+                
+            }
+        }
+        
+    }
     
-    public ProcedureService getProcedureService(Long callId){
-        return procedureService.get(callId);
+    private CallEvent convertMessageToEvent(EmergencyInterchangeMessage message){
+        if (message instanceof VehicleHitsEmergencyMessage){
+            VehicleHitsEmergencyMessage realMessage = (VehicleHitsEmergencyMessage)message;
+            return new VehicleHitsEmergencyEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getTime());
+        }else if (message instanceof VehicleHitsHospitalMessage){
+            VehicleHitsHospitalMessage realMessage = (VehicleHitsHospitalMessage)message;
+            return new VehicleHitsHospitalEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getHospital().getId(), realMessage.getTime());
+        }
+        
+        throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");
     }
 }

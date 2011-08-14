@@ -4,11 +4,9 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.model.ProcedureRequest;
-import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
-import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -47,19 +45,19 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
  *
- * @author salaboy
+ * @author esteban
  */
-public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProcedure {
+public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     private Long callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
     
-    public DefaultHeartAttackProcedureImpl() {
-        this.procedureName = "DefaultHeartAttackProcedure";
+    public DefaultFireProcedureImpl() {
+        this.procedureName = "DefaultFireProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(Long callId) throws IOException {
+    private StatefulKnowledgeSession createDefaultFireProcedureSession(Long callId) throws IOException {
 
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
@@ -83,15 +81,9 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         GridNode remoteN1 = conn.connect();
 
         KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
-        kbuilderConf.setOption(AccumulateFunctionOption.get("hospitalDistanceCalculator", new HospitalDistanceCalculator()));
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
 
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
-
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
-
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_hospital.drl").getInputStream())), ResourceType.DRL);
-
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultFireProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -110,29 +102,26 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
 
-
-
-        remoteN1.set("DefaultHeartAttackProcedureSession" + this.callId, session);
+        remoteN1.set("DefaultFireProcedureSession" + this.callId, session);
 
         return session;
 
     }
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        //session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(session));
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 
+    
     @Override
-    public void patientAtHospitalNotification(VehicleHitsHospitalEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientAtHospitalEvent", event);
+    public void vehicleReachesEmergencyNotification(VehicleHitsEmergencyEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.VehicleReachesEmergencyEvent", event);
     }
 
     @Override
-    public void patientPickUpNotification(VehicleHitsEmergencyEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
+    public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
     }
 
     
@@ -141,9 +130,9 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     public void configure(Long callId, Map<String, Object> parameters) {
         this.callId = callId;
         try {
-            internalSession = createDefaultHeartAttackProcedureSession(this.callId);
+            internalSession = createDefaultFireProcedureSession(this.callId);
         } catch (IOException ex) {
-            Logger.getLogger(DefaultHeartAttackProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DefaultFireProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         setWorkItemHandlers(internalSession);
 
@@ -153,7 +142,8 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
             }
         }).start();
         
-         internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
+         //internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
+        internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure",parameters);
     }
     
     

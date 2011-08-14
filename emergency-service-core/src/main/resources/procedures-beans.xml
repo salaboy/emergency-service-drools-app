@@ -9,4 +9,8 @@
            
        </bean>
        
+       <bean id="DefaultFireProcedure" class="com.wordpress.salaboy.services.DefaultFireProcedureImpl">
+           
+       </bean>
+       
 </beans>                              

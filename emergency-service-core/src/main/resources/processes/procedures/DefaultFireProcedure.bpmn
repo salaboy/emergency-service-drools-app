@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  
+  <itemDefinition id="_call.idItem" structureRef="com.wordpress.salaboy.model.Call" />
+  <itemDefinition id="_emergency.idItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_vehicle.idItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+  
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" >
+
+    <extensionElements>
+      <tns:import name="com.wordpress.salaboy.model.Call" />
+    </extensionElements>
+    <!-- process variables -->
+    
+    <property id="call" itemSubjectRef="_call.idItem"/>
+    <property id="emergency" itemSubjectRef="_emergency.idItem"/>
+    <property id="vehicle" itemSubjectRef="_vehicle.idItem"/>
+
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    
+     <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+      </script>
+    </scriptTask>
+
+    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+      </script>
+    </scriptTask>
+
+    <endEvent id="_99" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+   
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_99" sourceRef="_3" targetRef="_99" />
+   
+  </process>
+
+</definitions>

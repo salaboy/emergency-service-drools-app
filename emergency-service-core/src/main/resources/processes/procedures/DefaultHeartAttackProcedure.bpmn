@@ -19,8 +19,8 @@
   <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
   <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
   <itemDefinition id="_emergency.doctorItem" structureRef="com.wordpress.salaboy.model.Doctor" />
-  <itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.PatientPickUpEvent" />
-  <itemDefinition id="_patientAtHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.PatientAtHospitalEvent" />
+  <itemDefinition id="_patientPickUpEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
+  <itemDefinition id="_patientAtHospitalEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
 
   <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure" name="Default Heart Attack Procedure" >
 

@@ -11,8 +11,6 @@ import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
@@ -22,12 +20,10 @@ import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.IncomingCallsMGMTService;
 import com.wordpress.salaboy.services.PatientMonitorService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -167,8 +163,7 @@ public class CoreServer {
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsEmergencyMessage.getCallId()))
-                            .patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
+                    ProceduresMGMTService.getInstance().notifyProcedures(vehicleHitsEmergencyMessage);
                 }
             });
 
@@ -179,8 +174,8 @@ public class CoreServer {
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsHospitalMessage.getCallId()))
-                            .patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
+                    ProceduresMGMTService.getInstance().notifyProcedures(vehicleHitsHospitalMessage);
+                    
                     //Call Patient Monitor Service removeVehicle(vehicleId)
                     PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
                 }
