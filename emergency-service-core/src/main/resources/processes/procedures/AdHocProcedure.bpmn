@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />       
+  <itemDefinition id="_procedureNameItem" structureRef="java.lang.String" />       
+    
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.AdHocProcedure" name="Start an Ad-Hoc Procedure" >
+
+    <!-- process variables -->
+    <property id="emergency" itemSubjectRef="_emergencyItem"/>
+    <property id="call" itemSubjectRef="_callItem"/>
+    <property id="procedureName" itemSubjectRef="_procedureNameItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <task id="_2" name="Start Procedure" tns:taskName="Start Procedure" >
+      <ioSpecification>
+        <dataInput id="_2_callInput" name="call" />
+        <dataInput id="_2_emergencyInput" name="emergency" />
+        <dataInput id="_2_procedureNameInput" name="procedureName" />
+         <inputSet>
+          <dataInputRefs>_2_callInput</dataInputRefs>
+          <dataInputRefs>_2_emergencyInput</dataInputRefs>
+          <dataInputRefs>_2_procedureNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+        
+      </ioSpecification>
+      <dataInputAssociation>
+            <sourceRef>call</sourceRef>
+            <targetRef>_2_callInput</targetRef>
+        </dataInputAssociation>
+        <dataInputAssociation>
+            <sourceRef>emergency</sourceRef>
+            <targetRef>_2_emergencyInput</targetRef>
+        </dataInputAssociation>
+        <dataInputAssociation>
+            <sourceRef>procedureName</sourceRef>
+            <targetRef>_2_procedureNameInput</targetRef>
+        </dataInputAssociation>
+    </task>
+    <endEvent id="_3" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="null" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="100" y="100" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="176" y="99" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="318" y="101" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="124" y="124" />
+        <di:waypoint x="226" y="123" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="226" y="123" />
+        <di:waypoint x="342" y="125" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

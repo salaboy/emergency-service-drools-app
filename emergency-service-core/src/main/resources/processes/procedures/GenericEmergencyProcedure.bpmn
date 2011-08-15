@@ -19,7 +19,7 @@
   <itemDefinition id="_selectedProceduresItem" structureRef="java.util.List" />
   <itemDefinition id="_allEndedProceduresItem" structureRef="com.wordpress.salaboy.model.AllEndedProcedures" />
 
-  <itemDefinition id="_7_multiInstanceItemType" structureRef="java.util.List" />
+
 
   <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.GenericEmergencyProcedure" name="Phone Call Primary Service" >
 
@@ -180,7 +180,7 @@
     </endEvent>
     <subProcess id="_7" name="Multiple Instances"  >
       <ioSpecification>
-        <dataInput id="_7_input" name="MultiInstanceInput" />
+        <dataInput id="_7_input" name="selectedProcedures" />
         <inputSet/>
         <outputSet/>
       </ioSpecification>
@@ -190,7 +190,7 @@
       </dataInputAssociation>
       <multiInstanceLoopCharacteristics>
         <loopDataInputRef>_7_input</loopDataInputRef>
-        <inputDataItem id="n" itemSubjectRef="_7_multiInstanceItemType"/>
+        <inputDataItem id="n" itemSubjectRef="_selectedProceduresItem"/>
       </multiInstanceLoopCharacteristics>
     <!-- nodes -->
     <startEvent id="_7-2-2" name="Start" />

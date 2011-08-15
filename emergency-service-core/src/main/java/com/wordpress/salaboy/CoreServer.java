@@ -142,6 +142,7 @@ public class CoreServer {
             });
 
             //Procedure Selected Worker
+            //@TODO: Delete because now the generic procedure use the Start Procedure work item to do this
             selectedProcedureWorker = new MessageConsumerWorker("selectedProcedureCoreServer", new MessageConsumerWorkerHandler<SelectedProcedureMessage>() {
 
                 @Override

@@ -106,6 +106,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @After
     public void tearDown() throws Exception {
+        
         MessageServerSingleton.getInstance().stop();
         if (remoteN1 != null) {
             remoteN1.dispose();
