@@ -26,6 +26,7 @@
         <module>emergency-service-doc</module>
         <module>run</module>
     <module>emergency-service-dashboard-ui-swing</module>
+    <module>emergency-service-tracking-context-component</module>
   </modules>
 
     <dependencyManagement>
