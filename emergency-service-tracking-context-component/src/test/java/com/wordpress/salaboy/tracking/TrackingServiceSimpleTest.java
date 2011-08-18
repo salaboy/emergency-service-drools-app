@@ -145,8 +145,8 @@ public class TrackingServiceSimpleTest {
         List results = new ArrayList();
         engine.getBindings(ScriptContext.ENGINE_SCOPE).put("graph", graph);
         engine.getBindings(ScriptContext.ENGINE_SCOPE).put("results", results);
-        // I still need to understand how to access to indexes from gremlin.. here I have a fixed initial node
-        List<Vertex> result = (List<Vertex>) engine.eval("graph.v(1).out('CREATES').out('INSTANTIATE').out('USE') >> results");
+        // Can I reduce the verbosity of accessing the index using a variable?
+        List<Vertex> result = (List<Vertex>) engine.eval("graph.idx('calls').get('callId','"+callId+"')[0].out('CREATES').out('INSTANTIATE').out('USE') >> results");
         System.out.println("result.size" + result.size());
         assertEquals(2, result.size());
         for (Vertex vertex : result) {
