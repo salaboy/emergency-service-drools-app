@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class PulseEvent implements Serializable{
+public class PulseEvent implements CallEvent, Serializable{
     private static final long serialVersionUID = 1L;
     
     private boolean processed;
@@ -35,6 +35,7 @@ public class PulseEvent implements Serializable{
         return value;
     }
 
+    @Override
     public Long getCallId() {
         return callId;
     }

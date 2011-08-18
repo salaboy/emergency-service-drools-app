@@ -4,20 +4,14 @@
  */
 package com.wordpress.salaboy.procedures;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.grid.SocketService;
-import org.example.ws_ht.api.TAttachment;
-import org.example.ws_ht.api.TAttachmentInfo;
-import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
@@ -27,38 +21,35 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.grid.GridBaseTest;
-import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  *
- * @author salaboy
+ * @author esteban
  */
-public class DefaultHeartAttackProcedureTest extends GridBaseTest {
+public class DefaultFireProcedureTest extends GridBaseTest {
 
-    private MessageConsumer consumer;
     private HumanTaskService humanTaskServiceClient;
     
 
-    public DefaultHeartAttackProcedureTest() {
+    public DefaultFireProcedureTest() {
     }
 
     @BeforeClass
@@ -73,22 +64,28 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
     }
 
     Emergency emergency = null;
+    FireTruck fireTruck = null;
     Call call = null;
+    
     @Before
     public void setUp() throws Exception {
         emergency = new Emergency(1L);
+        
+        fireTruck = new FireTruck("FireTruck 1");
+                
         call = new Call(1,2,new Date());
         call.setId(1L);
+        
         emergency.setCall(call);
         emergency.setLocation(new Location(1,2));
-        emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
+        emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
+        
+        
         DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
         DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
-        DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
+        DistributedPeristenceServerService.getInstance().storeVehicle(fireTruck);
         MessageServerSingleton.getInstance().start();
-
-
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
@@ -105,7 +102,6 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @After
     public void tearDown() throws Exception {
-        
         MessageServerSingleton.getInstance().stop();
         if (remoteN1 != null) {
             remoteN1.dispose();
@@ -122,77 +118,40 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
+        parameters.put("vehicle", fireTruck);
 
+        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), "DefaultFireProcedure", parameters);
 
-
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "DefaultHeartAttackProcedure", parameters);
-
-        Thread.sleep(5000);
-
-        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "garage_emergency_service", "", null, "", "", "", 0, 0);
-        assertNotNull(taskAbstracts);
-        assertEquals(1, taskAbstracts.size());
-        TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        assertEquals(" Select Vehicle For 1 ", taskAbstract.getName().getLocalPart());
+        //The fire truck doesn't reach the emergency yet. No task for 
+        //the firefighter.
+        humanTaskServiceClient.setAuthorizedEntityId("firefighter");
+        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
         
-
-
-        // I need to get the Content Data and check the values of the Emergency and Call Ids.
-        // Using that I need to select one vehicle ID from the list of all the vehicles. 
-
-        TTask task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
-        assertNotNull(task);
+        Assert.assertTrue(taskAbstracts.isEmpty());
         
-        humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
-        humanTaskServiceClient.start(task.getId());
-
-        List<TAttachmentInfo> attachmentsInfo = humanTaskServiceClient.getAttachmentInfos(task.getId());
-        TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
-        TAttachment attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
-
-        String value = (String)((Map)attachment.getValue()).get("Content");
+        //Now the fire truck arrives to the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
         
-        assertNotNull(value, "1,1"); 
-
+        Thread.sleep(2000);
         
+        //A new task for the firefighter should be there now
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        TTaskAbstract firefighterTask = taskAbstracts.get(0);
+        
+        //The firefighter completes the task
         Map<String, Object> info = new HashMap<String, Object>();
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        vehicles.add(new Ambulance("My Ambulance", new Date()));
-        info.put("emergency.vehicles", vehicles);
-        
-        
-        humanTaskServiceClient.complete(task.getId(), info);
-
-        Thread.sleep(4000);
-        
-        //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(1L, 1L, new Date()));
-
-        Thread.sleep(4000);
-        
-        humanTaskServiceClient.setAuthorizedEntityId("doctor");
-        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
-        assertNotNull(taskAbstracts);
-        assertEquals(1, taskAbstracts.size());
-        taskAbstract = taskAbstracts.get(0); 
-        
-        task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
-        assertNotNull(task);
-        
-        humanTaskServiceClient.start(task.getId());
-        
-        info = new HashMap<String, Object>();
         info.put("emergency.priority", 1);
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), info);
         
-        humanTaskServiceClient.complete(task.getId(), info);
-
-
-        Thread.sleep(4000);
-
-        //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(1L, new Hospital("Hospital A", 0, 0), 1L, new Date()));
+        Thread.sleep(5000);
         
-        Thread.sleep(4000);
+        //TODO: validate that the process has finished
+        
+        
 
     }
 }

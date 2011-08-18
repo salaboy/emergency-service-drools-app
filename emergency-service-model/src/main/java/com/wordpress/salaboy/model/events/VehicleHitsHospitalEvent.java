@@ -12,21 +12,20 @@ import java.util.Date;
  *
  * @author salaboy
  */
-public class PatientAtHospitalEvent implements Serializable{
+public class VehicleHitsHospitalEvent implements CallEvent, Serializable{
     private Long callId;
     private Long vehicleId;
     private Long hospitalId;
     private Date time;
     
-    public PatientAtHospitalEvent(Long callId, Long vehicleId, Long hospitalId, Date date) {
+    public VehicleHitsHospitalEvent(Long callId, Long vehicleId, Long hospitalId, Date date) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.hospitalId = hospitalId;
         this.time = date;
     }
 
-    
-
+    @Override
     public Long getCallId() {
         return callId;
     }

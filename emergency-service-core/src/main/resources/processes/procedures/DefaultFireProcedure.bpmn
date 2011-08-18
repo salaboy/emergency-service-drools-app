@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  
+  <itemDefinition id="_call.idItem" structureRef="com.wordpress.salaboy.model.Call" />
+    <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
+  <itemDefinition id="_emergency.idItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_vehicle.idItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+  
+  <itemDefinition id="_vehicleHitsEmergencyEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" >
+
+    <extensionElements>
+      <tns:import name="com.wordpress.salaboy.model.Call" />
+    </extensionElements>
+    <!-- process variables -->
+    
+    <property id="call" itemSubjectRef="_call.idItem"/>
+    <property id="emergency" itemSubjectRef="_emergency.idItem"/>
+    <property id="vehicle" itemSubjectRef="_vehicle.idItem"/>
+    <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
+    <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
+    <property id="vehicleHitsEmergencyEvent" itemSubjectRef="_vehicleHitsEmergencyEventItem"/>
+
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    
+     <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+      </script>
+    </scriptTask>
+
+    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+      </script>
+    </scriptTask>
+
+    <intermediateCatchEvent id="_4" name="vehicleHitsEmergencyEvent" >
+      <dataOutput id="_4_vehicleHitsEmergencyOutput" name="event" />
+      <dataOutputAssociation>
+        <sourceRef>_4_vehicleHitsEmergencyOutput</sourceRef>
+        <targetRef>vehicleHitsEmergencyEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_4_vehicleHitsEmergencyOutput</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent"/>
+    </intermediateCatchEvent>
+
+    <parallelGateway id="_5" name="Gateway" gatewayDirection="Converging" />
+
+    <userTask id="_6" name="Update Situation" >
+      <ioSpecification>
+        <dataInput id="_6_CommentInput" name="Comment" />
+        <dataInput id="_6_SkippableInput" name="Skippable" />
+        <dataInput id="_6_TaskNameInput" name="TaskName" />
+        <dataInput id="_6_PriorityInput" name="Priority" />
+        <dataInput id="_6_call.IdInput" name="call" />
+        <dataInput id="_6_emergency.IdInput" name="emergency" />
+        <dataOutput id="_6_emergency.severityOutput" name="emergency.severity" />
+        <dataOutput id="_6_emergency.updatedNotesOutput" name="emergency.updatedNotes" />
+        
+        <inputSet>
+          <dataInputRefs>_6_call.IdInput</dataInputRefs>
+          <dataInputRefs>_6_emergency.IdInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+            <dataOutputRefs>_6_emergency.severityOutput</dataOutputRefs>
+            <dataOutputRefs>_6_emergency.updatedNotesOutput</dataOutputRefs>
+          
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_6_call.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_6_emergency.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_6_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_6_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"> Firefighter Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
+          <to xs:type="tFormalExpression">_6_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_6_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.severityOutput</sourceRef>
+        <targetRef>emergency.severity</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.updatedNotesOutput</sourceRef>
+        <targetRef>emergency.updatedNotes</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>firefighter</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+
+    <endEvent id="_99" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+   
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    <sequenceFlow id="_6-_3" sourceRef="_6" targetRef="_3" />
+    <sequenceFlow id="_3-_99" sourceRef="_3" targetRef="_99" />
+   
+  </process>
+
+</definitions>

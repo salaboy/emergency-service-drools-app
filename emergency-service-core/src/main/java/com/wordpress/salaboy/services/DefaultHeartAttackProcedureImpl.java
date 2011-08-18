@@ -6,8 +6,8 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.model.ProcedureRequest;
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -126,11 +126,12 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     }
 
     @Override
-    public void patientAtHospitalNotification(PatientAtHospitalEvent event) {
+    public void patientAtHospitalNotification(VehicleHitsHospitalEvent event) {
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientAtHospitalEvent", event);
     }
 
-    public void patientPickUpNotification(PatientPickUpEvent event) {
+    @Override
+    public void patientPickUpNotification(VehicleHitsEmergencyEvent event) {
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
     }
 

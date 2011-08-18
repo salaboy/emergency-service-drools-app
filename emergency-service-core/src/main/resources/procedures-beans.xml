@@ -12,4 +12,8 @@
        
        
        
+       <bean id="DefaultFireProcedure" class="com.wordpress.salaboy.services.DefaultFireProcedureImpl">
+           <property name="useLocalKSession" value="true"/>
+       </bean>
+       
 </beans>                              
