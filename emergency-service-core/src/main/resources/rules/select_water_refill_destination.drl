@@ -1,0 +1,36 @@
+package hospitalselectionrules;
+
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.Location;
+
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
+
+import com.wordpress.salaboy.acc.FirefightersDepartmentDistanceCalculationData;
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+import java.util.Map;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+
+
+rule "Calculate Water Refill Location"
+    ruleflow-group "closest-water-selection"
+    when
+       $processInstance: WorkflowProcessInstance()
+       $emergency: Emergency($type: type.name)
+       $event: FireTruckOutOfWaterEvent()
+       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from DistributedPeristenceServerService.getInstance().getAllFirefightersDepartments(), 
+                firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
+        )
+    then
+        System.out.println("Calculate Water Refill Location executed");
+        Long callId = ((Call)$processInstance.getVariable("call")).getId();
+        $processInstance.setVariable("refillDestination", new Location($selectedLocation.getX(),$selectedLocation.getY()));
+        
+        //TODO: Send message
+        //MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
+end

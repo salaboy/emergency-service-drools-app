@@ -142,15 +142,14 @@
       </potentialOwner>
     </userTask>
 
-    <endEvent id="_98" name="EndProcess" >
+    <endEvent id="_98" name="End Happy Path" >
     </endEvent>
     
-
     <intermediateCatchEvent id="_7" name="fireTruckOutOfWaterEvent" >
       <dataOutput id="_7_fireTruckOutOfWaterOutput" name="event" />
       <dataOutputAssociation>
         <sourceRef>_7_fireTruckOutOfWaterOutput</sourceRef>
-        <targetRef>vehicleHitsEmergencyEvent</targetRef>
+        <targetRef>fireTruckOutOfWaterEvent</targetRef>
       </dataOutputAssociation>
       <outputSet>
         <dataOutputRefs>_7_fireTruckOutOfWaterOutput</dataOutputRefs>
@@ -158,8 +157,20 @@
       <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent"/>
     </intermediateCatchEvent>
 
+    <scriptTask id="_660" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("After FireTruckOutOfWaterEvent");
+      </script>
+    </scriptTask>
+
     <businessRuleTask id="_8" name="Select Closest Water Provider" g:ruleFlowGroup="closest-water-selection" >
     </businessRuleTask>
+
+    <scriptTask id="_661" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("After RuleNode");
+      </script>
+    </scriptTask>
 
     <userTask id="_9" name="Go to Closest water Provider" >
       <ioSpecification>
@@ -210,7 +221,7 @@
       <dataInputAssociation>
         <targetRef>_9_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> Water Refill: go to #{refillDestination.locationX}, ( #{refillDestination.locationY} )</from>
+          <from xs:type="tFormalExpression">Water Refill: go to ( #{refillDestination.locationX}, #{refillDestination.locationY} )</from>
           <to xs:type="tFormalExpression">_9_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
@@ -229,7 +240,7 @@
       </potentialOwner>
     </userTask>
 
-    <endEvent id="_97" name="EndProcess" >
+    <endEvent id="_97" name="End Out of Water path" >
     </endEvent>
 
 
@@ -267,8 +278,14 @@
     <sequenceFlow id="_6-_98" sourceRef="_6" targetRef="_98" />
 
     <!-- Water Refill -->
-    <sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
+    <!--sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
     <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_9-_97" sourceRef="_9" targetRef="_97" /-->
+
+    <sequenceFlow id="_7-_660" sourceRef="_7" targetRef="_660" />
+    <sequenceFlow id="_660-_8" sourceRef="_660" targetRef="_8" />
+    <sequenceFlow id="_8-_661" sourceRef="_8" targetRef="_661" />
+    <sequenceFlow id="_661-_9" sourceRef="_661" targetRef="_9" />
     <sequenceFlow id="_9-_97" sourceRef="_9" targetRef="_97" />
 
     <!-- Stop -->

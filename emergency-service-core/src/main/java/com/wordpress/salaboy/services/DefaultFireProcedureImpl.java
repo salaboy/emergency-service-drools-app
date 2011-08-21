@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.acc.FirefighterDeparmtmentDistanceCalculator;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
@@ -26,6 +27,7 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.GridConnection;
@@ -42,6 +44,7 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
@@ -66,7 +69,9 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         KnowledgeBuilder kbuilder = null;
         KnowledgeBase kbase = null;
         if (useLocalKSession) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+            kbuilderConf.setOption(AccumulateFunctionOption.get("firefighterDeparmtmentDistanceCalculator", new FirefighterDeparmtmentDistanceCalculator()));
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
             KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kbaseConf.setOption(EventProcessingOption.STREAM);
             kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
@@ -93,6 +98,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
             remoteN1 = conn.connect();
 
             KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
+            kbuilderConf.setOption(AccumulateFunctionOption.get("firefighterDeparmtmentDistanceCalculator", new FirefighterDeparmtmentDistanceCalculator()));
             kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
             
             KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
@@ -102,6 +108,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultFireProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+        
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_water_refill_destination.drl").getInputStream())), ResourceType.DRL);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -135,11 +143,20 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     @Override
     public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
+        //we need the event as a fact in order to make inference.
+        internalSession.insert(event);
+        
+        //the process is signaled
         internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
     }
 
     @Override
     public void configure(Long callId, Map<String, Object> parameters) {
+        
+        if (!parameters.containsKey("emergency")){
+            throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
+        }
+        
         this.callId = callId;
         try {
             internalSession = createDefaultFireProcedureSession(this.callId);
@@ -149,14 +166,15 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         setWorkItemHandlers(internalSession);
 
         new Thread(new Runnable() {
-
+            @Override
             public void run() {
                 internalSession.fireUntilHalt();
             }
         }).start();
-
-        //internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
-        internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
+        
+        ProcessInstance processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
+        internalSession.insert(processInstance);
+        internalSession.insert(parameters.get("emergency"));
     }
     
     @Override
