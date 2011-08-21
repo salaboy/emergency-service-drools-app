@@ -20,6 +20,7 @@
   <itemDefinition id="_vehicle.idItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
 
   <itemDefinition id="_refillDestinationItem" structureRef="com.wordpress.salaboy.model.Location" />
+  <itemDefinition id="_reportItem" structureRef="com.wordpress.salaboy.reporting.Report" />
   
   <itemDefinition id="_vehicleHitsEmergencyEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
   <itemDefinition id="_fireTruckOutOfWaterEventEventItem" structureRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent" />
@@ -29,6 +30,7 @@
 
     <extensionElements>
       <tns:import name="com.wordpress.salaboy.model.Call" />
+      <tns:import name="com.wordpress.salaboy.reporting.Report" />
     </extensionElements>
     <!-- process variables -->
     
@@ -41,6 +43,7 @@
     <property id="fireTruckOutOfWaterEvent" itemSubjectRef="_fireTruckOutOfWaterEventEventItem"/>
     <property id="emergencyEndsEvent" itemSubjectRef="_emergencyEndsEventItem"/>
     <property id="refillDestination" itemSubjectRef="_refillDestinationItem"/>
+    <property id="report" itemSubjectRef="_reportItem"/>
 
 
     <!-- nodes -->
@@ -49,6 +52,7 @@
      <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        kcontext.setVariable("report",new Report());
       </script>
     </scriptTask>
 
@@ -233,7 +237,7 @@
       <dataOutput id="_10_emergencyEndsOutput" name="event" />
       <dataOutputAssociation>
         <sourceRef>_10_emergencyEndsOutput</sourceRef>
-        <targetRef>emergencyEnds</targetRef>
+        <targetRef>emergencyEndsEvent</targetRef>
       </dataOutputAssociation>
       <outputSet>
         <dataOutputRefs>_10_emergencyEndsOutput</dataOutputRefs>
@@ -244,6 +248,7 @@
     <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        report.addEntry("Process ended");
       </script>
     </scriptTask>
 

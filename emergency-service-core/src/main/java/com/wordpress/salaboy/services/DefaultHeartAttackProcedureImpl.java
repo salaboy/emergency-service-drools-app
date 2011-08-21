@@ -6,6 +6,7 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.model.ProcedureRequest;
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
@@ -135,6 +136,9 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
     }
 
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+    }
     
     
     @Override

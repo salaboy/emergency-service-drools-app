@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import java.io.IOException;
@@ -156,6 +157,11 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
         //internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
         internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
+    }
+    
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
     }
 
     public boolean isUseLocalKSession() {

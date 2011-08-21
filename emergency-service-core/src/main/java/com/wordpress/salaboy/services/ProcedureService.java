@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import java.util.Map;
 
 /**
@@ -12,4 +13,6 @@ import java.util.Map;
  */
 public interface ProcedureService {
     public void configure(Long callId, Map<String, Object> parameters);
+    
+    public void procedureEndsNotification(EmergencyEndsEvent event);
 }

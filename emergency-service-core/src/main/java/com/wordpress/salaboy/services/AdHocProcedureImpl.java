@@ -6,6 +6,7 @@ package com.wordpress.salaboy.services;
 
 
 import com.wordpress.salaboy.model.ProcedureRequest;
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.services.workitemhandlers.StartProcedureWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -131,6 +132,10 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+    }
+
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
     }
     
     

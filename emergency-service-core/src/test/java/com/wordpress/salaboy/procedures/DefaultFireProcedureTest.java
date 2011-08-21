@@ -32,6 +32,8 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
+import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
@@ -149,10 +151,12 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         
         Thread.sleep(2000);
         
-        //
+        //TODO: validate that the process is still running 
+        
+        //Ok, the emregency ends
+        ProceduresMGMTService.getInstance().notifyProcedures(new EmergencyEndsMessage(call.getId(), new Date()));
         
         //TODO: validate that the process has finished
-        
         
 
     }

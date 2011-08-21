@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -106,6 +107,10 @@ public class DumbProcedureImpl implements DumbProcedure {
 
     }
 
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+    }
+    
     @Override
     public void configure(Long callId, Map<String, Object> parameters) {
         this.callId = callId;
