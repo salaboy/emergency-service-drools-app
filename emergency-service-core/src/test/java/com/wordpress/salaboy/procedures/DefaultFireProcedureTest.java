@@ -147,7 +147,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         humanTaskServiceClient.start(firefighterTask.getId());
         humanTaskServiceClient.complete(firefighterTask.getId(), info);
         
-        Thread.sleep(5000);
+        Thread.sleep(2000);
+        
+        //
         
         //TODO: validate that the process has finished
         

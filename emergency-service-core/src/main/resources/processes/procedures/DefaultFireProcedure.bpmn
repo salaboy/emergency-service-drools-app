@@ -14,12 +14,16 @@
 
   
   <itemDefinition id="_call.idItem" structureRef="com.wordpress.salaboy.model.Call" />
-    <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
+  <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
   <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
   <itemDefinition id="_emergency.idItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_vehicle.idItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+
+  <itemDefinition id="_refillDestinationItem" structureRef="com.wordpress.salaboy.model.Location" />
   
   <itemDefinition id="_vehicleHitsEmergencyEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
+  <itemDefinition id="_fireTruckOutOfWaterEventEventItem" structureRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent" />
+  <itemDefinition id="_emergencyEndsEventItem" structureRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent" />
 
   <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" >
 
@@ -34,6 +38,9 @@
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
     <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="vehicleHitsEmergencyEvent" itemSubjectRef="_vehicleHitsEmergencyEventItem"/>
+    <property id="fireTruckOutOfWaterEvent" itemSubjectRef="_fireTruckOutOfWaterEventEventItem"/>
+    <property id="emergencyEndsEvent" itemSubjectRef="_emergencyEndsEventItem"/>
+    <property id="refillDestination" itemSubjectRef="_refillDestinationItem"/>
 
 
     <!-- nodes -->
@@ -42,12 +49,6 @@
      <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
-      </script>
-    </scriptTask>
-
-    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
-      <script>
-        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
       </script>
     </scriptTask>
 
@@ -137,6 +138,114 @@
       </potentialOwner>
     </userTask>
 
+    <endEvent id="_98" name="EndProcess" >
+    </endEvent>
+    
+
+    <intermediateCatchEvent id="_7" name="fireTruckOutOfWaterEvent" >
+      <dataOutput id="_7_fireTruckOutOfWaterOutput" name="event" />
+      <dataOutputAssociation>
+        <sourceRef>_7_fireTruckOutOfWaterOutput</sourceRef>
+        <targetRef>vehicleHitsEmergencyEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_7_fireTruckOutOfWaterOutput</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent"/>
+    </intermediateCatchEvent>
+
+    <businessRuleTask id="_8" name="Select Closest Water Provider" g:ruleFlowGroup="closest-water-selection" >
+    </businessRuleTask>
+
+    <userTask id="_9" name="Go to Closest water Provider" >
+      <ioSpecification>
+        <dataInput id="_9_CommentInput" name="Comment" />
+        <dataInput id="_9_SkippableInput" name="Skippable" />
+        <dataInput id="_9_TaskNameInput" name="TaskName" />
+        <dataInput id="_9_PriorityInput" name="Priority" />
+        <dataInput id="_9_call.IdInput" name="call" />
+        <dataInput id="_9_emergency.IdInput" name="emergency" />
+        <dataInput id="_9_destinationInput" name="refillDestination" />
+        
+        <inputSet>
+          <dataInputRefs>_9_call.IdInput</dataInputRefs>
+          <dataInputRefs>_9_emergency.IdInput</dataInputRefs>
+          <dataInputRefs>_9_destinationInput</dataInputRefs>
+        </inputSet>
+
+        <outputSet>
+        </outputSet>
+
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_9_call.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_9_emergency.IdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>refillDestination</sourceRef>
+        <targetRef>_9_destinationInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_CommentInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">en-UK</from>
+          <to xs:type="tFormalExpression">_9_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_SkippableInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression">false</from>
+          <to xs:type="tFormalExpression">_9_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>      
+      <dataInputAssociation>
+        <targetRef>_9_TaskNameInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"> Water Refill: go to #{refillDestination.locationX}, ( #{refillDestination.locationY} )</from>
+          <to xs:type="tFormalExpression">_9_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_PriorityInput</targetRef>
+        <assignment>
+          <from xs:type="tFormalExpression"></from>
+          <to xs:type="tFormalExpression">_9_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>firefighter</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+    <endEvent id="_97" name="EndProcess" >
+    </endEvent>
+
+
+    <intermediateCatchEvent id="_10" name="Emergency Ends" >
+      <dataOutput id="_10_emergencyEndsOutput" name="event" />
+      <dataOutputAssociation>
+        <sourceRef>_10_emergencyEndsOutput</sourceRef>
+        <targetRef>emergencyEnds</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_10_emergencyEndsOutput</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent"/>
+    </intermediateCatchEvent>
+
+    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+      </script>
+    </scriptTask>
 
     <endEvent id="_99" name="EndProcess" >
         <terminateEventDefinition/>
@@ -144,11 +253,21 @@
    
 
     <!-- connections -->
+
+    <!-- Go To Emergency -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
-    <sequenceFlow id="_6-_3" sourceRef="_6" targetRef="_3" />
+    <sequenceFlow id="_6-_98" sourceRef="_6" targetRef="_98" />
+
+    <!-- Water Refill -->
+    <sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_9-_97" sourceRef="_9" targetRef="_97" />
+
+    <!-- Stop -->
+    <sequenceFlow id="_10-_3" sourceRef="_10" targetRef="_3" />
     <sequenceFlow id="_3-_99" sourceRef="_3" targetRef="_99" />
    
   </process>
