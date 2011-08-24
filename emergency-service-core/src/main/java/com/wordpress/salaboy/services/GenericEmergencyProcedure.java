@@ -4,13 +4,15 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 
 /**
  *
  * @author salaboy
  */
-public interface GenericEmergencyProcedure extends ProcedureService{
+public interface GenericEmergencyProcedure{
     public void allProceduresEnededNotification(AllProceduresEndedEvent event);
+    public void newPhoneCall(Call call);
     
 }

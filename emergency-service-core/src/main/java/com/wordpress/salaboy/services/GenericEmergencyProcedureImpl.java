@@ -8,6 +8,7 @@ package com.wordpress.salaboy.services;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.services.workitemhandlers.StartProcedureWorkItemHandler;
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -26,7 +27,6 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.conf.EventProcessingOption;
-import org.drools.event.DebugProcessEventListener;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.GridConnection;
 import org.drools.grid.GridNode;
@@ -49,50 +49,36 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  *
  * @author salaboy
  */
-public class IncomingCallsMGMTService {
-    private static IncomingCallsMGMTService instance;
-    private StatefulKnowledgeSession phoneCallMGMTSession;
-    private IncomingCallsMGMTService() {
-        init();
+public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure {
+    private static GenericEmergencyProcedureImpl instance;
+    private StatefulKnowledgeSession genericEmergencySession;
+    private GenericEmergencyProcedureImpl() {
+        configure();
         setWorkItemHandlers();
     }
     
     
-    public static IncomingCallsMGMTService getInstance(){
+    public static GenericEmergencyProcedureImpl getInstance(){
         if(instance == null){
-            instance = new IncomingCallsMGMTService();
+            instance = new GenericEmergencyProcedureImpl();
         }
         return instance;
     }
 
-    private void init() {
-        System.out.println(">>> Initializing First Response Incomming Calls Service ...");
-        try {
-            phoneCallMGMTSession = createPhoneCallsPrimaryServiceSession();
-        } catch (IOException ex) {
-            Logger.getLogger(IncomingCallsMGMTService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        new Thread(new Runnable()       {
-
-            public void run() {
-                phoneCallMGMTSession.fireUntilHalt();
-            }
-        }).start();
-        System.out.println(">>> First Response Incomming Calls Service Running ...");
-    }
-    
     private WorkingMemoryEntryPoint getPhoneCallsEntryPoint(){
-        return phoneCallMGMTSession.getWorkingMemoryEntryPoint("phoneCalls stream");
+        return genericEmergencySession.getWorkingMemoryEntryPoint("phoneCalls stream");
     }
     
     public void newPhoneCall(Call call){
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        //Track new call
         getPhoneCallsEntryPoint().insert(call);
     }
     
     
     
     
-    private StatefulKnowledgeSession createPhoneCallsPrimaryServiceSession() throws IOException{
+    private StatefulKnowledgeSession createGenericEmergencyServiceSession() throws IOException{
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
         Address addr = gsd.addAddress("socket");
@@ -147,15 +133,34 @@ public class IncomingCallsMGMTService {
     }
 
     private void setWorkItemHandlers() {
-        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(phoneCallMGMTSession));
-        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
-        phoneCallMGMTSession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
+        genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(genericEmergencySession));
+        genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+        genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
         
     }
 
+    @Override
+    public void allProceduresEnededNotification(AllProceduresEndedEvent event) {
+        genericEmergencySession.signalEvent("com.wordpress.salaboy.model.events.AllProceduresEndedEvent", event);
+    }
+
     
-    public void allProceduresEnded(AllProceduresEndedEvent event) {
-        phoneCallMGMTSession.signalEvent("com.wordpress.salaboy.model.events.AllProceduresEndedEvent", event);
+
+    
+    public void configure() {
+        System.out.println(">>> Initializing Generic Emergency Procedure Service ...");
+        try {
+            genericEmergencySession = createGenericEmergencyServiceSession();
+        } catch (IOException ex) {
+            Logger.getLogger(GenericEmergencyProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        new Thread(new Runnable()       {
+
+            public void run() {
+                genericEmergencySession.fireUntilHalt();
+            }
+        }).start();
+        System.out.println(">>> Initializing Generic Emergency Procedure Service Running ...");
     }
     
     

@@ -127,6 +127,31 @@ public class AdHocProcedureTest extends GridBaseTest {
 
 
     }
+    
+     @Test
+    public void defaultAdHocPlusTrackingTest() throws InterruptedException, ClassNotFoundException, IOException {
+        emergency = new Emergency(1L);
+        call = new Call(1, 2, new Date());
+        call.setId(1L);
+        emergency.setCall(call);
+        emergency.setLocation(new Location(1, 2));
+        emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
+        emergency.setNroOfPeople(1);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("call", call);
+        parameters.put("emergency", emergency);
+        parameters.put("procedureName", "DumbProcedure");
+
+
+        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "AdHocProcedure", parameters);
+
+        Thread.sleep(5000);
+
+
+
+    }
+
 
     private void doOperatorTask() throws ClassNotFoundException, IOException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();

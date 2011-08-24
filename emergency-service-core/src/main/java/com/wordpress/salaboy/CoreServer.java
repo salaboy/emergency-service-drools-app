@@ -21,7 +21,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.IncomingCallsMGMTService;
+import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
 import com.wordpress.salaboy.services.PatientMonitorService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.util.HashMap;
@@ -117,7 +117,7 @@ public class CoreServer {
         }
 
         //Init First Response Service, just to have one instance ready for new phone calls
-        IncomingCallsMGMTService.getInstance();
+        GenericEmergencyProcedureImpl.getInstance();
         
         //Start Workers
         startQueuesWorkers();
@@ -133,7 +133,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
-                    IncomingCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
+                    GenericEmergencyProcedureImpl.getInstance().newPhoneCall(incomingCallMessage.getCall());
                 }
             });
 
