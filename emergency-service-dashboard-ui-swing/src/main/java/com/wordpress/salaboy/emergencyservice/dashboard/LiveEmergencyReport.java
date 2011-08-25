@@ -19,11 +19,11 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
  * @author salaboy
  */
 public class LiveEmergencyReport extends javax.swing.JFrame {
-    private Long emergencyId;
+    private String emergencyId;
     private Emergency emergency;
     private EmergencyMonitorPanel monitor;
     /** Creates new form LiveEmergencyReport */
-    public LiveEmergencyReport(Long emergencyId) {
+    public LiveEmergencyReport(String emergencyId) {
         this.emergencyId = emergencyId;
         
         this.emergency = DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId);

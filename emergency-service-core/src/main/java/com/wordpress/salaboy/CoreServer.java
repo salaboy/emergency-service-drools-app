@@ -57,8 +57,8 @@ public class CoreServer {
     protected static GridNode remoteN1;
     
     
-    private Map<Long,Boolean> vehicleHitEmergency = new HashMap<Long, Boolean> ();
-    private Map<Long,Boolean> vehicleHitHospital = new HashMap<Long, Boolean> ();
+    private Map<String,Boolean> vehicleHitEmergency = new HashMap<String, Boolean> ();
+    private Map<String,Boolean> vehicleHitHospital = new HashMap<String, Boolean> ();
     
     //CurrentWorkers
     private MessageConsumerWorker reportingWorker;

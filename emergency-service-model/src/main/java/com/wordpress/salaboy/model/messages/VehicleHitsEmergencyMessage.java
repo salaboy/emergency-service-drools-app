@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy.model.messages;
 
-import com.wordpress.salaboy.model.Hospital;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,11 +12,11 @@ import java.util.Date;
  * @author esteban
  */
 public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long vehicleId;
+    private String vehicleId;
     private String callId;
     private Date time;
     
-    public VehicleHitsEmergencyMessage(Long vehicleId, String callId, Date time) {
+    public VehicleHitsEmergencyMessage(String vehicleId, String callId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
         this.time = time; 
@@ -32,11 +31,11 @@ public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInter
         this.callId = emergecyId;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

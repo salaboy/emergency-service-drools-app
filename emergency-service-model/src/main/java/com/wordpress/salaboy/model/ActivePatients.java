@@ -15,12 +15,12 @@ import java.util.List;
 public class ActivePatients implements Serializable{
     
     private List<Patient> activePatients = new ArrayList<Patient>();
-    private Long emergencyId;
-    public ActivePatients(Long emergencyId) {
+    private String emergencyId;
+    public ActivePatients(String emergencyId) {
         this.emergencyId = emergencyId;
     }
 
-    public Long getEmergencyId() {
+    public String getEmergencyId() {
         return emergencyId;
     }
     

@@ -130,11 +130,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         } else if (Input.KEY_F3 == code) {
             addMockPoliceCar();
         } else if (Input.KEY_F4 == code) {
-            selectMockHospital(0L);
+            selectMockHospital(0);
         } else if (Input.KEY_F5 == code) {
-            selectMockHospital(1L);
+            selectMockHospital(1);
         } else if (Input.KEY_F6 == code) {
-            selectMockHospital(2L);
+            selectMockHospital(2);
         } else if (Input.KEY_LSHIFT == code) {
             this.turbo = true;
         }
@@ -408,8 +408,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
     }
 
-    private void selectMockHospital(long l) {
-        Hospital mock = DistributedPeristenceServerService.getInstance().loadHospital(l);
+    private void selectMockHospital(int index) {
+        Hospital mock = DistributedPeristenceServerService.getInstance().getAllHospitals().toArray(new Hospital[3])[index];
         try {
             MessageFactory.sendMessage(new HospitalSelectedMessage(this.emergency.getCallId(), mock));
         } catch (HornetQException ex) {

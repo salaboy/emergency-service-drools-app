@@ -26,8 +26,8 @@ public class SensorMessageProducer {
     //TODO: change double attribute to a SensorMessage object
     public void informMessage(double heartBeat) throws Exception {
         try {
-            Long callId = emergencyInformationDataSource.getCallId();
-            Long vehicleId = emergencyInformationDataSource.getVehicleId();
+            String callId = emergencyInformationDataSource.getCallId();
+            String vehicleId = emergencyInformationDataSource.getVehicleId();
             
             if (callId == null){
                 Logger.getLogger(UDPSensorServer.class.getName()).log(Level.INFO, "No call id provided!");

@@ -12,11 +12,11 @@ import java.io.Serializable;
  */
 public class VehicleHitsCornerMessage implements Serializable, EmergencyInterchangeMessage {
     private String callId;
-    private Long vehicleId;
+    private String vehicleId;
     private int cornerX;
     private int cornery;
 
-    public VehicleHitsCornerMessage(String callId, Long vehicleId, int cornerX, int cornery) {
+    public VehicleHitsCornerMessage(String callId, String vehicleId, int cornerX, int cornery) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.cornerX = cornerX;
@@ -40,11 +40,11 @@ public class VehicleHitsCornerMessage implements Serializable, EmergencyIntercha
         this.cornery = cornery;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

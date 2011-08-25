@@ -239,10 +239,10 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         int[] selected = emergenciesjTable.getSelectedRows();
             
-           List<Long> selectedEmergencies = new ArrayList<Long>(selected.length);
+           List<String> selectedEmergencies = new ArrayList<String>(selected.length);
            
             for(int i = 0; i < selected.length; i++){
-                selectedEmergencies.add((Long)emergenciesjTable.getModel().getValueAt(i, 0));
+                selectedEmergencies.add((String)emergenciesjTable.getModel().getValueAt(i, 0));
             }
             
             openLiveReportPanel(selectedEmergencies);
@@ -318,7 +318,7 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
     private javax.swing.JButton refreshjButton;
     // End of variables declaration//GEN-END:variables
 
-    private void openLiveReportPanel(final List<Long> selectedEmergencies) {
+    private void openLiveReportPanel(final List<String> selectedEmergencies) {
         //
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

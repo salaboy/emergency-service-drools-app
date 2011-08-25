@@ -23,7 +23,7 @@ import com.wordpress.salaboy.model.SelectedProcedures;
 public class ControlOperatorController extends AbstractTaskFormController {
 	@Override
 	protected void addCustomFormLogic(Model model) {
-		this.emergencyId = (Integer) this.taskInfo.get("EmergencyId");
+		this.emergencyId = (String)this.taskInfo.get("EmergencyId");
 		this.taskInfo.remove("EmergencyId");
 		model.addAttribute("suggestedProcedure", this
 				.getCleanSuggestedProcedure((String) this.taskInfo
@@ -63,7 +63,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 		super();
 	}
 
-	private Integer emergencyId;
+	private String emergencyId;
 
 	@Override
 	@RequestMapping(value = "/task/co/{entity}/{profile}/{id}/{name}", method = RequestMethod.GET)
@@ -98,8 +98,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 	protected Map<String, Object> generateOutputForForm(String form,
 			Map<String, String> data) {
 		Map<String, Object> info = new HashMap<String, Object>();
-		SelectedProcedures selectedProcedures = new SelectedProcedures(
-				Long.parseLong(emergencyId.toString()));
+		SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
 		selectedProcedures.addSelectedProcedureName(data
 				.get("Suggested Procedures"));
 		info.put("selectedProcedures", selectedProcedures);

@@ -220,7 +220,7 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
 
             @Override
             public void handleMessage(IncomingCallMessage incomingCallMessage) {
-                Long callId = incomingCallMessage.getCallId();
+                String callId = incomingCallMessage.getCallId();
                 cboCallId.addItem(callId);
                 cboCallId.setSelectedItem(callId);
             }
@@ -231,7 +231,7 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
 
             @Override
             public void handleMessage(VehicleDispatchedMessage vehicleDispatchedMessage) {
-                Long vehicleId = vehicleDispatchedMessage.getVehicleId();
+                String vehicleId = vehicleDispatchedMessage.getVehicleId();
                 cboVehicleId.addItem(vehicleId);
                 cboVehicleId.setSelectedItem(vehicleId);
             }
@@ -253,21 +253,21 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         if (this.cboCallId.getSelectedIndex() == -1) {
             return null;
         }
 
-        return (Long) this.cboCallId.getSelectedItem();
+        return (String) this.cboCallId.getSelectedItem();
     }
 
     @Override
-    public Long getVehicleId() {
+    public String getVehicleId() {
         if (this.cboVehicleId.getSelectedIndex() == -1) {
             return null;
         }
 
-        return (Long) this.cboVehicleId.getSelectedItem();
+        return (String) this.cboVehicleId.getSelectedItem();
     }
     
     

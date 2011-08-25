@@ -53,10 +53,10 @@ public class CityEntities {
     
    
     
-    public static Ambulance getAmbulanceById(Long id){
+    public static Ambulance getAmbulanceById(String id){
         for (Map.Entry<EmergencyType, List<Ambulance>> entry : ambulances.entrySet()) {
             for (Ambulance ambulance : entry.getValue()) {
-                if (ambulance.getId().compareTo(id) == 0){
+                if (ambulance.getId().equals(id)){
                     return ambulance;
                 }
             }
@@ -66,7 +66,7 @@ public class CityEntities {
     
     public static Hospital getHospitalById(Long id){
         for (Hospital hospital : hospitals) {
-            if (hospital.getId().compareTo(id) == 0){
+            if (hospital.getId().equals(id)){
                 return hospital;
             }
         }
@@ -190,10 +190,10 @@ public class CityEntities {
         return carCrashAmbulance;
     }
     
-     public static Ambulance getAmbulanceById(EmergencyType type, Long id) {
+     public static Ambulance getAmbulanceById(EmergencyType type, String id) {
         
         for (Ambulance ambulancenow : CityEntities.ambulances.get(type)) {
-            if (ambulancenow.getId().compareTo(id) == 0) {
+            if (ambulancenow.getId().equals(id)) {
                 return ambulancenow;
             }
         }

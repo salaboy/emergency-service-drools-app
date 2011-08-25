@@ -43,12 +43,12 @@ public class WorldUI extends BasicGame {
     // Places for emergencies
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private int[] ys = new int[]{1, 7, 13, 19, 25};
-    private Map<Long, GraphicableEmergency> emergencies = new HashMap<Long, GraphicableEmergency>();
+    private Map<String, GraphicableEmergency> emergencies = new HashMap<String, GraphicableEmergency>();
     public static SpriteSheet hospitalSheet;
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
     private EmergencyRenderer currentRenderer;
     private GlobalEmergenciesRenderer globalRenderer;
-    private Map<Long, ParticularEmergencyRenderer> renderers = new HashMap<Long, ParticularEmergencyRenderer>();
+    private Map<String, ParticularEmergencyRenderer> renderers = new HashMap<String, ParticularEmergencyRenderer>();
 
     public WorldUI() {
         super("City Map");
@@ -125,7 +125,7 @@ public class WorldUI extends BasicGame {
 
     }
 
-    public synchronized void removeEmergency(long callId) {
+    public synchronized void removeEmergency(String callId) {
         this.emergencies.remove(callId);
     }
 
@@ -229,15 +229,15 @@ public class WorldUI extends BasicGame {
         }
     }
 
-    public Map<Long, GraphicableEmergency> getEmergencies() {
+    public Map<String, GraphicableEmergency> getEmergencies() {
         return emergencies;
     }
 
-    public void emergencyClicked(Long callId) {
+    public void emergencyClicked(String callId) {
         this.switchToEmergency(callId);
     }
     
-    private void switchToEmergency(Long callId){
+    private void switchToEmergency(String callId){
         this.currentRenderer = renderers.get(callId);
     }
     
@@ -245,7 +245,7 @@ public class WorldUI extends BasicGame {
         this.currentRenderer = this.globalRenderer;
     }
     
-    public void assignVehicleToEmergency(long callId, Vehicle vehicle){
+    public void assignVehicleToEmergency(String callId, Vehicle vehicle){
         this.renderers.get(callId).addVehicle(vehicle);
     }
 
@@ -253,7 +253,7 @@ public class WorldUI extends BasicGame {
         return currentRenderer;
     }
     
-    public void selectHospitalForEmergency(Long callId, Hospital hospital) {
+    public void selectHospitalForEmergency(String callId, Hospital hospital) {
         this.renderers.get(callId).selectHospital(hospital);               
     }
     

@@ -18,9 +18,9 @@ public class Emergency implements Serializable {
 
         FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
     };
-    public static AtomicLong incrementalId = new AtomicLong();
+   // public static AtomicLong incrementalId = new AtomicLong();
     
-    private Long id;
+    private String id;
     private EmergencyType type;
     private Location location;
     private int nroOfPeople;
@@ -28,15 +28,15 @@ public class Emergency implements Serializable {
     private long processInstanceId;
     
     
-    private Emergency(Long id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
-        this.id = id;
+    private Emergency(String id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
+      //  this.id = id;
         this.type = type;
         this.nroOfPeople = nroOfPeople;
         
     }
 
     public Emergency() {
-        this.id = Emergency.incrementalId.getAndIncrement();
+      //  this.id = Emergency.incrementalId.getAndIncrement();
     }
 
     public long getProcessInstanceId() {
@@ -49,7 +49,7 @@ public class Emergency implements Serializable {
     
     
 
-    public Emergency(Long id){
+    public Emergency(String id){
         this.id = id;
     }
     public void setNroOfPeople(int nroOfPeople) {
@@ -69,11 +69,11 @@ public class Emergency implements Serializable {
         this.call = call;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

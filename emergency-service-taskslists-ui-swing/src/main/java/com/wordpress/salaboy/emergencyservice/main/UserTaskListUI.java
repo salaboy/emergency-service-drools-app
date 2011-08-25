@@ -34,8 +34,8 @@ import javax.swing.JTabbedPane;
 public class UserTaskListUI extends javax.swing.JFrame {
 
     private HumanTaskService humanTaskServiceClient;
-    public static Long LAST_CALL_ID = null;
-    public static Long LAST_DISPATCHED_VEHICLE_ID = null;
+    public static String LAST_CALL_ID = null;
+    public static String LAST_DISPATCHED_VEHICLE_ID = null;
     //Task Lists Panels
     private IncomingPhoneCallsTaskListPanel phoneCallsTaskListPanel;
     private ControlSuggestedProceduresTaskListPanel controlSuggestedProceduresTaskListPanel;

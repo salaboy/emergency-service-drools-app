@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class VehicleHitsEmergencyEvent implements CallEvent, Serializable {
     private String callId;
-    private Long vehicleId;
+    private String vehicleId;
     
     private Date time;
 
@@ -25,7 +25,7 @@ public class VehicleHitsEmergencyEvent implements CallEvent, Serializable {
         this.time = time;
     }
     
-    public VehicleHitsEmergencyEvent(String callId, Long vehicleId, Date time) {
+    public VehicleHitsEmergencyEvent(String callId, String vehicleId, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;
@@ -40,11 +40,11 @@ public class VehicleHitsEmergencyEvent implements CallEvent, Serializable {
         this.callId = callId;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

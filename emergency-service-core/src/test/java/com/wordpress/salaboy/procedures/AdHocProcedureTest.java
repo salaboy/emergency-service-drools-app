@@ -107,9 +107,13 @@ public class AdHocProcedureTest extends GridBaseTest {
 
     @Test
     public void defaultAdHocSimpleTest() throws InterruptedException, ClassNotFoundException, IOException {
-        emergency = new Emergency(1L);
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency = new Emergency();
+        emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
-        //call.setId(UUID.);
+        
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
@@ -131,7 +135,9 @@ public class AdHocProcedureTest extends GridBaseTest {
     
      @Test
     public void defaultAdHocPlusTrackingTest() throws InterruptedException, ClassNotFoundException, IOException {
-        emergency = new Emergency(1L);
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency = new Emergency();
+        emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
         String callId = ContextTrackingServiceImpl.getInstance().newCall();
         call.setId(callId);
@@ -182,7 +188,9 @@ public class AdHocProcedureTest extends GridBaseTest {
 
 
         //I shoudl call the tracking component here and register the new emerency
-        Emergency emergency = new Emergency(1L);
+        Emergency emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         emergency.setCall(retrivedCall);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);

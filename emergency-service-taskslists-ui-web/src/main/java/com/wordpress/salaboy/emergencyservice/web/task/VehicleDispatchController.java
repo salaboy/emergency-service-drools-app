@@ -82,7 +82,7 @@ public class VehicleDispatchController extends AbstractTaskFormController {
     	
     	List<Vehicle> selectedVehicles = new ArrayList<Vehicle>();
 		selectedVehicles.add(DistributedPeristenceServerService.getInstance()
-				.loadVehicle(Long.parseLong(data.get("id"))));
+				.loadVehicle(data.get("id")));
         
                 
         Map<String, Object> info = new HashMap<String, Object>();

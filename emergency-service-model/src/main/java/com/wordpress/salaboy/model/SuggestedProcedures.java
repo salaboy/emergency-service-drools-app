@@ -22,12 +22,12 @@ public class SuggestedProcedures implements Serializable{
 
     private List<String> procedures = new ArrayList<String>();
     
-    private Long emergencyId;
-    public SuggestedProcedures(Long emergencyId) {
+    private String emergencyId;
+    public SuggestedProcedures(String emergencyId) {
         this.emergencyId = emergencyId;
     }
 
-    public Long getEmergencyId() {
+    public String getEmergencyId() {
         return emergencyId;
     }
     

@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
 import com.wordpress.salaboy.model.SuggestedProcedures;
@@ -169,7 +170,9 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         
         //I shoudl call the tracking component here and register the new emerency
-        Emergency emergency = new Emergency(1L);
+        Emergency emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         emergency.setCall(retrivedCall);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);

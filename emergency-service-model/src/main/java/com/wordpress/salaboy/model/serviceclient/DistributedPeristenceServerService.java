@@ -66,16 +66,16 @@ public class DistributedPeristenceServerService {
         if (this.getCache().get("emergencies") == null) {
             getCache().put("emergencies", new HashMap<Long, Emergency>());
         }
-        Map<Long, Emergency> emergencies = ((Map<Long, Emergency>) this.getCache().get("emergencies"));
+        Map<String, Emergency> emergencies = ((Map<String, Emergency>) this.getCache().get("emergencies"));
         emergencies.put(emergency.getId(), emergency);
         this.getCache().put("emergencies",emergencies);
     }
 
     public void storeVehicle(Vehicle vehicle) {
         if (this.getCache().get("vehicles") == null) {
-            getCache().put("vehicles", new HashMap<Long, Vehicle>());
+            getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
-        Map<Long, Vehicle> vehicles = ((Map<Long, Vehicle>) this.getCache().get("vehicles"));
+        Map<String, Vehicle> vehicles = ((Map<String, Vehicle>) this.getCache().get("vehicles"));
         vehicles.put(vehicle.getId(), vehicle);
         this.getCache().put("vehicles",vehicles);
 
@@ -83,73 +83,73 @@ public class DistributedPeristenceServerService {
 
     public void storePatient(Patient patient) {
         if (this.getCache().get("patients") == null) {
-            getCache().put("patients", new HashMap<Long, Patient>());
+            getCache().put("patients", new HashMap<String, Patient>());
         }
-        Map<Long, Patient> patients = ((Map<Long, Patient>) this.getCache().get("patients"));
+        Map<String, Patient> patients = ((Map<String, Patient>) this.getCache().get("patients"));
         patients.put(patient.getId(), patient);
         this.getCache().put("hospitals",patients);
     }
 
-    public Emergency loadEmergency(Long id) {
+    public Emergency loadEmergency(String id) {
         if (this.getCache().get("emergencies") == null) {
-            getCache().put("emergencies", new HashMap<Long, Emergency>());
+            getCache().put("emergencies", new HashMap<String, Emergency>());
         }
-        return ((Map<Long, Emergency>) this.getCache().get("emergencies")).get(id);
+        return ((Map<String, Emergency>) this.getCache().get("emergencies")).get(id);
     }
 
-    public Vehicle loadVehicle(Long id) {
+    public Vehicle loadVehicle(String id) {
         if (this.getCache().get("vehicles") == null) {
-            getCache().put("vehicles", new HashMap<Long, Vehicle>());
+            getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
-        return ((Map<Long, Vehicle>) this.getCache().get("vehicles")).get(id);
+        return ((Map<String, Vehicle>) this.getCache().get("vehicles")).get(id);
     }
 
-    public Patient loadPatient(Long id) {
+    public Patient loadPatient(String id) {
         if (this.getCache().get("patients") == null) {
-            getCache().put("patients", new HashMap<Long, Patient>());
+            getCache().put("patients", new HashMap<String, Patient>());
         }
-        return ((Map<Long, Patient>) this.getCache().get("patients")).get(id);
+        return ((Map<String, Patient>) this.getCache().get("patients")).get(id);
     }
 
     public Collection<Vehicle> getAllVehicles() {
         if (this.getCache().get("vehicles") == null) {
-            getCache().put("vehicles", new HashMap<Long, Vehicle>());
+            getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
-        return new ArrayList<Vehicle>(((Map<Long, Vehicle>) this.getCache().get("vehicles")).values());
+        return new ArrayList<Vehicle>(((Map<String, Vehicle>) this.getCache().get("vehicles")).values());
     }
 
     public void storeHospital(Hospital hospital) {
         if (this.getCache().get("hospitals") == null) {
-            getCache().put("hospitals", new HashMap<Long, Hospital>());
+            getCache().put("hospitals", new HashMap<String, Hospital>());
         }
-        Map<Long, Hospital> hospitals = ((Map<Long, Hospital>) this.getCache().get("hospitals"));
+        Map<String, Hospital> hospitals = ((Map<String, Hospital>) this.getCache().get("hospitals"));
         hospitals.put(hospital.getId(), hospital);
         this.getCache().put("hospitals",hospitals);
         
     }
 
-    public Hospital loadHospital(Long id) {
+    public Hospital loadHospital(String id) {
         if (this.getCache().get("hospitals") == null) {
-            getCache().put("hospitals", new HashMap<Long, Hospital>());
+            getCache().put("hospitals", new HashMap<String, Hospital>());
         }
-        return ((Map<Long, Hospital>) this.getCache().get("hospitals")).get(id);
+        return ((Map<String, Hospital>) this.getCache().get("hospitals")).get(id);
     }
 
     public Collection<Hospital> getAllHospitals() {
         if (this.getCache().get("hospitals") == null) {
-            getCache().put("hospitals", new HashMap<Long, Hospital>());
+            getCache().put("hospitals", new HashMap<String, Hospital>());
         }
-        return ((Map<Long, Hospital>) this.getCache().get("hospitals")).values();
+        return ((Map<String, Hospital>) this.getCache().get("hospitals")).values();
     }
 
     public void addEntryToReport(String callId, String entry) {
         if (this.getCache().get("reports") == null) {
-            getCache().put("reports", new HashMap<Long, Report>());
+            getCache().put("reports", new HashMap<String, Report>());
         }
         if (((Map<String, Report>) getCache().get("reports")).get(callId) == null) {
             ((Map<String, Report>) getCache().get("reports")).put(callId, new Report());
         }
-        Map<Long, Report> reports = ((Map<Long, Report>) this.getCache().get("reports"));
+        Map<String, Report> reports = ((Map<String, Report>) this.getCache().get("reports"));
         reports.get(callId).addEntry(entry);
         this.getCache().put("reports", reports);
 
@@ -169,7 +169,7 @@ public class DistributedPeristenceServerService {
         if (getCache().get("emergencies") == null) {
             getCache().put("emergencies", new HashMap<Long, Emergency>());
         }
-        return ((Map<Long, Emergency>) getCache().get("emergencies")).values();
+        return ((Map<String, Emergency>) getCache().get("emergencies")).values();
     }
 
     private Cache<String, Object> getCache() {

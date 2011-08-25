@@ -70,7 +70,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
     
     @Before
     public void setUp() throws Exception {
-        emergency = new Emergency(1L);
+        emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         
         fireTruck = new FireTruck("FireTruck 1");
                 

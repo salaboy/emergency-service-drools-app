@@ -48,13 +48,13 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private MessageConsumerWorker patientMonitorAlertWorker;
     private MessageConsumerWorker vehicleHitsEmergencyWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
-    private Long callId;
+    private String callId;
     private List<String> alerts = new ArrayList<String>();
-    private Map<Long, Boolean> vehicleHitEmergency = new HashMap<Long, Boolean>();
-    private Map<Long, Boolean> vehicleHitHospital = new HashMap<Long, Boolean>();
+    private Map<String, Boolean> vehicleHitEmergency = new HashMap<String, Boolean>();
+    private Map<String, Boolean> vehicleHitHospital = new HashMap<String, Boolean>();
 
     /** Creates new form EmergencyMonitorPanel */
-    public EmergencyMonitorPanel(Long callId) {
+    public EmergencyMonitorPanel(String callId) {
         this.callId = callId;
 
         initComponents();
@@ -294,11 +294,11 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         gpsWorker.start();
         heartBeatWorker.start();
     }
-    private Map<Long, Point> lastVehiclePosition = new HashMap<Long, Point>();
-    private Map<Long, Color> vehicleColors = new HashMap<Long, Color>();
+    private Map<String, Point> lastVehiclePosition = new HashMap<String, Point>();
+    private Map<String, Color> vehicleColors = new HashMap<String, Color>();
     private Color[] colors = {Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN, Color.ORANGE, Color.PINK};
 
-    private void paintVehiclePosition(Long vehicleId, int x, int y) {
+    private void paintVehiclePosition(String vehicleId, int x, int y) {
         x = x / 2;
         y = y / 2;
 
@@ -343,9 +343,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         map = new ImageIcon(this.getClass().getClassLoader().getResource("data/png/CityMap.png"));
         this.lblMap.setIcon(map);
     }
-    private Map<Long, HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<Long, HeartBeatWidget>();
+    private Map<String, HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<String, HeartBeatWidget>();
 
-    private void processHeartBeat(Long vehicleId, double heartBeatValue, Date time) {
+    private void processHeartBeat(String vehicleId, double heartBeatValue, Date time) {
         //only if the vehicle already hit the emergency, but it doesnt
         //hit the hospital yet;
         Boolean hitEmergency = vehicleHitEmergency.get(vehicleId);
@@ -398,7 +398,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             public void run() {
                 while (!stopPulseEmulator) {
                     try {
-                        for (Long vehicleId : heartBeatWidgets.keySet()) {
+                        for (String vehicleId : heartBeatWidgets.keySet()) {
                             try {
                                 MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 0, new Date()));
                             } catch (HornetQException ex) {

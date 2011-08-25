@@ -16,7 +16,7 @@ public class PulseEvent implements CallEvent, Serializable{
     
     private boolean processed;
     private int value;
-    private Long vehicleId;
+    private String vehicleId;
     private String callId;
 
     public PulseEvent(int value) {
@@ -44,11 +44,11 @@ public class PulseEvent implements CallEvent, Serializable{
         this.callId = callId;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

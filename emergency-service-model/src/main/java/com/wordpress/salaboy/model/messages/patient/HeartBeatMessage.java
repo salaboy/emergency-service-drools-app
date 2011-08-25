@@ -14,11 +14,11 @@ import java.util.Date;
  */
 public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessage{
     private String callId;
-    private Long vehicleId;
+    private String vehicleId;
     private double heartBeatValue;
     private Date time;
 
-    public HeartBeatMessage(String callId, Long vehicleId, double heartBeatValue, Date time) {
+    public HeartBeatMessage(String callId, String vehicleId, double heartBeatValue, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.heartBeatValue = heartBeatValue;
@@ -50,11 +50,11 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
         this.time = time;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
