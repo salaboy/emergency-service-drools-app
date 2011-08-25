@@ -47,6 +47,7 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
 /**
  *
@@ -76,9 +77,12 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
     Call call = null;
     @Before
     public void setUp() throws Exception {
-        emergency = new Emergency(1L);
+        emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         call = new Call(1,2,new Date());
-        call.setId(1L);
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
@@ -133,7 +137,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         assertNotNull(taskAbstracts);
         assertEquals(1, taskAbstracts.size());
         TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        assertEquals(" Select Vehicle For 1 ", taskAbstract.getName().getLocalPart());
+        assertEquals(" Select Vehicle For "+call.getId()+" ", taskAbstract.getName().getLocalPart());
         
 
 
@@ -157,7 +161,10 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        vehicles.add(new Ambulance("My Ambulance", new Date()));
+        Ambulance ambulance = new Ambulance("My Ambulance", new Date());
+        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicle();
+        ambulance.setId(ambulanceId);
+        vehicles.add(ambulance);
         info.put("emergency.vehicles", vehicles);
         
         
@@ -166,7 +173,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         Thread.sleep(4000);
         
         //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(1L, 1L, new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulanceId, call.getId(), new Date()));
 
         Thread.sleep(4000);
         
@@ -190,7 +197,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         Thread.sleep(4000);
 
         //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(1L, new Hospital("Hospital A", 0, 0), 1L, new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), call.getId(), new Date()));
         
         Thread.sleep(4000);
 

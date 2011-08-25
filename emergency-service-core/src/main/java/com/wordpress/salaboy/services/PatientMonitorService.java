@@ -45,7 +45,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class PatientMonitorService {
     private static PatientMonitorService instance;
-    private Map<Long,StatefulKnowledgeSession> sessions = new HashMap<Long, StatefulKnowledgeSession>();
+    private Map<String,StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
     
     
     private PatientMonitorService() {
@@ -59,9 +59,9 @@ public class PatientMonitorService {
         return instance;
     }
 
-    public void newVehicleDispatched(final Long callId,Long vehicleId) {
+    public void newVehicleDispatched(final String callId,final String vehicleId) {
         try {
-            final StatefulKnowledgeSession newSession = createPatientMonitorSession(callId);
+            final StatefulKnowledgeSession newSession = createPatientMonitorSession(vehicleId);
             sessions.put(vehicleId, newSession);
             newSession.setGlobal("vehicleId", vehicleId);
             newSession.setGlobal("callId", callId);
@@ -69,7 +69,7 @@ public class PatientMonitorService {
             new Thread(new Runnable() {
 
                 public void run() {
-                    sessions.get(callId).fireUntilHalt();
+                    sessions.get(vehicleId).fireUntilHalt();
                 }
             }).start();
         } catch (IOException ex) {
@@ -78,7 +78,7 @@ public class PatientMonitorService {
        
     }
     
-    public void removeVehicle(Long vehicleId){
+    public void removeVehicle(String vehicleId){
         if (!sessions.containsKey(vehicleId)){
             throw new IllegalArgumentException("Unknown vehicle "+vehicleId+". Did you dispatched it?");
         }
@@ -94,7 +94,7 @@ public class PatientMonitorService {
         sessions.get(event.getVehicleId()).getWorkingMemoryEntryPoint("patientHeartbeats").insert(event);
     }
     
-    private StatefulKnowledgeSession createPatientMonitorSession(Long vehicleId) throws IOException {
+    private StatefulKnowledgeSession createPatientMonitorSession(String vehicleId) throws IOException {
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
         Address addr = gsd.addAddress("socket");

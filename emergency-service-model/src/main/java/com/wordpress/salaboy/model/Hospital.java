@@ -15,8 +15,8 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
  * @author salaboy
  */
 public class Hospital implements Serializable{
-    private static Long lastId = 0l;
-    private Long id;
+   // private static Long lastId = 0l;
+    private String id;
     private int availableBeds;
     private List<EmergencyType> specialities;
     private int rank;
@@ -30,7 +30,7 @@ public class Hospital implements Serializable{
     }
 
     public Hospital(String name, float positionX, float positionY) {
-        this.id = lastId++;
+       // this.id = lastId++;
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -47,11 +47,11 @@ public class Hospital implements Serializable{
         this.availableBeds = availableBeds;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

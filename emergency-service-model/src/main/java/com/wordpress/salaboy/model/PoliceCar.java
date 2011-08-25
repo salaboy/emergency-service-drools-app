@@ -9,37 +9,37 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class PoliceCar implements Vehicle{
 
-    private Long id;
+    private String id;
     private String name;
    
     private Date departureTime;
     private Date emergencyReachedTime;
     private float positionX;
     private float positionY;
-    public static AtomicLong incrementalId = new AtomicLong();
+  //  public static AtomicLong incrementalId = new AtomicLong();
     
 
 
     public PoliceCar(String name, Date departureTime) {
-        this.id = PoliceCar.incrementalId.getAndIncrement();
+  //      this.id = PoliceCar.incrementalId.getAndIncrement();
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public PoliceCar(String name) {
-        this.id = PoliceCar.incrementalId.getAndIncrement();
+  //      this.id = PoliceCar.incrementalId.getAndIncrement();
         this.name = name;
     }
     
     
     
     
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

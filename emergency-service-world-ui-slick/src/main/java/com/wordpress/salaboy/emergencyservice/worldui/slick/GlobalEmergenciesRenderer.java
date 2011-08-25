@@ -52,7 +52,7 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
     
     public void onClick(int button, int x, int y, int count) {
         if (Input.MOUSE_LEFT_BUTTON == button){
-            for (Entry<Long, GraphicableEmergency> entry : ui.getEmergencies().entrySet()) {
+            for (Entry<String, GraphicableEmergency> entry : ui.getEmergencies().entrySet()) {
                 if (entry.getValue().getPolygon().contains(x,y)){
                     this.ui.emergencyClicked(entry.getKey());
                     //assumes that a single click only collides with only one emergency

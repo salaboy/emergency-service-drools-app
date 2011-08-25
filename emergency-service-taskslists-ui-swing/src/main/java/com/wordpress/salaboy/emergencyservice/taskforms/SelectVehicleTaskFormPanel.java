@@ -201,7 +201,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
            List<Vehicle> selectedVehicles = new ArrayList<Vehicle>(selected.length);
            
             for(int i = 0; i < selected.length; i++){
-                selectedVehicles.add(DistributedPeristenceServerService.getInstance().loadVehicle((Long)selectedVehiclesjTable.getModel().getValueAt(i, 0)));
+                selectedVehicles.add(DistributedPeristenceServerService.getInstance().loadVehicle((String)selectedVehiclesjTable.getModel().getValueAt(i, 0)));
             }
             Map<String, Object> info = new HashMap<String, Object>();
             info.put("emergency.vehicles", selectedVehicles);

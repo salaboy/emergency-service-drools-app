@@ -12,18 +12,18 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Patient implements Serializable {
 
     
-    private Long id;
+    private String id;
     private int age;
     private String gender;
     private List<Alert> alerts;
-    public static AtomicLong incrementalId = new AtomicLong();
+  //  public static AtomicLong incrementalId = new AtomicLong();
     
     public Patient() {
         
     }
 
     public Patient( int age, String gender) {
-        this.id = Patient.incrementalId.getAndIncrement();
+      //  this.id = Patient.incrementalId.getAndIncrement();
         this.age = age;
         this.gender = gender;
     }
@@ -44,11 +44,11 @@ public class Patient implements Serializable {
         this.gender = gender;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

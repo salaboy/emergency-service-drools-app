@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author salaboy
  */
 public interface Vehicle extends Serializable {
-    public Long getId();
+    public String getId();
     public String getName();
     public float getPositionX();
     public float getPositionY();

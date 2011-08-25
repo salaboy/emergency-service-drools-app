@@ -11,28 +11,28 @@ import java.io.Serializable;
  * @author esteban
  */
 public class VehicleDispatchedMessage implements Serializable ,EmergencyInterchangeMessage{
-    private Long callId;
-    private Long vehicleId;
+    private String callId;
+    private String vehicleId;
 
-    public VehicleDispatchedMessage(Long callId, Long vehicleId) {
+    public VehicleDispatchedMessage(String callId, String vehicleId) {
         this.callId = callId;
         this.vehicleId = vehicleId;
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
     
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

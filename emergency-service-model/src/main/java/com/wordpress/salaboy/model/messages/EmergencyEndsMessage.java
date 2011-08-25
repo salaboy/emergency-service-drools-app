@@ -12,20 +12,20 @@ import java.util.Date;
  * @author esteban
  */
 public class EmergencyEndsMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long callId;
+    private String callId;
     private Date time;
     
-    public EmergencyEndsMessage(Long callId, Date time) {
+    public EmergencyEndsMessage(String callId, Date time) {
         this.callId = callId;
         this.time = time;
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
 

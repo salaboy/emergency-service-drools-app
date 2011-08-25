@@ -9,6 +9,6 @@ package com.wordpress.salaboy.sensor;
  * @author esteban
  */
 public interface EmergencyInformationDataSource {
-    Long getCallId();
-    Long getVehicleId();
+    String getCallId();
+    String getVehicleId();
 }

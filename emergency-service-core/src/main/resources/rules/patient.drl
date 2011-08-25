@@ -12,7 +12,7 @@ declare PulseEvent
 end
 
 global Long vehicleId;
-global Long callId;
+global String callId;
 
 rule "Patient with no vital sign"
     when

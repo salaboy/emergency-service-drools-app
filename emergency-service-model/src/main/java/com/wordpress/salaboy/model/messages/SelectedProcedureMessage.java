@@ -14,17 +14,17 @@ import java.util.Map;
  */
 public class SelectedProcedureMessage implements Serializable, EmergencyInterchangeMessage{
     private String procedureName;
-    private Long callId;
+    private String callId;
     private Map<String, Object> parameters;
 
-    public SelectedProcedureMessage(String procedureName, Long callId, Map<String, Object> parameters) {
+    public SelectedProcedureMessage(String procedureName, String callId, Map<String, Object> parameters) {
         this.procedureName = procedureName;
         this.callId = callId;
         this.parameters = parameters;
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 

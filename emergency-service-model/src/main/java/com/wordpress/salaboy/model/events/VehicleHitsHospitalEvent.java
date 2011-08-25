@@ -13,12 +13,12 @@ import java.util.Date;
  * @author salaboy
  */
 public class VehicleHitsHospitalEvent implements CallEvent, Serializable{
-    private Long callId;
-    private Long vehicleId;
-    private Long hospitalId;
+    private String callId;
+    private String vehicleId;
+    private String hospitalId;
     private Date time;
     
-    public VehicleHitsHospitalEvent(Long callId, Long vehicleId, Long hospitalId, Date date) {
+    public VehicleHitsHospitalEvent(String callId, String vehicleId, String hospitalId, Date date) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.hospitalId = hospitalId;
@@ -26,11 +26,11 @@ public class VehicleHitsHospitalEvent implements CallEvent, Serializable{
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public Long getHospitalId() {
+    public String getHospitalId() {
         return hospitalId;
     }
 
@@ -38,7 +38,7 @@ public class VehicleHitsHospitalEvent implements CallEvent, Serializable{
         return time;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
     

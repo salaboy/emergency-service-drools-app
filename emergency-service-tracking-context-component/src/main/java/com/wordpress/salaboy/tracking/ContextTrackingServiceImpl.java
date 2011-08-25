@@ -14,6 +14,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import scala.collection.Iterator;
 
 /**
@@ -29,7 +30,16 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     private Index<Node> proceduresIndex;
     private Index<Node> vehiclesIndex;
     private Index<Node> channelsIndex;
-
+    public static String defaultDB = "db/graph";
+    private static ContextTrackingServiceImpl instance;
+    
+    public static ContextTrackingService getInstance(){
+        if(instance == null){
+            instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
+        }
+        return instance;
+    }
+    
     public ContextTrackingServiceImpl(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
 

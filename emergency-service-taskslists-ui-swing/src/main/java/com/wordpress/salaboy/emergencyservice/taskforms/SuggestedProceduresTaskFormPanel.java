@@ -51,7 +51,7 @@ public class SuggestedProceduresTaskFormPanel extends javax.swing.JPanel {
     private ControlSuggestedProceduresTaskListPanel parent;
     private HumanTaskService taskClient;
     private List<String> suggestedProcedures;
-    private Long emergencyId;
+    private String emergencyId;
     private String taskId;
 
     /** Creates new form SuggestedProceduresPanel */

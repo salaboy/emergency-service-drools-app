@@ -46,7 +46,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
       
 
     then
-        Long callId = ((Call)$processInstance.getVariable("call")).getId();
+        String callId = ((Call)$processInstance.getVariable("call")).getId();
         //Send Hospital Selected Message
         MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
         

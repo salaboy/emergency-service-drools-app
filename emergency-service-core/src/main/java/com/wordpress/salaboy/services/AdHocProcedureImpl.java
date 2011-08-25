@@ -50,7 +50,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class AdHocProcedureImpl implements AdHocProcedure{
 
-    private Long callId;
+    private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
 
@@ -58,7 +58,7 @@ public class AdHocProcedureImpl implements AdHocProcedure{
         this.procedureName = "AdHocProcedure";
     }
 
-    private StatefulKnowledgeSession createAdHocProcedureSession(Long callId) throws IOException {
+    private StatefulKnowledgeSession createAdHocProcedureSession(String callId) throws IOException {
        
         
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
@@ -112,7 +112,7 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     }
     
     @Override
-    public void configure(Long callId, Map<String, Object> parameters) {
+    public void configure(String callId, Map<String, Object> parameters) {
         this.callId = callId;
         try {
             internalSession = createAdHocProcedureSession(this.callId);

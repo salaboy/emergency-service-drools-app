@@ -21,13 +21,13 @@
         <module>emergency-service-model</module>
         <module>emergency-service-world-ui-slick</module>
         <module>emergency-service-taskslists-ui-swing</module>
-	<module>emergency-service-taskslists-ui-web</module>
+        <module>emergency-service-taskslists-ui-web</module>
         <module>emergency-service-sensor</module>
         <module>emergency-service-doc</module>
+        <module>emergency-service-dashboard-ui-swing</module>
+        <module>emergency-service-tracking-context-component</module>
         <module>run</module>
-    <module>emergency-service-dashboard-ui-swing</module>
-    <module>emergency-service-tracking-context-component</module>
-  </modules>
+    </modules>
 
     <dependencyManagement>
         <dependencies>

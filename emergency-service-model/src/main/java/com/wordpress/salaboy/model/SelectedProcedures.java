@@ -15,12 +15,12 @@ import java.util.List;
 public class SelectedProcedures implements Serializable{
     
     private List<String> selectedProcedures = new ArrayList<String>();
-    private Long emergencyId;
-    public SelectedProcedures(Long emergencyId) {
+    private String emergencyId;
+    public SelectedProcedures(String emergencyId) {
         this.emergencyId = emergencyId;
     }
 
-    public Long getEmergencyId() {
+    public String getEmergencyId() {
         return emergencyId;
     }
     

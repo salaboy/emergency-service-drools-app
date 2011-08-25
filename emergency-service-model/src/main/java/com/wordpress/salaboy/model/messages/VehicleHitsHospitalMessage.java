@@ -13,11 +13,11 @@ import java.util.Date;
  * @author esteban
  */
 public class VehicleHitsHospitalMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long vehicleId;
-    private Long callId;
+    private String vehicleId;
+    private String callId;
     private Date time;
     private Hospital hospital;
-    public VehicleHitsHospitalMessage(Long vehicleId, Hospital hospital, Long callId, Date time) {
+    public VehicleHitsHospitalMessage(String vehicleId, Hospital hospital, String callId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
         this.time = time;
@@ -27,19 +27,19 @@ public class VehicleHitsHospitalMessage implements Serializable, EmergencyInterc
     
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long emergecyId) {
+    public void setCallId(String emergecyId) {
         this.callId = emergecyId;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 

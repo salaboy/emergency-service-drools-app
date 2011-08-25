@@ -13,23 +13,23 @@ import java.util.Date;
  * @author esteban
  */
 public class PatientMonitorAlertMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long callId;
+    private String callId;
     private Long vehicleId;
     private String message;
     private Date time;
 
-    public PatientMonitorAlertMessage(Long callId, Long vehicleId, String message, Date time) {
+    public PatientMonitorAlertMessage(String callId, Long vehicleId, String message, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;
         this.message = message;
     }
 
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
 

@@ -18,22 +18,22 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>emergency-service-model</artifactId>
         </dependency>
-
+        
+         <!-- Context Tracking Dependency -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>emergency-service-tracking-context-component</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Drools Dependencies -->
-        <!-- Snapshot API -->
+        
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>knowledge-api</artifactId>
             <type>jar</type>
         </dependency>
-        <!-- Release API -->
-        <!--dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-api</artifactId>
-            <version>${drools.version}</version>
-            <type>jar</type>
-        </dependency-->
+        
 
         <dependency>
             <groupId>org.drools</groupId>

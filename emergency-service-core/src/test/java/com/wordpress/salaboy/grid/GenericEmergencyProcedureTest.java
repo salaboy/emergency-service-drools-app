@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
 import com.wordpress.salaboy.model.SuggestedProcedures;
@@ -33,7 +34,7 @@ import com.wordpress.salaboy.messaging.MessageProducer;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
-import com.wordpress.salaboy.services.IncomingCallsMGMTService;
+import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
 import java.util.Date;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
@@ -50,11 +51,11 @@ import static org.junit.Assert.*;
  *
  * @author salaboy
  */
-public class IncomingCallsMGMTServiceTest extends GridBaseTest{
+public class GenericEmergencyProcedureTest extends GridBaseTest{
 
     private MessageConsumer consumer;
     private TaskClient client;
-    public IncomingCallsMGMTServiceTest() {
+    public GenericEmergencyProcedureTest() {
         
     }
 
@@ -106,29 +107,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         
     }
 
-    @Ignore
-    public void phoneCallsMGMTServiceTest() throws HornetQException, InterruptedException{
-        
-        MessageProducer producer = MessageFactory.createMessageProducer();
-        producer.sendMessage(new Call(1,2,new Date()));
-        producer.stop();
-        
-        Call call = (Call) consumer.receiveMessage();
-        assertNotNull(call);
-        
-        IncomingCallsMGMTService.getInstance().newPhoneCall(call);
-        
-        Thread.sleep(1000);
-        
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
-         List<TaskSummary> sums = handler.getResults();
-        assertNotNull(sums);
-        assertEquals(1, sums.size());
-        
-        
-        
-    }
+   
     
     
     @Test
@@ -141,7 +120,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         Call call = (Call) consumer.receiveMessage();
         assertNotNull(call);
         
-        IncomingCallsMGMTService.getInstance().newPhoneCall(call);
+        GenericEmergencyProcedureImpl.getInstance().newPhoneCall(call);
         
         Thread.sleep(1000);
         
@@ -158,7 +137,7 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         Thread.sleep(1000);
         // I can asume that all the procedures are ended, we need to delegate this to the external component
         AllProceduresEndedEvent allProceduresEndedEvent = new AllProceduresEndedEvent(null, new ArrayList<String>());
-        IncomingCallsMGMTService.getInstance().allProceduresEnded(allProceduresEndedEvent);
+        GenericEmergencyProcedureImpl.getInstance().allProceduresEnededNotification(allProceduresEndedEvent);
         // We should see the report in the console
         Thread.sleep(10000);
         
@@ -191,7 +170,9 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         
         
         //I shoudl call the tracking component here and register the new emerency
-        Emergency emergency = new Emergency(1L);
+        Emergency emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         emergency.setCall(retrivedCall);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);

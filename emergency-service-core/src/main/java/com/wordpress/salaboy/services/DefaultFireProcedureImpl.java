@@ -53,7 +53,7 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  */
 public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
-    private Long callId;
+    private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
     private boolean useLocalKSession;
@@ -62,7 +62,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         this.procedureName = "DefaultFireProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultFireProcedureSession(Long callId) throws IOException {
+    private StatefulKnowledgeSession createDefaultFireProcedureSession(String callId) throws IOException {
         
         GridNode remoteN1 = null;
         
@@ -151,12 +151,11 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     }
 
     @Override
-    public void configure(Long callId, Map<String, Object> parameters) {
-        
-        if (!parameters.containsKey("emergency")){
+    public void configure(String callId, Map<String, Object> parameters) {
+	if (!parameters.containsKey("emergency")){
             throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
         }
-        
+
         this.callId = callId;
         try {
             internalSession = createDefaultFireProcedureSession(this.callId);

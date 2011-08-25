@@ -25,10 +25,10 @@ import java.util.Map;
 public class ProceduresMGMTService {
 
     private static ProceduresMGMTService instance;
-    private Map<Long, List<ProcedureService>> proceduresByCall;
+    private Map<String, List<ProcedureService>> proceduresByCall;
 
     private ProceduresMGMTService() {
-        proceduresByCall = new HashMap<Long, List<ProcedureService>>();
+        proceduresByCall = new HashMap<String, List<ProcedureService>>();
 
     }
 
@@ -39,7 +39,7 @@ public class ProceduresMGMTService {
         return instance;
     }
 
-    public void newRequestedProcedure(final Long callId, String procedureName, Map<String, Object> parameters) {
+    public void newRequestedProcedure(final String callId, String procedureName, Map<String, Object> parameters) {
         
         if (!proceduresByCall.containsKey(callId)){
             proceduresByCall.put(callId, new ArrayList<ProcedureService>());
@@ -60,7 +60,7 @@ public class ProceduresMGMTService {
      */
     public void notifyProcedures(EmergencyInterchangeMessage message){
         
-        Long callId = message.getCallId();
+        String callId = message.getCallId();
         
         //convert from Message to CallEvent
         CallEvent event = this.convertMessageToEvent(message);

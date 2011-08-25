@@ -12,7 +12,7 @@ import java.util.Map;
  * @author salaboy
  */
 public interface ProcedureService {
-    public void configure(Long callId, Map<String, Object> parameters);
     
     public void procedureEndsNotification(EmergencyEndsEvent event);
+    public void configure(String callId, Map<String, Object> parameters);
 }
