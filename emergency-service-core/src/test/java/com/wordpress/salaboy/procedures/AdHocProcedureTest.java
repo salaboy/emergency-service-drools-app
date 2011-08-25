@@ -29,6 +29,7 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -108,7 +109,7 @@ public class AdHocProcedureTest extends GridBaseTest {
     public void defaultAdHocSimpleTest() throws InterruptedException, ClassNotFoundException, IOException {
         emergency = new Emergency(1L);
         call = new Call(1, 2, new Date());
-        call.setId(1L);
+        //call.setId(UUID.);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
@@ -132,7 +133,8 @@ public class AdHocProcedureTest extends GridBaseTest {
     public void defaultAdHocPlusTrackingTest() throws InterruptedException, ClassNotFoundException, IOException {
         emergency = new Emergency(1L);
         call = new Call(1, 2, new Date());
-        call.setId(1L);
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);

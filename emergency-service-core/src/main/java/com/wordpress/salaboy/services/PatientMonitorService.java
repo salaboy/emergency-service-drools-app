@@ -59,9 +59,9 @@ public class PatientMonitorService {
         return instance;
     }
 
-    public void newVehicleDispatched(final Long callId,Long vehicleId) {
+    public void newVehicleDispatched(final String callId,final Long vehicleId) {
         try {
-            final StatefulKnowledgeSession newSession = createPatientMonitorSession(callId);
+            final StatefulKnowledgeSession newSession = createPatientMonitorSession(vehicleId);
             sessions.put(vehicleId, newSession);
             newSession.setGlobal("vehicleId", vehicleId);
             newSession.setGlobal("callId", callId);
@@ -69,7 +69,7 @@ public class PatientMonitorService {
             new Thread(new Runnable() {
 
                 public void run() {
-                    sessions.get(callId).fireUntilHalt();
+                    sessions.get(vehicleId).fireUntilHalt();
                 }
             }).start();
         } catch (IOException ex) {

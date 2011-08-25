@@ -24,7 +24,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class DumbProcedureImpl implements DumbProcedure {
 
-    private Long callId;
+    private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
 
@@ -32,7 +32,7 @@ public class DumbProcedureImpl implements DumbProcedure {
         this.procedureName = "DumbProcedure";
     }
 
-    private StatefulKnowledgeSession createDumbProcedureSession(Long callId) throws IOException {
+    private StatefulKnowledgeSession createDumbProcedureSession(String callId) throws IOException {
         //REMOTING TAKES TO LONG WE NEED TO DO THIS ASYNC OR PRELOAD
 //        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^Initializing grid node");
 //        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
@@ -107,7 +107,7 @@ public class DumbProcedureImpl implements DumbProcedure {
     }
 
     @Override
-    public void configure(Long callId, Map<String, Object> parameters) {
+    public void configure(String callId, Map<String, Object> parameters) {
         this.callId = callId;
         try {
             internalSession = createDumbProcedureSession(this.callId);

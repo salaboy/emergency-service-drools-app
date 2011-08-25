@@ -70,8 +70,10 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
     }
     
     public void newPhoneCall(Call call){
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        
+        
         //Track new call
+        
         getPhoneCallsEntryPoint().insert(call);
     }
     

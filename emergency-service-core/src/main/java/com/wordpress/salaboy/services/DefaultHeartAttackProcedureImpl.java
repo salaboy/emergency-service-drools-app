@@ -51,7 +51,7 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  */
 public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProcedure {
 
-    private Long callId;
+    private String callId;
         private StatefulKnowledgeSession internalSession;
     private String procedureName;
     
@@ -59,7 +59,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         this.procedureName = "DefaultHeartAttackProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(Long callId) throws IOException {
+    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String callId) throws IOException {
 
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
@@ -138,7 +138,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     
     
     @Override
-    public void configure(Long callId, Map<String, Object> parameters) {
+    public void configure(String callId, Map<String, Object> parameters) {
         this.callId = callId;
         try {
             internalSession = createDefaultHeartAttackProcedureSession(this.callId);

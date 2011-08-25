@@ -142,12 +142,12 @@ public class DistributedPeristenceServerService {
         return ((Map<Long, Hospital>) this.getCache().get("hospitals")).values();
     }
 
-    public void addEntryToReport(Long callId, String entry) {
+    public void addEntryToReport(String callId, String entry) {
         if (this.getCache().get("reports") == null) {
             getCache().put("reports", new HashMap<Long, Report>());
         }
-        if (((Map<Long, Report>) getCache().get("reports")).get(callId) == null) {
-            ((Map<Long, Report>) getCache().get("reports")).put(callId, new Report());
+        if (((Map<String, Report>) getCache().get("reports")).get(callId) == null) {
+            ((Map<String, Report>) getCache().get("reports")).put(callId, new Report());
         }
         Map<Long, Report> reports = ((Map<Long, Report>) this.getCache().get("reports"));
         reports.get(callId).addEntry(entry);
@@ -155,14 +155,14 @@ public class DistributedPeristenceServerService {
 
     }
 
-    public Report getReportByCallId(Long callId) {
+    public Report getReportByCallId(String callId) {
         if (this.getCache().get("reports") == null) {
             getCache().put("reports", new HashMap<Long, Report>());
         }
-        if (((Map<Long, Report>) getCache().get("reports")).get(callId) == null) {
-            ((Map<Long, Report>) getCache().get("reports")).put(callId, new Report());
+        if (((Map<String, Report>) getCache().get("reports")).get(callId) == null) {
+            ((Map<String, Report>) getCache().get("reports")).put(callId, new Report());
         }
-        return ((Map<Long, Report>) getCache().get("reports")).get(callId);
+        return ((Map<String, Report>) getCache().get("reports")).get(callId);
     }
 
     public Collection<Emergency> getAllEmergencies() {

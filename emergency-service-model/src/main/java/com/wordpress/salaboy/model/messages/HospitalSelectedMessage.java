@@ -13,18 +13,18 @@ import java.io.Serializable;
  */
 public class HospitalSelectedMessage implements Serializable, EmergencyInterchangeMessage{
     private Hospital hospital;
-    private Long callId;
+    private String callId;
 
-    public HospitalSelectedMessage(Long callId, Hospital hospital) {
+    public HospitalSelectedMessage(String callId, Hospital hospital) {
         this.hospital = hospital;
         this.callId = callId;
     }
 
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
 

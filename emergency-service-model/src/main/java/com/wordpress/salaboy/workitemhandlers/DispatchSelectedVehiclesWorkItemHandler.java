@@ -24,7 +24,7 @@ public class DispatchSelectedVehiclesWorkItemHandler implements WorkItemHandler{
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        Long callId = ((Call) workItem.getParameter("call")).getId();
+        String callId = ((Call) workItem.getParameter("call")).getId();
         List<Vehicle> vehicles = (List<Vehicle>) workItem.getParameter("emergency.vehicles");
         for (Vehicle vehicle : vehicles) {
             try {

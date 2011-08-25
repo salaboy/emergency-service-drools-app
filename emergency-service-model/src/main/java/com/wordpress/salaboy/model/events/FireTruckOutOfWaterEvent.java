@@ -13,7 +13,7 @@ import java.util.Date;
  * @author esteban
  */
 public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
-    private Long callId;
+    private String callId;
     private Long vehicleId;
     
     private Date time;
@@ -25,18 +25,18 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
         this.time = time;
     }
     
-    public FireTruckOutOfWaterEvent(Long callId, Long vehicleId, Date time) {
+    public FireTruckOutOfWaterEvent(String callId, Long vehicleId, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
 

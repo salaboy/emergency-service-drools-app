@@ -11,5 +11,5 @@ import java.io.Serializable;
  * @author esteban
  */
 public interface CallEvent extends Serializable {
-    Long getCallId();
+    public String getCallId();
 }

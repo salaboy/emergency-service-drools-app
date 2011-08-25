@@ -13,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class ProcedureServiceFactory {
     
-    public static ProcedureService createProcedureService(Long callId, String procedureName, Map<String, Object> parameters){
+    public static ProcedureService createProcedureService(String callId, String procedureName, Map<String, Object> parameters){
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext( "procedures-beans.xml" );
         ProcedureService procedureService = (ProcedureService) context.getBean(procedureName);
         procedureService.configure(callId, parameters);

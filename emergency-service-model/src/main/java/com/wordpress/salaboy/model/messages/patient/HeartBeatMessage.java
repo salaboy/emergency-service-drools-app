@@ -13,12 +13,12 @@ import java.util.Date;
  * @author esteban
  */
 public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessage{
-    private Long callId;
+    private String callId;
     private Long vehicleId;
     private double heartBeatValue;
     private Date time;
 
-    public HeartBeatMessage(Long callId, Long vehicleId, double heartBeatValue, Date time) {
+    public HeartBeatMessage(String callId, Long vehicleId, double heartBeatValue, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.heartBeatValue = heartBeatValue;
@@ -26,11 +26,11 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long callId) {
+    public void setCallId(String callId) {
         this.callId = callId;
     }
 

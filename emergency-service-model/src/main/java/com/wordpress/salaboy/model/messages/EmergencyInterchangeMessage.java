@@ -9,6 +9,6 @@ package com.wordpress.salaboy.model.messages;
  * @author salaboy
  */
 public interface EmergencyInterchangeMessage {
-    public Long getCallId();
+    public String getCallId();
     
 }

@@ -14,21 +14,21 @@ import java.util.Date;
  */
 public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInterchangeMessage {
     private Long vehicleId;
-    private Long callId;
+    private String callId;
     private Date time;
     
-    public VehicleHitsEmergencyMessage(Long vehicleId, Long callId, Date time) {
+    public VehicleHitsEmergencyMessage(Long vehicleId, String callId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
         this.time = time; 
     }
 
     @Override
-    public Long getCallId() {
+    public String getCallId() {
         return callId;
     }
 
-    public void setCallId(Long emergecyId) {
+    public void setCallId(String emergecyId) {
         this.callId = emergecyId;
     }
 

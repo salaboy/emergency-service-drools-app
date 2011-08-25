@@ -37,6 +37,7 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -74,8 +75,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         fireTruck = new FireTruck("FireTruck 1");
                 
         call = new Call(1,2,new Date());
-        call.setId(1L);
-        
+
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.FIRE);
