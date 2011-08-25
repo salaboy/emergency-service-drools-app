@@ -79,6 +79,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         emergency.setId(emergencyId);
         
         fireTruck = new FireTruck("FireTruck 1");
+        fireTruck.setId("FT1");
                 
         call = new Call(1,2,new Date());
 
@@ -225,7 +226,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         
         firefighterTask = taskAbstracts.get(0);
 
-        Assert.assertEquals("Water Refill: go to ( "+firefightersDepartment.getX()+", "+firefightersDepartment.getY()+" )", firefighterTask.getName());
+        Assert.assertEquals("Water Refill: go to ( "+firefightersDepartment.getX()+", "+firefightersDepartment.getY()+" )", firefighterTask.getName().toString());
         
         //The firefighter completes the task
         humanTaskServiceClient.start(firefighterTask.getId());

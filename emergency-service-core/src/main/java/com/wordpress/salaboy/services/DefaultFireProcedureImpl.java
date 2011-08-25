@@ -57,6 +57,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
     private boolean useLocalKSession;
+    private ProcessInstance processInstance;
 
     public DefaultFireProcedureImpl() {
         this.procedureName = "DefaultFireProcedure";
@@ -147,7 +148,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         internalSession.insert(event);
         
         //the process is signaled
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
+        //internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
+        internalSession.signalEvent("TruckOutOfWater", null, processInstance.getId());
     }
 
     @Override
@@ -171,14 +173,15 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
             }
         }).start();
         
-        ProcessInstance processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
+        processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
         internalSession.insert(processInstance);
         internalSession.insert(parameters.get("emergency"));
     }
     
     @Override
     public void procedureEndsNotification(EmergencyEndsEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
+        //internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
+        internalSession.signalEvent("NoMoreFire", null, processInstance.getId());
     }
 
     public boolean isUseLocalKSession() {

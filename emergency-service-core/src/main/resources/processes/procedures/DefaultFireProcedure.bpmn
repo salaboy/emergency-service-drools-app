@@ -26,7 +26,7 @@
   <itemDefinition id="_fireTruckOutOfWaterEventEventItem" structureRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent" />
   <itemDefinition id="_emergencyEndsEventItem" structureRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent" />
 
-  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" >
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" tns:adHoc="true">
 
     <extensionElements>
       <tns:import name="com.wordpress.salaboy.model.Call" />
@@ -144,18 +144,10 @@
 
     <endEvent id="_98" name="End Happy Path" >
     </endEvent>
-    
-    <intermediateCatchEvent id="_7" name="fireTruckOutOfWaterEvent" >
-      <dataOutput id="_7_fireTruckOutOfWaterOutput" name="event" />
-      <dataOutputAssociation>
-        <sourceRef>_7_fireTruckOutOfWaterOutput</sourceRef>
-        <targetRef>fireTruckOutOfWaterEvent</targetRef>
-      </dataOutputAssociation>
-      <outputSet>
-        <dataOutputRefs>_7_fireTruckOutOfWaterOutput</dataOutputRefs>
-      </outputSet>
-      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent"/>
-    </intermediateCatchEvent>
+
+    <scriptTask id="_7" name="TruckOutOfWater" >
+        <script>System.out.println("Truck Out of Water!");</script>
+    </scriptTask>
 
     <scriptTask id="_660" name="Script" scriptFormat="http://www.java.com/java" >
       <script>
@@ -181,7 +173,7 @@
         <dataInput id="_9_call.IdInput" name="call" />
         <dataInput id="_9_emergency.IdInput" name="emergency" />
         <dataInput id="_9_destinationInput" name="refillDestination" />
-        
+
         <inputSet>
           <dataInputRefs>_9_call.IdInput</dataInputRefs>
           <dataInputRefs>_9_emergency.IdInput</dataInputRefs>
@@ -232,7 +224,7 @@
           <to xs:type="tFormalExpression">_9_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
-      
+
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>firefighter</formalExpression>
@@ -240,33 +232,38 @@
       </potentialOwner>
     </userTask>
 
-    <endEvent id="_97" name="End Out of Water path" >
+    <endEvent id="_10" name="EndProcess" >
     </endEvent>
 
+    <sequenceFlow id="_7-_660" sourceRef="_7" targetRef="_660" />
+    <sequenceFlow id="_660-_8" sourceRef="_660" targetRef="_8" />
+    <sequenceFlow id="_8-_661" sourceRef="_8" targetRef="_661" />
+    <sequenceFlow id="_661-_9" sourceRef="_661" targetRef="_9" />
+    <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
 
-    <intermediateCatchEvent id="_10" name="Emergency Ends" >
-      <dataOutput id="_10_emergencyEndsOutput" name="event" />
-      <dataOutputAssociation>
-        <sourceRef>_10_emergencyEndsOutput</sourceRef>
-        <targetRef>emergencyEndsEvent</targetRef>
-      </dataOutputAssociation>
-      <outputSet>
-        <dataOutputRefs>_10_emergencyEndsOutput</dataOutputRefs>
-      </outputSet>
-      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent"/>
-    </intermediateCatchEvent>
+   
+    <scriptTask id="_11" name="NoMoreFire" >
+      <script>System.out.println("No More Fire");</script>
+    </scriptTask>
 
-    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+    <scriptTask id="_12" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
         report.addEntry("Process ended");
       </script>
     </scriptTask>
 
-    <endEvent id="_99" name="EndProcess" >
+    <endEvent id="_13" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
-   
+
+         <!-- connections -->
+        <sequenceFlow id="_11-12" sourceRef="_11" targetRef="_12" />
+        <sequenceFlow id="_12-13" sourceRef="_12" targetRef="_13" />
+
+    
+
+    
 
     <!-- connections -->
 
@@ -277,20 +274,7 @@
     <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
     <sequenceFlow id="_6-_98" sourceRef="_6" targetRef="_98" />
 
-    <!-- Water Refill -->
-    <!--sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
-    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
-    <sequenceFlow id="_9-_97" sourceRef="_9" targetRef="_97" /-->
 
-    <sequenceFlow id="_7-_660" sourceRef="_7" targetRef="_660" />
-    <sequenceFlow id="_660-_8" sourceRef="_660" targetRef="_8" />
-    <sequenceFlow id="_8-_661" sourceRef="_8" targetRef="_661" />
-    <sequenceFlow id="_661-_9" sourceRef="_661" targetRef="_9" />
-    <sequenceFlow id="_9-_97" sourceRef="_9" targetRef="_97" />
-
-    <!-- Stop -->
-    <sequenceFlow id="_10-_3" sourceRef="_10" targetRef="_3" />
-    <sequenceFlow id="_3-_99" sourceRef="_3" targetRef="_99" />
    
   </process>
 
