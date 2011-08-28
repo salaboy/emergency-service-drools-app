@@ -114,7 +114,10 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
     public void genericEmergencyProcedureTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException{
         
         MessageProducer producer = MessageFactory.createMessageProducer();
-        producer.sendMessage(new Call(1,2,new Date()));
+        Call initialCall = new Call(1,2,new Date());
+        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        initialCall.setId(callId);
+        producer.sendMessage(initialCall);
         producer.stop();
         
         Call call = (Call) consumer.receiveMessage();
@@ -143,7 +146,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
     }
 
-    private void doOperatorTask() throws ClassNotFoundException, IOException {
+     private void doOperatorTask() throws ClassNotFoundException, IOException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("operator", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
@@ -166,14 +169,15 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         ByteArrayInputStream bais = new ByteArrayInputStream(content.getContent());
         ObjectInputStream ois = new ObjectInputStream(bais);
         Map<String, Object> deserializedContent = (Map<String, Object>)ois.readObject();
-        Call retrivedCall = (Call) deserializedContent.get("call");
+        Call restoredCall = (Call) deserializedContent.get("call");
         
         
         //I shoudl call the tracking component here and register the new emerency
         Emergency emergency = new Emergency();
         String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
         emergency.setId(emergencyId);
-        emergency.setCall(retrivedCall);
+        emergency.setCall(restoredCall);
+        ContextTrackingServiceImpl.getInstance().attachEmergency(restoredCall.getId(), emergencyId);
         emergency.setLocation(new Location(1,2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
@@ -194,6 +198,9 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(sums.get(0).getId(), "operator", result, completeTaskOperationHandler);
+        
+        
+        
     }
 
     private void doControlTask() throws IOException, ClassNotFoundException {
@@ -258,6 +265,11 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         List<TaskSummary> sums = handler.getResults();
         assertNotNull(sums);
         assertEquals(1, sums.size());
+        
+        BlockingTaskOperationResponseHandler startTaskOperationHandler = new BlockingTaskOperationResponseHandler();
+        client.start(sums.get(0).getId(), "garage_emergency_service", startTaskOperationHandler);
+        
+        
     }
  
 

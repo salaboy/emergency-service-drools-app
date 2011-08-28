@@ -11,5 +11,7 @@ import java.util.Map;
  * @author salaboy
  */
 public interface ProcedureService {
-    public void configure(String callId, Map<String, Object> parameters);
+    public String getId();
+    public void setId(String id);
+    public void configure(String emergencyId, Map<String, Object> parameters);
 }

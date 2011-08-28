@@ -20,7 +20,7 @@ public class VehicleDispatchedMessage implements Serializable ,EmergencyIntercha
     }
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return callId;
     }
 

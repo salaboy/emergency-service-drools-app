@@ -14,11 +14,15 @@ import java.util.Map;
 public class ProcedureRequest implements Serializable{
     private final String procedurePrefix = "com.wordpress.salaboy.bpmn2.";
     private String procedureName;
+    private String procedureId;
     private Map<String, Object> parameters;
 
-    public ProcedureRequest(String procedureName, Map<String, Object> parameters) {
+    
+    public ProcedureRequest(String procedureId, String procedureName, Map<String, Object> parameters) {
+        this.procedureId = procedureId;
         this.procedureName = procedureName;
         this.parameters = parameters;
+        parameters.put("procedureId", procedureId);
     }
 
     public Map<String, Object> getParameters() {

@@ -23,7 +23,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * @author salaboy
  */
 public class DumbProcedureImpl implements DumbProcedure {
-
+    private String id;
     private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
@@ -123,5 +123,15 @@ public class DumbProcedureImpl implements DumbProcedure {
         }).start();
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^Starting DUMB PROCEDURE");
         internalSession.startProcess("com.wordpress.salaboy.bpmn2.DumbProcedure", parameters);
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -4,6 +4,8 @@
  */
 package com.wordpress.salaboy.tracking;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+
 /**
  *
  * @author salaboy
@@ -34,6 +36,6 @@ public interface ContextTrackingService  {
 
     public void detachEmergency(String emergencyId);
     
-    
+    public GraphDatabaseService getGraphDb();
     
 }

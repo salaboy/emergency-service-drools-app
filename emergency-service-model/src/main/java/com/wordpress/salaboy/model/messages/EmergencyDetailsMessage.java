@@ -37,7 +37,7 @@ public class EmergencyDetailsMessage implements Serializable, EmergencyInterchan
    
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return emergency.getCall().getId();
     }
 

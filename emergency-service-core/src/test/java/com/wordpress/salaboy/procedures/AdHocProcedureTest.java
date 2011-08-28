@@ -125,7 +125,7 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("procedureName", "DumbProcedure");
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "AdHocProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 
@@ -152,7 +152,7 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("procedureName", "DumbProcedure");
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "AdHocProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 

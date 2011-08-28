@@ -74,10 +74,6 @@
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-human-task</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpm</groupId>
             <artifactId>jbpm-persistence-jpa</artifactId>
         </dependency>
         <dependency>
@@ -213,6 +209,12 @@
             <artifactId>smart-tasks-jbpm5-impl</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task</artifactId>
+            <version>5.2.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
     </dependencies>

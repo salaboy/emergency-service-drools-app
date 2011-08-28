@@ -21,10 +21,10 @@ import java.util.Map;
 public class ProceduresMGMTService {
 
     private static ProceduresMGMTService instance;
-    private Map<String, List<ProcedureService>> proceduresByCall;
-
+    //private Map<String, List<ProcedureService>> proceduresByCall;
+    private Map<String, List<ProcedureService>> proceduresByEmergency;
     private ProceduresMGMTService() {
-        proceduresByCall = new HashMap<String, List<ProcedureService>>();
+        proceduresByEmergency = new HashMap<String, List<ProcedureService>>();
 
     }
 
@@ -35,14 +35,14 @@ public class ProceduresMGMTService {
         return instance;
     }
 
-    public void newRequestedProcedure(final String callId, String procedureName, Map<String, Object> parameters) {
+    public void newRequestedProcedure(final String emergencyId, String procedureName, Map<String, Object> parameters) {
         
-        if (!proceduresByCall.containsKey(callId)){
-            proceduresByCall.put(callId, new ArrayList<ProcedureService>());
+        if (!proceduresByEmergency.containsKey(emergencyId)){
+            proceduresByEmergency.put(emergencyId, new ArrayList<ProcedureService>());
         }
         
-        List<ProcedureService> procedures = proceduresByCall.get(callId);
-        procedures.add(ProcedureServiceFactory.createProcedureService(callId, procedureName, parameters));
+        List<ProcedureService> procedures = proceduresByEmergency.get(emergencyId);
+        procedures.add(ProcedureServiceFactory.createProcedureService(emergencyId, procedureName, parameters));
 
     }
  
@@ -56,13 +56,13 @@ public class ProceduresMGMTService {
      */
     public void notifyProcedures(EmergencyInterchangeMessage message){
         
-        String callId = message.getCallId();
+        String emergencyId = message.getEmergencyId();
         
         //convert from Message to CallEvent
         CallEvent event = this.convertMessageToEvent(message);
         
         //notify each of the processes involved in the call
-        for (ProcedureService procedureService : this.proceduresByCall.get(callId)) {
+        for (ProcedureService procedureService : this.proceduresByEmergency.get(emergencyId)) {
             
             //TODO: change all these logic to something that doesn't hurts my eyes :)
             if (procedureService instanceof DefaultHeartAttackProcedure){
@@ -85,10 +85,10 @@ public class ProceduresMGMTService {
     private CallEvent convertMessageToEvent(EmergencyInterchangeMessage message){
         if (message instanceof VehicleHitsEmergencyMessage){
             VehicleHitsEmergencyMessage realMessage = (VehicleHitsEmergencyMessage)message;
-            return new VehicleHitsEmergencyEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getTime());
+            return new VehicleHitsEmergencyEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
         }else if (message instanceof VehicleHitsHospitalMessage){
             VehicleHitsHospitalMessage realMessage = (VehicleHitsHospitalMessage)message;
-            return new VehicleHitsHospitalEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getHospital().getId(), realMessage.getTime());
+            return new VehicleHitsHospitalEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getHospital().getId(), realMessage.getTime());
         }
         
         throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");

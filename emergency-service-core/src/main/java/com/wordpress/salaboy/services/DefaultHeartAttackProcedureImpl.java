@@ -51,15 +51,16 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  */
 public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProcedure {
 
-    private String callId;
-        private StatefulKnowledgeSession internalSession;
+    private String id;
+    private String emergencyId;
+    private StatefulKnowledgeSession internalSession;
     private String procedureName;
-    
+
     public DefaultHeartAttackProcedureImpl() {
         this.procedureName = "DefaultHeartAttackProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String callId) throws IOException {
+    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String emergencyId) throws IOException {
 
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
@@ -114,7 +115,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
 
 
-        remoteN1.set("DefaultHeartAttackProcedureSession" + this.callId, session);
+        remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
 
         return session;
 
@@ -135,26 +136,33 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
     }
 
-    
-    
     @Override
-    public void configure(String callId, Map<String, Object> parameters) {
-        this.callId = callId;
+    public void configure( String emergencyId, Map<String, Object> parameters) {
+        this.emergencyId = emergencyId;
         try {
-            internalSession = createDefaultHeartAttackProcedureSession(this.callId);
+            internalSession = createDefaultHeartAttackProcedureSession(this.emergencyId);
         } catch (IOException ex) {
             Logger.getLogger(DefaultHeartAttackProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         setWorkItemHandlers(internalSession);
 
         new Thread(new Runnable() {
+
             public void run() {
                 internalSession.fireUntilHalt();
             }
         }).start();
-        
-         internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
+
+        internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(getId(), this.procedureName, parameters));
     }
-    
-    
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 }

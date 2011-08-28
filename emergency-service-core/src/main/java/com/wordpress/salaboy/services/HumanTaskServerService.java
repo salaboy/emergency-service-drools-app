@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;

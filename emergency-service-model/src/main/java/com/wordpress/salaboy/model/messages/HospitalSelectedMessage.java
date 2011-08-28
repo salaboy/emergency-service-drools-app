@@ -20,7 +20,7 @@ public class HospitalSelectedMessage implements Serializable, EmergencyInterchan
         this.callId = callId;
     }
 
-    public String getCallId() {
+    public String getEmergencyId() {
         return callId;
     }
 

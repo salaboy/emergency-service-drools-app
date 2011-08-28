@@ -27,7 +27,7 @@ public class VehicleHitsHospitalMessage implements Serializable, EmergencyInterc
     
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return callId;
     }
 

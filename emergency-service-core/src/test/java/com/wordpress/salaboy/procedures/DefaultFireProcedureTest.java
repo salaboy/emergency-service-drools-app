@@ -124,7 +124,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         parameters.put("emergency", emergency);
         parameters.put("vehicle", fireTruck);
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), "DefaultFireProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultFireProcedure", parameters);
 
         //The fire truck doesn't reach the emergency yet. No task for 
         //the firefighter.
@@ -134,7 +134,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         Assert.assertTrue(taskAbstracts.isEmpty());
         
         //Now the fire truck arrives to the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), emergency.getId(), new Date()));
         
         Thread.sleep(2000);
         

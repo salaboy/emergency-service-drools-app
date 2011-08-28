@@ -143,7 +143,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
-                    ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getCallId(),
+                    ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
                             selectedProcedureMessage.getProcedureName(),
                             selectedProcedureMessage.getParameters());
                 }
@@ -191,7 +191,7 @@ public class CoreServer {
                 public void handleMessage(VehicleDispatchedMessage message) {
                     vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
-                    PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
+                    PatientMonitorService.getInstance().newVehicleDispatched(message.getEmergencyId(), message.getVehicleId());
 //                    try {
 //                        Thread.sleep(3000);
 //                    } catch (InterruptedException ex) {
@@ -216,7 +216,7 @@ public class CoreServer {
                     
                     if (hitEmergency && !hitHospital){
                         PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
-                        event.setCallId(message.getCallId());
+                        event.setCallId(message.getEmergencyId());
                         event.setVehicleId(message.getVehicleId());
                         PatientMonitorService.getInstance().newHeartBeatReceived(event);
                     }
@@ -227,7 +227,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyInterchangeMessage message) {
-                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
+                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getEmergencyId(), message.toString());
                 }
             });
  

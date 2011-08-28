@@ -27,7 +27,7 @@
       <tns:import name="com.wordpress.salaboy.model.Call" />
     </extensionElements>
     <!-- process variables -->
-    
+    <property id="procedureId" itemSubjectRef="_procedureItem"/>
     <property id="call" itemSubjectRef="_call.idItem"/>
     <property id="emergency" itemSubjectRef="_emergency.idItem"/>
     <property id="vehicle" itemSubjectRef="_vehicle.idItem"/>

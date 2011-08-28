@@ -49,6 +49,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class AdHocProcedureImpl implements AdHocProcedure{
 
+    private String id;
     private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
@@ -131,6 +132,16 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
     
     
