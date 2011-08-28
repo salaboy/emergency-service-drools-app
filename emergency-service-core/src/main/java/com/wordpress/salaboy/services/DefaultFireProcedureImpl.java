@@ -148,8 +148,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         internalSession.insert(event);
         
         //the process is signaled
-        //internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
-        internalSession.signalEvent("TruckOutOfWater", null, processInstance.getId());
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
     }
 
     @Override
@@ -180,8 +179,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     
     @Override
     public void procedureEndsNotification(EmergencyEndsEvent event) {
-        //internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
-        internalSession.signalEvent("NoMoreFire", null, processInstance.getId());
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
     }
 
     public boolean isUseLocalKSession() {
