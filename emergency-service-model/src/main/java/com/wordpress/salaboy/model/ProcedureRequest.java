@@ -32,6 +32,12 @@ public class ProcedureRequest implements Serializable{
     public String getProcedure() {
         return procedurePrefix+procedureName;
     }
+
+    public String getProcedureId() {
+        return procedureId;
+    }
+    
+    
     
     
     

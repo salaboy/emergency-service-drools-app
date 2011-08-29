@@ -133,11 +133,11 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         doControlTask();
         
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         //I should have one task here, that has been created by the specific procedure started
         doGarageTask();
        
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         // I can asume that all the procedures are ended, we need to delegate this to the external component
         AllProceduresEndedEvent allProceduresEndedEvent = new AllProceduresEndedEvent(null, new ArrayList<String>());
         GenericEmergencyProcedureImpl.getInstance().allProceduresEnededNotification(allProceduresEndedEvent);

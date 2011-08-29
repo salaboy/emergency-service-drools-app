@@ -118,6 +118,8 @@ public class AdHocProcedureTest extends GridBaseTest {
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
+        
+        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
@@ -151,7 +153,7 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("emergency", emergency);
         parameters.put("procedureName", "DumbProcedure");
 
-
+        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
         ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);

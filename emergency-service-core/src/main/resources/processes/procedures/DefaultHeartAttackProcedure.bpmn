@@ -12,7 +12,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_procedureItem" structureRef="java.lang.String" />           
+  <itemDefinition id="_procedureIdItem" structureRef="String" />           
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
   <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
@@ -30,7 +30,7 @@
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
-    <property id="procedureId" itemSubjectRef="_procedureItem"/>
+    <property id="procedureId" itemSubjectRef="_procedureIdItem"/>
     <property id="emergency" itemSubjectRef="_emergencyItem"/>
     <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>

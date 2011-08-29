@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.grid.SocketService;
-import org.example.ws_ht.api.wsdl.IllegalAccessFault;
-import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
-import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import org.hornetq.api.core.HornetQException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -130,7 +127,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
     }
 
     @Test
-    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
+    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException {
 
 
         Map<String, Object> parameters = new HashMap<String, Object>();

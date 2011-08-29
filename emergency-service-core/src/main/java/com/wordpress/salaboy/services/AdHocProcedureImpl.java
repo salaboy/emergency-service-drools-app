@@ -61,32 +61,57 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     private StatefulKnowledgeSession createAdHocProcedureSession(String callId) throws IOException {
        
         
-        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
-        Address addr = gsd.addAddress("socket");
-        addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
-        coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
-
-        GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
-
-        GridPeerConfiguration conf = new GridPeerConfiguration();
-        GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
-        conf.addConfiguration(coreSeviceConf);
-
-        GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
-        conf.addConfiguration(wprConf);
-
-        conf.configure(grid);
-
-        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
-        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
-        GridNode remoteN1 = conn.connect();
-
-        KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
-        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
-
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/AdHocProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
-
+//        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
+//        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
+//        Address addr = gsd.addAddress("socket");
+//        addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
+//        coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
+//
+//        GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
+//
+//        GridPeerConfiguration conf = new GridPeerConfiguration();
+//        GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
+//        conf.addConfiguration(coreSeviceConf);
+//
+//        GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
+//        conf.addConfiguration(wprConf);
+//
+//        conf.configure(grid);
+//
+//        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
+//        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
+//        GridNode remoteN1 = conn.connect();
+//
+//        KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
+//        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
+//
+//        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/AdHocProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+//
+//
+//        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+//        if (errors != null && errors.size() > 0) {
+//            for (KnowledgeBuilderError error : errors) {
+//                System.out.println(">>>>>>> Error: " + error.getMessage());
+//
+//            }
+//            throw new IllegalStateException("Failed to parse knowledge!");
+//        }
+//
+//        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+//        kbaseConf.setOption(EventProcessingOption.STREAM);
+//        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
+//
+//        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+//
+//        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+//
+//        remoteN1.set("AdHocProcedureSession" + this.callId, session);
+//
+//        return session;
+        
+        System.out.println("Starting Local Session because Remote takes to long!!!");
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ClassPathResource("processes/procedures/AdHocProcedure.bpmn"), ResourceType.BPMN2);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -96,18 +121,13 @@ public class AdHocProcedureImpl implements AdHocProcedure{
             }
             throw new IllegalStateException("Failed to parse knowledge!");
         }
-
-        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+        KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
-
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
-        remoteN1.set("AdHocProcedureSession" + this.callId, session);
-
-        return session;
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        return ksession;
 
     }
     
