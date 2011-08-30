@@ -220,7 +220,7 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
 
             @Override
             public void handleMessage(IncomingCallMessage incomingCallMessage) {
-                String callId = incomingCallMessage.getCallId();
+                String callId = incomingCallMessage.getEmergencyId();
                 cboCallId.addItem(callId);
                 cboCallId.setSelectedItem(callId);
             }

@@ -241,7 +241,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(VehicleHitsCornerMessage message) {
-                if (message.getCallId().equals(callId)) {
+                if (message.getEmergencyId().equals(callId)) {
                     paintVehiclePosition(message.getVehicleId(), message.getCornerX(), message.getCornerY());
                 }
             }
@@ -251,7 +251,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(HeartBeatMessage message) {
-                if (message.getCallId().equals(callId)) {
+                if (message.getEmergencyId().equals(callId)) {
                     processHeartBeat(message.getVehicleId(), message.getHeartBeatValue(), message.getTime());
                 }
             }
@@ -261,7 +261,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(PatientMonitorAlertMessage message) {
-                if (message.getCallId().equals(callId)) {
+                if (message.getEmergencyId().equals(callId)) {
                     processPatientAlert(message.getVehicleId(), message.getTime(), message.getMessage());
                 }
             }

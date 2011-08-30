@@ -24,6 +24,11 @@ public class VehicleDispatchedMessage implements Serializable ,EmergencyIntercha
         return callId;
     }
 
+    public String getCallId() {
+        return callId;
+    }
+
+    
     public void setCallId(String callId) {
         this.callId = callId;
     }
