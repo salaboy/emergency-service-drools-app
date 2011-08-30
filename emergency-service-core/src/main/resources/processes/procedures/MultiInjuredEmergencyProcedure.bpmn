@@ -26,6 +26,11 @@
 
     <extensionElements>
      <tns:import name="com.wordpress.salaboy.model.Call" />
+     <tns:import name="org.jbpm.workflow.instance.node.WorkItemNodeInstance" />
+     <tns:import name="com.wordpress.salaboy.model.Emergency" />
+     <tns:import name="com.wordpress.salaboy.model.Vehicle" />
+     <tns:import name="com.wordpress.salaboy.model.VehicleUpdate" />
+     
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
@@ -45,7 +50,6 @@
         <dataInput id="_2_CommentInput" name="Comment" />
         <dataInput id="_2_SkippableInput" name="Skippable" />
         <dataInput id="_2_TaskNameInput" name="TaskName" />
-        <dataInput id="_2_ContentInput" name="Content" />
         <dataInput id="_2_PriorityInput" name="Priority" />
         <dataOutput id="_2_emergency.vehiclesOutput" name="emergency.vehicles" />
         <inputSet>
@@ -54,7 +58,6 @@
           <dataInputRefs>_2_CommentInput</dataInputRefs>
           <dataInputRefs>_2_SkippableInput</dataInputRefs>
           <dataInputRefs>_2_TaskNameInput</dataInputRefs>
-          <dataInputRefs>_2_ContentInput</dataInputRefs>
           <dataInputRefs>_2_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -88,13 +91,6 @@
         <assignment>
           <from xsi:type="tFormalExpression"> Select Vehicle For #{call.id} </from>
           <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <targetRef>_2_ContentInput</targetRef>
-        <assignment>
-          <from xsi:type="tFormalExpression">#{call}, #{emergency}</from>
-          <to xsi:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
@@ -165,14 +161,35 @@
       <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.PatientPickUpEvent"/>
     </intermediateCatchEvent>
     <userTask id="_12-2-4" name="Update Situation" >
-      <ioSpecification>
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <script>System.out.println("------On-entry"); System.out.println(((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem());</script>
+        </tns:onEntry-script>
+        <tns:onExit-script scriptFormat="http://www.java.com/java">
+          <script>System.out.println("------On-exit");
+          Emergency em =  (Emergency)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getParameter("emergency");
+          Vehicle vehicle =  (Vehicle)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getParameter("vehicle");
+          String comment = (String)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getResult("comment");
+          Integer priority = (Integer)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getResult("priority");
+          emergency.addUpdate(vehicle.getId(), new VehicleUpdate(comment, priority));
+          System.out.println("---" + em);
+          System.out.println("---" + vehicle);
+          System.out.println("---" + comment);
+          System.out.println("---" + priority);
+          </script>
+        </tns:onExit-script>
+      </extensionElements>
+
+      <ioSpecification>      
         <dataInput id="_12-2-4_callInput" name="call" />
         <dataInput id="_12-2-4_emergencyInput" name="emergency" />
+        <dataInput id="_12-2-4_vehicleInput" name="vehicle" />
         <dataInput id="_12-2-4_CommentInput" name="Comment" />
         <dataInput id="_12-2-4_SkippableInput" name="Skippable" />
         <dataInput id="_12-2-4_TaskNameInput" name="TaskName" />
         <dataInput id="_12-2-4_PriorityInput" name="Priority" />
-        <dataOutput id="_12-2-4_emergencyOutput" name="emergency" />
+        <dataOutput id="_12-2-4_commentOutput" name="comment" />
+        <dataOutput id="_12-2-4_priorityOutput" name="priority" />
         <inputSet>
           <dataInputRefs>_12-2-4_callInput</dataInputRefs>
           <dataInputRefs>_12-2-4_emergencyInput</dataInputRefs>
@@ -180,11 +197,15 @@
           <dataInputRefs>_12-2-4_SkippableInput</dataInputRefs>
           <dataInputRefs>_12-2-4_TaskNameInput</dataInputRefs>
           <dataInputRefs>_12-2-4_PriorityInput</dataInputRefs>
+          <dataInputRefs>_12-2-4_commentOutput</dataInputRefs>
+          <dataInputRefs>_12-2-4_priorityOutput</dataInputRefs>
+          <dataInputRefs>_12-2-4_vehicleInput</dataInputRefs>
         </inputSet>
-        <outputSet>
-          <dataOutputRefs>_12-2-4_emergencyOutput</dataOutputRefs>
-        </outputSet>
       </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.vehicle</sourceRef>
+        <targetRef>_12-2-4_vehicleInput</targetRef>
+      </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>call</sourceRef>
         <targetRef>_12-2-4_callInput</targetRef>
@@ -221,10 +242,6 @@
           <to xsi:type="tFormalExpression">_12-2-4_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
-      <dataOutputAssociation>
-        <sourceRef>_12-2-4_emergencyOutput</sourceRef>
-        <targetRef>emergency</targetRef>
-      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>doctor</formalExpression>

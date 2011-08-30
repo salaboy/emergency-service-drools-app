@@ -12,6 +12,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
+  <itemDefinition id="_procedureIdItem" structureRef="String" />           
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
   <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
@@ -29,6 +30,7 @@
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
+    <property id="procedureId" itemSubjectRef="_procedureIdItem"/>
     <property id="emergency" itemSubjectRef="_emergencyItem"/>
     <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
@@ -41,11 +43,11 @@
     <userTask id="_2" name="Select Vehicle and Dispatch" >
       <ioSpecification>
         <dataInput id="_2_callInput" name="call" />
+        <dataInput id="_2_procedureIdInput" name="procedureId" />
         <dataInput id="_2_emergencyInput" name="emergency" />
         <dataInput id="_2_CommentInput" name="Comment" />
         <dataInput id="_2_SkippableInput" name="Skippable" />
         <dataInput id="_2_TaskNameInput" name="TaskName" />
-        <dataInput id="_2_ContentInput" name="Content" />
         <dataInput id="_2_PriorityInput" name="Priority" />
         <dataOutput id="_2_emergency.vehiclesOutput" name="emergency.vehicles" />
         <inputSet>
@@ -54,7 +56,7 @@
           <dataInputRefs>_2_CommentInput</dataInputRefs>
           <dataInputRefs>_2_SkippableInput</dataInputRefs>
           <dataInputRefs>_2_TaskNameInput</dataInputRefs>
-          <dataInputRefs>_2_ContentInput</dataInputRefs>
+          
           <dataInputRefs>_2_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -64,6 +66,10 @@
       <dataInputAssociation>
         <sourceRef>call</sourceRef>
         <targetRef>_2_callInput</targetRef>
+      </dataInputAssociation>
+    <dataInputAssociation>
+        <sourceRef>procedureId</sourceRef>
+        <targetRef>_2_procedureIdInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>emergency</sourceRef>
@@ -88,13 +94,6 @@
         <assignment>
           <from xsi:type="tFormalExpression"> Select Vehicle For #{call.id} </from>
           <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
-        </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <targetRef>_2_ContentInput</targetRef>
-        <assignment>
-          <from xsi:type="tFormalExpression">#{call}, #{emergency}</from>
-          <to xsi:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>

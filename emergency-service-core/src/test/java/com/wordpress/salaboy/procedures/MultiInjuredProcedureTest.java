@@ -204,10 +204,9 @@ public class MultiInjuredProcedureTest extends GridBaseTest {
         attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
 
         Map taskinfo = (Map)attachment.getValue();
-        emergency = (Emergency)taskinfo.get("emergency");
-        emergency.addUpdate(ambulanceId2, new VehicleUpdate("Update 1", 3));
 
-        info.put("emergency", emergency);
+        info.put("comment", "Comment 1");
+        info.put("priority", 2);
         humanTaskServiceClient.complete(task.getId(), info);
 
         Thread.sleep(4000);
@@ -223,21 +222,19 @@ public class MultiInjuredProcedureTest extends GridBaseTest {
         
         info = new HashMap<String, Object>();
         taskinfo = (Map)attachment.getValue();
-        emergency = (Emergency)taskinfo.get("emergency");
-        emergency.addUpdate(ambulanceId, new VehicleUpdate("Update 2", 2));
 
-        info.put("emergency", emergency);
-        
+        info.put("comment", "Comment 2");
+        info.put("priority", 2);
         humanTaskServiceClient.complete(task.getId(), info);
 
         Thread.sleep(4000);
 
         //The vehicle1 reaches the hospital
         ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), call.getId(), new Date()));
+        Thread.sleep(4000);
 
         Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId).size());
         Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId2).size());
-        Thread.sleep(4000);
 
     }
 }
