@@ -12,8 +12,8 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class EmergencyEndsEvent implements CallEvent, Serializable {
-    private String callId;
+public class EmergencyEndsEvent implements EmergencyEvent, Serializable {
+    private String emergencyId;
     
     private Date time;
 
@@ -24,20 +24,21 @@ public class EmergencyEndsEvent implements CallEvent, Serializable {
         this.time = time;
     }
     
-    public EmergencyEndsEvent(String callId, Date time) {
-        this.callId = callId;
+    public EmergencyEndsEvent(String emergencyId, Date time) {
+        this.emergencyId = emergencyId;
         this.time = time;
     }
 
     @Override
-    public String getCallId() {
-        return callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(String callId) {
-        this.callId = callId;
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
     }
 
+   
     public Date getTime() {
         return time;
     }

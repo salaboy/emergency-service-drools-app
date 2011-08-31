@@ -27,7 +27,7 @@ public class IncomingCallMessage implements Serializable, EmergencyInterchangeMe
     }
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return this.call.getId();
     }
 

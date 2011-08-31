@@ -29,7 +29,7 @@ public class StartProcedureWorkItemHandler implements WorkItemHandler, Serializa
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
-        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), procedureName, parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
         System.out.println("I'm going out of here!!!!!!");
         wim.completeWorkItem(wi.getId(), null);
     }

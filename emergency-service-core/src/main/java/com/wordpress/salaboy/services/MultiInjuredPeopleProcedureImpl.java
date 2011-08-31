@@ -56,7 +56,7 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  *
  */
 public class MultiInjuredPeopleProcedureImpl implements DefaultHeartAttackProcedure {
-
+    private String id;
     private String callId;
         private StatefulKnowledgeSession internalSession;
     private String procedureName;
@@ -166,7 +166,17 @@ public class MultiInjuredPeopleProcedureImpl implements DefaultHeartAttackProced
             }
         }).start();
         
-         internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.procedureName, parameters));
+         internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(this.id, this.procedureName, parameters));
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
     
     

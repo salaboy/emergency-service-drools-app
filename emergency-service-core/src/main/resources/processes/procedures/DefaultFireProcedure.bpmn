@@ -30,9 +30,13 @@
      <tns:import name="com.wordpress.salaboy.reporting.Report" />
     </extensionElements>
     <!-- process variables -->
+
     <property id="call" itemSubjectRef="_callItem"/>
     <property id="emergency" itemSubjectRef="_emergencyItem"/>
     <property id="vehicle" itemSubjectRef="_vehicleItem"/>
+    <property id="procedureId" itemSubjectRef="_procedureItem"/>
+   
+
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
     <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="vehicleHitsEmergencyEvent" itemSubjectRef="_vehicleHitsEmergencyEventItem"/>

@@ -26,7 +26,7 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
     }
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return callId;
     }
 

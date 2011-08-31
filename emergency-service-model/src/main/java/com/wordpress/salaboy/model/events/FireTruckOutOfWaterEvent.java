@@ -12,8 +12,8 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
-    private String callId;
+public class FireTruckOutOfWaterEvent implements EmergencyEvent, Serializable {
+    private String emergencyId;
     private String vehicleId;
     
     private Date time;
@@ -25,20 +25,18 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
         this.time = time;
     }
     
-    public FireTruckOutOfWaterEvent(String callId, String vehicleId, Date time) {
-        this.callId = callId;
+    public FireTruckOutOfWaterEvent(String emergencyId, String vehicleId, Date time) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
     }
 
     @Override
-    public String getCallId() {
-        return callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(String callId) {
-        this.callId = callId;
-    }
+   
 
     public String getVehicleId() {
         return vehicleId;

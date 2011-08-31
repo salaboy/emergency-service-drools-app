@@ -7,9 +7,9 @@ package com.wordpress.salaboy.model.events;
 import java.io.Serializable;
 
 /**
- * Represents an event related to a Call
+ * Represents an event related to a Call/ Emergency????
  * @author esteban
  */
-public interface CallEvent extends Serializable {
-    public String getCallId();
+public interface EmergencyEvent extends Serializable {
+    public String getEmergencyId();
 }

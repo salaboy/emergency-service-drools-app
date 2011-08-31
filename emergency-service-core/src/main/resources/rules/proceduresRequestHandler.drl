@@ -19,9 +19,7 @@ rule "Start Default Heart Attack Procedure if not emergency was found"
         $procedureRequest: ProcedureRequest() from entry-point "procedure request"
     then
         ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess($procedureRequest.getProcedure(), $procedureRequest.getParameters());
-        insert(pi);
-        
-        
+        insert(pi);     
 end
 
 

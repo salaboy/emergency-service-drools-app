@@ -140,11 +140,11 @@ public class WorldUI extends BasicGame {
 
                     public void execute() {
                         System.out.println("EmergencyDetailsMessage received");
-                        if (emergencies.get(message.getCallId())==null){
-                            System.out.println("Unknown emergency for call Id "+message.getCallId());
+                        if (emergencies.get(message.getEmergencyId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getEmergencyId());
                             return;
                         }
-                        emergencies.get(message.getCallId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
+                        emergencies.get(message.getEmergencyId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
                     }
                 });
             }
@@ -174,11 +174,11 @@ public class WorldUI extends BasicGame {
 
                     public void execute() {
                        
-                        if (emergencies.get(message.getCallId())==null){
-                            System.out.println("Unknown emergency for call Id "+message.getCallId());
+                        if (emergencies.get(message.getEmergencyId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getEmergencyId());
                             return;
                         }
-                        selectHospitalForEmergency(message.getCallId(), message.getHospital());
+                        selectHospitalForEmergency(message.getEmergencyId(), message.getHospital());
                         
                     }
 

@@ -104,7 +104,7 @@ public class MultiInjuredProcedureNoSmartTasksTest extends GridBaseTest {
         createRemoteNode();
 
         client = HumanTaskServerService.getInstance().initTaskClient();
-        this.coreServicesMap = new HashMap();
+
 
 
 

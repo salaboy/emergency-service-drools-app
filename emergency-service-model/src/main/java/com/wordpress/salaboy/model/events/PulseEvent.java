@@ -11,13 +11,13 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class PulseEvent implements CallEvent, Serializable{
+public class PulseEvent implements EmergencyEvent, Serializable{
     private static final long serialVersionUID = 1L;
     
     private boolean processed;
     private int value;
     private String vehicleId;
-    private String callId;
+    private String emergencyId;
 
     public PulseEvent(int value) {
         this.value = value;
@@ -36,13 +36,15 @@ public class PulseEvent implements CallEvent, Serializable{
     }
 
     @Override
-    public String getCallId() {
-        return callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(String callId) {
-        this.callId = callId;
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
     }
+
+   
 
     public String getVehicleId() {
         return vehicleId;
@@ -54,7 +56,7 @@ public class PulseEvent implements CallEvent, Serializable{
 
     @Override
     public String toString() {
-        return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + callId + '}';
+        return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + emergencyId + '}';
     }
 
     @Override
@@ -75,7 +77,7 @@ public class PulseEvent implements CallEvent, Serializable{
         if (this.vehicleId != other.vehicleId && (this.vehicleId == null || !this.vehicleId.equals(other.vehicleId))) {
             return false;
         }
-        if (this.callId != other.callId && (this.callId == null || !this.callId.equals(other.callId))) {
+        if (this.emergencyId != other.emergencyId && (this.emergencyId == null || !this.emergencyId.equals(other.emergencyId))) {
             return false;
         }
         return true;
@@ -87,7 +89,7 @@ public class PulseEvent implements CallEvent, Serializable{
         hash = 31 * hash + (this.processed ? 1 : 0);
         hash = 31 * hash + this.value;
         hash = 31 * hash + (this.vehicleId != null ? this.vehicleId.hashCode() : 0);
-        hash = 31 * hash + (this.callId != null ? this.callId.hashCode() : 0);
+        hash = 31 * hash + (this.emergencyId != null ? this.emergencyId.hashCode() : 0);
         return hash;
     }
     

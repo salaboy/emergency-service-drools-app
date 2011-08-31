@@ -23,7 +23,7 @@ public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInter
     }
 
     @Override
-    public String getCallId() {
+    public String getEmergencyId() {
         return callId;
     }
 

@@ -1,3 +1,4 @@
+
 package com.wordpress.salaboy.procedures;
 
 import static org.junit.Assert.assertEquals;
@@ -32,6 +33,9 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
+
+import com.wordpress.salaboy.tracking.ContextTrackingSimpleGraphServiceImpl;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -99,7 +103,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         createRemoteNode();
 
         client = HumanTaskServerService.getInstance().initTaskClient();
-        this.coreServicesMap = new HashMap();
+
 
 
 
@@ -160,8 +164,10 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
 
         Thread.sleep(4000);
         
-//        String result = new ContextTrackingServiceImpl(ContextTrackingServiceImpl.getInstance(). .graphEmergency(emergency.getId());
-//        System.out.println("result = "+result);
+
+        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        System.out.println("result = "+result);
+
         
         
 
@@ -202,7 +208,9 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicle();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
-//        ContextTrackingServiceImpl.getInstance().attachVehicle(procedureId, ambulanceId);
+
+        ContextTrackingServiceImpl.getInstance().attachVehicle(procedureId, ambulanceId);
+
         info.put("emergency.vehicles", vehicles);
         ContentData result = new ContentData();
         result.setAccessType(AccessType.Inline);

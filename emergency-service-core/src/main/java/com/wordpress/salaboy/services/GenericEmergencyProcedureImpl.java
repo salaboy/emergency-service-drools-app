@@ -156,7 +156,7 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
         } catch (IOException ex) {
             Logger.getLogger(GenericEmergencyProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        new Thread(new Runnable()       {
+        new Thread(new Runnable(){
 
             public void run() {
                 genericEmergencySession.fireUntilHalt();

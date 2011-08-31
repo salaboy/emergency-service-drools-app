@@ -32,14 +32,18 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     private Index<Node> channelsIndex;
     public static String defaultDB = "db/graph";
     private static ContextTrackingServiceImpl instance;
-    
-    public static ContextTrackingService getInstance(){
-        if(instance == null){
+
+    public static ContextTrackingService getInstance() {
+        if (instance == null) {
             instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
         }
         return instance;
     }
-    
+
+    public GraphDatabaseService getGraphDb() {
+        return graphDb;
+    }
+
     public ContextTrackingServiceImpl(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
 
@@ -58,6 +62,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             Node call = graphDb.createNode();
             call.setProperty("callId", callId);
+            call.setProperty("name", callId);
             call.setProperty("phoneNumber", "555-1234");
             this.callsIndex.add(call, "callId", callId);
             this.callsIndex.add(call, "phoneNumber", "555-1234");
@@ -77,6 +82,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             Node emergency = graphDb.createNode();
             emergency.setProperty("emergencyId", emergencyId);
+            emergency.setProperty("name", emergencyId);
             this.emergenciesIndex.add(emergency, "emergencyId", emergencyId);
             tx.success();
         } finally {
@@ -122,6 +128,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             Node procedure = graphDb.createNode();
             procedure.setProperty("procedureId", procedureId);
+            procedure.setProperty("name", procedureId);
             this.proceduresIndex.add(procedure, "procedureId", procedureId);
             tx.success();
         } finally {
@@ -167,6 +174,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             Node vehicle = graphDb.createNode();
             vehicle.setProperty("vehicleId", vehicleId);
+            vehicle.setProperty("name", vehicleId);
             this.vehiclesIndex.add(vehicle, "vehicleId", vehicleId);
             tx.success();
         } finally {
@@ -211,6 +219,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             Node channel = graphDb.createNode();
             channel.setProperty("channelId", channelId);
+            channel.setProperty("name", channelId);
             this.channelsIndex.add(channel, "channelId", channelId);
             tx.success();
         } finally {
@@ -224,7 +233,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public void attachServiceChannel(String emergencyId, String channelId) {
-         Transaction tx = graphDb.beginTx();
+        Transaction tx = graphDb.beginTx();
 
         try {
             CypherParser parser = new CypherParser();

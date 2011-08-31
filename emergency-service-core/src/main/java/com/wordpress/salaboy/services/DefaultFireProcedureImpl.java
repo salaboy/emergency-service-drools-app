@@ -52,7 +52,7 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  * @author esteban
  */
 public class DefaultFireProcedureImpl implements DefaultFireProcedure {
-
+    private String id;
     private String callId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
@@ -188,5 +188,15 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     public void setUseLocalKSession(boolean useLocalKSession) {
         this.useLocalKSession = useLocalKSession;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 }

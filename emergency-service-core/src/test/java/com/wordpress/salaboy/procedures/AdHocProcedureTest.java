@@ -30,6 +30,7 @@ import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.tracking.ContextTrackingSimpleGraphServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -118,6 +119,8 @@ public class AdHocProcedureTest extends GridBaseTest {
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
+        
+        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
@@ -125,9 +128,12 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("procedureName", "DumbProcedure");
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "AdHocProcedure", parameters);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
+        
+        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        System.out.println("result = "+result);
 
 
 
@@ -151,12 +157,13 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("emergency", emergency);
         parameters.put("procedureName", "DumbProcedure");
 
-
-        ProceduresMGMTService.getInstance().newRequestedProcedure(((Call) parameters.get("call")).getId(), "AdHocProcedure", parameters);
+        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 
-
+        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        System.out.println("result = "+result);
 
     }
 
@@ -212,5 +219,7 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(sums.get(0).getId(), "operator", result, completeTaskOperationHandler);
+        
+        
     }
 }

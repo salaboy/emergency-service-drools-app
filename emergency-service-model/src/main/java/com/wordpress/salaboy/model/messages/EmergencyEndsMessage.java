@@ -12,22 +12,23 @@ import java.util.Date;
  * @author esteban
  */
 public class EmergencyEndsMessage implements Serializable, EmergencyInterchangeMessage {
-    private String callId;
+    private String emergencyId;
     private Date time;
     
-    public EmergencyEndsMessage(String callId, Date time) {
-        this.callId = callId;
+    public EmergencyEndsMessage(String emergencyId, Date time) {
+        this.emergencyId = emergencyId;
         this.time = time;
     }
 
-    @Override
-    public String getCallId() {
-        return callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(String callId) {
-        this.callId = callId;
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
     }
+
+   
 
     public Date getTime() {
         return time;
@@ -39,7 +40,7 @@ public class EmergencyEndsMessage implements Serializable, EmergencyInterchangeM
 
     @Override
     public String toString() {
-        return "EmergencyEndsMessage{" + "call id=" + callId + ", time=" + time + '}';
+        return "EmergencyEndsMessage{" + "emergencyid=" + emergencyId + ", time=" + time + '}';
     }
 
     
