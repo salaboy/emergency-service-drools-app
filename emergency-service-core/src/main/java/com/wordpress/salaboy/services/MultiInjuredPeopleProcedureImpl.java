@@ -8,6 +8,7 @@ import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
 import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.DispatchSingleSelectedVehicleWorkItemHandler;
@@ -144,7 +145,10 @@ public class MultiInjuredPeopleProcedureImpl implements DefaultHeartAttackProced
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
     }
 
-    
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event){
+
+    }
     
     @Override
     public void configure(String callId, Map<String, Object> parameters) {
