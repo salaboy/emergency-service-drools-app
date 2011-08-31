@@ -30,6 +30,7 @@ import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.tracking.ContextTrackingSimpleGraphServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -130,6 +131,9 @@ public class AdHocProcedureTest extends GridBaseTest {
         ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
+        
+        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        System.out.println("result = "+result);
 
 
 
@@ -158,7 +162,8 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         Thread.sleep(5000);
 
-
+        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        System.out.println("result = "+result);
 
     }
 
@@ -214,5 +219,7 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(sums.get(0).getId(), "operator", result, completeTaskOperationHandler);
+        
+        
     }
 }

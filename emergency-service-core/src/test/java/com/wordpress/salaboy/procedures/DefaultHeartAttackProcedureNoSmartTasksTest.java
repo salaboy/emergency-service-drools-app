@@ -104,7 +104,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         createRemoteNode();
 
         client = HumanTaskServerService.getInstance().initTaskClient();
-        this.coreServicesMap = new HashMap();
+        
 
 
 
