@@ -30,7 +30,7 @@
      <tns:import name="com.wordpress.salaboy.model.Emergency" />
      <tns:import name="com.wordpress.salaboy.model.Vehicle" />
      <tns:import name="com.wordpress.salaboy.model.VehicleUpdate" />
-     
+     <tns:import name="com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService" />     
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
@@ -39,6 +39,7 @@
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
     <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="patientPickUpEvent" itemSubjectRef="_patientPickUpEventItem"/>
+    <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
     <property id="patientAtHospitalEvent" itemSubjectRef="_patientAtHospitalEventItem"/>
 
     <!-- nodes -->
@@ -171,7 +172,8 @@
           Vehicle vehicle =  (Vehicle)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getParameter("vehicle");
           String comment = (String)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getResult("comment");
           Integer priority = (Integer)((WorkItemNodeInstance)kcontext.getNodeInstance()).getWorkItem().getResult("priority");
-          emergency.addUpdate(vehicle.getId(), new VehicleUpdate(comment, priority));
+          //em.addUpdate(vehicle.getId(), new VehicleUpdate(comment, priority));
+          DistributedPeristenceServerService.getInstance().getAllEmergencies().iterator().next().addUpdate(vehicle.getId(), new VehicleUpdate(comment, priority));
           System.out.println("---" + em);
           System.out.println("---" + vehicle);
           System.out.println("---" + comment);
@@ -190,6 +192,7 @@
         <dataInput id="_12-2-4_PriorityInput" name="Priority" />
         <dataOutput id="_12-2-4_commentOutput" name="comment" />
         <dataOutput id="_12-2-4_priorityOutput" name="priority" />
+        <dataOutput id="_12-2-4_emergencyOutput" name="emergency" />
         <inputSet>
           <dataInputRefs>_12-2-4_callInput</dataInputRefs>
           <dataInputRefs>_12-2-4_emergencyInput</dataInputRefs>
@@ -201,6 +204,9 @@
           <dataInputRefs>_12-2-4_priorityOutput</dataInputRefs>
           <dataInputRefs>_12-2-4_vehicleInput</dataInputRefs>
         </inputSet>
+        <outputSet>
+          <dataOutputRefs>_12-2-4_emergencyOutput</dataOutputRefs>
+        </outputSet>
       </ioSpecification>
       <dataInputAssociation>
         <sourceRef>emergency.vehicle</sourceRef>
@@ -242,6 +248,10 @@
           <to xsi:type="tFormalExpression">_12-2-4_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_12-2-4_emergencyOutput</sourceRef>
+        <targetRef>emergency</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>doctor</formalExpression>

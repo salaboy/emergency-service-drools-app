@@ -196,6 +196,13 @@ public class DistributedPeristenceServerService {
         }
         return ((Map<String, Emergency>) getCache().get("emergencies")).values();
     }
+    
+    public Emergency getEmergencyById(String id) {
+    	if (getCache().get("emergencies") == null) {
+            getCache().put("emergencies", new HashMap<Long, Emergency>());
+        }
+    	return ((Map<String, Emergency>) getCache().get("emergencies")).get(id);
+    }
 
     private Cache<String, Object> getCache() {
         return cacheManager.getCache();

@@ -177,9 +177,9 @@ public class MultiInjuredProcedureNoSmartTasksTest extends GridBaseTest {
         
 //        String result = new ContextTrackingServiceImpl(ContextTrackingServiceImpl.getInstance(). .graphEmergency(emergency.getId());
 //        System.out.println("result = "+result);
-        
-//        Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId).size());
-//        Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId2).size());
+        emergency = DistributedPeristenceServerService.getInstance().getAllEmergencies().iterator().next();
+        Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId).size());
+        Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId2).size());
 
         
 
