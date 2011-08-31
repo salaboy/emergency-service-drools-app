@@ -30,8 +30,10 @@ import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.FireTruck;
-import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
+import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
@@ -39,6 +41,7 @@ import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -64,9 +67,10 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         HumanTaskServerService.getInstance().stopTaskServer();
     }
 
-    Emergency emergency = null;
-    FireTruck fireTruck = null;
-    Call call = null;
+    private Emergency emergency = null;
+    private FireTruck fireTruck = null;
+    private Call call = null;
+    private FirefightersDepartment firefightersDepartment = null;
     
     @Before
     public void setUp() throws Exception {
@@ -75,6 +79,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         emergency.setId(emergencyId);
         
         fireTruck = new FireTruck("FireTruck 1");
+        fireTruck.setId("FT1");
                 
         call = new Call(1,2,new Date());
 
@@ -85,8 +90,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
         
+        firefightersDepartment = new FirefightersDepartment(1L,"Firefighter Department 1", 12, 1);
         
-        DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
+        DistributedPeristenceServerService.getInstance().storeFirefightersDepartment(firefightersDepartment);
         DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
         DistributedPeristenceServerService.getInstance().storeVehicle(fireTruck);
         MessageServerSingleton.getInstance().start();
@@ -115,7 +121,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
 
 
@@ -151,10 +157,216 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         humanTaskServiceClient.start(firefighterTask.getId());
         humanTaskServiceClient.complete(firefighterTask.getId(), info);
         
-        Thread.sleep(5000);
+        Thread.sleep(2000);
+        
+        //TODO: validate that the process is still running 
+        
+        //Ok, the emregency ends
+        ProceduresMGMTService.getInstance().notifyProcedures(new EmergencyEndsMessage(call.getId(), new Date()));
         
         //TODO: validate that the process has finished
         
+
+    }
+    
+    @Test @Ignore
+    public void fireTruckOutOfWaterTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
+
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("call", call);
+        parameters.put("emergency", emergency);
+        parameters.put("vehicle", fireTruck);
+
+        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), "DefaultFireProcedure", parameters);
+
+        //The fire truck doesn't reach the emergency yet. No task for 
+        //the firefighter.
+        humanTaskServiceClient.setAuthorizedEntityId("firefighter");
+        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Now the fire truck arrives to the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
+        
+        Thread.sleep(2000);
+        
+        //A new task for the firefighter should be there now
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        TTaskAbstract firefighterTask = taskAbstracts.get(0);
+        
+        //The firefighter completes the task
+        Map<String, Object> info = new HashMap<String, Object>();
+        info.put("emergency.priority", 1);
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), info);
+        
+        Thread.sleep(2000);
+        
+        //TODO: validate that the process is still running 
+        
+        //Becasuse the fire truck still got enough water, no "Water Refill" 
+        //task exists   
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Sudenly, the fire truck runs out of water
+        ProceduresMGMTService.getInstance().notifyProcedures(new FireTruckOutOfWaterMessage(call.getId(), fireTruck.getId(), new Date()));
+
+        Thread.sleep(2000);
+        
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        firefighterTask = taskAbstracts.get(0);
+
+        Assert.assertEquals("Water Refill: go to ( "+firefightersDepartment.getX()+", "+firefightersDepartment.getY()+" )", firefighterTask.getName().toString());
+        
+        //The firefighter completes the task
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), null);
+        
+        Thread.sleep(2000);
+        
+        //Ok, the emregency ends
+        ProceduresMGMTService.getInstance().notifyProcedures(new EmergencyEndsMessage(call.getId(), new Date()));
+        
+        //TODO: validate that the process has finished
+        
+
+    }
+    
+     @Test
+    public void fireTruckOutOfWaterx2Test() throws HornetQException, InterruptedException, IOException, ClassNotFoundException, IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
+
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("call", call);
+        parameters.put("emergency", emergency);
+        parameters.put("vehicle", fireTruck);
+
+        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), "DefaultFireProcedure", parameters);
+
+        //The fire truck doesn't reach the emergency yet. No task for 
+        //the firefighter.
+        humanTaskServiceClient.setAuthorizedEntityId("firefighter");
+        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Now the fire truck arrives to the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
+        
+        Thread.sleep(2000);
+        
+        //A new task for the firefighter should be there now
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        TTaskAbstract firefighterTask = taskAbstracts.get(0);
+        
+        //The firefighter completes the task
+        Map<String, Object> info = new HashMap<String, Object>();
+        info.put("emergency.priority", 1);
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), info);
+        
+        Thread.sleep(2000);
+        
+        //TODO: validate that the process is still running 
+        
+        //Becasuse the fire truck still got enough water, no "Water Refill" 
+        //task exists   
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Sudenly, the fire truck runs out of water
+        ProceduresMGMTService.getInstance().notifyProcedures(new FireTruckOutOfWaterMessage(call.getId(), fireTruck.getId(), new Date()));
+
+        Thread.sleep(2000);
+        
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        firefighterTask = taskAbstracts.get(0);
+
+        Assert.assertEquals("Water Refill: go to ( "+firefightersDepartment.getX()+", "+firefightersDepartment.getY()+" )", firefighterTask.getName().toString());
+        
+        //The firefighter completes the task
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), null);
+        
+        Thread.sleep(2000);
+        
+        //No more tasks for firefighter
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        
+        //The Fire Truck returns to the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(fireTruck.getId(), call.getId(), new Date()));
+        
+        Thread.sleep(2000);
+        
+        //A new task for the firefighter should be there now
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        firefighterTask = taskAbstracts.get(0);
+        
+        //The firefighter completes the task
+        info = new HashMap<String, Object>();
+        info.put("emergency.priority", 1);
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), info);
+        
+        Thread.sleep(2000);
+        
+        //Becasuse the fire truck still got enough water, no "Water Refill" 
+        //task exists   
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Again, the fire truck runs out of water
+        ProceduresMGMTService.getInstance().notifyProcedures(new FireTruckOutOfWaterMessage(call.getId(), fireTruck.getId(), new Date()));
+
+        Thread.sleep(2000);
+        
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertEquals(1,taskAbstracts.size());
+        
+        firefighterTask = taskAbstracts.get(0);
+
+        Assert.assertEquals("Water Refill: go to ( "+firefightersDepartment.getX()+", "+firefightersDepartment.getY()+" )", firefighterTask.getName().toString());
+        
+        //The firefighter completes the task
+        humanTaskServiceClient.start(firefighterTask.getId());
+        humanTaskServiceClient.complete(firefighterTask.getId(), null);
+        
+        Thread.sleep(2000);
+        
+        //No more tasks for firefighter
+        taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0, 0);
+        
+        Assert.assertTrue(taskAbstracts.isEmpty());
+        
+        //Ok, the emregency ends
+        ProceduresMGMTService.getInstance().notifyProcedures(new EmergencyEndsMessage(call.getId(), new Date()));
+        
+        //TODO: validate that the process has finished
         
 
     }

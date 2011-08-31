@@ -19,6 +19,7 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
 import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Patient;
 import com.wordpress.salaboy.model.Vehicle;
@@ -140,6 +141,30 @@ public class DistributedPeristenceServerService {
             getCache().put("hospitals", new HashMap<String, Hospital>());
         }
         return ((Map<String, Hospital>) this.getCache().get("hospitals")).values();
+    }
+    
+    public void storeFirefightersDepartment(FirefightersDepartment firefightersDepartment) {
+        if (this.getCache().get("firefightersDepartment") == null) {
+            getCache().put("firefightersDepartment", new HashMap<Long, FirefightersDepartment>());
+        }
+        Map<Long, FirefightersDepartment> firefightersDepartments = ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment"));
+        firefightersDepartments.put(firefightersDepartment.getId(), firefightersDepartment);
+        this.getCache().put("FirefightersDepartment",firefightersDepartments);
+        
+    }
+
+    public FirefightersDepartment loadFirefightersDepartment(Long id) {
+        if (this.getCache().get("firefightersDepartment") == null) {
+            getCache().put("firefightersDepartment", new HashMap<Long, Hospital>());
+        }
+        return ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment")).get(id);
+    }
+    
+    public Collection<FirefightersDepartment> getAllFirefightersDepartments() {
+        if (this.getCache().get("firefightersDepartment") == null) {
+            getCache().put("firefightersDepartment", new HashMap<Long, FirefightersDepartment>());
+        }
+        return ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment")).values();
     }
 
     public void addEntryToReport(String callId, String entry) {

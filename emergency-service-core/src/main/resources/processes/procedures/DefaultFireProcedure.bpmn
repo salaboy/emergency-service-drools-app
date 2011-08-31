@@ -4,131 +4,129 @@
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  
-  <itemDefinition id="_call.idItem" structureRef="com.wordpress.salaboy.model.Call" />
-    <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
+  <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
+  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_vehicleItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+  <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
   <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
-  <itemDefinition id="_emergency.idItem" structureRef="com.wordpress.salaboy.model.Emergency" />
-  <itemDefinition id="_vehicle.idItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
-  
   <itemDefinition id="_vehicleHitsEmergencyEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
+  <itemDefinition id="_fireTruckOutOfWaterEventItem" structureRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent" />
+  <itemDefinition id="_emergencyEndsEventItem" structureRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent" />
+  <itemDefinition id="_refillDestinationItem" structureRef="com.wordpress.salaboy.model.Location" />
+  <itemDefinition id="_reportItem" structureRef="com.wordpress.salaboy.reporting.Report" />
 
-  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" >
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" name="Default Fire Procedure" tns:adHoc="true" >
 
     <extensionElements>
-      <tns:import name="com.wordpress.salaboy.model.Call" />
+     <tns:import name="com.wordpress.salaboy.model.Call" />
+     <tns:import name="com.wordpress.salaboy.reporting.Report" />
     </extensionElements>
     <!-- process variables -->
-    
-    <property id="call" itemSubjectRef="_call.idItem"/>
-    <property id="emergency" itemSubjectRef="_emergency.idItem"/>
-    <property id="vehicle" itemSubjectRef="_vehicle.idItem"/>
+    <property id="call" itemSubjectRef="_callItem"/>
+    <property id="emergency" itemSubjectRef="_emergencyItem"/>
+    <property id="vehicle" itemSubjectRef="_vehicleItem"/>
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
     <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="vehicleHitsEmergencyEvent" itemSubjectRef="_vehicleHitsEmergencyEventItem"/>
-
+    <property id="fireTruckOutOfWaterEvent" itemSubjectRef="_fireTruckOutOfWaterEventItem"/>
+    <property id="emergencyEndsEvent" itemSubjectRef="_emergencyEndsEventItem"/>
+    <property id="refillDestination" itemSubjectRef="_refillDestinationItem"/>
+    <property id="report" itemSubjectRef="_reportItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    
-     <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
+    <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
       <script>
         System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        kcontext.setVariable("report",new Report());
       </script>
     </scriptTask>
-
-    <scriptTask id="_3" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
-      <script>
-        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
-      </script>
-    </scriptTask>
-
     <intermediateCatchEvent id="_4" name="vehicleHitsEmergencyEvent" >
-      <dataOutput id="_4_vehicleHitsEmergencyOutput" name="event" />
+      <dataOutput id="_4_Output" name="event" />
       <dataOutputAssociation>
-        <sourceRef>_4_vehicleHitsEmergencyOutput</sourceRef>
-        <targetRef>vehicleHitsEmergencyEvent</targetRef>
+      <sourceRef>_4_Output</sourceRef>
+      <targetRef>vehicleHitsEmergencyEvent</targetRef>
       </dataOutputAssociation>
       <outputSet>
-        <dataOutputRefs>_4_vehicleHitsEmergencyOutput</dataOutputRefs>
+        <dataOutputRefs>_4_Output</dataOutputRefs>
       </outputSet>
       <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent"/>
     </intermediateCatchEvent>
-
-    <parallelGateway id="_5" name="Gateway" gatewayDirection="Converging" />
-
+    <endEvent id="_98" name="End Happy Path" />
     <userTask id="_6" name="Update Situation" >
       <ioSpecification>
+        <dataInput id="_6_callInput" name="call" />
+        <dataInput id="_6_emergencyInput" name="emergency" />
         <dataInput id="_6_CommentInput" name="Comment" />
         <dataInput id="_6_SkippableInput" name="Skippable" />
         <dataInput id="_6_TaskNameInput" name="TaskName" />
         <dataInput id="_6_PriorityInput" name="Priority" />
-        <dataInput id="_6_call.IdInput" name="call" />
-        <dataInput id="_6_emergency.IdInput" name="emergency" />
-        <dataOutput id="_6_emergency.severityOutput" name="emergency.severity" />
         <dataOutput id="_6_emergency.updatedNotesOutput" name="emergency.updatedNotes" />
-        
+        <dataOutput id="_6_emergency.severityOutput" name="emergency.severity" />
         <inputSet>
-          <dataInputRefs>_6_call.IdInput</dataInputRefs>
-          <dataInputRefs>_6_emergency.IdInput</dataInputRefs>
+          <dataInputRefs>_6_callInput</dataInputRefs>
+          <dataInputRefs>_6_emergencyInput</dataInputRefs>
+          <dataInputRefs>_6_CommentInput</dataInputRefs>
+          <dataInputRefs>_6_SkippableInput</dataInputRefs>
+          <dataInputRefs>_6_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_6_PriorityInput</dataInputRefs>
         </inputSet>
         <outputSet>
-            <dataOutputRefs>_6_emergency.severityOutput</dataOutputRefs>
-            <dataOutputRefs>_6_emergency.updatedNotesOutput</dataOutputRefs>
-          
+          <dataOutputRefs>_6_emergency.updatedNotesOutput</dataOutputRefs>
+          <dataOutputRefs>_6_emergency.severityOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
         <sourceRef>call</sourceRef>
-        <targetRef>_6_call.IdInput</targetRef>
+        <targetRef>_6_callInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <sourceRef>emergency</sourceRef>
-        <targetRef>_6_emergency.IdInput</targetRef>
+        <targetRef>_6_emergencyInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_CommentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">en-UK</from>
-          <to xs:type="tFormalExpression">_6_CommentInput</to>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_6_CommentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_SkippableInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">false</from>
-          <to xs:type="tFormalExpression">_6_SkippableInput</to>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_6_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"> Firefighter Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
-          <to xs:type="tFormalExpression">_6_TaskNameInput</to>
+          <from xsi:type="tFormalExpression"> Firefighter Update For Emergency: #{emergency.id} Phone Call( #{call.id} )</from>
+          <to xsi:type="tFormalExpression">_6_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_PriorityInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"></from>
-          <to xs:type="tFormalExpression">_6_PriorityInput</to>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_6_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_6_emergency.severityOutput</sourceRef>
-        <targetRef>emergency.severity</targetRef>
-      </dataOutputAssociation>
-      <dataOutputAssociation>
         <sourceRef>_6_emergency.updatedNotesOutput</sourceRef>
         <targetRef>emergency.updatedNotes</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_emergency.severityOutput</sourceRef>
+        <targetRef>emergency.severity</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -136,21 +134,222 @@
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-
-
-    <endEvent id="_99" name="EndProcess" >
+    <businessRuleTask id="_8" name="Select Closest Water Provider" g:ruleFlowGroup="closest-water-selection" >
+    </businessRuleTask>
+    <userTask id="_9" name="Go to Closest water Provider" >
+      <ioSpecification>
+        <dataInput id="_9_callInput" name="call" />
+        <dataInput id="_9_emergencyInput" name="emergency" />
+        <dataInput id="_9_refillDestinationInput" name="refillDestination" />
+        <dataInput id="_9_CommentInput" name="Comment" />
+        <dataInput id="_9_SkippableInput" name="Skippable" />
+        <dataInput id="_9_TaskNameInput" name="TaskName" />
+        <dataInput id="_9_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_9_callInput</dataInputRefs>
+          <dataInputRefs>_9_emergencyInput</dataInputRefs>
+          <dataInputRefs>_9_refillDestinationInput</dataInputRefs>
+          <dataInputRefs>_9_CommentInput</dataInputRefs>
+          <dataInputRefs>_9_SkippableInput</dataInputRefs>
+          <dataInputRefs>_9_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_9_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_9_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_9_emergencyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>refillDestination</sourceRef>
+        <targetRef>_9_refillDestinationInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_9_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_9_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Water Refill: go to ( #{refillDestination.locationX}, #{refillDestination.locationY} )</from>
+          <to xsi:type="tFormalExpression">_9_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_9_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_9_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>firefighter</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_10" name="EndProcess" />
+    <scriptTask id="_12" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+      <script>
+        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        report.addEntry("Process ended");
+      </script>
+    </scriptTask>
+    <endEvent id="_13" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
-   
+    <scriptTask id="_664" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Fire Truck arrives to the Emergency");</script>
+    </scriptTask>
+    <endEvent id="_665" name="End" />
+    <scriptTask id="_666" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Fire Truck runs out of water!");</script>
+    </scriptTask>
+    <intermediateCatchEvent id="_662" name="Truck Out Of Water" >
+      <dataOutput id="_662_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_662_Output</sourceRef>
+      <targetRef>fireTruckOutOfWaterEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_662_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent"/>
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="_663" name="No More Fire" >
+      <dataOutput id="_663_Output" name="event" />
+      <dataOutputAssociation>
+      <sourceRef>_663_Output</sourceRef>
+      <targetRef>emergencyEndsEvent</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_663_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent"/>
+    </intermediateCatchEvent>
 
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
-    <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
-    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
-    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
-    <sequenceFlow id="_6-_3" sourceRef="_6" targetRef="_3" />
-    <sequenceFlow id="_3-_99" sourceRef="_3" targetRef="_99" />
-   
+    <sequenceFlow id="_6-_98" sourceRef="_6" targetRef="_98" />
+    <sequenceFlow id="_664-_6" sourceRef="_664" targetRef="_6" />
+    <sequenceFlow id="_666-_8" sourceRef="_666" targetRef="_8" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
+    <sequenceFlow id="_663-_12" sourceRef="_663" targetRef="_12" />
+    <sequenceFlow id="_12-_13" sourceRef="_12" targetRef="_13" />
+    <sequenceFlow id="_4-_664" sourceRef="_4" targetRef="_664" />
+    <sequenceFlow id="_2-_665" sourceRef="_2" targetRef="_665" />
+    <sequenceFlow id="_662-_666" sourceRef="_662" targetRef="_666" />
+
   </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="52" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="168" y="16" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="52" y="96" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_98" >
+        <dc:Bounds x="498" y="96" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="320" y="96" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" >
+        <dc:Bounds x="320" y="176" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_9" >
+        <dc:Bounds x="472" y="176" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_10" >
+        <dc:Bounds x="630" y="176" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12" >
+        <dc:Bounds x="168" y="256" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_13" >
+        <dc:Bounds x="356" y="256" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_664" >
+        <dc:Bounds x="168" y="96" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_665" >
+        <dc:Bounds x="356" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_666" >
+        <dc:Bounds x="168" y="176" width="120" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_662" >
+        <dc:Bounds x="52" y="176" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_663" >
+        <dc:Bounds x="52" y="256" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="76" y="40" />
+        <di:waypoint x="228" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_98" >
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="522" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_664-_6" >
+        <di:waypoint x="228" y="120" />
+        <di:waypoint x="380" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_666-_8" >
+        <di:waypoint x="228" y="200" />
+        <di:waypoint x="380" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8-_9" >
+        <di:waypoint x="380" y="200" />
+        <di:waypoint x="522" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9-_10" >
+        <di:waypoint x="522" y="200" />
+        <di:waypoint x="654" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_663-_12" >
+        <di:waypoint x="76" y="280" />
+        <di:waypoint x="228" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-_13" >
+        <di:waypoint x="228" y="280" />
+        <di:waypoint x="380" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_664" >
+        <di:waypoint x="76" y="120" />
+        <di:waypoint x="228" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_665" >
+        <di:waypoint x="228" y="40" />
+        <di:waypoint x="380" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_662-_666" >
+        <di:waypoint x="76" y="200" />
+        <di:waypoint x="228" y="200" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
 </definitions>

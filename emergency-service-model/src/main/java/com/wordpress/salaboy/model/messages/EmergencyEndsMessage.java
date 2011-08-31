@@ -2,8 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package com.wordpress.salaboy.model.events;
+package com.wordpress.salaboy.model.messages;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,22 +11,12 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
+public class EmergencyEndsMessage implements Serializable, EmergencyInterchangeMessage {
     private String callId;
-    private String vehicleId;
-    
     private Date time;
-
-    public FireTruckOutOfWaterEvent() {
-    }
-
-    public FireTruckOutOfWaterEvent(Date time) {
-        this.time = time;
-    }
     
-    public FireTruckOutOfWaterEvent(String callId, String vehicleId, Date time) {
+    public EmergencyEndsMessage(String callId, Date time) {
         this.callId = callId;
-        this.vehicleId = vehicleId;
         this.time = time;
     }
 
@@ -40,14 +29,6 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
         this.callId = callId;
     }
 
-    public String getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(String vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
     public Date getTime() {
         return time;
     }
@@ -56,8 +37,14 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
         this.time = time;
     }
 
-    
-    
-    
+    @Override
+    public String toString() {
+        return "EmergencyEndsMessage{" + "call id=" + callId + ", time=" + time + '}';
+    }
 
+    
+  
+
+   
+    
 }

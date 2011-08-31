@@ -5,9 +5,13 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.events.CallEvent;
+import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import java.util.ArrayList;
@@ -64,6 +68,12 @@ public class ProceduresMGMTService {
         //notify each of the processes involved in the call
         for (ProcedureService procedureService : this.proceduresByCall.get(callId)) {
             
+            //Emergency Ends event has the same behaviour for all procedures
+            if (event instanceof EmergencyEndsEvent){
+                procedureService.procedureEndsNotification((EmergencyEndsEvent)event);
+                continue;
+            }
+            
             //TODO: change all these logic to something that doesn't hurts my eyes :)
             if (procedureService instanceof DefaultHeartAttackProcedure){
                 DefaultHeartAttackProcedure heartAttackProcedure = (DefaultHeartAttackProcedure)procedureService;
@@ -76,6 +86,8 @@ public class ProceduresMGMTService {
                 DefaultFireProcedure fireProcedure = (DefaultFireProcedure)procedureService;
                 if (event instanceof VehicleHitsEmergencyEvent){
                     fireProcedure.vehicleReachesEmergencyNotification((VehicleHitsEmergencyEvent)event);
+                }else if (event instanceof FireTruckOutOfWaterEvent){
+                    fireProcedure.fireTruckOutOfWaterNotification((FireTruckOutOfWaterEvent)event);
                 }
             }
         }
@@ -89,6 +101,12 @@ public class ProceduresMGMTService {
         }else if (message instanceof VehicleHitsHospitalMessage){
             VehicleHitsHospitalMessage realMessage = (VehicleHitsHospitalMessage)message;
             return new VehicleHitsHospitalEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getHospital().getId(), realMessage.getTime());
+        }else if (message instanceof EmergencyEndsMessage){
+            EmergencyEndsMessage realMessage = (EmergencyEndsMessage)message;
+            return new EmergencyEndsEvent(realMessage.getCallId(), realMessage.getTime());
+        }else if (message instanceof FireTruckOutOfWaterMessage){
+            FireTruckOutOfWaterMessage realMessage = (FireTruckOutOfWaterMessage)message;
+            return new FireTruckOutOfWaterEvent(realMessage.getCallId(), realMessage.getVehicleId(), realMessage.getTime());
         }
         
         throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");

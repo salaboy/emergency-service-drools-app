@@ -12,22 +12,20 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
+public class EmergencyEndsEvent implements CallEvent, Serializable {
     private String callId;
-    private String vehicleId;
     
     private Date time;
 
-    public FireTruckOutOfWaterEvent() {
+    public EmergencyEndsEvent() {
     }
 
-    public FireTruckOutOfWaterEvent(Date time) {
+    public EmergencyEndsEvent(Date time) {
         this.time = time;
     }
     
-    public FireTruckOutOfWaterEvent(String callId, String vehicleId, Date time) {
+    public EmergencyEndsEvent(String callId, Date time) {
         this.callId = callId;
-        this.vehicleId = vehicleId;
         this.time = time;
     }
 
@@ -40,14 +38,6 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
         this.callId = callId;
     }
 
-    public String getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(String vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
     public Date getTime() {
         return time;
     }
@@ -55,9 +45,5 @@ public class FireTruckOutOfWaterEvent implements CallEvent, Serializable {
     public void setTime(Date time) {
         this.time = time;
     }
-
-    
-    
-    
 
 }
