@@ -238,7 +238,8 @@ public class MultiInjuredProcedureTest extends GridBaseTest {
 				new VehicleHitsHospitalMessage(ambulanceId, new Hospital(
 						"Hospital A", 0, 0), emergency.getId(), new Date()));
 		Thread.sleep(4000);
-
+		emergency = DistributedPeristenceServerService.getInstance()
+				.getAllEmergencies().iterator().next();
 		Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId)
 				.size());
 		Assert.assertEquals(1, emergency.getUpdatesForVehicle(ambulanceId2)
