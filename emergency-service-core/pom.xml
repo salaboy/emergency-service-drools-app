@@ -198,7 +198,7 @@
             <artifactId>swing-layout</artifactId>
             <version>1.0.3</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>com.wordpress.salaboy.smarttasks</groupId>
             <artifactId>smart-tasks-api</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -211,7 +211,7 @@
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
             <type>jar</type>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task</artifactId>

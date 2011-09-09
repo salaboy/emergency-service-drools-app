@@ -49,7 +49,7 @@
     <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_2" name="Start Tracking" scriptFormat="http://www.java.com/java" >
       <script>
-        System.out.println(" Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        System.out.println(" Tracking vehicle "+vehicle);
         kcontext.setVariable("report",new Report());
       </script>
     </scriptTask>
