@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
+  <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
+  <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
+  <itemDefinition id="_concreteProcedureIdItem" structureRef="String" />
+
+  <itemDefinition id="_12_multiInstanceItemType" />
+
+  <process processType="Private" isExecutable="true" id="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" name="MultiVehicleProcedure" >
+
+    <extensionElements>
+     <tns:import name="com.wordpress.salaboy.model.Call" />
+     <tns:import name="org.jbpm.workflow.instance.node.WorkItemNodeInstance" />
+     <tns:import name="com.wordpress.salaboy.model.Emergency" />
+     <tns:import name="com.wordpress.salaboy.model.Vehicle" />
+     <tns:import name="com.wordpress.salaboy.model.VehicleUpdate" />
+     <tns:import name="com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService" />
+    </extensionElements>
+    <!-- process variables -->
+    <property id="call" itemSubjectRef="_callItem"/>
+    <property id="emergency" itemSubjectRef="_emergencyItem"/>
+    <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
+    <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <userTask id="_2" name="Select Vehicle" >
+      <ioSpecification>
+        <dataInput id="_2_callInput" name="call" />
+        <dataInput id="_2_emergencyInput" name="emergency" />
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_PriorityInput" name="Priority" />
+        <dataOutput id="_2_emergency.vehiclesOutput" name="emergency.vehicles" />
+        <inputSet>
+          <dataInputRefs>_2_callInput</dataInputRefs>
+          <dataInputRefs>_2_emergencyInput</dataInputRefs>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_SkippableInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_2_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_emergency.vehiclesOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_2_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_2_emergencyInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"> Select Vehicle For #{emergency.id} </from>
+          <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_emergency.vehiclesOutput</sourceRef>
+        <targetRef>emergency.vehicles</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>garage_emergency_service</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_11" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <subProcess id="_12" name="Multiple Instances"  >
+      <ioSpecification>
+        <dataInput id="_12_input" name="MultiInstanceInput" />
+        <inputSet/>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.vehicles</sourceRef>
+        <targetRef>_12_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_12_input</loopDataInputRef>
+        <inputDataItem id="vehicle" itemSubjectRef="_12_multiInstanceItemType"/>
+      </multiInstanceLoopCharacteristics>
+    <!-- nodes -->
+    <task id="_12-2-1" name="Dispatch Vehicle" tns:taskName="DispatchSelectedVehicles" >
+      <ioSpecification>
+        <dataInput id="_12-2-1_callInput" name="call" />
+        <dataInput id="_12-2-1_vehicleInput" name="vehicle" />
+        <inputSet>
+          <dataInputRefs>_12-2-1_callInput</dataInputRefs>
+          <dataInputRefs>_12-2-1_vehicleInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_12-2-1_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>vehicle</sourceRef>
+        <targetRef>_12-2-1_vehicleInput</targetRef>
+      </dataInputAssociation>
+    </task>
+    <startEvent id="_12-2-7" name="StartMultiple" />
+    <task id="_12-2-9" name="Local Report" tns:taskName="Report" >
+      <ioSpecification>
+        <dataInput id="_12-2-9_vehicleInput" name="vehicle" />
+        <dataInput id="_12-2-9_emergencyInput" name="emergency" />
+        <inputSet>
+          <dataInputRefs>_12-2-9_vehicleInput</dataInputRefs>
+          <dataInputRefs>_12-2-9_emergencyInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>vehicle</sourceRef>
+        <targetRef>_12-2-9_vehicleInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_12-2-9_emergencyInput</targetRef>
+      </dataInputAssociation>
+    </task>
+    <endEvent id="_12-2-11" name="EndMultiple" />
+    <callActivity id="_12-2-12" name="Concrete-Procedure" calledElement="#{concreteProcedureId}" >
+      <ioSpecification>
+        <dataInput id="_12-2-12_callInput" name="call" />
+        <dataInput id="_12-2-12_vehicleInput" name="vehicle" />
+        <dataInput id="_12-2-12_emergencyInput" name="emergency" />
+        <inputSet>
+          <dataInputRefs>_12-2-12_callInput</dataInputRefs>
+          <dataInputRefs>_12-2-12_vehicleInput</dataInputRefs>
+          <dataInputRefs>_12-2-12_emergencyInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>call</sourceRef>
+        <targetRef>_12-2-12_callInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>vehicle</sourceRef>
+        <targetRef>_12-2-12_vehicleInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_12-2-12_emergencyInput</targetRef>
+      </dataInputAssociation>
+    </callActivity>
+    <!-- connections -->
+    <sequenceFlow id="_12-2-7-_12-2-1" sourceRef="_12-2-7" targetRef="_12-2-1" />
+    <sequenceFlow id="_12-2-12-_12-2-9" sourceRef="_12-2-12" targetRef="_12-2-9" />
+    <sequenceFlow id="_12-2-9-_12-2-11" sourceRef="_12-2-9" targetRef="_12-2-11" />
+    <sequenceFlow id="_12-2-1-_12-2-12" sourceRef="_12-2-1" targetRef="_12-2-12" />
+    </subProcess>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_12-_11" sourceRef="_12" targetRef="_11" />
+    <sequenceFlow id="_2-_12" sourceRef="_2" targetRef="_12" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="223" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_11" >
+        <dc:Bounds x="554" y="408" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12" >
+        <dc:Bounds x="-136" y="118" width="898" height="179" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12-2-1" >
+        <dc:Bounds x="-33" y="166" width="163" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12-2-7" >
+        <dc:Bounds x="-132" y="173" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12-2-9" >
+        <dc:Bounds x="405" y="193" width="121" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12-2-11" >
+        <dc:Bounds x="596" y="195" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12-2-12" >
+        <dc:Bounds x="227" y="193" width="110" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_12-2-7-_12-2-1" >
+        <di:waypoint x="28" y="79" />
+        <di:waypoint x="184" y="72" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-2-12-_12-2-9" >
+        <di:waypoint x="418" y="99" />
+        <di:waypoint x="601" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-2-9-_12-2-11" >
+        <di:waypoint x="601" y="99" />
+        <di:waypoint x="756" y="101" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-2-1-_12-2-12" >
+        <di:waypoint x="184" y="72" />
+        <di:waypoint x="418" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="207" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-_11" >
+        <di:waypoint x="313" y="207" />
+        <di:waypoint x="578" y="432" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_12" >
+        <di:waypoint x="207" y="40" />
+        <di:waypoint x="313" y="207" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

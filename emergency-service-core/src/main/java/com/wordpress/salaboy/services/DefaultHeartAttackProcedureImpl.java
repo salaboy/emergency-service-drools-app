@@ -44,6 +44,7 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
@@ -58,7 +59,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     private String procedureName;
 
     public DefaultHeartAttackProcedureImpl() {
-        this.procedureName = "DefaultHeartAttackProcedure";
+        this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure";
     }
 
     private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String emergencyId) throws IOException {
@@ -89,6 +90,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/MultiVehicleProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
 
@@ -134,13 +136,14 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
     @Override
     public void patientPickUpNotification(VehicleHitsEmergencyEvent event) {
+        System.out.printf("Notifying %s procedure about VehicleHitsEmergencyEvent\n",procedureName);
         internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
     }
 
-
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+    }
     
-    
-
     @Override
     public void configure( String emergencyId, Map<String, Object> parameters) {
         this.emergencyId = emergencyId;
@@ -158,7 +161,9 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
             }
         }).start();
 
-        internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(getId(), this.procedureName, parameters));
+        parameters.put("concreteProcedureId", this.procedureName);
+        
+        internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(getId(), "MultiVehicleProcedure", parameters));
     }
 
     @Override
@@ -171,8 +176,4 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         this.id = id;
     }
 
-    @Override
-    public void procedureEndsNotification(EmergencyEndsEvent event) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

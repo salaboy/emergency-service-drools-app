@@ -56,3 +56,15 @@ rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
        $processInstance.setVariable("suggestedProcedures",$procedures);
 end
 
+rule "Suggest Default Fire Procedure for Fire Emergency"
+    ruleflow-group "suggest process"
+    when
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency(type == Emergency.EmergencyType.FIRE, processInstanceId == $processInstance.id)
+        $procedures: SuggestedProcedures(emergencyId == $emergency.id)
+    then
+       System.out.println(">>>>>> Adding a Suggested Procedure: "+"DefaultFireProcedure");
+       $procedures.addProcedureName("DefaultFireProcedure"); 
+       $processInstance.setVariable("suggestedProcedures",$procedures);
+end
+

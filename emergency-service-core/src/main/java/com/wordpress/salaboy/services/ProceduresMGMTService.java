@@ -65,6 +65,8 @@ public class ProceduresMGMTService {
         //convert from Message to CallEvent
         EmergencyEvent event = this.convertMessageToEvent(message);
         
+        System.out.printf("Procedures registered to emergency '%s': %s \n", emergencyId, this.proceduresByEmergency.get(emergencyId).size());
+        
         //notify each of the processes involved in the call
         for (ProcedureService procedureService : this.proceduresByEmergency.get(emergencyId)) {
             
@@ -74,7 +76,7 @@ public class ProceduresMGMTService {
                 continue;
             }
             
-            //TODO: change all these logic to something that doesn't hurts my eyes :)
+            //TODO: change all these logic to something that doesn't hurt my eyes :)
             if (procedureService instanceof DefaultHeartAttackProcedure){
                 DefaultHeartAttackProcedure heartAttackProcedure = (DefaultHeartAttackProcedure)procedureService;
                 if (event instanceof VehicleHitsEmergencyEvent){

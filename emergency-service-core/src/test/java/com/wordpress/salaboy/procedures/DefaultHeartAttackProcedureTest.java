@@ -4,9 +4,7 @@
  */
 package com.wordpress.salaboy.procedures;
 
-//import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.grid.GridBaseTest;
-import com.wordpress.salaboy.messaging.MessageConsumer;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
@@ -51,6 +48,7 @@ import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
+import org.junit.Ignore;
 
 /**
  *
@@ -141,7 +139,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         assertNotNull(taskAbstracts);
         Assert.assertEquals(1, taskAbstracts.size());
         TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        Assert.assertEquals(" Select Vehicle For "+call.getId()+" ", taskAbstract.getName().getLocalPart());
+        Assert.assertEquals(" Select Vehicle For "+emergency.getId()+" ", taskAbstract.getName().getLocalPart());
         
 
 
