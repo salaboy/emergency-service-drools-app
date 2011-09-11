@@ -185,7 +185,7 @@
         <outputSet/>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>selectedProcedures</sourceRef>
+        <sourceRef>selectedProcedures.selectedProcedures</sourceRef>
         <targetRef>_7_input</targetRef>
       </dataInputAssociation>
       <multiInstanceLoopCharacteristics>

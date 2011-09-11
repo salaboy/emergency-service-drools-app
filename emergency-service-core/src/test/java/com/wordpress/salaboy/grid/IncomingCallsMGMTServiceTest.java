@@ -5,6 +5,7 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.model.SelectedProcedures;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
 import com.wordpress.salaboy.model.SuggestedProcedures;
@@ -250,8 +251,8 @@ public class IncomingCallsMGMTServiceTest extends GridBaseTest{
         
         
         Map<String,Object> info = new HashMap<String, Object>();
-        List<String> selectedProcedures = new ArrayList<String>();
-        selectedProcedures.add("DefaultHeartAttackProcedure");
+        SelectedProcedures selectedProcedures = new SelectedProcedures(retrivedEmergency.getId());
+        selectedProcedures.addSelectedProcedureName("DefaultHeartAttackProcedure");
         info.put("selectedProcedures", selectedProcedures);
         
         
