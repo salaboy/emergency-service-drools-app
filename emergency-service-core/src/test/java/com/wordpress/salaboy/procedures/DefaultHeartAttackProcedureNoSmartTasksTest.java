@@ -209,7 +209,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
 
-        ContextTrackingServiceImpl.getInstance().attachVehicle(procedureId, ambulanceId);
+//        ContextTrackingServiceImpl.getInstance().attachVehicle(procedureId, ambulanceId);
 
         info.put("emergency.vehicles", vehicles);
         ContentData result = new ContentData();
