@@ -19,7 +19,8 @@ public class ProcedureServiceFactory {
         ProcedureService procedureService = (ProcedureService) context.getBean(procedureName);
         String procedureId = ContextTrackingServiceImpl.getInstance().newProcedure();
         procedureService.setId(procedureId);
-        ContextTrackingServiceImpl.getInstance().attachProcedure(emergencyId, procedureId);
+//        ContextTrackingServiceImpl.getInstance().attachProcedure(emergencyId, procedureId);
+        //TODO Uncomment this last line when it works neo4j between distinct JVM. 
         procedureService.configure(emergencyId, parameters);
         return procedureService;
                

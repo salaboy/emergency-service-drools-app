@@ -8,6 +8,7 @@ package com.wordpress.salaboy.grid;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
+import com.wordpress.salaboy.model.SelectedProcedures;
 import com.wordpress.salaboy.model.SuggestedProcedures;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -238,8 +239,11 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         
         Map<String,Object> info = new HashMap<String, Object>();
-        List<String> selectedProcedures = new ArrayList<String>();
-        selectedProcedures.add("DefaultHeartAttackProcedure");
+		SelectedProcedures selectedProcedures = new SelectedProcedures(
+				retrivedEmergency.getId()); 
+//        List<String> selectedProceduresList = new ArrayList<String>();
+//        selectedProceduresList.add("DefaultHeartAttackProcedure");
+        selectedProcedures.addSelectedProcedureName("DefaultHeartAttackProcedure");
         info.put("selectedProcedures", selectedProcedures);
         
         

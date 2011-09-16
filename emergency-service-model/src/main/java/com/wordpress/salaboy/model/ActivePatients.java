@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class ActivePatients implements Serializable{
+public class ActivePatients implements Serializable {
     
     private List<Patient> activePatients = new ArrayList<Patient>();
     private String emergencyId;

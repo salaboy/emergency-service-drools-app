@@ -28,6 +28,11 @@
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-model</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-tracking-context-component</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<!--dependency>
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-core</artifactId>
@@ -308,7 +313,7 @@
 					<scanIntervalSeconds>3</scanIntervalSeconds>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>8081</port>
+							<port>8082</port>
 						</connector>
 					</connectors>
 				</configuration>

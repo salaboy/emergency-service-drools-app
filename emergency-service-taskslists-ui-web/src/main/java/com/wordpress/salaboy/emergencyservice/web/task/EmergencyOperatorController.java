@@ -15,7 +15,7 @@ import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationE
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.model.Patient;
+import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
 /**
  * Controller to handle the emergency operator requests.
@@ -26,11 +26,11 @@ import com.wordpress.salaboy.model.Patient;
 public class EmergencyOperatorController extends AbstractTaskFormController {
     @Override
     protected void addCustomFormLogic(Model model) {
-        Integer callId = (Integer) taskInfo.get("Call Id");
-        taskInfo.remove("Call Id");
-        callsById.put(callId, (Call) taskInfo.get("Call"));
+//        taskInfo.remove("Call Id");
+    	String id = String.valueOf(System.currentTimeMillis());
+        callsById.put(id, (Call) taskInfo.get("Call"));
         taskInfo.remove("Call");
-        model.addAttribute("callId", callId);
+        model.addAttribute("callId", id);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
     private static final Logger logger = LoggerFactory
             .getLogger(EmergencyOperatorController.class);
 
-    private static Map<Integer, Call> callsById = new HashMap<Integer, Call>();
+    private static Map<String, Call> callsById = new HashMap<String, Call>();
 
     public EmergencyOperatorController() {
         super();
@@ -88,6 +88,8 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         // TODO for now, only for phone call form
         Map<String, Object> info = new HashMap<String, Object>();
         Emergency emergency = new Emergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        emergency.setId(emergencyId);
         Location location = new Location();
         location.setLocationX(Integer.parseInt(data.get("Location X")));
         location.setLocationY(Integer.parseInt(data.get("Location Y")));
@@ -95,25 +97,19 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         emergency.setNroOfPeople(Integer.valueOf(Integer.parseInt(data
                 .get("Number Of People"))));
         emergency.setType(data.get("Emergency Type"));
-        emergency.setCall(callsById.get(Integer.parseInt(data.get("callId"))));
+        emergency.setCall(callsById.get(data.get("callId")));
         info.put("emergency", emergency);
-        if (data.get("Number Of People").equals("1")) {
-            Patient patient = new Patient();
-            patient.setAge(Integer.valueOf(data.get("Age")));
-            patient.setGender(data.get("Gender"));
-            info.put("patient", patient);
-        }
         return info;
     }
     
     @Override
     protected void validate(Map<String, String> formSubmittedData)
     		throws FormValidationException {
-    	Integer people = Integer.valueOf(Integer.parseInt(formSubmittedData
-                .get("Number Of People")));
-    	if (!people.equals(1)) {
-    		throw new FormValidationException("Only supported one person form now.");
-    	}
+//    	Integer people = Integer.valueOf(Integer.parseInt(formSubmittedData
+//                .get("Number Of People")));
+//    	if (!people.equals(1)) {
+//    		throw new FormValidationException("Only supported one person form now.");
+//    	}
     }
 
 }

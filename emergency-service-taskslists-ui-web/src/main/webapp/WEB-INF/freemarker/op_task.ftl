@@ -35,7 +35,7 @@ jQuery.expr[':'].regex = function(elem, index, match) {
    			//...other codes...
    			output = this.name.split('_')[1] + "=" + this.value + "," + output; 
   		});
-  		output = output + 'callId=${callId}'
+  			output = output + 'callId=${callId}';
 			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
 			window.location = url;
 		}

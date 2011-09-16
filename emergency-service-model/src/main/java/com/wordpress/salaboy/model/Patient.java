@@ -67,6 +67,9 @@ public class Patient implements Serializable {
         getAlerts().add(alert);
     }
 
-    
+	@Override
+	public String toString() {
+		return "Patient " + id + " Age:" + age + " Gender " + gender;
+	}
 }
 
