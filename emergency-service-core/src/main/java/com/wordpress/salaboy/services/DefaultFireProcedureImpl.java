@@ -8,6 +8,8 @@ import com.wordpress.salaboy.acc.FirefighterDeparmtmentDistanceCalculator;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -60,7 +62,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     private ProcessInstance processInstance;
 
     public DefaultFireProcedureImpl() {
-        this.procedureName = "DefaultFireProcedure";
+        this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultFireProcedure";
     }
 
     private StatefulKnowledgeSession createDefaultFireProcedureSession(String callId) throws IOException {
@@ -108,6 +110,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         }
 
 
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/MultiVehicleProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+        
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultFireProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
         
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_water_refill_destination.drl").getInputStream())), ResourceType.DRL);
@@ -134,6 +138,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     }
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
+        session.getWorkItemManager().registerWorkItemHandler("Report", new LocalReportWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 
@@ -172,7 +178,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
             }
         }).start();
         
-        processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.DefaultFireProcedure", parameters);
+        parameters.put("concreteProcedureId", this.procedureName);
+        processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
         internalSession.insert(processInstance);
         internalSession.insert(parameters.get("emergency"));
     }

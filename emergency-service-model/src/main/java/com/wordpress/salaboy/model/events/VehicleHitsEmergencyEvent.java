@@ -58,8 +58,9 @@ public class VehicleHitsEmergencyEvent implements EmergencyEvent, Serializable {
         this.time = time;
     }
 
-    
-    
-    
+    @Override
+    public String toString() {
+        return "VehicleHitsEmergencyEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+    }
 
 }

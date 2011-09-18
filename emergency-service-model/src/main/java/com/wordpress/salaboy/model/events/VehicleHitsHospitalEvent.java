@@ -45,4 +45,9 @@ public class VehicleHitsHospitalEvent implements EmergencyEvent, Serializable {
     public String getVehicleId() {
         return vehicleId;
     }
+
+    @Override
+    public String toString() {
+        return "VehicleHitsHospitalEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", hospitalId=" + hospitalId + ", time=" + time + '}';
+    }
 }

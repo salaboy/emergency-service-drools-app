@@ -47,4 +47,9 @@ public class EmergencyEndsEvent implements EmergencyEvent, Serializable {
         this.time = time;
     }
 
+    @Override
+    public String toString() {
+        return "EmergencyEndsEvent{" + "emergencyId=" + emergencyId + ", time=" + time + '}';
+    }
+
 }

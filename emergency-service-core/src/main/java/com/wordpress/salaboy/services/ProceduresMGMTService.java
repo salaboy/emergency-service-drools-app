@@ -65,6 +65,7 @@ public class ProceduresMGMTService {
         //convert from Message to CallEvent
         EmergencyEvent event = this.convertMessageToEvent(message);
         
+        System.out.printf("Notify procedures about %s\n",event);
         System.out.printf("Procedures registered to emergency '%s': %s \n", emergencyId, this.proceduresByEmergency.get(emergencyId).size());
         
         //notify each of the processes involved in the call

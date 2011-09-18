@@ -9,6 +9,7 @@ import com.wordpress.salaboy.model.ProcedureRequest;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,11 +21,13 @@ import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.AccumulateFunctionOption;
@@ -44,7 +47,6 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
@@ -57,40 +59,61 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
+    
+    private boolean useLocalKSession;
 
     public DefaultHeartAttackProcedureImpl() {
         this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure";
     }
 
     private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String emergencyId) throws IOException {
+        
+        GridNode remoteN1 = null;
+        
+        KnowledgeBuilder kbuilder = null;
+        KnowledgeBase kbase = null;
+        
+        if (useLocalKSession) {
+            KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+            kbuilderConf.setOption(AccumulateFunctionOption.get("hospitalDistanceCalculator", new HospitalDistanceCalculator()));
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kbaseConf.setOption(EventProcessingOption.STREAM);
+            kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        }else{
+            Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
+            GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
+            Address addr = gsd.addAddress("socket");
+            addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
+            coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
 
-        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
-        Address addr = gsd.addAddress("socket");
-        addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
-        coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
+            GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
 
-        GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
+            GridPeerConfiguration conf = new GridPeerConfiguration();
+            GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
+            conf.addConfiguration(coreSeviceConf);
 
-        GridPeerConfiguration conf = new GridPeerConfiguration();
-        GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
-        conf.addConfiguration(coreSeviceConf);
+            GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
+            conf.addConfiguration(wprConf);
 
-        GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
-        conf.addConfiguration(wprConf);
+            conf.configure(grid);
 
-        conf.configure(grid);
-
-        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
-        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
-        GridNode remoteN1 = conn.connect();
-
-        KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
-        kbuilderConf.setOption(AccumulateFunctionOption.get("hospitalDistanceCalculator", new HospitalDistanceCalculator()));
-        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
-
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+            GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
+            GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
+            remoteN1 = conn.connect();
+            
+            KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
+            kbuilderConf.setOption(AccumulateFunctionOption.get("hospitalDistanceCalculator", new HospitalDistanceCalculator()));
+            kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
+            
+            KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+            kbaseConf.setOption(EventProcessingOption.STREAM);
+            kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
+        }
+        
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/MultiVehicleProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
+        
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
 
@@ -106,26 +129,21 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
             throw new IllegalStateException("Failed to parse knowledge!");
         }
 
-        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
-        kbaseConf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
-
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
-
-
-
-        remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
+        if (!useLocalKSession){
+            remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
+        }
 
         return session;
 
     }
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        //session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(session));
+        session.getWorkItemManager().registerWorkItemHandler("Report", new LocalReportWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 
@@ -176,4 +194,13 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         this.id = id;
     }
 
+    public boolean isUseLocalKSession() {
+        return useLocalKSession;
+    }
+
+    public void setUseLocalKSession(boolean useLocalKSession) {
+        this.useLocalKSession = useLocalKSession;
+    }
+
+    
 }

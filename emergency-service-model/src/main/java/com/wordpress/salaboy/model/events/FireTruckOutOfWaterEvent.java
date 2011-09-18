@@ -54,8 +54,9 @@ public class FireTruckOutOfWaterEvent implements EmergencyEvent, Serializable {
         this.time = time;
     }
 
-    
-    
-    
+    @Override
+    public String toString() {
+        return "FireTruckOutOfWaterEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+    }
 
 }
