@@ -66,7 +66,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     }
 
     private StatefulKnowledgeSession createDefaultFireProcedureSession(String callId) throws IOException {
-        
+        System.out.println(">>>> I'm creating the "+"DefaultFireProcedure"+" procedure for emergencyId = "+callId);
         GridNode remoteN1 = null;
         
         KnowledgeBuilder kbuilder = null;

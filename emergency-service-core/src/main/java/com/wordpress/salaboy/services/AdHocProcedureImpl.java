@@ -6,7 +6,7 @@ package com.wordpress.salaboy.services;
 
 
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
-import com.wordpress.salaboy.services.workitemhandlers.StartProcedureWorkItemHandler;
+import com.wordpress.salaboy.services.workitemhandlers.AsyncStartProcedureWorkItemHandler;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -131,7 +131,7 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     
     
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new AsyncStartProcedureWorkItemHandler());
     }
 
     @Override

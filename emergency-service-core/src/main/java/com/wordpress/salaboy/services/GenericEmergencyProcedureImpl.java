@@ -7,8 +7,7 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
-import com.wordpress.salaboy.services.workitemhandlers.StartProcedureWorkItemHandler;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.services.workitemhandlers.AsyncStartProcedureWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -136,7 +135,7 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
 
     private void setWorkItemHandlers() {
         genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(genericEmergencySession));
-        genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Start Procedure", new StartProcedureWorkItemHandler());
+        genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Start Procedure", new AsyncStartProcedureWorkItemHandler());
         genericEmergencySession.getWorkItemManager().registerWorkItemHandler("Reporting", new MyReportingWorkItemHandler());
         
     }

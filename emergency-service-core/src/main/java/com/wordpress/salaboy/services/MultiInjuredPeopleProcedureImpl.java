@@ -65,8 +65,8 @@ public class MultiInjuredPeopleProcedureImpl implements DefaultHeartAttackProced
         this.procedureName = "DefaultHeartAttackProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String callId) throws IOException {
-
+    private StatefulKnowledgeSession createMultiInjuredPeopleProcedureSession(String callId) throws IOException {
+        System.out.println(">>>> I'm creating the "+"MultiInjuredPeople"+" procedure for emergencyId = "+callId);
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
         GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
         Address addr = gsd.addAddress("socket");
@@ -154,7 +154,7 @@ public class MultiInjuredPeopleProcedureImpl implements DefaultHeartAttackProced
     public void configure(String callId, Map<String, Object> parameters) {
         this.callId = callId;
         try {
-            internalSession = createDefaultHeartAttackProcedureSession(this.callId);
+            internalSession = createMultiInjuredPeopleProcedureSession(this.callId);
         } catch (IOException ex) {
             Logger.getLogger(MultiInjuredPeopleProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

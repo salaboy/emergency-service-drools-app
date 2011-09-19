@@ -11,6 +11,7 @@ import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
@@ -69,6 +70,7 @@ public class CoreServer {
     private MessageConsumerWorker emergencyDetailsPersistenceWorker;
     private MessageConsumerWorker selectedProcedureWorker;
     private MessageConsumerWorker phoneCallsWorker;
+    private MessageConsumerWorker asynchProcedureStartWorker;
 
     public static void main(String[] args) throws Exception {
         final CoreServer coreServer = new CoreServer();
@@ -230,6 +232,15 @@ public class CoreServer {
                     DistributedPeristenceServerService.getInstance().addEntryToReport(message.getEmergencyId(), message.toString());
                 }
             });
+            
+             asynchProcedureStartWorker = new MessageConsumerWorker("asyncProcedureStartCoreServer", new MessageConsumerWorkerHandler<AsyncProcedureStartMessage>() {
+
+                @Override
+                public void handleMessage(AsyncProcedureStartMessage message) {
+                      System.out.println(">>>>>>>>>>>Creating a new Procedure = "+message.getProcedureName());
+                      ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                }
+            });
  
             reportingWorker.start();
             heartBeatReceivedWorker.start();
@@ -239,7 +250,7 @@ public class CoreServer {
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();
             phoneCallsWorker.start();
-
+            asynchProcedureStartWorker.start();
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -267,6 +278,9 @@ public class CoreServer {
         }
         if(selectedProcedureWorker != null){
             selectedProcedureWorker.stopWorker();
+        }
+        if(asynchProcedureStartWorker != null){
+            asynchProcedureStartWorker.stopWorker();
         }
         if(phoneCallsWorker != null){
             phoneCallsWorker.stopWorker();

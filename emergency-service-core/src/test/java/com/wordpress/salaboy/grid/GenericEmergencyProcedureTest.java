@@ -268,7 +268,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
         assertNotNull(sums);
-        assertEquals(1, sums.size());
+            assertEquals(1, sums.size());
         
         BlockingTaskOperationResponseHandler startTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.start(sums.get(0).getId(), "garage_emergency_service", startTaskOperationHandler);

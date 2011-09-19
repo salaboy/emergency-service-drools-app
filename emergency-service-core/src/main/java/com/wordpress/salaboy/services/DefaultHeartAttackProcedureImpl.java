@@ -67,7 +67,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     }
 
     private StatefulKnowledgeSession createDefaultHeartAttackProcedureSession(String emergencyId) throws IOException {
-        
+        System.out.println(">>>> I'm creating the "+"DefaultHeartAttackProcedure"+" procedure for emergencyId = "+emergencyId);
         GridNode remoteN1 = null;
         
         KnowledgeBuilder kbuilder = null;
@@ -182,6 +182,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         parameters.put("concreteProcedureId", this.procedureName);
         
         internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(getId(), "MultiVehicleProcedure", parameters));
+        
     }
 
     @Override

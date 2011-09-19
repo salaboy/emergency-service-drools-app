@@ -428,7 +428,7 @@ public class DefaultFireProcedureNoSmartTasksTest extends GridBaseTest {
 				new VehicleHitsEmergencyMessage(fireTruck.getId(),
 						emergency.getId(), new Date()));
 
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		
 
 		// A new task for the firefighter should be there now
