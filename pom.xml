@@ -8,7 +8,7 @@
     <name>Emergency Service - Scenario</name>
 
     <properties>
-        <drools.version>5.3.0-SNAPSHOT</drools.version>
+        <drools.version>5.4.0-SNAPSHOT</drools.version>
         <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
         <hornetq.version>2.0.0.GA</hornetq.version>
         <infinispan.version>4.2.1.FINAL</infinispan.version>
