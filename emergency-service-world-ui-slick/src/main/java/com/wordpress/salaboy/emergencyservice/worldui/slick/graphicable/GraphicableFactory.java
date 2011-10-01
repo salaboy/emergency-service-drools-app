@@ -99,10 +99,10 @@ public class GraphicableFactory {
         Animation myHospital = AnimationFactory.getHighlightedHospitalAnimation();
 
         Polygon myHospitalPolygon = new Polygon(new float[]{
-                    Math.round(hospital.getPositionX()) * 16, Math.round(hospital.getPositionY()) * 16,
-                    (Math.round(hospital.getPositionX()) * 16) + 16, Math.round(hospital.getPositionY()) * 16,
-                    (Math.round(hospital.getPositionX()) * 16) + 16, Math.round(hospital.getPositionY()) * 16 + 16,
-                    Math.round(hospital.getPositionX()) * 16, Math.round(hospital.getPositionY()) * 16 + 16
+                    Math.round(hospital.getX()) * 16, Math.round(hospital.getY()) * 16,
+                    (Math.round(hospital.getX()) * 16) + 16, Math.round(hospital.getY()) * 16,
+                    (Math.round(hospital.getX()) * 16) + 16, Math.round(hospital.getY()) * 16 + 16,
+                    Math.round(hospital.getX()) * 16, Math.round(hospital.getY()) * 16 + 16
                 });
         graphHospital.setAnimation(myHospital);
         graphHospital.setPolygon(myHospitalPolygon);

@@ -5,6 +5,10 @@
 
 package com.wordpress.salaboy.grid;
 
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
+import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
@@ -22,7 +26,6 @@ import org.jbpm.task.Task;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
 import java.util.Map;
-import org.junit.Ignore;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import java.util.List;
@@ -56,6 +59,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
 
     private MessageConsumer consumer;
     private TaskClient client;
+    private MessageConsumerWorker asynchProcedureStartWorker;
     public GenericEmergencyProcedureTest() {
         
     }
@@ -113,6 +117,18 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
     
     @Test
     public void genericEmergencyProcedureTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException{
+        
+          asynchProcedureStartWorker = new MessageConsumerWorker("asyncProcedureStartCoreServer", new MessageConsumerWorkerHandler<AsyncProcedureStartMessage>() {
+
+                @Override
+                public void handleMessage(AsyncProcedureStartMessage message) {
+                      System.out.println(">>>>>>>>>>>Creating a new Procedure = "+message.getProcedureName());
+                      ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                }
+            });
+          
+          asynchProcedureStartWorker.start();
+          
         
         MessageProducer producer = MessageFactory.createMessageProducer();
         Call initialCall = new Call(1,2,new Date());
