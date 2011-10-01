@@ -174,7 +174,8 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 						0);
 
 		Assert.assertTrue(taskAbstracts.isEmpty());
-
+                
+                Thread.sleep(2000);
 		// Now the fire truck arrives to the emergency
 		ProceduresMGMTService.getInstance().notifyProcedures(
 				new VehicleHitsEmergencyMessage(fireTruck.getId(),

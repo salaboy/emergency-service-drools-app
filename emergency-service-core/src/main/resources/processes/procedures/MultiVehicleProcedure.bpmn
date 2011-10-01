@@ -36,6 +36,9 @@
     <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
 
     <!-- nodes -->
+    <scriptTask id="_16" name="Script" >
+      <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; AFTER THE HUMAN TASK!!!");</script>
+    </scriptTask>
     <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Select Vehicle" >
       <ioSpecification>
@@ -143,123 +146,119 @@
       </dataInputAssociation>
     </task>
     <startEvent id="_12-2-7" name="StartMultiple" />
-    <task id="_12-2-9" name="Local Report" tns:taskName="Report" >
-      <ioSpecification>
-        <dataInput id="_12-2-9_vehicleInput" name="vehicle" />
-        <dataInput id="_12-2-9_emergencyInput" name="emergency" />
-        <inputSet>
-          <dataInputRefs>_12-2-9_vehicleInput</dataInputRefs>
-          <dataInputRefs>_12-2-9_emergencyInput</dataInputRefs>
-        </inputSet>
-        <outputSet>
-        </outputSet>
-      </ioSpecification>
-      <dataInputAssociation>
-        <sourceRef>vehicle</sourceRef>
-        <targetRef>_12-2-9_vehicleInput</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <sourceRef>emergency</sourceRef>
-        <targetRef>_12-2-9_emergencyInput</targetRef>
-      </dataInputAssociation>
-    </task>
     <endEvent id="_12-2-11" name="EndMultiple" />
-    <callActivity id="_12-2-12" name="Concrete-Procedure" calledElement="#{concreteProcedureId}" >
-      <ioSpecification>
-        <dataInput id="_12-2-12_callInput" name="call" />
-        <dataInput id="_12-2-12_vehicleInput" name="vehicle" />
-        <dataInput id="_12-2-12_emergencyInput" name="emergency" />
-        <inputSet>
-          <dataInputRefs>_12-2-12_callInput</dataInputRefs>
-          <dataInputRefs>_12-2-12_vehicleInput</dataInputRefs>
-          <dataInputRefs>_12-2-12_emergencyInput</dataInputRefs>
-        </inputSet>
-        <outputSet>
-        </outputSet>
-      </ioSpecification>
-      <dataInputAssociation>
-        <sourceRef>call</sourceRef>
-        <targetRef>_12-2-12_callInput</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <sourceRef>vehicle</sourceRef>
-        <targetRef>_12-2-12_vehicleInput</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <sourceRef>emergency</sourceRef>
-        <targetRef>_12-2-12_emergencyInput</targetRef>
-      </dataInputAssociation>
-    </callActivity>
+    <scriptTask id="_12-2-12" name="Start Process" >
+      <script>java.util.Map parameters = new java.util.HashMap();
+      
+parameters.put("call", kcontext.getVariable("call"));
+parameters.put("emergency", kcontext.getVariable("emergency"));
+parameters.put("vehicle", kcontext.getVariable("vehicle"));
+insert(new com.wordpress.salaboy.model.VehiclesOnDuty(((com.wordpress.salaboy.model.Emergency)kcontext.getVariable("emergency")).getId(), (java.util.List)kcontext.getVariable("emergency.vehicles")));
+kcontext.getKnowledgeRuntime().startProcess((String)kcontext.getVariable("concreteProcedureId"), parameters);</script>
+    </scriptTask>
     <!-- connections -->
     <sequenceFlow id="_12-2-7-_12-2-1" sourceRef="_12-2-7" targetRef="_12-2-1" />
-    <sequenceFlow id="_12-2-12-_12-2-9" sourceRef="_12-2-12" targetRef="_12-2-9" />
-    <sequenceFlow id="_12-2-9-_12-2-11" sourceRef="_12-2-9" targetRef="_12-2-11" />
+    <sequenceFlow id="_12-2-12-_12-2-11" sourceRef="_12-2-12" targetRef="_12-2-11" />
     <sequenceFlow id="_12-2-1-_12-2-12" sourceRef="_12-2-1" targetRef="_12-2-12" />
     </subProcess>
+    <intermediateCatchEvent id="_14" name="Signal" >
+      <conditionalEventDefinition>
+        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">
+                    Emergency($id: id)
+                    $vod: com.wordpress.salaboy.model.VehiclesOnDuty(emergencyId == $id)
+                    Number (intValue == $vod.size) from accumulate($v: com.wordpress.salaboy.model.VehicleGoalFinished(emergencyId == $id), count($v))
+        </condition>
+      </conditionalEventDefinition>
+    </intermediateCatchEvent>
+    <task id="_15" name="Report" tns:taskName="Log" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
 
     <!-- connections -->
+    <sequenceFlow id="_2-_16" sourceRef="_2" targetRef="_16" />
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
-    <sequenceFlow id="_12-_11" sourceRef="_12" targetRef="_11" />
-    <sequenceFlow id="_2-_12" sourceRef="_2" targetRef="_12" />
+    <sequenceFlow id="_15-_11" sourceRef="_15" targetRef="_11" />
+    <sequenceFlow id="_16-_12" sourceRef="_16" targetRef="_12" />
+    <sequenceFlow id="_12-_14" sourceRef="_12" targetRef="_14" />
+    <sequenceFlow id="_14-_15" sourceRef="_14" targetRef="_15" />
 
   </process>
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" >
+      <bpmndi:BPMNShape bpmnElement="_16" >
+        <dc:Bounds x="465" y="45" width="80" height="48" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="16" y="16" width="48" height="48" />
+        <dc:Bounds x="68" y="34" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="223" height="48" />
+        <dc:Bounds x="161" y="33" width="223" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_11" >
-        <dc:Bounds x="554" y="408" width="48" height="48" />
+        <dc:Bounds x="449" y="325" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12" >
-        <dc:Bounds x="-136" y="118" width="898" height="179" />
+        <dc:Bounds x="20" y="118" width="515" height="179" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12-2-1" >
-        <dc:Bounds x="-33" y="166" width="163" height="48" />
+        <dc:Bounds x="102" y="175" width="163" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12-2-7" >
-        <dc:Bounds x="-132" y="173" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_12-2-9" >
-        <dc:Bounds x="405" y="193" width="121" height="48" />
+        <dc:Bounds x="24" y="173" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12-2-11" >
-        <dc:Bounds x="596" y="195" width="48" height="48" />
+        <dc:Bounds x="464" y="177" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12-2-12" >
-        <dc:Bounds x="227" y="193" width="110" height="48" />
+        <dc:Bounds x="299" y="176" width="127" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_14" >
+        <dc:Bounds x="248" y="327" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_15" >
+        <dc:Bounds x="328" y="326" width="100" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_12-2-7-_12-2-1" >
         <di:waypoint x="28" y="79" />
-        <di:waypoint x="184" y="72" />
+        <di:waypoint x="163" y="81" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_12-2-12-_12-2-9" >
-        <di:waypoint x="418" y="99" />
-        <di:waypoint x="601" y="99" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_12-2-9-_12-2-11" >
-        <di:waypoint x="601" y="99" />
-        <di:waypoint x="756" y="101" />
+      <bpmndi:BPMNEdge bpmnElement="_12-2-12-_12-2-11" >
+        <di:waypoint x="342" y="82" />
+        <di:waypoint x="468" y="83" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_12-2-1-_12-2-12" >
-        <di:waypoint x="184" y="72" />
-        <di:waypoint x="418" y="99" />
+        <di:waypoint x="163" y="81" />
+        <di:waypoint x="342" y="82" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_16" >
+        <di:waypoint x="272" y="57" />
+        <di:waypoint x="505" y="69" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
-        <di:waypoint x="40" y="40" />
-        <di:waypoint x="207" y="40" />
+        <di:waypoint x="92" y="58" />
+        <di:waypoint x="272" y="57" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_12-_11" >
-        <di:waypoint x="313" y="207" />
-        <di:waypoint x="578" y="432" />
+      <bpmndi:BPMNEdge bpmnElement="_15-_11" >
+        <di:waypoint x="378" y="350" />
+        <di:waypoint x="473" y="349" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_2-_12" >
-        <di:waypoint x="207" y="40" />
-        <di:waypoint x="313" y="207" />
+      <bpmndi:BPMNEdge bpmnElement="_16-_12" >
+        <di:waypoint x="505" y="69" />
+        <di:waypoint x="277" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-_14" >
+        <di:waypoint x="277" y="207" />
+        <di:waypoint x="272" y="351" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_14-_15" >
+        <di:waypoint x="272" y="351" />
+        <di:waypoint x="378" y="350" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
