@@ -8,7 +8,6 @@
     <bean id="DefaultHeartAttackProcedure" class="com.wordpress.salaboy.services.DefaultHeartAttackProcedureImpl">
         <property name="useLocalKSession" value="false"/>
     </bean>
-    <bean id="MultiInjuredPeopleProcedure" class="com.wordpress.salaboy.services.MultiInjuredPeopleProcedureImpl"/>
     <bean id="AdHocProcedure" class="com.wordpress.salaboy.services.AdHocProcedureImpl"/>
     <bean id="DumbProcedure" class="com.wordpress.salaboy.services.DumbProcedureImpl"/>
        
