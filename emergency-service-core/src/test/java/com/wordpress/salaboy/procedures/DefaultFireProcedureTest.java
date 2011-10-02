@@ -132,7 +132,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 		this.humanTaskServiceClient.cleanUpService();
 	}
 
-	@Test
+	@Ignore
 	public void defaultFireSimpleTest() throws HornetQException,
 			InterruptedException, IOException, ClassNotFoundException,
 			IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
@@ -217,7 +217,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
 	}
 
-	@Ignore
+	@Test
 	public void fireTruckOutOfWaterTest() throws HornetQException,
 			InterruptedException, IOException, ClassNotFoundException,
 			IllegalArgumentFault, IllegalStateFault, IllegalAccessFault {
@@ -230,14 +230,37 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 		ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(),
 				"DefaultFireProcedure", parameters);
 
+                //Because of the emergency, a new Task is ready for garage: pick the corresponding vehicle/s
+                List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "garage_emergency_service", "", null, "", "", "", 0, 0);
+                Assert.assertNotNull(taskAbstracts);
+                Assert.assertEquals(1, taskAbstracts.size());
+                TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
+                Assert.assertEquals(" Select Vehicle For "+emergency.getId()+" ", taskAbstract.getName().getLocalPart());
+                
+                //Garage team starts working on the task
+                humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
+                humanTaskServiceClient.start(taskAbstract.getId());
+                
+                
+                //A Firetruck is selected
+                Map<String, Object> info = new HashMap<String, Object>();
+                List<Vehicle> vehicles = new ArrayList<Vehicle>();
+                vehicles.add(fireTruck);
+                info.put("emergency.vehicles", vehicles);
+                
+                //Garage team completes the task
+                humanTaskServiceClient.complete(taskAbstract.getId(), info);
+                
 		// The fire truck doesn't reach the emergency yet. No task for
 		// the firefighter.
 		humanTaskServiceClient.setAuthorizedEntityId("firefighter");
-		List<TTaskAbstract> taskAbstracts = humanTaskServiceClient
+		taskAbstracts = humanTaskServiceClient
 				.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0,
 						0);
 
 		Assert.assertTrue(taskAbstracts.isEmpty());
+                
+                Thread.sleep(2000);
 
 		// Now the fire truck arrives to the emergency
 		ProceduresMGMTService.getInstance().notifyProcedures(
@@ -253,9 +276,11 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 		Assert.assertEquals(1, taskAbstracts.size());
 
 		TTaskAbstract firefighterTask = taskAbstracts.get(0);
+                
+                System.out.println("Task for Firefighter: "+firefighterTask.getName());
 
 		// The firefighter completes the task
-		Map<String, Object> info = new HashMap<String, Object>();
+		info = new HashMap<String, Object>();
 		info.put("emergency.priority", 1);
 		humanTaskServiceClient.start(firefighterTask.getId());
 		humanTaskServiceClient.complete(firefighterTask.getId(), info);
