@@ -27,7 +27,7 @@ rule "Calculate Water Refill Location"
                 firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
         )
     then
-        System.out.println("Calculate Water Refill Location executed");
+        System.out.println("Calculate Water Refill Location executed in "+$processInstance.getId());
         String callId = ((Call)$processInstance.getVariable("call")).getId();
         $processInstance.setVariable("refillDestination", new Location($selectedLocation.getX(),$selectedLocation.getY()));
         //TODO: Send message

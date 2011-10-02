@@ -36,10 +36,10 @@
     <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
 
     <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_16" name="Script" >
       <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; AFTER THE HUMAN TASK!!!");</script>
     </scriptTask>
-    <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Select Vehicle" >
       <ioSpecification>
         <dataInput id="_2_callInput" name="call" />
@@ -154,7 +154,8 @@ parameters.put("call", kcontext.getVariable("call"));
 parameters.put("emergency", kcontext.getVariable("emergency"));
 parameters.put("vehicle", kcontext.getVariable("vehicle"));
 insert(new com.wordpress.salaboy.model.VehiclesOnDuty(((com.wordpress.salaboy.model.Emergency)kcontext.getVariable("emergency")).getId(), (java.util.List)kcontext.getVariable("emergency.vehicles")));
-kcontext.getKnowledgeRuntime().startProcess((String)kcontext.getVariable("concreteProcedureId"), parameters);</script>
+org.drools.runtime.process.ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess((String)kcontext.getVariable("concreteProcedureId"), parameters);
+insert(pi);</script>
     </scriptTask>
     <!-- connections -->
     <sequenceFlow id="_12-2-7-_12-2-1" sourceRef="_12-2-7" targetRef="_12-2-1" />
@@ -191,11 +192,11 @@ kcontext.getKnowledgeRuntime().startProcess((String)kcontext.getVariable("concre
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" >
-      <bpmndi:BPMNShape bpmnElement="_16" >
-        <dc:Bounds x="465" y="45" width="80" height="48" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="68" y="34" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_16" >
+        <dc:Bounds x="465" y="45" width="80" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
         <dc:Bounds x="161" y="33" width="223" height="48" />

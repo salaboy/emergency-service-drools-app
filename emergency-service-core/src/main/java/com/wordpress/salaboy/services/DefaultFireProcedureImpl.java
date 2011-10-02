@@ -180,7 +180,6 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         
         parameters.put("concreteProcedureId", this.procedureName);
         processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
-        internalSession.insert(processInstance);
         internalSession.insert(parameters.get("emergency"));
     }
     
