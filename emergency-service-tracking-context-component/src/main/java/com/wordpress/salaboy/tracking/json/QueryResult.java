@@ -1,5 +1,7 @@
 package com.wordpress.salaboy.tracking.json;
 
+import java.util.List;
+
 /**
  * This response should be used for response of cypher queries.
  * @author calcacuervo
@@ -7,21 +9,17 @@ package com.wordpress.salaboy.tracking.json;
  */
 public class QueryResult {
 
-	private String[][] data;
+	private List<List<ResponseNode>> data;
 	
-	private String[] columns;
 	public QueryResult() {
 	}
-	public void setData(String[][] data) {
+	
+	public void setData(List<List<ResponseNode>> data) {
 		this.data = data;
 	}
-	public void setColumns(String[] columns) {
-		this.columns = columns;
-	}
-	public String[] getColumns() {
-		return columns;
-	}
-	public String[][] getData() {
+	
+	public List<List<ResponseNode>> getData() {
 		return data;
 	}
+	
 }
