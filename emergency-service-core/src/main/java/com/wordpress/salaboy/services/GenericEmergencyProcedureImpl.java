@@ -6,6 +6,7 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.ProcedureCompleted;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.services.workitemhandlers.AsyncStartProcedureWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.MyReportingWorkItemHandler;
@@ -68,16 +69,11 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
         return genericEmergencySession.getWorkingMemoryEntryPoint("phoneCalls stream");
     }
     
+    @Override
     public void newPhoneCall(Call call){
-        
-        
         //Track new call
-        
         getPhoneCallsEntryPoint().insert(call);
     }
-    
-    
-    
     
     private StatefulKnowledgeSession createGenericEmergencyServiceSession() throws IOException{
         Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
@@ -108,7 +104,7 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/phoneCallsManagement.drl").getInputStream())), ResourceType.DRL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/procedureSuggestions.drl").getInputStream())), ResourceType.DRL);
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/startProcedures.drl").getInputStream())), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresLifeCycle.drl").getInputStream())), ResourceType.DRL);
         
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -157,14 +153,17 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
         }
         new Thread(new Runnable(){
 
+            @Override
             public void run() {
                 genericEmergencySession.fireUntilHalt();
             }
         }).start();
         System.out.println(">>> Initializing Generic Emergency Procedure Service Running ...");
     }
-    
-    
-    
+
+    @Override
+    public void procedureCompletedNotification(String emergencyId, String procedureId) {
+        genericEmergencySession.insert(new ProcedureCompleted(emergencyId, procedureId));
+    }
     
 }

@@ -6,10 +6,12 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.FirefighterDeparmtmentDistanceCalculator;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
+import com.wordpress.salaboy.model.events.FireExtinctedEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
-import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.DispatchVehicleWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.NotifyEndOfProcedureWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -139,7 +141,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Report", new LocalReportWorkItemHandler());
-        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicle", new DispatchVehicleWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("NotifyEndOfProcedure", new NotifyEndOfProcedureWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 
@@ -204,5 +207,10 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public void fireExtinctedNotification(FireExtinctedEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireExtinctedEvent", event);
     }
 }

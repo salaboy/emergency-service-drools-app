@@ -10,7 +10,8 @@ import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
-import com.wordpress.salaboy.workitemhandlers.DispatchSelectedVehiclesWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.DispatchVehicleWorkItemHandler;
+import com.wordpress.salaboy.workitemhandlers.NotifyEndOfProcedureWorkItemHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -143,7 +144,8 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Report", new LocalReportWorkItemHandler());
-        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicles", new DispatchSelectedVehiclesWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicle", new DispatchVehicleWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("NotifyEndOfProcedure", new NotifyEndOfProcedureWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
     }
 

@@ -206,10 +206,12 @@
       </potentialOwner>
     </userTask>
     <endEvent id="_10" name="EndProcess" />
-    <scriptTask id="_12" name="Stop Tracking" scriptFormat="http://www.java.com/java" >
+    <scriptTask id="_12" name="Stop Tracking" >
       <script>
-        System.out.println("Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
-        report.addEntry("Process ended");
+        System.out.println("No more Fire! Stop Tracking vehicle "+vehicle.getId()+" - "+vehicle.getName());
+        report.addEntry("No more Fire!");
+        
+        insert(new com.wordpress.salaboy.model.VehicleGoalFinished(emergency.getId()));
       </script>
     </scriptTask>
     <endEvent id="_13" name="EndProcess" >
@@ -236,7 +238,7 @@
       <outputSet>
         <dataOutputRefs>_663_Output</dataOutputRefs>
       </outputSet>
-      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.EmergencyEndsEvent"/>
+      <signalEventDefinition signalRef="com.wordpress.salaboy.model.events.FireExtinctedEvent"/>
     </intermediateCatchEvent>
 
     <!-- connections -->

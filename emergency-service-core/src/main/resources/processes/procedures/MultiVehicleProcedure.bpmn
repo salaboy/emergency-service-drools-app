@@ -125,7 +125,7 @@
         <inputDataItem id="vehicle" itemSubjectRef="_12_multiInstanceItemType"/>
       </multiInstanceLoopCharacteristics>
     <!-- nodes -->
-    <task id="_12-2-1" name="Dispatch Vehicle" tns:taskName="DispatchSelectedVehicles" >
+    <task id="_12-2-1" name="Dispatch Vehicle" tns:taskName="DispatchSelectedVehicle" >
       <ioSpecification>
         <dataInput id="_12-2-1_callInput" name="call" />
         <dataInput id="_12-2-1_vehicleInput" name="vehicle" />
@@ -162,7 +162,7 @@ insert(pi);</script>
     <sequenceFlow id="_12-2-12-_12-2-11" sourceRef="_12-2-12" targetRef="_12-2-11" />
     <sequenceFlow id="_12-2-1-_12-2-12" sourceRef="_12-2-1" targetRef="_12-2-12" />
     </subProcess>
-    <intermediateCatchEvent id="_14" name="Signal" >
+    <intermediateCatchEvent id="_14" name="Wait for all Vehicles" >
       <conditionalEventDefinition>
         <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">
                     Emergency($id: id)
@@ -171,7 +171,7 @@ insert(pi);</script>
         </condition>
       </conditionalEventDefinition>
     </intermediateCatchEvent>
-    <task id="_15" name="Report" tns:taskName="Log" >
+    <task id="_15" name="Report" tns:taskName="Report" >
       <ioSpecification>
         <inputSet>
         </inputSet>
