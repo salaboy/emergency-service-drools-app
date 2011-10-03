@@ -14,26 +14,26 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
  *
  * @author salaboy
  */
-public class Hospital implements Serializable{
+public class Hospital implements EmergencyEntityBuilding{
    // private static Long lastId = 0l;
     private String id;
     private int availableBeds;
     private List<EmergencyType> specialities;
     private int rank;
     private String name;
-    private float positionX;
-    private float positionY;
+    private int x;
+    private int y;
     private List<Patient> patients;
 
     
     public Hospital() {
     }
 
-    public Hospital(String name, float positionX, float positionY) {
+    public Hospital(String name, int x, int y) {
        // this.id = lastId++;
         this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
+        this.x = x;
+        this.y = y;
         this.patients = new ArrayList<Patient>();
     }
     
@@ -93,20 +93,20 @@ public class Hospital implements Serializable{
         this.name = name;
     }
 
-    public float getPositionX() {
-        return positionX;
+    public int getX() {
+        return x;
     }
 
-    public void setPositionX(float positionX) {
-        this.positionX = positionX;
+    public void setX(int positionX) {
+        this.x = positionX;
     }
 
-    public float getPositionY() {
-        return positionY;
+    public int getY() {
+        return y;
     }
 
-    public void setPositionY(float positionY) {
-        this.positionY = positionY;
+    public void setY(int positionY) {
+        this.y = positionY;
     }
 
     public List<Patient> getPatients() {
@@ -121,24 +121,8 @@ public class Hospital implements Serializable{
     
     @Override
     public String toString() {
-        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", X = "+positionX + ", Y =" +positionY+"}";
+        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", X = "+x + ", Y =" +y+"}";
     }
-
-//    public Animation getAnimation() {
-//        return this.animation;
-//    }
-//
-//    public Polygon getPolygon() {
-//        return this.polygon;
-//    }
-//
-//    public void setAnimation(Animation animation) {
-//        this.animation = animation;
-//    }
-//
-//    public void setPolygon(Polygon polygon) {
-//        this.polygon = polygon;
-//    }
 
     
     

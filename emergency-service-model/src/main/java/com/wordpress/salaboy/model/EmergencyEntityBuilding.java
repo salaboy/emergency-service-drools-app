@@ -4,11 +4,13 @@
  */
 package com.wordpress.salaboy.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author salaboy
  */
-public interface EmergencyEntityBuilding {
+public interface EmergencyEntityBuilding extends Serializable {
     public int getX();
     public int getY();
     public String getName();

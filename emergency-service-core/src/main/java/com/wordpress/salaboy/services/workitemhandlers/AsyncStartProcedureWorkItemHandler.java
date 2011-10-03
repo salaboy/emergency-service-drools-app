@@ -38,10 +38,9 @@ public class AsyncStartProcedureWorkItemHandler implements WorkItemHandler, Seri
 //        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
 
         System.out.println("LET'S CREATE a new procedure name in a remote location = "+procedureName);
-        MessageProducer producer = MessageFactory.createMessageProducer();
+        
         try {
-            producer.sendMessage(new AsyncProcedureStartMessage(emergency.getId(), wi.getId(), procedureName, parameters));
-            producer.stop();
+            MessageFactory.sendMessage(new AsyncProcedureStartMessage(emergency.getId(), wi.getId(), procedureName, parameters));
         } catch (HornetQException ex) {
             Logger.getLogger(AsyncStartProcedureWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

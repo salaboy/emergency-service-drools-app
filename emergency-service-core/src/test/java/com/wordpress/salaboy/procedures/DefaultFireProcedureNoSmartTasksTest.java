@@ -158,7 +158,7 @@ public class DefaultFireProcedureNoSmartTasksTest extends GridBaseTest {
         List<TaskSummary> tasks = handler.getResults();
 
 		Assert.assertTrue(tasks.isEmpty());
-
+                Thread.sleep(2000);
 		// Now the fire truck arrives to the emergency
 		ProceduresMGMTService.getInstance().notifyProcedures(
 				new VehicleHitsEmergencyMessage(fireTruck.getId(),
@@ -276,7 +276,7 @@ public class DefaultFireProcedureNoSmartTasksTest extends GridBaseTest {
         List<TaskSummary> tasks = handler.getResults();
 
 		Assert.assertTrue(tasks.isEmpty());
-
+                Thread.sleep(2000);
 		// Now the fire truck arrives to the emergency
 		ProceduresMGMTService.getInstance().notifyProcedures(
 				new VehicleHitsEmergencyMessage(fireTruck.getId(),

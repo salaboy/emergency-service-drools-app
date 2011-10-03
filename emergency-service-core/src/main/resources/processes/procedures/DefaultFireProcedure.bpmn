@@ -15,6 +15,7 @@
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
   <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_vehicleItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+  <itemDefinition id="_procedureIdItem" />
   <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
   <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />
   <itemDefinition id="_vehicleHitsEmergencyEventItem" structureRef="com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent" />
@@ -30,13 +31,10 @@
      <tns:import name="com.wordpress.salaboy.reporting.Report" />
     </extensionElements>
     <!-- process variables -->
-
     <property id="call" itemSubjectRef="_callItem"/>
     <property id="emergency" itemSubjectRef="_emergencyItem"/>
     <property id="vehicle" itemSubjectRef="_vehicleItem"/>
-    <property id="procedureId" itemSubjectRef="_procedureItem"/>
-   
-
+    <property id="procedureId" itemSubjectRef="_procedureIdItem"/>
     <property id="emergency.severity" itemSubjectRef="_emergency.severityItem"/>
     <property id="emergency.updatedNotes" itemSubjectRef="_emergency.updatedNotesItem"/>
     <property id="vehicleHitsEmergencyEvent" itemSubjectRef="_vehicleHitsEmergencyEventItem"/>
@@ -217,13 +215,7 @@
     <endEvent id="_13" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
-    <scriptTask id="_664" name="Script" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("Fire Truck arrives to the Emergency");</script>
-    </scriptTask>
     <endEvent id="_665" name="End" />
-    <scriptTask id="_666" name="Script" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("Fire Truck runs out of water!");</script>
-    </scriptTask>
     <intermediateCatchEvent id="_662" name="Truck Out Of Water" >
       <dataOutput id="_662_Output" name="event" />
       <dataOutputAssociation>
@@ -250,108 +242,92 @@
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_6-_98" sourceRef="_6" targetRef="_98" />
-    <sequenceFlow id="_664-_6" sourceRef="_664" targetRef="_6" />
-    <sequenceFlow id="_666-_8" sourceRef="_666" targetRef="_8" />
+    <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" />
+    <sequenceFlow id="_662-_8" sourceRef="_662" targetRef="_8" />
     <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
     <sequenceFlow id="_9-_10" sourceRef="_9" targetRef="_10" />
     <sequenceFlow id="_663-_12" sourceRef="_663" targetRef="_12" />
     <sequenceFlow id="_12-_13" sourceRef="_12" targetRef="_13" />
-    <sequenceFlow id="_4-_664" sourceRef="_4" targetRef="_664" />
     <sequenceFlow id="_2-_665" sourceRef="_2" targetRef="_665" />
-    <sequenceFlow id="_662-_666" sourceRef="_662" targetRef="_666" />
 
   </process>
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.DefaultFireProcedure" >
       <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="52" y="16" width="48" height="48" />
+        <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="168" y="16" width="120" height="48" />
+        <dc:Bounds x="96" y="16" width="120" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_4" >
-        <dc:Bounds x="52" y="96" width="48" height="48" />
+        <dc:Bounds x="16" y="96" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_98" >
-        <dc:Bounds x="498" y="96" width="48" height="48" />
+        <dc:Bounds x="274" y="96" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_6" >
-        <dc:Bounds x="320" y="96" width="120" height="48" />
+        <dc:Bounds x="96" y="96" width="120" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_8" >
-        <dc:Bounds x="320" y="176" width="120" height="48" />
+        <dc:Bounds x="96" y="176" width="120" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_9" >
-        <dc:Bounds x="472" y="176" width="100" height="48" />
+        <dc:Bounds x="248" y="176" width="100" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_10" >
-        <dc:Bounds x="630" y="176" width="48" height="48" />
+        <dc:Bounds x="380" y="176" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12" >
-        <dc:Bounds x="168" y="256" width="120" height="48" />
+        <dc:Bounds x="96" y="256" width="120" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_13" >
-        <dc:Bounds x="356" y="256" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_664" >
-        <dc:Bounds x="168" y="96" width="120" height="48" />
+        <dc:Bounds x="274" y="256" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_665" >
-        <dc:Bounds x="356" y="16" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_666" >
-        <dc:Bounds x="168" y="176" width="120" height="48" />
+        <dc:Bounds x="274" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_662" >
-        <dc:Bounds x="52" y="176" width="48" height="48" />
+        <dc:Bounds x="16" y="176" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_663" >
-        <dc:Bounds x="52" y="256" width="48" height="48" />
+        <dc:Bounds x="16" y="256" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
-        <di:waypoint x="76" y="40" />
-        <di:waypoint x="228" y="40" />
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="156" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_6-_98" >
-        <di:waypoint x="380" y="120" />
-        <di:waypoint x="522" y="120" />
+        <di:waypoint x="156" y="120" />
+        <di:waypoint x="298" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_664-_6" >
-        <di:waypoint x="228" y="120" />
-        <di:waypoint x="380" y="120" />
+      <bpmndi:BPMNEdge bpmnElement="_4-_6" >
+        <di:waypoint x="40" y="120" />
+        <di:waypoint x="156" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_666-_8" >
-        <di:waypoint x="228" y="200" />
-        <di:waypoint x="380" y="200" />
+      <bpmndi:BPMNEdge bpmnElement="_662-_8" >
+        <di:waypoint x="40" y="200" />
+        <di:waypoint x="156" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_8-_9" >
-        <di:waypoint x="380" y="200" />
-        <di:waypoint x="522" y="200" />
+        <di:waypoint x="156" y="200" />
+        <di:waypoint x="298" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_9-_10" >
-        <di:waypoint x="522" y="200" />
-        <di:waypoint x="654" y="200" />
+        <di:waypoint x="298" y="200" />
+        <di:waypoint x="404" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_663-_12" >
-        <di:waypoint x="76" y="280" />
-        <di:waypoint x="228" y="280" />
+        <di:waypoint x="40" y="280" />
+        <di:waypoint x="156" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_12-_13" >
-        <di:waypoint x="228" y="280" />
-        <di:waypoint x="380" y="280" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_4-_664" >
-        <di:waypoint x="76" y="120" />
-        <di:waypoint x="228" y="120" />
+        <di:waypoint x="156" y="280" />
+        <di:waypoint x="298" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_665" >
-        <di:waypoint x="228" y="40" />
-        <di:waypoint x="380" y="40" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_662-_666" >
-        <di:waypoint x="76" y="200" />
-        <di:waypoint x="228" y="200" />
+        <di:waypoint x="156" y="40" />
+        <di:waypoint x="298" y="40" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

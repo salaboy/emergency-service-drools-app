@@ -117,7 +117,7 @@ public class CityEntities {
         float newy = Math.round(x/16);
         
         for(Hospital thishospital : CityEntities.hospitals){
-            if(thishospital.getPositionX() == newx && thishospital.getPositionY() == newy){
+            if(thishospital.getX() == newx && thishospital.getY() == newy){
                 return thishospital;
             }
         }

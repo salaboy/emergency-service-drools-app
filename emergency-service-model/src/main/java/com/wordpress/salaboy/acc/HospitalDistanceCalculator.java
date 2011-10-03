@@ -55,8 +55,8 @@ public class HospitalDistanceCalculator implements AccumulateFunction, Serializa
         Hospital currentHospital = data.getHospital();
         Emergency emergency = data.getEmergency();
         
-        float difX = currentHospital.getPositionX() - xs[emergency.getLocation().getLocationX()];
-        float difY = currentHospital.getPositionY() - ys[emergency.getLocation().getLocationY()];
+        float difX = currentHospital.getX() - xs[emergency.getLocation().getLocationX()];
+        float difY = currentHospital.getY() - ys[emergency.getLocation().getLocationY()];
         
         double difTotal = Math.sqrt(Math.pow(((double)difX),2d) + Math.pow(((double)difY),2d));
         
