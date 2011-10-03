@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.wordpress.salaboy.emergencyservice</groupId>
         <artifactId>emergency-service</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>emergency-service-tracking-context-component</artifactId>
-    
+
     <name>Emergency Service - Tracking Context Component</name>
     <url>http://maven.apache.org</url>
     <properties>
@@ -20,10 +21,31 @@
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
         </dependency>
+    	<dependency>
+    		<groupId>com.google.code.gson</groupId>
+    		<artifactId>gson</artifactId>
+    		<version>1.4</version>
+    	</dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
             <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <version>1.4.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
@@ -35,7 +57,7 @@
             <artifactId>blueprints-neo4j-graph</artifactId>
             <version>0.9</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-graph-jung</artifactId>
@@ -46,7 +68,7 @@
             <artifactId>gremlin</artifactId>
             <version>1.2</version>
         </dependency>
-         
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -72,7 +94,7 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    
+
     <repositories>
         <repository>
             <id>tinkerpop-repository</id>
@@ -83,5 +105,16 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
-    </repositories>    
+        <repository>
+            <id>neo4j-release-repository</id>
+            <name>Neo4j Maven 2 release repository</name>
+            <url>http://m2.neo4j.org/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
