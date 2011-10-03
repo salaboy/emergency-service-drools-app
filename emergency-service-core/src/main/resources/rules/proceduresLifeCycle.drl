@@ -16,7 +16,6 @@ rule "Get Information To Start Procedure"
     when
         $emergency: Emergency()
         $processInstance: WorkflowProcessInstance()
-        
     then
         SelectedProcedures selectedProcedures = (SelectedProcedures)$processInstance.getVariable("selectedProcedures");
         Call call = (Call)$processInstance.getVariable("call");
@@ -30,6 +29,14 @@ rule "Get Information To Start Procedure"
        
 end
 
+rule "All Procedures are Completed"
+    when
+        $emergency: Emergency()
+        $p: ProceduresGoingOn(emergencyId == $emergency.id, $procedures: procedureIds)
+        Number (intValue == $p.size) from accumulate(ProcedureCompleted( emergencyId == $emergency.id, count(1)))
+    then
+        MessageFactory.sendMessage(new AllProceduresEndedMessage($emergency.getId(), $procedures ,  new java.util.Date()));
+end
 
 
 

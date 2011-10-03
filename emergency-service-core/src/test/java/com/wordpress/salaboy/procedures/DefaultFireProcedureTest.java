@@ -33,7 +33,7 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
+import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
 import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
@@ -42,7 +42,6 @@ import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -208,9 +207,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
 		Assert.assertTrue(taskAbstracts.isEmpty());
 
-		// Ok, the emregency ends
+		// Ok, no more fire!
 		ProceduresMGMTService.getInstance().notifyProcedures(
-				new EmergencyEndsMessage(emergency.getId(), new Date()));
+				new FireExtinctedMessage(emergency.getId(), new Date()));
 
 
 		// TODO: validate that the process has finished
@@ -359,9 +358,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
 		Assert.assertTrue(taskAbstracts.isEmpty());
 
-		// Ok, the emregency ends
+		// Ok, no more fire!
 		ProceduresMGMTService.getInstance().notifyProcedures(
-				new EmergencyEndsMessage(emergency.getId(), new Date()));
+				new FireExtinctedMessage(emergency.getId(), new Date()));
 
 
 		// TODO: validate that the process has finished
@@ -537,9 +536,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
 		Assert.assertTrue(taskAbstracts.isEmpty());
 
-		// Ok, the emregency ends
+		// Ok, no more fire!
 		ProceduresMGMTService.getInstance().notifyProcedures(
-				new EmergencyEndsMessage(emergency.getId(), new Date()));
+				new FireExtinctedMessage(emergency.getId(), new Date()));
 
 		// TODO: validate that the process has finished
 

@@ -143,7 +143,9 @@
                 System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; "+com.wordpress.salaboy.model.serviceclient
                                     .DistributedPeristenceServerService.getInstance()
                                         .getReportByCallId(((Call)kcontext.getVariable("call")).getId()).getReportString());
-      </script>
+
+        insert(new com.wordpress.salaboy.model.VehicleGoalFinished(emergency.getId()));
+</script>
     </scriptTask>
     <endEvent id="_11" name="EndProcess" >
         <terminateEventDefinition/>

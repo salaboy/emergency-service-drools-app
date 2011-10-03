@@ -20,7 +20,7 @@ import org.hornetq.api.core.HornetQException;
  *
  * @author esteban
  */
-public class DispatchSelectedVehiclesWorkItemHandler implements WorkItemHandler{
+public class DispatchVehicleWorkItemHandler implements WorkItemHandler{
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -29,7 +29,7 @@ public class DispatchSelectedVehiclesWorkItemHandler implements WorkItemHandler{
         try {
             MessageFactory.sendMessage(new VehicleDispatchedMessage(callId, vehicle.getId()));
         } catch (HornetQException ex) {
-            Logger.getLogger(DispatchSelectedVehiclesWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DispatchVehicleWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         manager.completeWorkItem(workItem.getId(), null);
     }

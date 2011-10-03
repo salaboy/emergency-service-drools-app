@@ -13,6 +13,7 @@ import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
  */
 public interface GenericEmergencyProcedure{
     public void allProceduresEnededNotification(AllProceduresEndedEvent event);
+    public void procedureCompletedNotification(String emergencyId, String procedureId);
     public void newPhoneCall(Call call);
     
 }

@@ -11,10 +11,13 @@ import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
+import com.wordpress.salaboy.model.messages.AllProceduresEndedMessage;
 import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
@@ -71,6 +74,8 @@ public class CoreServer {
     private MessageConsumerWorker selectedProcedureWorker;
     private MessageConsumerWorker phoneCallsWorker;
     private MessageConsumerWorker asynchProcedureStartWorker;
+    private MessageConsumerWorker procedureEndedWorker;
+    private MessageConsumerWorker allProceduresEndedWorker;
 
     public static void main(String[] args) throws Exception {
         final CoreServer coreServer = new CoreServer();
@@ -136,6 +141,24 @@ public class CoreServer {
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
                     GenericEmergencyProcedureImpl.getInstance().newPhoneCall(incomingCallMessage.getCall());
+                }
+            });
+            
+            //Procedure Ended Worker
+            procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
+
+                @Override
+                public void handleMessage(ProcedureCompletedMessage procedureEndsMessage) {
+                    GenericEmergencyProcedureImpl.getInstance().procedureCompletedNotification(procedureEndsMessage.getEmergencyId(), procedureEndsMessage.getProcedureId());
+                }
+            });
+            
+            //All Procedures Ended Worker
+            allProceduresEndedWorker = new MessageConsumerWorker("AllProceduresEndedCoreServer", new MessageConsumerWorkerHandler<AllProceduresEndedMessage>() {
+
+                @Override
+                public void handleMessage(AllProceduresEndedMessage allProceduresEndedMessage) {
+                    GenericEmergencyProcedureImpl.getInstance().allProceduresEnededNotification(new AllProceduresEndedEvent(allProceduresEndedMessage.getEmergencyId(), allProceduresEndedMessage.getEndedProcedures()));
                 }
             });
 
@@ -251,6 +274,9 @@ public class CoreServer {
             selectedProcedureWorker.start();
             phoneCallsWorker.start();
             asynchProcedureStartWorker.start();
+            procedureEndedWorker.start();
+            allProceduresEndedWorker.start();
+            
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -284,6 +310,12 @@ public class CoreServer {
         }
         if(phoneCallsWorker != null){
             phoneCallsWorker.stopWorker();
+        }
+        if(procedureEndedWorker != null){
+            procedureEndedWorker.stopWorker();
+        }
+        if(allProceduresEndedWorker != null){
+            allProceduresEndedWorker.stopWorker();
         }
         
     }

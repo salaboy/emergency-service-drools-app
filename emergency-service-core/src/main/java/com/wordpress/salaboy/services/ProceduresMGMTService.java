@@ -6,11 +6,13 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.model.events.EmergencyEvent;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
+import com.wordpress.salaboy.model.events.FireExtinctedEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
 import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
 import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
@@ -91,6 +93,8 @@ public class ProceduresMGMTService {
                     fireProcedure.vehicleReachesEmergencyNotification((VehicleHitsEmergencyEvent)event);
                 }else if (event instanceof FireTruckOutOfWaterEvent){
                     fireProcedure.fireTruckOutOfWaterNotification((FireTruckOutOfWaterEvent)event);
+                }else if (event instanceof FireExtinctedEvent){
+                    fireProcedure.fireExtinctedNotification((FireExtinctedEvent)event);
                 }
             }
         }
@@ -111,6 +115,9 @@ public class ProceduresMGMTService {
         }else if (message instanceof FireTruckOutOfWaterMessage){
             FireTruckOutOfWaterMessage realMessage = (FireTruckOutOfWaterMessage)message;
             return new FireTruckOutOfWaterEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
+        }else if (message instanceof FireExtinctedMessage){
+            FireExtinctedMessage realMessage = (FireExtinctedMessage)message;
+            return new FireExtinctedEvent(realMessage.getEmergencyId(), realMessage.getTime());
         }
         
         throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");
