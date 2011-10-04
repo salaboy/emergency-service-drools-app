@@ -6,14 +6,8 @@ package com.wordpress.salaboy.tracking;
 
 
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -23,7 +17,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.kernel.AbstractGraphDatabase;
 import org.neo4j.server.WrappingNeoServerBootstrapper;
@@ -33,10 +26,6 @@ import org.neo4j.test.ImpermanentGraphDatabase;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tinkerpop.blueprints.pgm.Graph;
-import com.tinkerpop.blueprints.pgm.Vertex;
-import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
-import com.tinkerpop.gremlin.jsr223.GremlinScriptEngine;
 import com.wordpress.salaboy.tracking.json.QueryResult;
 import com.wordpress.salaboy.tracking.json.ResponseNode;
 
