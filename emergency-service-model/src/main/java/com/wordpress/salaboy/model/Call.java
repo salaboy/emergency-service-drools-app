@@ -16,7 +16,7 @@ public class Call implements Serializable {
     private Date date;
     private Long processId;
     private String phoneNumber;
-    //public static AtomicLong incrementalId = new AtomicLong();
+    
     private int x; //location detected from the phonenumber :)
     private int y; //location detected from the phonenumber :)
     private String time;
@@ -24,14 +24,11 @@ public class Call implements Serializable {
     private boolean processed = false;
 
     public Call() {
-        // Needed to be serialized.
-        //this.id = Call.incrementalId.getAndIncrement();
-        
+    
     }
 
     public Call(int x, int y, Date date) {
         calendar = Calendar.getInstance();
-        //this.id = Call.incrementalId.getAndIncrement();
         this.date = date;
         this.phoneNumber = generateRandomePhoneNumber();
         this.x = x;

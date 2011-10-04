@@ -18,6 +18,10 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-model</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
         </dependency>

@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author salaboy
  */
-public class FireTruck implements Vehicle{
+public class FireTruck implements Vehicle {
 
     private String id;
     private String name;
@@ -14,24 +14,20 @@ public class FireTruck implements Vehicle{
     private Date emergencyReachedTime;
     private float positionX;
     private float positionY;
-    //public static AtomicLong incrementalId = new AtomicLong();
-    
 
+    public FireTruck() {
+    }
 
     public FireTruck(String name, Date departureTime) {
-    //    this.id = FireTruck.incrementalId.getAndIncrement();
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public FireTruck(String name) {
-        //this.id = FireTruck.incrementalId.getAndIncrement();
+
         this.name = name;
     }
-    
-    
-    
-    
+
     public void setId(String id) {
         this.id = id;
     }
@@ -40,8 +36,6 @@ public class FireTruck implements Vehicle{
     public String getId() {
         return id;
     }
-
-   
 
     public void setDepartureTime(Date departureTime) {
         this.departureTime = departureTime;
@@ -87,8 +81,4 @@ public class FireTruck implements Vehicle{
     public String toString() {
         return "FireTruck{" + "id=" + id + ", name=" + name + '}';
     }
-
-   
-    
-    
 }

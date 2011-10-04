@@ -4,6 +4,10 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Procedure;
+import com.wordpress.salaboy.model.ServiceChannel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +33,7 @@ import com.wordpress.salaboy.reporting.Report;
  *
  * @author salaboy
  */
-public class DistributedPeristenceServerService {
+public class DistributedPeristenceServerService implements EmergencyEntitiesPersistenceService {
 
     private static DistributedPeristenceServerService instance;
     private DefaultCacheManager cacheManager;
@@ -46,7 +50,7 @@ public class DistributedPeristenceServerService {
         return instance;
     }
 
-    private DistributedPeristenceServerService() throws IOException{
+    private DistributedPeristenceServerService() throws IOException {
 
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
         Configuration cfg = new Configuration();
@@ -55,42 +59,123 @@ public class DistributedPeristenceServerService {
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
-        
+
     }
 
-   
     public EmbeddedCacheManager getCacheManager() {
         return cacheManager;
     }
+    // Stores 
 
+    @Override
     public void storeEmergency(Emergency emergency) {
+        if (emergency.getId() == null || emergency.getId().equals("")) {
+            emergency.setId(ContextTrackingServiceImpl.getInstance().newEmergencyId());
+        }
         if (this.getCache().get("emergencies") == null) {
             getCache().put("emergencies", new HashMap<Long, Emergency>());
         }
         Map<String, Emergency> emergencies = ((Map<String, Emergency>) this.getCache().get("emergencies"));
         emergencies.put(emergency.getId(), emergency);
-        this.getCache().put("emergencies",emergencies);
+        this.getCache().put("emergencies", emergencies);
     }
 
+    @Override
     public void storeVehicle(Vehicle vehicle) {
+        if (vehicle.getId() == null || vehicle.getId().equals("")) {
+            vehicle.setId(ContextTrackingServiceImpl.getInstance().newVehicleId());
+        }
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
         Map<String, Vehicle> vehicles = ((Map<String, Vehicle>) this.getCache().get("vehicles"));
         vehicles.put(vehicle.getId(), vehicle);
-        this.getCache().put("vehicles",vehicles);
+        this.getCache().put("vehicles", vehicles);
 
     }
 
+    @Override
     public void storePatient(Patient patient) {
+        if (patient.getId() == null || patient.getId().equals("")) {
+            patient.setId(ContextTrackingServiceImpl.getInstance().newPatientId());
+        }
         if (this.getCache().get("patients") == null) {
             getCache().put("patients", new HashMap<String, Patient>());
         }
         Map<String, Patient> patients = ((Map<String, Patient>) this.getCache().get("patients"));
         patients.put(patient.getId(), patient);
-        this.getCache().put("hospitals",patients);
+        this.getCache().put("hospitals", patients);
     }
 
+    @Override
+    public void storeHospital(Hospital hospital) {
+        if (hospital.getId() == null || hospital.getId().equals("")) {
+            hospital.setId(ContextTrackingServiceImpl.getInstance().newEmergencyEntityBuildingId());
+        }
+        if (this.getCache().get("hospitals") == null) {
+            getCache().put("hospitals", new HashMap<String, Hospital>());
+        }
+        Map<String, Hospital> hospitals = ((Map<String, Hospital>) this.getCache().get("hospitals"));
+        hospitals.put(hospital.getId(), hospital);
+        this.getCache().put("hospitals", hospitals);
+
+    }
+
+    @Override
+    public void storeCall(Call call) {
+        if (call.getId() == null || call.getId().equals("")) {
+            call.setId(ContextTrackingServiceImpl.getInstance().newCallId());
+        }
+        if (this.getCache().get("calls") == null) {
+            getCache().put("calls", new HashMap<Long, Emergency>());
+        }
+        Map<String, Call> calls = ((Map<String, Call>) this.getCache().get("calls"));
+        calls.put(call.getId(), call);
+        this.getCache().put("calls", calls);
+    }
+
+    @Override
+    public void storeFirefightersDepartment(FirefightersDepartment firefightersDepartment) {
+        if (firefightersDepartment.getId() == null || firefightersDepartment.getId().equals("")) {
+            firefightersDepartment.setId(ContextTrackingServiceImpl.getInstance().newEmergencyEntityBuildingId());
+        }
+        if (this.getCache().get("firefightersDepartments") == null) {
+            getCache().put("firefightersDepartments", new HashMap<String, FirefightersDepartment>());
+        }
+        Map<String, FirefightersDepartment> firefightersDepartments = ((Map<String, FirefightersDepartment>) this.getCache().get("firefightersDepartments"));
+        firefightersDepartments.put(firefightersDepartment.getId(), firefightersDepartment);
+        this.getCache().put("firefightersDepartments", firefightersDepartments);
+
+    }
+
+    @Override
+    public void storeProcedure(Procedure procedure) {
+        if (procedure.getId() == null || procedure.getId().equals("")) {
+            procedure.setId(ContextTrackingServiceImpl.getInstance().newProcedureId());
+        }
+        if (this.getCache().get("procedures") == null) {
+            getCache().put("procedures", new HashMap<String, Procedure>());
+        }
+        Map<String, Procedure> procedures = ((Map<String, Procedure>) this.getCache().get("procedures"));
+        procedures.put(procedure.getId(), procedure);
+        this.getCache().put("procedures", procedures);
+    }
+
+    @Override
+    public void storeServiceChannel(ServiceChannel channel) {
+        if (channel.getId() == null || channel.getId().equals("")) {
+            channel.setId(ContextTrackingServiceImpl.getInstance().newServiceChannelId());
+        }
+        if (this.getCache().get("channels") == null) {
+            getCache().put("channels", new HashMap<String, ServiceChannel>());
+        }
+        Map<String, ServiceChannel> channels = ((Map<String, ServiceChannel>) this.getCache().get("channels"));
+        channels.put(channel.getId(), channel);
+        this.getCache().put("channels", channels);
+    }
+
+    //Loads
+    @Override
     public Emergency loadEmergency(String id) {
         if (this.getCache().get("emergencies") == null) {
             getCache().put("emergencies", new HashMap<String, Emergency>());
@@ -98,6 +183,7 @@ public class DistributedPeristenceServerService {
         return ((Map<String, Emergency>) this.getCache().get("emergencies")).get(id);
     }
 
+    @Override
     public Vehicle loadVehicle(String id) {
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
@@ -105,6 +191,7 @@ public class DistributedPeristenceServerService {
         return ((Map<String, Vehicle>) this.getCache().get("vehicles")).get(id);
     }
 
+    @Override
     public Patient loadPatient(String id) {
         if (this.getCache().get("patients") == null) {
             getCache().put("patients", new HashMap<String, Patient>());
@@ -112,23 +199,7 @@ public class DistributedPeristenceServerService {
         return ((Map<String, Patient>) this.getCache().get("patients")).get(id);
     }
 
-    public Collection<Vehicle> getAllVehicles() {
-        if (this.getCache().get("vehicles") == null) {
-            getCache().put("vehicles", new HashMap<String, Vehicle>());
-        }
-        return new ArrayList<Vehicle>(((Map<String, Vehicle>) this.getCache().get("vehicles")).values());
-    }
-
-    public void storeHospital(Hospital hospital) {
-        if (this.getCache().get("hospitals") == null) {
-            getCache().put("hospitals", new HashMap<String, Hospital>());
-        }
-        Map<String, Hospital> hospitals = ((Map<String, Hospital>) this.getCache().get("hospitals"));
-        hospitals.put(hospital.getId(), hospital);
-        this.getCache().put("hospitals",hospitals);
-        
-    }
-
+    @Override
     public Hospital loadHospital(String id) {
         if (this.getCache().get("hospitals") == null) {
             getCache().put("hospitals", new HashMap<String, Hospital>());
@@ -136,37 +207,84 @@ public class DistributedPeristenceServerService {
         return ((Map<String, Hospital>) this.getCache().get("hospitals")).get(id);
     }
 
+    @Override
+    public Report loadReport(String callId) {
+        if (this.getCache().get("reports") == null) {
+            getCache().put("reports", new HashMap<Long, Report>());
+        }
+        if (((Map<String, Report>) getCache().get("reports")).get(callId) == null) {
+            ((Map<String, Report>) getCache().get("reports")).put(callId, new Report());
+        }
+        return ((Map<String, Report>) getCache().get("reports")).get(callId);
+    }
+
+    @Override
+    public Call loadCall(String id) {
+        if (this.getCache().get("calls") == null) {
+            getCache().put("calls", new HashMap<String, Call>());
+        }
+        return ((Map<String, Call>) this.getCache().get("calls")).get(id);
+    }
+
+    @Override
+    public FirefightersDepartment loadFirefighterDepartment(String id) {
+        if (this.getCache().get("firefightersDepartments") == null) {
+            getCache().put("firefightersDepartments", new HashMap<String, FirefightersDepartment>());
+        }
+        return ((Map<String, FirefightersDepartment>) this.getCache().get("firefightersDepartments")).get(id);
+    }
+
+    @Override
+    public Procedure loadProcedure(String procedureId) {
+        if (this.getCache().get("procedures") == null) {
+            getCache().put("procedures", new HashMap<String, Procedure>());
+        }
+        return ((Map<String, Procedure>) this.getCache().get("procedures")).get(procedureId);
+    }
+
+    @Override
+    public ServiceChannel loadServiceChannel(String channelId) {
+        if (this.getCache().get("channels") == null) {
+            getCache().put("channels", new HashMap<String, ServiceChannel>());
+        }
+        return ((Map<String, ServiceChannel>) this.getCache().get("channels")).get(channelId);
+    }
+
+    //GET ALLs
+    @Override
+    public Collection<Vehicle> getAllVehicles() {
+        if (this.getCache().get("vehicles") == null) {
+            getCache().put("vehicles", new HashMap<String, Vehicle>());
+        }
+        return new ArrayList<Vehicle>(((Map<String, Vehicle>) this.getCache().get("vehicles")).values());
+    }
+
+    @Override
     public Collection<Hospital> getAllHospitals() {
         if (this.getCache().get("hospitals") == null) {
             getCache().put("hospitals", new HashMap<String, Hospital>());
         }
         return ((Map<String, Hospital>) this.getCache().get("hospitals")).values();
     }
-    
-    public void storeFirefightersDepartment(FirefightersDepartment firefightersDepartment) {
-        if (this.getCache().get("firefightersDepartment") == null) {
-            getCache().put("firefightersDepartment", new HashMap<Long, FirefightersDepartment>());
+
+    @Override
+    public Collection<FirefightersDepartment> getAllFirefighterDepartments() {
+        if (this.getCache().get("firefightersDepartments") == null) {
+            getCache().put("firefightersDepartments", new HashMap<Long, FirefightersDepartment>());
         }
-        Map<Long, FirefightersDepartment> firefightersDepartments = ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment"));
-        firefightersDepartments.put(firefightersDepartment.getId(), firefightersDepartment);
-        this.getCache().put("FirefightersDepartment",firefightersDepartments);
-        
+        return ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartments")).values();
     }
 
-    public FirefightersDepartment loadFirefightersDepartment(Long id) {
-        if (this.getCache().get("firefightersDepartment") == null) {
-            getCache().put("firefightersDepartment", new HashMap<Long, Hospital>());
+    @Override
+    public Collection<Emergency> getAllEmergencies() {
+        if (getCache().get("emergencies") == null) {
+            getCache().put("emergencies", new HashMap<Long, Emergency>());
         }
-        return ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment")).get(id);
-    }
-    
-    public Collection<FirefightersDepartment> getAllFirefightersDepartments() {
-        if (this.getCache().get("firefightersDepartment") == null) {
-            getCache().put("firefightersDepartment", new HashMap<Long, FirefightersDepartment>());
-        }
-        return ((Map<Long, FirefightersDepartment>) this.getCache().get("firefightersDepartment")).values();
+        return ((Map<String, Emergency>) getCache().get("emergencies")).values();
     }
 
+    //Helpers 
+    @Override
     public void addEntryToReport(String callId, String entry) {
         if (this.getCache().get("reports") == null) {
             getCache().put("reports", new HashMap<String, Report>());
@@ -178,30 +296,6 @@ public class DistributedPeristenceServerService {
         reports.get(callId).addEntry(entry);
         this.getCache().put("reports", reports);
 
-    }
-
-    public Report getReportByCallId(String callId) {
-        if (this.getCache().get("reports") == null) {
-            getCache().put("reports", new HashMap<Long, Report>());
-        }
-        if (((Map<String, Report>) getCache().get("reports")).get(callId) == null) {
-            ((Map<String, Report>) getCache().get("reports")).put(callId, new Report());
-        }
-        return ((Map<String, Report>) getCache().get("reports")).get(callId);
-    }
-
-    public Collection<Emergency> getAllEmergencies() {
-        if (getCache().get("emergencies") == null) {
-            getCache().put("emergencies", new HashMap<Long, Emergency>());
-        }
-        return ((Map<String, Emergency>) getCache().get("emergencies")).values();
-    }
-    
-    public Emergency getEmergencyById(String id) {
-    	if (getCache().get("emergencies") == null) {
-            getCache().put("emergencies", new HashMap<Long, Emergency>());
-        }
-    	return ((Map<String, Emergency>) getCache().get("emergencies")).get(id);
     }
 
     private Cache<String, Object> getCache() {

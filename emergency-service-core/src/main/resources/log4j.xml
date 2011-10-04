@@ -77,27 +77,27 @@
    -->
 
     <logger name="org.infinispan">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
 
     <logger name="org.jboss.tm">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
 
     <logger name="org.jgroups">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
 
     <logger name="org.springframework">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
   
     <logger name="org.hibernate">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
    
     <logger name="org.infinispan.config.InfinispanConfiguration">
-        <priority value="ERROR"/>
+        <level value="ERROR"/>
     </logger>
 
    <!-- ======================= -->
@@ -105,8 +105,9 @@
    <!-- ======================= -->
 
     <root>
+        <priority value="ERROR"/>    
         <appender-ref ref="CONSOLE"/>
-         <priority value="ERROR"/>
+         
     </root>
 
 </log4j:configuration>

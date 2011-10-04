@@ -9,23 +9,24 @@ package com.wordpress.salaboy.model;
  * @author salaboy
  */
 public class FirefightersDepartment implements EmergencyEntityBuilding {
-    private Long id;
+    private String id;
     private String name;
     private int x;
     private int y;
 
-    public FirefightersDepartment(Long id,String name, int x, int y) {
-        this.id = id;
+    public FirefightersDepartment(String name, int x, int y) {
         this.name = name;
         this.x = x;
         this.y = y;
     }
 
-    public Long getId() {
+    @Override
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    @Override
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,6 +43,11 @@ public class FirefightersDepartment implements EmergencyEntityBuilding {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public EntityBuildingType getType() {
+        return EntityBuildingType.FIREFIGHTERS_DEPARTMENT;
     }
     
     

@@ -18,3 +18,4 @@ hs_err_pid*.log
 /emergency-service-taskslists-ui-web/.settings/
 /.settings/
 /emergency-service-core/db/
+/emergency-service-model/db/
