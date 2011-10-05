@@ -9,7 +9,7 @@ import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.FireExtinctedEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
-import com.wordpress.salaboy.services.workitemhandlers.LocalReportWorkItemHandler;
+import com.wordpress.salaboy.services.workitemhandlers.ProcedureReportWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.DispatchVehicleWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.NotifyEndOfProcedureWorkItemHandler;
 import java.io.IOException;
@@ -140,7 +140,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     }
 
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        session.getWorkItemManager().registerWorkItemHandler("Report", new LocalReportWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("Report", new ProcedureReportWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicle", new DispatchVehicleWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("NotifyEndOfProcedure", new NotifyEndOfProcedureWorkItemHandler());
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));

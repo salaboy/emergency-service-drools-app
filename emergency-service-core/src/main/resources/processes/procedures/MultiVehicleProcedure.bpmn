@@ -36,10 +36,10 @@
     <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
 
     <!-- nodes -->
-    <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_16" name="Script" >
       <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; AFTER THE HUMAN TASK!!!");</script>
     </scriptTask>
+    <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Select Vehicle" >
       <ioSpecification>
         <dataInput id="_2_callInput" name="call" />
@@ -173,11 +173,23 @@ insert(pi);</script>
     </intermediateCatchEvent>
     <task id="_15" name="Report" tns:taskName="Report" >
       <ioSpecification>
+        <dataInput id="_15_emergency.vehiclesInput" name="emergency.vehicles" />
+        <dataInput id="_15_emergencyInput" name="emergency" />
         <inputSet>
+          <dataInputRefs>_15_emergency.vehiclesInput</dataInputRefs>
+          <dataInputRefs>_15_emergencyInput</dataInputRefs>
         </inputSet>
         <outputSet>
         </outputSet>
       </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>emergency.vehicles</sourceRef>
+        <targetRef>_15_emergency.vehiclesInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_15_emergencyInput</targetRef>
+      </dataInputAssociation>
     </task>
 
     <!-- connections -->
@@ -192,11 +204,11 @@ insert(pi);</script>
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" >
-      <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="68" y="34" width="48" height="48" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_16" >
         <dc:Bounds x="465" y="45" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="68" y="34" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
         <dc:Bounds x="161" y="33" width="223" height="48" />

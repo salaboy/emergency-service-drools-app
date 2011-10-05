@@ -34,6 +34,8 @@ import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.grid.GridBaseTest;
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
@@ -41,6 +43,7 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
@@ -48,7 +51,6 @@ import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
-import org.junit.Ignore;
 
 /**
  *
@@ -57,6 +59,8 @@ import org.junit.Ignore;
 public class DefaultHeartAttackProcedureTest extends GridBaseTest {
     private HumanTaskService humanTaskServiceClient;
     
+    private MessageConsumerWorker procedureEndedWorker;
+    private int proceduresEndedCount;
 
     public DefaultHeartAttackProcedureTest() {
     }
@@ -106,6 +110,17 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
+        
+        //Procedure Ended Worker
+        procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
+
+            @Override
+            public void handleMessage(ProcedureCompletedMessage procedureEndsMessage) {
+                proceduresEndedCount++;
+            }
+        });
+
+        procedureEndedWorker.start();
 
     }
 
@@ -119,6 +134,11 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         if (grid1 != null) {
             grid1.get(SocketService.class).close();
         }
+        if (procedureEndedWorker != null) {
+            procedureEndedWorker.stopWorker();
+        }
+        this.humanTaskServiceClient.cleanUpService();
+        
     }
 
     @Test
@@ -198,12 +218,18 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         humanTaskServiceClient.complete(task.getId(), info);
 
 
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
+        //The process didn't finish yet
+        assertEquals(0, proceduresEndedCount);
+        
         //The vehicle reaches the hospital
         ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
         
-        Thread.sleep(4000);
+        Thread.sleep(5000);
+        
+        //The emergency has ended
+        assertEquals(1,proceduresEndedCount);
 
     }
 }
