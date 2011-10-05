@@ -2,10 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.wordpress.salaboy.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
@@ -14,8 +12,8 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
  *
  * @author salaboy
  */
-public class Hospital implements EmergencyEntityBuilding{
-   // private static Long lastId = 0l;
+public class Hospital implements EmergencyEntityBuilding {
+
     private String id;
     private int availableBeds;
     private List<EmergencyType> specialities;
@@ -25,19 +23,15 @@ public class Hospital implements EmergencyEntityBuilding{
     private int y;
     private List<Patient> patients;
 
-    
     public Hospital() {
     }
 
     public Hospital(String name, int x, int y) {
-       // this.id = lastId++;
         this.name = name;
         this.x = x;
         this.y = y;
         this.patients = new ArrayList<Patient>();
     }
-    
-    
 
     public int getAvailableBeds() {
         return availableBeds;
@@ -47,6 +41,7 @@ public class Hospital implements EmergencyEntityBuilding{
         this.availableBeds = availableBeds;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -55,15 +50,15 @@ public class Hospital implements EmergencyEntityBuilding{
         this.id = id;
     }
 
-    public void addPatient(Patient patient){
-        if(patients == null){
+    public void addPatient(Patient patient) {
+        if (patients == null) {
             patients = new ArrayList<Patient>();
         }
         patients.add(patient);
     }
-    
-    public void addSpeciality(EmergencyType emergencyType){
-        if(specialities == null){
+
+    public void addSpeciality(EmergencyType emergencyType) {
+        if (specialities == null) {
             specialities = new ArrayList<EmergencyType>();
         }
         specialities.add(emergencyType);
@@ -85,6 +80,7 @@ public class Hospital implements EmergencyEntityBuilding{
         this.rank = rank;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -93,6 +89,7 @@ public class Hospital implements EmergencyEntityBuilding{
         this.name = name;
     }
 
+    @Override
     public int getX() {
         return x;
     }
@@ -101,6 +98,7 @@ public class Hospital implements EmergencyEntityBuilding{
         this.x = positionX;
     }
 
+    @Override
     public int getY() {
         return y;
     }
@@ -116,15 +114,14 @@ public class Hospital implements EmergencyEntityBuilding{
     public void setPatients(List<Patient> patients) {
         this.patients = patients;
     }
-    
-    
-    
+
     @Override
     public String toString() {
-        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", X = "+x + ", Y =" +y+"}";
+        return "Hospital{" + "id=" + id + ", availableBeds=" + availableBeds + ", specialities=" + specialities + ", rank=" + rank + ", name=" + name + ", x=" + x + ", y=" + y + ", patients=" + patients + '}';
     }
 
-    
-    
-    
+    @Override
+    public EntityBuildingType getType() {
+        return EntityBuildingType.HOSPITAL;
+    }
 }

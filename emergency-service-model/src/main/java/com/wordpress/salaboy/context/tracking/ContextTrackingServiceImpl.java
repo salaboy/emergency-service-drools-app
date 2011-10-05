@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.tracking;
+package com.wordpress.salaboy.context.tracking;
 
 import java.util.UUID;
 import org.neo4j.cypher.ExecutionEngine;
@@ -30,6 +30,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     private Index<Node> proceduresIndex;
     private Index<Node> vehiclesIndex;
     private Index<Node> channelsIndex;
+    private Index<Node> buildingsIndex;
     public static String defaultDB = "db/graph";
     private static ContextTrackingServiceImpl instance;
 
@@ -57,7 +58,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public String newCallId() {
-        
+
         Transaction tx = graphDb.beginTx();
         String callId = "Call-" + UUID.randomUUID().toString();
         try {
@@ -70,17 +71,15 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
             tx.finish();
 
         }
-        
-        
+
+
         return callId;
 
     }
 
-   
-
     @Override
     public String newEmergencyId() {
-        
+
         Transaction tx = graphDb.beginTx();
         String emergencyId = "Emergency-" + UUID.randomUUID().toString();
         try {
@@ -94,6 +93,23 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
         }
         return emergencyId;
+    }
+
+    @Override
+    public String newEmergencyEntityBuildingId() {
+        Transaction tx = graphDb.beginTx();
+        String buildingId = "EntityBuilding-" + UUID.randomUUID().toString();
+        try {
+            Node buildingNode = graphDb.createNode();
+            buildingNode.setProperty("buildingId", buildingId);
+            buildingNode.setProperty("name", buildingId);
+            this.buildingsIndex.add(buildingNode, "buildingId", buildingId);
+            tx.success();
+        } finally {
+            tx.finish();
+
+        }
+        return buildingId;
     }
 
     @Override
@@ -126,7 +142,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public String newProcedureId() {
-        
+
         Transaction tx = graphDb.beginTx();
         String procedureId = "Procedure-" + UUID.randomUUID().toString();
         try {
@@ -174,7 +190,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     @Override
     public String newVehicleId() {
 
-       
+
         Transaction tx = graphDb.beginTx();
         String vehicleId = "Vehicle-" + UUID.randomUUID().toString();
 
@@ -221,7 +237,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public String newServiceChannelId() {
-        
+
         Transaction tx = graphDb.beginTx();
         String channelId = "Channel-" + UUID.randomUUID().toString();
         try {
@@ -238,7 +254,6 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         return channelId;
 
     }
-
 
     @Override
     public void attachServiceChannel(String emergencyId, String channelId) {
@@ -281,7 +296,6 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
     @Override
     public void detachServiceChannel(String serviceChannelId) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -294,6 +308,11 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public void detachPatient(String patientId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void detachEmergencyEntityBuilding(String entityBuildingId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

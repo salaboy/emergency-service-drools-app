@@ -22,7 +22,7 @@ public class Emergency implements Serializable {
 
         FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
     };
-   // public static AtomicLong incrementalId = new AtomicLong();
+  
     
     private String id;
     private EmergencyType type;
@@ -34,15 +34,13 @@ public class Emergency implements Serializable {
     //this is a map that contains the updates that the emercency will send.
     private Map<String, List<VehicleUpdate>> updates = new HashMap<String, List<VehicleUpdate>>();
     
-    private Emergency(String id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
-      //  this.id = id;
+    private Emergency(Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
         this.type = type;
         this.nroOfPeople = nroOfPeople;
         
     }
 
     public Emergency() {
-      //  this.id = Emergency.incrementalId.getAndIncrement();
     }
 
     public long getProcessInstanceId() {
@@ -53,11 +51,7 @@ public class Emergency implements Serializable {
         this.processInstanceId = processInstanceId;
     }
     
-    
 
-    public Emergency(String id){
-        this.id = id;
-    }
     public void setNroOfPeople(int nroOfPeople) {
         this.nroOfPeople = nroOfPeople;
     }

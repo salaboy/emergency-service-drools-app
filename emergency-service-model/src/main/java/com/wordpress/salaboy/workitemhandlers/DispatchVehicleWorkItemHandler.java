@@ -8,7 +8,6 @@ import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.runtime.process.WorkItem;
@@ -22,7 +21,7 @@ import org.hornetq.api.core.HornetQException;
  */
 public class DispatchVehicleWorkItemHandler implements WorkItemHandler{
 
-    @Override
+    
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         String callId = ((Call) workItem.getParameter("call")).getId();
         Vehicle vehicle = (Vehicle) workItem.getParameter("vehicle");
@@ -34,7 +33,6 @@ public class DispatchVehicleWorkItemHandler implements WorkItemHandler{
         manager.completeWorkItem(workItem.getId(), null);
     }
 
-    @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         
     }

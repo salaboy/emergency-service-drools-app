@@ -2,7 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.tracking;
+package com.wordpress.salaboy.context.tracking;
+
+import com.wordpress.salaboy.model.ServiceChannel;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  *
@@ -23,6 +26,8 @@ public interface ContextTrackingService  {
     
     public String newPatientId();
     
+    public String newEmergencyEntityBuildingId();
+    
     
     //Attach
     public void attachEmergency(String callId, String emergencyId);
@@ -35,7 +40,6 @@ public interface ContextTrackingService  {
 
     
     //Detach
-    
     public void detachVehicle(String vehicleId);
 
     public void detachProcedure(String procedureId);
@@ -45,4 +49,13 @@ public interface ContextTrackingService  {
     public void detachServiceChannel(String serviceChannelId);
     
     public void detachPatient(String patientId);
+    
+    public void detachEmergencyEntityBuilding(String entityBuildingId);
+
+    //Helper
+    
+    public GraphDatabaseService getGraphDb();
+    
+    
+    
 }

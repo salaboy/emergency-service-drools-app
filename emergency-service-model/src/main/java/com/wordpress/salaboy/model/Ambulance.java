@@ -1,10 +1,8 @@
 package com.wordpress.salaboy.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -20,23 +18,23 @@ public class Ambulance implements Vehicle {
     private float positionX;
     private float positionY;
     private String name;
-   // public static AtomicLong incrementalId = new AtomicLong();
+   
 
     public Ambulance() {
-        // Needed for serialization
+   
     }
 
     public Ambulance(String name, Date departureTime) {
-        //this.id = Ambulance.incrementalId.getAndIncrement();
+   
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public Ambulance(String name) {
-        //this.id = Ambulance.incrementalId.getAndIncrement();
         this.name = name;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
@@ -110,14 +108,6 @@ public class Ambulance implements Vehicle {
     public String getName() {
         return this.name;
     }
-
-//    public static AtomicLong getIncrementalId() {
-//        return incrementalId;
-//    }
-//
-//    public static void setIncrementalId(AtomicLong incrementalId) {
-//        Ambulance.incrementalId = incrementalId;
-//    }
 
     public void setName(String name) {
         this.name = name;

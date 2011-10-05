@@ -217,7 +217,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().getReportByCallId(this.callId).getReportString());
+        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().loadReport(this.callId).getReportString());
         
 }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -4,10 +4,17 @@
  */
 package com.wordpress.salaboy.tracking;
 
+import com.wordpress.salaboy.model.ServiceChannel;
+import com.wordpress.salaboy.model.Vehicle;
+import java.util.Date;
+import com.wordpress.salaboy.model.Procedure;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
 import com.tinkerpop.blueprints.pgm.Graph;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
 import com.tinkerpop.gremlin.jsr223.GremlinScriptEngine;
+import com.wordpress.salaboy.model.Vehicle.VehicleType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.script.ScriptContext;
@@ -60,23 +67,23 @@ public class TrackingServiceSimpleTest {
         this.graphDb = new ImpermanentGraphDatabase("target/emerency-services/base");
         ContextTrackingService tracking = new ContextTrackingServiceImpl(this.graphDb);
 
-        String callId = tracking.newCall();
+        Call call = tracking.newCall(1,1, new Date());
 
-        String emergencyId = tracking.newEmergency();
-        tracking.attachEmergency(callId, emergencyId);
+        Emergency emergency = tracking.newEmergency();
+        tracking.attachEmergency(call.getId(), emergency.getId());
 
-        String procedureId = tracking.newProcedure();
-        tracking.attachProcedure(emergencyId, procedureId);
+        Procedure procedure = tracking.newProcedure("MyProcedure");
+        tracking.attachProcedure(emergency.getId(), procedure.getId());
 
-        String vehicleId = tracking.newVehicle();
-        tracking.attachVehicle(procedureId, vehicleId);
+        Vehicle vehicle = tracking.newVehicle(VehicleType.AMBULANCE);
+        tracking.attachVehicle(procedure.getId(), vehicle.getId());
         
-        String vehicle2Id = tracking.newVehicle();
-        tracking.attachVehicle(procedureId, vehicle2Id);
+        Vehicle vehicle2 = tracking.newVehicle(VehicleType.FIRETRUCK);
+        tracking.attachVehicle(procedure.getId(), vehicle2.getId());
 
-        String channelId = tracking.newServiceChannel();
+        ServiceChannel channel = tracking.newServiceChannel("MyChannel");
 
-        tracking.attachServiceChannel(emergencyId, channelId);
+        tracking.attachServiceChannel(emergency.getId(), channel.getId());
 
 
         CypherParser parser = new CypherParser();
@@ -84,7 +91,7 @@ public class TrackingServiceSimpleTest {
 
 
         //Give me all the vehicle associated with the procedures that are part of the emergency that was created by this phoneCallId
-        Query query = parser.parse("start n=(calls, 'callId:" + callId + "')  match (n)-[r:CREATES]->(x)-[i:INSTANTIATE]-> (w) -[u:USE]->v  return v");
+        Query query = parser.parse("start n=(calls, 'callId:" + call.getId() + "')  match (n)-[r:CREATES]->(x)-[i:INSTANTIATE]-> (w) -[u:USE]->v  return v");
         ExecutionResult result = engine.execute(query);
         Iterator<Node> n_column = result.columnAs("v");
         
@@ -121,24 +128,23 @@ public class TrackingServiceSimpleTest {
         this.graphDb = new ImpermanentGraphDatabase("target/emerency-services/base");
         ContextTrackingService tracking = new ContextTrackingServiceImpl(this.graphDb);
 
-        String callId = tracking.newCall();
+        Call call = tracking.newCall(1,1, new Date());
 
-        String emergencyId = tracking.newEmergency();
-        tracking.attachEmergency(callId, emergencyId);
+        Emergency emergency = tracking.newEmergency();
+        tracking.attachEmergency(call.getId(), emergency.getId());
 
-        String procedureId = tracking.newProcedure();
-        tracking.attachProcedure(emergencyId, procedureId);
+        Procedure procedure = tracking.newProcedure("MyProcedure");
+        tracking.attachProcedure(emergency.getId(), procedure.getId());
 
-        String vehicleId = tracking.newVehicle();
-        tracking.attachVehicle(procedureId, vehicleId);
+        Vehicle vehicle = tracking.newVehicle(VehicleType.AMBULANCE);
+        tracking.attachVehicle(procedure.getId(), vehicle.getId());
         
-        String vehicle2Id = tracking.newVehicle();
-        tracking.attachVehicle(procedureId, vehicle2Id);
+        Vehicle vehicle2 = tracking.newVehicle(VehicleType.FIRETRUCK);
+        tracking.attachVehicle(procedure.getId(), vehicle2.getId());
 
-        String channelId = tracking.newServiceChannel();
+        ServiceChannel channel = tracking.newServiceChannel("MyChannel");
 
-        tracking.attachServiceChannel(emergencyId, channelId);
-
+        tracking.attachServiceChannel(emergency.getId(), channel.getId());
         Graph graph = new Neo4jGraph(graphDb);
         ScriptEngine engine = new GremlinScriptEngine();
 
@@ -146,7 +152,7 @@ public class TrackingServiceSimpleTest {
         engine.getBindings(ScriptContext.ENGINE_SCOPE).put("graph", graph);
         engine.getBindings(ScriptContext.ENGINE_SCOPE).put("results", results);
         // Can I reduce the verbosity of accessing the index using a variable?
-        List<Vertex> result = (List<Vertex>) engine.eval("graph.idx('calls').get('callId','"+callId+"')[0].out('CREATES').out('INSTANTIATE').out('USE') >> results");
+        List<Vertex> result = (List<Vertex>) engine.eval("graph.idx('calls').get('callId','"+call.getId()+"')[0].out('CREATES').out('INSTANTIATE').out('USE') >> results");
         System.out.println("result.size" + result.size());
         assertEquals(2, result.size());
         for (Vertex vertex : result) {
