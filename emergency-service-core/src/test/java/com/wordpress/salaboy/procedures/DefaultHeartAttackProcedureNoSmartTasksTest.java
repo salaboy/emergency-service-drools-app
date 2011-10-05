@@ -11,28 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.grid.SocketService;
-import org.hornetq.api.core.HornetQException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-import com.wordpress.salaboy.grid.GridBaseTest;
-import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
 
 
 import java.io.ByteArrayInputStream;
@@ -55,124 +40,28 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
  *
  * @author salaboy
  */
-public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
+public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAttackProcedureBaseTest {
 
-    private MessageConsumer consumer;
     private TaskClient client;
-    private Emergency emergency = null;
-    private Call call = null;
 
     public DefaultHeartAttackProcedureNoSmartTasksTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        HumanTaskServerService.getInstance().initTaskServer();
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-
-        HumanTaskServerService.getInstance().stopTaskServer();
-    }
-
     @Before
+    @Override
     public void setUp() throws Exception {
-        emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
-        emergency.setId(emergencyId);
-        call = new Call(1, 2, new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
-        call.setId(callId);
-        emergency.setCall(call);
-        emergency.setLocation(new Location(1, 2));
-        emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
-        emergency.setNroOfPeople(1);
-
-        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
-
-        DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
-        DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
-        DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
-
-        MessageServerSingleton.getInstance().start();
-
-
-        this.coreServicesMap = new HashMap();
-        createRemoteNode();
-
+        super.setUp();
         client = HumanTaskServerService.getInstance().initTaskClient();
-
-
-
-
-
     }
 
     @After
+    @Override
     public void tearDown() throws Exception {
-
-
-
-        MessageServerSingleton.getInstance().stop();
-        if (remoteN1 != null) {
-            remoteN1.dispose();
-        }
-        if (grid1 != null) {
-            grid1.get(SocketService.class).close();
-        }
-
+        super.tearDown();
     }
 
-    @Test
-    public void defaultHeartAttackSimpleTest() throws HornetQException, InterruptedException, IOException, ClassNotFoundException {
-
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("call", call);
-        parameters.put("emergency", emergency);
-
-
-
-
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
-        Thread.sleep(5000);
-
-        String ambulanceId = doGarageTask();
-
-        Thread.sleep(5000);
-
-
-
-
-
-
-
-        //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulanceId, emergency.getId(), new Date()));
-
-        Thread.sleep(4000);
-
-        doDoctorTask();
-
-        Thread.sleep(4000);
-
-
-        //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
-
-        Thread.sleep(4000);
-        
-
-      //  String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-      //  System.out.println("result = "+result);
-
-        
-        
-
-    }
-
-    private String doGarageTask() throws IOException, ClassNotFoundException {
+    @Override
+    protected String doGarageTask(Emergency emergency) throws Exception {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
@@ -227,7 +116,8 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
 
     }
 
-    private void doDoctorTask() throws IOException, ClassNotFoundException {
+    @Override
+    protected void doDoctorTask() throws IOException, ClassNotFoundException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
