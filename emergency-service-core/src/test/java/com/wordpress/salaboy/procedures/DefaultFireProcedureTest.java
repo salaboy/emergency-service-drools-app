@@ -40,6 +40,7 @@ import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import java.util.ArrayList;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**

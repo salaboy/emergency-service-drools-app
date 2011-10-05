@@ -104,7 +104,7 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/phoneCallsManagement.drl").getInputStream())), ResourceType.DRL);
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/procedureSuggestions.drl").getInputStream())), ResourceType.DRL);
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresLifeCycle.drl").getInputStream())), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/emergencyLifeCycle.drl").getInputStream())), ResourceType.DRL);
         
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {

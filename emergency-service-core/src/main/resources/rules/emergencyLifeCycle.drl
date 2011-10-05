@@ -3,6 +3,7 @@ package phoneCallPrimaryService.startProcedures;
 
 import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
+import java.util.List;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
@@ -30,13 +31,14 @@ rule "Get Information To Start Procedure"
 end
 
 rule "All Procedures are Completed"
+    no-loop true
     when
         $emergency: Emergency()
         $p: ProceduresGoingOn(emergencyId == $emergency.id, $procedures: procedureIds)
-        Number (intValue == $p.size) from accumulate($pc: ProcedureCompleted( emergencyId == $emergency.id), count($pc))
+        $events: List (size == $p.size) from collect(ProcedureCompleted( emergencyId == $emergency.id))
     then
+        for (int i=0; i < $events.size(); i++){
+            retract($events.get(i));
+        }
         MessageFactory.sendMessage(new AllProceduresEndedMessage($emergency.getId(), $procedures ,  new java.util.Date()));
 end
-
-
-

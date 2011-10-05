@@ -58,7 +58,9 @@ public class MessageConsumer {
             throw new IllegalStateException("Unable to read Message body: "+ex.getMessage());
         } finally {
             try {
-                ois.close();
+                if (ois != null){
+                    ois.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(MessageConsumer.class.getName()).log(Level.SEVERE, null, ex);
             }

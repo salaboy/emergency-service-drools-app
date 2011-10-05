@@ -36,6 +36,26 @@
     <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
 
     <!-- nodes -->
+    <task id="_17" name="Notify End Of Procedure" tns:taskName="NotifyEndOfProcedure" >
+      <ioSpecification>
+        <dataInput id="_17_concretePRocedureIdInput" name="concretePRocedureId" />
+        <dataInput id="_17_emergencyInput" name="emergency" />
+        <inputSet>
+          <dataInputRefs>_17_concretePRocedureIdInput</dataInputRefs>
+          <dataInputRefs>_17_emergencyInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>concreteProcedureId</sourceRef>
+        <targetRef>_17_concretePRocedureIdInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>emergency</sourceRef>
+        <targetRef>_17_emergencyInput</targetRef>
+      </dataInputAssociation>
+    </task>
     <scriptTask id="_16" name="Script" >
       <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; AFTER THE HUMAN TASK!!!");</script>
     </scriptTask>
@@ -193,9 +213,10 @@ insert(pi);</script>
     </task>
 
     <!-- connections -->
+    <sequenceFlow id="_15-_17" sourceRef="_15" targetRef="_17" />
     <sequenceFlow id="_2-_16" sourceRef="_2" targetRef="_16" />
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
-    <sequenceFlow id="_15-_11" sourceRef="_15" targetRef="_11" />
+    <sequenceFlow id="_17-_11" sourceRef="_17" targetRef="_11" />
     <sequenceFlow id="_16-_12" sourceRef="_16" targetRef="_12" />
     <sequenceFlow id="_12-_14" sourceRef="_12" targetRef="_14" />
     <sequenceFlow id="_14-_15" sourceRef="_14" targetRef="_15" />
@@ -204,6 +225,9 @@ insert(pi);</script>
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="com.wordpress.salaboy.bpmn2.MultiVehicleProcedure" >
+      <bpmndi:BPMNShape bpmnElement="_17" >
+        <dc:Bounds x="448" y="329" width="100" height="48" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_16" >
         <dc:Bounds x="465" y="45" width="80" height="48" />
       </bpmndi:BPMNShape>
@@ -214,7 +238,7 @@ insert(pi);</script>
         <dc:Bounds x="161" y="33" width="223" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_11" >
-        <dc:Bounds x="449" y="325" width="48" height="48" />
+        <dc:Bounds x="591" y="331" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_12" >
         <dc:Bounds x="20" y="118" width="515" height="179" />
@@ -249,6 +273,10 @@ insert(pi);</script>
         <di:waypoint x="163" y="81" />
         <di:waypoint x="342" y="82" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_15-_17" >
+        <di:waypoint x="378" y="350" />
+        <di:waypoint x="498" y="353" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_16" >
         <di:waypoint x="272" y="57" />
         <di:waypoint x="505" y="69" />
@@ -257,9 +285,9 @@ insert(pi);</script>
         <di:waypoint x="92" y="58" />
         <di:waypoint x="272" y="57" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_15-_11" >
-        <di:waypoint x="378" y="350" />
-        <di:waypoint x="473" y="349" />
+      <bpmndi:BPMNEdge bpmnElement="_17-_11" >
+        <di:waypoint x="498" y="353" />
+        <di:waypoint x="615" y="355" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_16-_12" >
         <di:waypoint x="505" y="69" />

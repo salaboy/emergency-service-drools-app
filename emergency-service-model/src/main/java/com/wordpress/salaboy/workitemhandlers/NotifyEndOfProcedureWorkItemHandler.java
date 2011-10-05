@@ -23,14 +23,12 @@ public class NotifyEndOfProcedureWorkItemHandler implements WorkItemHandler{
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+
         String emergencyId = ((Emergency) workItem.getParameter("emergency")).getId();
-        
-        //TODO: add Procedure to the process attribures
-        String procedureId = null;
-        //String procedureId = (Procedure) workItem.getParameter("procedure").getId;
+        String procedureId = (String) workItem.getParameter("concreteProcedureId");
         
         try {
-            System.out.println("The procedure is finished!");
+            System.out.println("The procedure "+procedureId+" is finished!");
             MessageFactory.sendMessage(new ProcedureCompletedMessage(emergencyId, procedureId, new Date()));
         } catch (HornetQException ex) {
             Logger.getLogger(NotifyEndOfProcedureWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);

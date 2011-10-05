@@ -38,5 +38,7 @@ public class ProcedureReportWorkItemHandler implements WorkItemHandler {
             }
 
         }
+        
+        manager.completeWorkItem(workItem.getId(), null);
     }
 }
