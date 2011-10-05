@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
@@ -38,7 +39,6 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import org.junit.Test;
 
@@ -73,24 +73,24 @@ public class DefaultFireProcedureTest extends GridBaseTest {
     @Before
     public void setUp() throws Exception {
 
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
-        emergency = new Emergency(emergencyId);
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
+        emergency = new Emergency();
+        emergency.setId(emergencyId);
 
-        String fireTruckId = ContextTrackingServiceImpl.getInstance().newVehicle();
+        String fireTruckId = ContextTrackingServiceImpl.getInstance().newVehicleId();
         fireTruck = new FireTruck("FireTruck 1");
         fireTruck.setId(fireTruckId);
 
         call = new Call(1, 2, new Date());
 
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
 
-        firefightersDepartment = new FirefightersDepartment(1L,
-                "Firefighter Department 1", 12, 1);
+        firefightersDepartment = new FirefightersDepartment("Firefighter Department 1", 12, 1);
 
         DistributedPeristenceServerService.getInstance().storeFirefightersDepartment(firefightersDepartment);
         DistributedPeristenceServerService.getInstance().storeEmergency(

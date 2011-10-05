@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.procedures;
 
@@ -33,6 +33,7 @@ import org.junit.Test;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
@@ -50,15 +51,14 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
 /**
  *
  * @author salaboy
  */
 public class DefaultHeartAttackProcedureTest extends GridBaseTest {
+
     private HumanTaskService humanTaskServiceClient;
-    
     private MessageConsumerWorker procedureEndedWorker;
     private int proceduresEndedCount;
 
@@ -75,24 +75,24 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         HumanTaskServerService.getInstance().stopTaskServer();
     }
-
     Emergency emergency = null;
     Call call = null;
+
     @Before
     public void setUp() throws Exception {
         emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency.setId(emergencyId);
-        call = new Call(1,2,new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        call = new Call(1, 2, new Date());
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         call.setId(callId);
         emergency.setCall(call);
-        emergency.setLocation(new Location(1,2));
+        emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
-        
+
         ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
-        
+
         DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
         DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
         DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
@@ -110,7 +110,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
-        
+
         //Procedure Ended Worker
         procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
 
@@ -126,7 +126,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
     @After
     public void tearDown() throws Exception {
-        
+
         MessageServerSingleton.getInstance().stop();
         if (remoteN1 != null) {
             remoteN1.dispose();
@@ -138,7 +138,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
             procedureEndedWorker.stopWorker();
         }
         this.humanTaskServiceClient.cleanUpService();
-        
+
     }
 
     @Test
@@ -147,7 +147,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
-        parameters.put("emergency", emergency); 
+        parameters.put("emergency", emergency);
 
 
 
@@ -159,8 +159,8 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         assertNotNull(taskAbstracts);
         Assert.assertEquals(1, taskAbstracts.size());
         TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        Assert.assertEquals(" Select Vehicle For "+emergency.getId()+" ", taskAbstract.getName().getLocalPart());
-        
+        Assert.assertEquals(" Select Vehicle For " + emergency.getId() + " ", taskAbstract.getName().getLocalPart());
+
 
 
         // I need to get the Content Data and check the values of the Emergency and Call Ids.
@@ -168,7 +168,7 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         TTask task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
         assertNotNull(task);
-        
+
         humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
         humanTaskServiceClient.start(task.getId());
 
@@ -176,45 +176,45 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
         TAttachmentInfo firstAttachmentInfo = attachmentsInfo.get(0);
         TAttachment attachment = humanTaskServiceClient.getAttachments(task.getId(), firstAttachmentInfo.getName()).get(0);
 
-        String value = (String)((Map)attachment.getValue()).get("Content");
-        
-        assertNotNull(value, "1,1"); 
+        String value = (String) ((Map) attachment.getValue()).get("Content");
 
-        
+        assertNotNull(value, "1,1");
+
+
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         Ambulance ambulance = new Ambulance("My Ambulance", new Date());
-        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicle();
+        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicleId();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
         //ContextTrackingServiceImpl.getInstance().attachVehicle(, ambulanceId);
         info.put("emergency.vehicles", vehicles);
-        
-        
+
+
         humanTaskServiceClient.complete(task.getId(), info);
 
         Thread.sleep(4000);
-        
+
         //The vehicle reaches the emergency
         //ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulanceId, call.getId(), new Date()));
         ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulanceId, emergency.getId(), new Date()));
 
         Thread.sleep(4000);
-        
+
         humanTaskServiceClient.setAuthorizedEntityId("doctor");
         taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
         assertNotNull(taskAbstracts);
         Assert.assertEquals(1, taskAbstracts.size());
-        taskAbstract = taskAbstracts.get(0); 
-        
+        taskAbstract = taskAbstracts.get(0);
+
         task = humanTaskServiceClient.getTaskInfo(taskAbstract.getId());
         assertNotNull(task);
-        
+
         humanTaskServiceClient.start(task.getId());
-        
+
         info = new HashMap<String, Object>();
         info.put("emergency.priority", 1);
-        
+
         humanTaskServiceClient.complete(task.getId(), info);
 
 
@@ -222,14 +222,14 @@ public class DefaultHeartAttackProcedureTest extends GridBaseTest {
 
         //The process didn't finish yet
         assertEquals(0, proceduresEndedCount);
-        
+
         //The vehicle reaches the hospital
         ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
-        
+
         Thread.sleep(5000);
-        
+
         //The emergency has ended
-        assertEquals(1,proceduresEndedCount);
+        assertEquals(1, proceduresEndedCount);
 
     }
 }

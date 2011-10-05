@@ -23,7 +23,7 @@ rule "Calculate Water Refill Location"
        $processInstance: WorkflowProcessInstance()
        $emergency: Emergency($type: type.name)
        $event: FireTruckOutOfWaterEvent()
-       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from DistributedPeristenceServerService.getInstance().getAllFirefightersDepartments(), 
+       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from DistributedPeristenceServerService.getInstance().getAllFirefighterDepartments(), 
                 firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
         )
     then

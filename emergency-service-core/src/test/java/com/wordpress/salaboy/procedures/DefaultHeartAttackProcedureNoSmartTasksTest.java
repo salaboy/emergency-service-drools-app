@@ -1,6 +1,7 @@
 
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -32,9 +33,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
-import com.wordpress.salaboy.tracking.ContextTrackingSimpleGraphServiceImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -80,10 +79,10 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
     @Before
     public void setUp() throws Exception {
         emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
@@ -165,8 +164,8 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         Thread.sleep(4000);
         
 
-        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-        System.out.println("result = "+result);
+      //  String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+      //  System.out.println("result = "+result);
 
         
         
@@ -205,7 +204,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends GridBaseTest {
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         Ambulance ambulance = new Ambulance("My Ambulance", new Date());
-        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicle();
+        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicleId();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
 

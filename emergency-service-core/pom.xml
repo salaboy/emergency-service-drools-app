@@ -21,11 +21,11 @@
         </dependency>
         
          <!-- Context Tracking Dependency -->
-        <dependency>
+        <!--dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>emergency-service-tracking-context-component</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency-->
 
         <!-- Drools Dependencies -->
         

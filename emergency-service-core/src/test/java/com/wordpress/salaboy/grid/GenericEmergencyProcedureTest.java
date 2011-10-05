@@ -5,11 +5,11 @@
 
 package com.wordpress.salaboy.grid;
 
-import com.wordpress.salaboy.messaging.MessageConsumerWorker;
-import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 import java.util.ArrayList;
 import com.wordpress.salaboy.model.ActivePatients;
 import com.wordpress.salaboy.model.SelectedProcedures;
@@ -27,15 +27,11 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
 import java.util.Map;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.messaging.MessageFactory;
 import java.util.List;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskClient;
 import org.drools.grid.SocketService;
 import java.util.HashMap;
-import com.wordpress.salaboy.messaging.MessageConsumer;
-import com.wordpress.salaboy.messaging.MessageProducer;
-import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
@@ -132,7 +128,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         MessageProducer producer = MessageFactory.createMessageProducer();
         Call initialCall = new Call(1,2,new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         initialCall.setId(callId);
         producer.sendMessage(initialCall);
         producer.stop();
@@ -191,7 +187,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest{
         
         //I shoudl call the tracking component here and register the new emerency
         Emergency emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency.setId(emergencyId);
         emergency.setCall(restoredCall);
         ContextTrackingServiceImpl.getInstance().attachEmergency(restoredCall.getId(), emergencyId);

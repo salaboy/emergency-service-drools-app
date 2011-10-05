@@ -88,7 +88,7 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         // TODO for now, only for phone call form
         Map<String, Object> info = new HashMap<String, Object>();
         Emergency emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency.setId(emergencyId);
         Location location = new Location();
         location.setLocationX(Integer.parseInt(data.get("Location X")));

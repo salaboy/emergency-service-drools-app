@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -29,8 +30,6 @@ import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
-import com.wordpress.salaboy.tracking.ContextTrackingSimpleGraphServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -108,12 +107,12 @@ public class AdHocProcedureTest extends GridBaseTest {
 
     @Test
     public void defaultAdHocSimpleTest() throws InterruptedException, ClassNotFoundException, IOException {
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency = new Emergency();
         emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
         
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
@@ -132,8 +131,8 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         Thread.sleep(5000);
         
-        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-        System.out.println("result = "+result);
+       // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+       // System.out.println("result = "+result);
 
 
 
@@ -141,11 +140,11 @@ public class AdHocProcedureTest extends GridBaseTest {
     
      @Test
     public void defaultAdHocPlusTrackingTest() throws InterruptedException, ClassNotFoundException, IOException {
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency = new Emergency();
         emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCall();
+        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
         call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
@@ -162,8 +161,8 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         Thread.sleep(5000);
 
-        String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-        System.out.println("result = "+result);
+       // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+       // System.out.println("result = "+result);
 
     }
 
@@ -196,7 +195,7 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         //I shoudl call the tracking component here and register the new emerency
         Emergency emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergency();
+        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
         emergency.setId(emergencyId);
         emergency.setCall(retrivedCall);
         emergency.setLocation(new Location(1, 2));

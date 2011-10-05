@@ -142,7 +142,7 @@
         System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; Stopping Ambulance Tracking System -&gt; Report: ");
                 System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; "+com.wordpress.salaboy.model.serviceclient
                                     .DistributedPeristenceServerService.getInstance()
-                                        .getReportByCallId(((Call)kcontext.getVariable("call")).getId()).getReportString());
+                                        .loadReport(((Call)kcontext.getVariable("call")).getId()).getReportString());
 
         insert(new com.wordpress.salaboy.model.VehicleGoalFinished(emergency.getId()));
 </script>

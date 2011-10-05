@@ -74,7 +74,7 @@ public class TrackingServiceSimpleRestTest {
     @Test
     public void simpleAPIPlusCypherQueryTest() throws Exception {
         
-        ContextTrackingService tracking = new ContextTrackingServiceRest(this.baseUri);
+        ContextTrackingServiceRest tracking = new ContextTrackingServiceRest(this.baseUri);
 
         String callId = tracking.newCall();
 
@@ -140,7 +140,7 @@ public class TrackingServiceSimpleRestTest {
     @Test
     public void simpleAPIPlusGremlinQueryTest() throws Exception {
 //        ContextTrackingService tracking = new ContextTrackingServiceRest(this.baseUri);
-    	ContextTrackingService tracking = new ContextTrackingServiceRest(this.baseUri);
+    	ContextTrackingServiceRest tracking = new ContextTrackingServiceRest(this.baseUri);
 
         String callId = tracking.newCall();
 

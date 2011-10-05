@@ -22,8 +22,8 @@ import com.wordpress.salaboy.tracking.json.ResponseNode;
  * 
  * @author calcacuervo
  */
-public class ContextTrackingServiceRest implements ContextTrackingService {
-	@Override
+public class ContextTrackingServiceRest {
+	
 	public GraphDatabaseService getGraphDb() {
 		return null;
 	}
@@ -38,7 +38,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 	private String createIndexUrlPath = "/db/data/index/node/";
 	private String associateNodeToIndexUrlPath = "/db/data/index/node/";
 
-	public static ContextTrackingService getInstance() {
+	public static ContextTrackingServiceRest getInstance() {
 		if (instance == null) {
 			instance = new ContextTrackingServiceRest("http://0.0.0.0:7575");
 		}
@@ -51,7 +51,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 		this.createIndexes();
 	}
 	
-	@Override
+	
 	public String newCall() {
 		String callId = "Call-" + UUID.randomUUID().toString();
 
@@ -65,7 +65,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public String newEmergency() {
 		String emergencyId = "Emergency-" + UUID.randomUUID().toString();
 		Map<String, String> params = new HashMap<String, String>();
@@ -100,7 +100,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 		}
 	}
 
-	@Override
+	
 	public void attachEmergency(String callId, String emergencyId) {
 		try {
 			GetMethod method = new GetMethod(this.baseUri
@@ -134,7 +134,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public String newProcedure() {
 		String procedureId = "Procedure-" + UUID.randomUUID().toString();
 		Map<String, String> params = new HashMap<String, String>();
@@ -146,7 +146,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public void attachProcedure(String emergencyId, String procedureId) {
 		try {
 			GetMethod method = new GetMethod(this.baseUri
@@ -180,7 +180,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public String newVehicle() {
 		String vehicleId = "Vehicle-" + UUID.randomUUID().toString();
 		Map<String, String> params = new HashMap<String, String>();
@@ -194,7 +194,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public void attachVehicle(String procedureId, String vehicleId) {
 		try {
 			GetMethod method = new GetMethod(this.baseUri
@@ -226,7 +226,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 		}
 	}
 
-	@Override
+	
 	public String newServiceChannel() {
 
 		String channelId = "Channel-" + UUID.randomUUID().toString();
@@ -241,7 +241,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
 	}
 
-	@Override
+	
 	public void attachServiceChannel(String emergencyId, String channelId) {
 		try {
 			GetMethod method = new GetMethod(this.baseUri
@@ -273,17 +273,17 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 		}
 	}
 
-	@Override
+	
 	public void detachVehicle(String vehicleId) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+	
 	public void detachProcedure(String procedureId) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
+
 	public void detachEmergency(String emergencyId) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}

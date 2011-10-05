@@ -80,9 +80,9 @@ public class DefaultFireProcedureStandaloneTest {
     @Before
     public void setUp() throws Exception {
 
-        emergency = new Emergency("Emergency1");
-
-        fireTruck = new FireTruck("FireTruck 1");
+        emergency = new Emergency();
+        emergency.setId("Emergency1");
+        fireTruck = new FireTruck();
         fireTruck.setId("FireTruck1");
 
         call = new Call(1, 2, new Date());
@@ -93,7 +93,7 @@ public class DefaultFireProcedureStandaloneTest {
         emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
 
-        firefightersDepartment = new FirefightersDepartment(1L,
+        firefightersDepartment = new FirefightersDepartment(
                 "Firefighter Department 1", 12, 1);
 
         MessageServerSingleton.getInstance().start();

@@ -15,13 +15,11 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.drools.grid.SocketService;
-import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.task.AccessType;
-import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
@@ -33,9 +31,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
@@ -50,7 +47,6 @@ import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerServ
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
 /**
  * 
@@ -84,7 +80,7 @@ public class DefaultFireProcedureNoSmartTasksTest extends GridBaseTest {
 	public void setUp() throws Exception {
 		emergency = new Emergency();
 		String emergencyId = ContextTrackingServiceImpl.getInstance()
-				.newEmergency();
+				.newEmergencyId();
 		emergency.setId(emergencyId);
 
 		fireTruck = new FireTruck("FireTruck 1");
@@ -92,14 +88,14 @@ public class DefaultFireProcedureNoSmartTasksTest extends GridBaseTest {
 
 		call = new Call(1, 2, new Date());
 
-		String callId = ContextTrackingServiceImpl.getInstance().newCall();
+		String callId = ContextTrackingServiceImpl.getInstance().newCallId();
 		call.setId(callId);
 		emergency.setCall(call);
 		emergency.setLocation(new Location(1, 2));
 		emergency.setType(Emergency.EmergencyType.FIRE);
 		emergency.setNroOfPeople(1);
 
-		firefightersDepartment = new FirefightersDepartment(1L,
+		firefightersDepartment = new FirefightersDepartment(
 				"Firefighter Department 1", 12, 1);
 
 		DistributedPeristenceServerService.getInstance()

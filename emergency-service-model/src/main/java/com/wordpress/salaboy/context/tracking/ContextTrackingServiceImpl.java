@@ -54,6 +54,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         this.proceduresIndex = index.forNodes("procedures");
         this.vehiclesIndex = index.forNodes("vehicles");
         this.channelsIndex = index.forNodes("channels");
+        this.buildingsIndex = index.forNodes("buildings");
     }
 
     @Override
