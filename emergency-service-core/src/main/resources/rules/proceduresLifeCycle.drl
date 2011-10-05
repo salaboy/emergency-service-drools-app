@@ -33,7 +33,7 @@ rule "All Procedures are Completed"
     when
         $emergency: Emergency()
         $p: ProceduresGoingOn(emergencyId == $emergency.id, $procedures: procedureIds)
-        Number (intValue == $p.size) from accumulate(ProcedureCompleted( emergencyId == $emergency.id, count(1)))
+        Number (intValue == $p.size) from accumulate($pc: ProcedureCompleted( emergencyId == $emergency.id), count($pc))
     then
         MessageFactory.sendMessage(new AllProceduresEndedMessage($emergency.getId(), $procedures ,  new java.util.Date()));
 end

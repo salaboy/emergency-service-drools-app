@@ -29,7 +29,6 @@ import java.util.Map;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import java.util.List;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskClient;
 import org.drools.grid.SocketService;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.Call;
@@ -38,6 +37,7 @@ import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
 import java.util.Date;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
@@ -54,7 +54,7 @@ import static org.junit.Assert.*;
 public class GenericEmergencyProcedureTest extends GridBaseTest{
 
     private MessageConsumer consumer;
-    private TaskClient client;
+    private AsyncTaskService client;
     private MessageConsumerWorker asynchProcedureStartWorker;
     public GenericEmergencyProcedureTest() {
         

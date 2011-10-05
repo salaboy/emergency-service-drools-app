@@ -5,7 +5,6 @@
 package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Fact class that indicates that a Procedure was completed

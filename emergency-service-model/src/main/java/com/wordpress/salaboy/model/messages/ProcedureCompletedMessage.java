@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.model.messages;
 
@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * Message that indicates the end of a procedure
+ *
  * @author esteban
  */
 public class ProcedureCompletedMessage implements Serializable, EmergencyInterchangeMessage {
@@ -51,5 +52,4 @@ public class ProcedureCompletedMessage implements Serializable, EmergencyInterch
     public String toString() {
         return "ProcedureEndsMessage{" + "emergencyId=" + emergencyId + ", procedureId=" + procedureId + ", time=" + time + '}';
     }
-    
 }
