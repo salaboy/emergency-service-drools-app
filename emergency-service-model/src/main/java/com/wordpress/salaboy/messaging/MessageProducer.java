@@ -31,7 +31,6 @@ public class MessageProducer {
             producerSession = factory.createSession(true,true);
             producer = producerSession.createProducer(addressName);
             producerSession.start();
-            factory.close();
         } catch (HornetQException ex) {
             Logger.getLogger(MessageProducer.class.getName()).log(Level.SEVERE, null, ex);
         }

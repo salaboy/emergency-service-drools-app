@@ -31,7 +31,6 @@ public class MessageConsumer {
             consumerSession = factory.createSession(true,true);
             consumer = consumerSession.createConsumer(queueName);
             consumerSession.start();
-            factory.close();
         } catch (HornetQException ex) {
             Logger.getLogger(MessageConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }
