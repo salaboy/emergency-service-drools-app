@@ -16,6 +16,7 @@ import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
 import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public class ProceduresMGMTService {
         return instance;
     }
 
-    public void newRequestedProcedure(final String emergencyId, String procedureName, Map<String, Object> parameters) {
+    public void newRequestedProcedure(final String emergencyId, String procedureName, Map<String, Object> parameters) throws IOException {
         
         if (!proceduresByEmergency.containsKey(emergencyId)){
             proceduresByEmergency.put(emergencyId, new ArrayList<ProcedureService>());

@@ -11,11 +11,15 @@
 
 package com.wordpress.salaboy.emergencyservice.taskforms;
 
+
 import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPanel;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import java.io.ByteArrayOutputStream;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -29,8 +33,6 @@ import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.service.ContentData;
 
 /**
  * @author salaboy
@@ -40,14 +42,21 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
     private HumanTaskService taskClient; 
     private String taskId;
     private SelectVehicleTaskListPanel parent;
+    private final PersistenceService persistenceService;
+    private final ContextTrackingService trackingService;
     
     /** Creates new form AmbulancePanel */
-    public SelectVehicleTaskFormPanel(SelectVehicleTaskListPanel parent, HumanTaskService taskClient,  String taskId) {
+    public SelectVehicleTaskFormPanel(SelectVehicleTaskListPanel parent, HumanTaskService taskClient,  String taskId) throws IOException {
         
         this.parent = parent;
         this.taskClient = taskClient;
         this.taskId = taskId;
-        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         initComponents();
         
 //        lblMedBone.setVisible(false);
@@ -110,7 +119,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(taskActionjButton)
                     .addComponent(sendSelectedVehiclesjButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Vehicle List"));
@@ -122,9 +131,9 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
             }
         });
 
-        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
+        Object [][] vehicles = new Object[persistenceService.getAllVehicles().size()][2];
         int i = 0;
-        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
+        for(Vehicle vehicle : persistenceService.getAllVehicles()){
             vehicles[i][0] = vehicle.getId();
             vehicles[i][1] = vehicle.getName();
             i++;
@@ -201,7 +210,7 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
            List<Vehicle> selectedVehicles = new ArrayList<Vehicle>(selected.length);
            
             for(int i = 0; i < selected.length; i++){
-                selectedVehicles.add(DistributedPeristenceServerService.getInstance().loadVehicle((String)selectedVehiclesjTable.getModel().getValueAt(i, 0)));
+                selectedVehicles.add(persistenceService.loadVehicle((String)selectedVehiclesjTable.getModel().getValueAt(i, 0)));
             }
             Map<String, Object> info = new HashMap<String, Object>();
             info.put("emergency.vehicles", selectedVehicles);
@@ -257,9 +266,9 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
 }//GEN-LAST:event_taskActionjButtonActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-        Object [][] vehicles = new Object[DistributedPeristenceServerService.getInstance().getAllVehicles().size()][2];
+        Object [][] vehicles = new Object[persistenceService.getAllVehicles().size()][2];
         int i = 0;
-        for(Vehicle vehicle : DistributedPeristenceServerService.getInstance().getAllVehicles()){
+        for(Vehicle vehicle : persistenceService.getAllVehicles()){
             vehicles[i][0] = vehicle.getId();
             vehicles[i][1] = vehicle.getName();
             i++;

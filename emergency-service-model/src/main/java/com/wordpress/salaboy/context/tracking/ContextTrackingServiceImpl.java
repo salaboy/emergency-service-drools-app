@@ -32,14 +32,14 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     private Index<Node> channelsIndex;
     private Index<Node> buildingsIndex;
     public static String defaultDB = "db/graph";
-    private static ContextTrackingServiceImpl instance;
+    //private static ContextTrackingServiceImpl instance;
 
-    public static ContextTrackingService getInstance() {
-        if (instance == null) {
-            instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
-        }
-        return instance;
-    }
+//    public static ContextTrackingService getInstance() {
+//        if (instance == null) {
+//            instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
+//        }
+//        return instance;
+//    }
 
     public GraphDatabaseService getGraphDb() {
         return graphDb;

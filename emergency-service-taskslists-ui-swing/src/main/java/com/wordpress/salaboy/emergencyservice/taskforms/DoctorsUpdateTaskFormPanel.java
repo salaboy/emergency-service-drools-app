@@ -13,14 +13,8 @@ package com.wordpress.salaboy.emergencyservice.taskforms;
 
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.emergencyservice.tasklists.DoctorsUpdateTaskListPanel;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +23,6 @@ import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.wsdl.IllegalAccessFault;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.service.ContentData;
 
 /**
  * @author salaboy

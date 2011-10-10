@@ -4,31 +4,30 @@
  */
 package com.wordpress.salaboy.procedures;
 
-import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+
+
+import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.api.HumanTaskServiceFactory;
+import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import java.util.*;
 import junit.framework.Assert;
-
 import org.example.ws_ht.api.TAttachment;
 import org.example.ws_ht.api.TAttachmentInfo;
 import org.example.ws_ht.api.TTask;
 import org.example.ws_ht.api.TTaskAbstract;
 import org.junit.After;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
-
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.api.HumanTaskServiceFactory;
-import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 
 /**
  *
@@ -49,6 +48,12 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
         taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client", new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 5446));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
     }
 
     @After
@@ -88,7 +93,7 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         Ambulance ambulance = new Ambulance("My Ambulance", new Date());
-        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicleId();
+        String ambulanceId = trackingService.newVehicleId();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
         //ContextTrackingServiceImpl.getInstance().attachVehicle(, ambulanceId);

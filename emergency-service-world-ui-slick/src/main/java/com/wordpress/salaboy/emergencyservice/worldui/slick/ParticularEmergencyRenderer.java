@@ -4,6 +4,8 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphicable;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableAmbulance;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
@@ -22,7 +24,10 @@ import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,12 +57,20 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private GraphicableHighlightedHospital selectedHospital;
     private boolean turbo;
     private boolean hideEmergency;
+    private final PersistenceService persistenceService;
+    private final ContextTrackingService trackingService;
 
-    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
+    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) throws IOException {
         this.emergency = emergency;
         this.ui = ui;
         this.vehicles = new HashMap<Graphicable, Vehicle>();
         this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
+         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
     }
 
     /**
@@ -409,7 +422,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     private void selectMockHospital(int index) {
-        Hospital mock = DistributedPeristenceServerService.getInstance().getAllHospitals().toArray(new Hospital[3])[index];
+        Hospital mock = persistenceService.getAllHospitals().toArray(new Hospital[3])[index];
         try {
             MessageFactory.sendMessage(new HospitalSelectedMessage(this.emergency.getCallId(), mock));
         } catch (HornetQException ex) {

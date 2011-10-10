@@ -1,6 +1,7 @@
-
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 
 import java.util.Date;
@@ -8,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.grid.SocketService;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
@@ -23,13 +22,13 @@ import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import org.junit.Assert;
 import org.junit.Test;
-
-
 
 /**
  *
@@ -41,35 +40,43 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
     private Call call = null;
     private MessageConsumerWorker procedureEndedWorker;
     private int proceduresEndedCount;
+    protected PersistenceService persistenceService;
+    protected ContextTrackingService trackingService;
 
     public DefaultHeartAttackProcedureBaseTest() {
     }
 
     protected void setUp() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         HumanTaskServerService.getInstance().initTaskServer();
         emergency = new Emergency();
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
+        String emergencyId = trackingService.newEmergencyId();
         emergency.setId(emergencyId);
         call = new Call(1, 2, new Date());
-        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
+        String callId = trackingService.newCallId();
         call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
 
-        ContextTrackingServiceImpl.getInstance().attachEmergency(callId, emergencyId);
+        trackingService.attachEmergency(callId, emergencyId);
 
-        DistributedPeristenceServerService.getInstance().storeHospital(new Hospital("My Hospital", 12, 1));
-        DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
-        DistributedPeristenceServerService.getInstance().storeVehicle(new Ambulance("My Ambulance Test"));
+        persistenceService.storeHospital(new Hospital("My Hospital", 12, 1));
+        persistenceService.storeEmergency(emergency);
+        persistenceService.storeVehicle(new Ambulance("My Ambulance Test"));
 
         MessageServerSingleton.getInstance().start();
 
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
-        
+
         //Procedure Ended Worker
         procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
 
@@ -132,7 +139,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
 
         //The emergency has ended
         Assert.assertEquals(1, proceduresEndedCount);
-        
+
     }
 
     protected abstract String doGarageTask(Emergency emergency) throws Exception;

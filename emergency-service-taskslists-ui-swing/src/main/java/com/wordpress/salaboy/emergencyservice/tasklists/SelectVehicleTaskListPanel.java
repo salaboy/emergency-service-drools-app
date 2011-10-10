@@ -10,19 +10,20 @@
  */
 package com.wordpress.salaboy.emergencyservice.tasklists;
 
-import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.UIJTableRefreshManager;
-import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.Refreshable;
+import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.emergencyservice.main.UserTaskListUI;
 import com.wordpress.salaboy.emergencyservice.taskforms.SelectVehicleTaskFormPanel;
-import com.wordpress.salaboy.api.HumanTaskService;
+import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.Refreshable;
+import com.wordpress.salaboy.emergencyservice.tasklists.refreshhelpers.UIJTableRefreshManager;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
+import org.example.ws_ht.api.TTaskAbstract;
 import org.example.ws_ht.api.wsdl.IllegalArgumentFault;
 import org.example.ws_ht.api.wsdl.IllegalStateFault;
-import org.example.ws_ht.api.TTaskAbstract;
 
 /**
  *
@@ -235,7 +236,12 @@ public class SelectVehicleTaskListPanel extends javax.swing.JPanel implements Re
     private JDialog callPopup;
 
     public void selectVehicleTaskSelected(String id) {
-        SelectVehicleTaskFormPanel selectAmbulanceTaskForm = new SelectVehicleTaskFormPanel(this, getTaskClient(), id);
+        SelectVehicleTaskFormPanel selectAmbulanceTaskForm = null;
+        try {
+            selectAmbulanceTaskForm = new SelectVehicleTaskFormPanel(this, getTaskClient(), id);
+        } catch (IOException ex) {
+            Logger.getLogger(SelectVehicleTaskListPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         callPopup = new JDialog(this.parent, "Info", true);
         callPopup.add(selectAmbulanceTaskForm);
         this.callPopup.setSize(320, 470);

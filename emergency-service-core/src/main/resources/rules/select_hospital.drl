@@ -13,9 +13,9 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-
-
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
 
 
 query "getPatient"
@@ -39,13 +39,15 @@ rule "Rank Hospital Speciality that matches EmergencyType"
     when
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
-        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() from DistributedPeristenceServerService.getInstance().getAllHospitals(), 
+        $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
+                                                        from PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, null).getAllHospitals(), 
                 hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $emergency))
 
         )
       
 
     then
+        
         String callId = ((Call)$processInstance.getVariable("call")).getId();
         //Send Hospital Selected Message
         MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));

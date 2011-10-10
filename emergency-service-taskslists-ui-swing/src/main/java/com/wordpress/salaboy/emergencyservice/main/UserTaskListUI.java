@@ -21,7 +21,6 @@ import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPan
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +58,7 @@ public class UserTaskListUI extends javax.swing.JFrame {
         this.mainJTabbedPane.add(this.doctorsUpdateTaskListPanel, 3);
         this.mainJTabbedPane.setSelectedComponent(this.phoneCallsTaskListPanel);
         
-        DistributedPeristenceServerService.getInstance();
+        
 
 
     }

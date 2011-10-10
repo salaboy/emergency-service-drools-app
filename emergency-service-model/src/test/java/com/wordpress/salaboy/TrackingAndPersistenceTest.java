@@ -4,33 +4,28 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.Procedure;
-import com.wordpress.salaboy.model.ServiceChannel;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.Vehicle.VehicleType;
-import org.neo4j.cypher.commands.Query;
-import org.neo4j.graphdb.Node;
-import scala.collection.Iterator;
-import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
-import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.FireTruck;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import java.util.Date;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import static org.junit.Assert.*;
+import org.junit.*;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
+import org.neo4j.cypher.commands.Query;
 import org.neo4j.cypher.javacompat.CypherParser;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.test.ImpermanentGraphDatabase;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.neo4j.graphdb.Node;
+import scala.collection.Iterator;
 
 /**
  *
@@ -60,66 +55,70 @@ public class TrackingAndPersistenceTest {
     }
 
     @Test
-    public void simpleAPIPlusCypherQueryTest() {
-       
+    public void simpleAPIPlusCypherQueryTest() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP, conf);
         Call call = new Call(1, 1, new Date());
-        DistributedPeristenceServerService.getInstance().storeCall(call);
+        persistenceService.storeCall(call);
+        
         assertNotSame("", call.getId());
 
-        call = DistributedPeristenceServerService.getInstance().loadCall(call.getId());
+        call = persistenceService.loadCall(call.getId());
         assertNotNull(call);
 
         Emergency emergency = new Emergency();
-        DistributedPeristenceServerService.getInstance().storeEmergency(emergency);
+        persistenceService.storeEmergency(emergency);
         assertNotSame("", emergency.getId());
 
-        emergency = DistributedPeristenceServerService.getInstance().loadEmergency(emergency.getId());
+        emergency = persistenceService.loadEmergency(emergency.getId());
         assertNotNull(emergency);
-
-        ContextTrackingServiceImpl.getInstance().attachEmergency(call.getId(), emergency.getId());
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        trackingService.attachEmergency(call.getId(), emergency.getId());
 
         Procedure procedure = new Procedure("MyProcedure");
-        DistributedPeristenceServerService.getInstance().storeProcedure(procedure);
+        persistenceService.storeProcedure(procedure);
         assertNotSame("", procedure.getId());
 
-        procedure = DistributedPeristenceServerService.getInstance().loadProcedure(procedure.getId());
+        procedure = persistenceService.loadProcedure(procedure.getId());
         assertNotNull(procedure);
 
-        ContextTrackingServiceImpl.getInstance().attachProcedure(emergency.getId(), procedure.getId());
+        trackingService.attachProcedure(emergency.getId(), procedure.getId());
 
 
         Vehicle vehicle = new Ambulance();
 
-        DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
+        persistenceService.storeVehicle(vehicle);
         assertNotSame("", vehicle.getId());
 
-        vehicle = DistributedPeristenceServerService.getInstance().loadVehicle(vehicle.getId());
+        vehicle = persistenceService.loadVehicle(vehicle.getId());
         assertNotNull(vehicle);
 
 
-        ContextTrackingServiceImpl.getInstance().attachVehicle(procedure.getId(), vehicle.getId());
+        trackingService.attachVehicle(procedure.getId(), vehicle.getId());
 
         Vehicle vehicle2 = new FireTruck();
-        DistributedPeristenceServerService.getInstance().storeVehicle(vehicle2);
+        persistenceService.storeVehicle(vehicle2);
         assertNotSame("", vehicle2.getId());
 
-        vehicle2 = DistributedPeristenceServerService.getInstance().loadVehicle(vehicle2.getId());
+        vehicle2 = persistenceService.loadVehicle(vehicle2.getId());
         assertNotNull(vehicle2);
 
-        ContextTrackingServiceImpl.getInstance().attachVehicle(procedure.getId(), vehicle2.getId());
+        trackingService.attachVehicle(procedure.getId(), vehicle2.getId());
 
         ServiceChannel channel = new ServiceChannel("MyChannel");
-        DistributedPeristenceServerService.getInstance().storeServiceChannel(channel);
+        persistenceService.storeServiceChannel(channel);
         assertNotSame("", channel.getId());
         
-        channel = DistributedPeristenceServerService.getInstance().loadServiceChannel(channel.getId());
+        channel = persistenceService.loadServiceChannel(channel.getId());
         assertNotNull(channel);
         
-        ContextTrackingServiceImpl.getInstance().attachServiceChannel(emergency.getId(), channel.getId());
+        trackingService.attachServiceChannel(emergency.getId(), channel.getId());
 
 
         CypherParser parser = new CypherParser();
-        ExecutionEngine engine = new ExecutionEngine(ContextTrackingServiceImpl.getInstance().getGraphDb());
+        ExecutionEngine engine = new ExecutionEngine(trackingService.getGraphDb());
 
 
         //Give me all the vehicle associated with the procedures that are part of the emergency that was created by this phoneCallId

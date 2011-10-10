@@ -14,8 +14,9 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-
+import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
 
 rule "Calculate Water Refill Location"
     ruleflow-group "closest-water-selection"
@@ -23,7 +24,7 @@ rule "Calculate Water Refill Location"
        $processInstance: WorkflowProcessInstance()
        $emergency: Emergency($type: type.name)
        $event: FireTruckOutOfWaterEvent()
-       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from DistributedPeristenceServerService.getInstance().getAllFirefighterDepartments(), 
+       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, null).getAllFirefighterDepartments(), 
                 firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
         )
     then

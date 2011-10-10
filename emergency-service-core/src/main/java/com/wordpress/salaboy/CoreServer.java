@@ -4,7 +4,8 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.model.events.PulseEvent;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
@@ -12,33 +13,23 @@ import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
-import com.wordpress.salaboy.model.messages.AllProceduresEndedMessage;
-import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
-import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
-import com.wordpress.salaboy.model.messages.IncomingCallMessage;
-import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
-import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.events.PulseEvent;
+import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import com.wordpress.salaboy.services.HumanTaskServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
+import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.PatientMonitorService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.SystemEventListenerFactory;
-import org.drools.grid.ConnectionFactoryService;
-import org.drools.grid.Grid;
-import org.drools.grid.GridConnection;
-import org.drools.grid.GridNode;
-import org.drools.grid.GridServiceDescription;
-import org.drools.grid.SocketService;
+import org.drools.grid.*;
 import org.drools.grid.conf.GridPeerServiceConfiguration;
 import org.drools.grid.conf.impl.GridPeerConfiguration;
 import org.drools.grid.impl.GridImpl;
@@ -55,6 +46,8 @@ import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
  * @author esteban
  */
 public class CoreServer {
+    private static PersistenceService persistenceService;
+    private static ContextTrackingService trackingService;
 
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
     protected static Grid grid;
@@ -98,6 +91,12 @@ public class CoreServer {
             }
         });
         
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         
         coreServer.startServer();
         
@@ -115,12 +114,12 @@ public class CoreServer {
         //Init Persistence Service and add all the city entities
         for (Vehicle vehicle : CityEntities.vehicles) {
             System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
-            DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
+            persistenceService.storeVehicle(vehicle);
         }
 
         for (Hospital hospital : CityEntities.hospitals) {
             System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
-            DistributedPeristenceServerService.getInstance().storeHospital(hospital);
+            persistenceService.storeHospital(hospital);
         }
 
         //Init First Response Service, just to have one instance ready for new phone calls
@@ -168,9 +167,13 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
-                    ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
-                            selectedProcedureMessage.getProcedureName(),
-                            selectedProcedureMessage.getParameters());
+                    try {
+                        ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
+                                selectedProcedureMessage.getProcedureName(),
+                                selectedProcedureMessage.getParameters());
+                    } catch (IOException ex) {
+                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
 
@@ -179,7 +182,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
-                    DistributedPeristenceServerService.getInstance().storeEmergency(emergencyDetailsMessage.getEmergency());
+                    persistenceService.storeEmergency(emergencyDetailsMessage.getEmergency());
                 }
             });
             
@@ -252,7 +255,7 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyInterchangeMessage message) {
-                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getEmergencyId(), message.toString());
+                    persistenceService.addEntryToReport(message.getEmergencyId(), message.toString());
                 }
             });
             
@@ -261,7 +264,11 @@ public class CoreServer {
                 @Override
                 public void handleMessage(AsyncProcedureStartMessage message) {
                       System.out.println(">>>>>>>>>>>Creating a new Procedure = "+message.getProcedureName());
-                      ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                    try {
+                        ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                    } catch (IOException ex) {
+                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
  

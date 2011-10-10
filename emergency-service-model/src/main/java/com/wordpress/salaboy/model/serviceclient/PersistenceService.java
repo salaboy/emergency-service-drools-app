@@ -4,14 +4,7 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
-import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.FirefightersDepartment;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.model.Procedure;
-import com.wordpress.salaboy.model.ServiceChannel;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.reporting.Report;
 import java.util.Collection;
 
@@ -19,7 +12,7 @@ import java.util.Collection;
  *
  * @author salaboy
  */
-public interface EmergencyEntitiesPersistenceService {
+public interface PersistenceService {
 
     
     

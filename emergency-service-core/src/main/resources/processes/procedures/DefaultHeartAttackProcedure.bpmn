@@ -25,6 +25,10 @@
 
     <extensionElements>
      <tns:import name="com.wordpress.salaboy.model.Call" />
+     <tns:import name="java.util.Map" />
+     <tns:import name="java.util.HashMap" />
+     <tns:import name="com.wordpress.salaboy.context.tracking.*" />
+     <tns:import name="com.wordpress.salaboy.model.serviceclient.*" />
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
@@ -139,9 +143,12 @@
     <parallelGateway id="_9" name="Gateway" gatewayDirection="Converging" />
     <scriptTask id="_10" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>
+        Map params = new HashMap();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
         System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; Stopping Ambulance Tracking System -&gt; Report: ");
-                System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; "+com.wordpress.salaboy.model.serviceclient
-                                    .DistributedPeristenceServerService.getInstance()
+                System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; "+persistenceService
                                         .loadReport(((Call)kcontext.getVariable("call")).getId()).getReportString());
 
         insert(new com.wordpress.salaboy.model.VehicleGoalFinished(emergency.getId()));

@@ -4,8 +4,6 @@
  */
 package com.wordpress.salaboy.messaging;
 
-import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
 import java.lang.reflect.ParameterizedType;
 
 /**

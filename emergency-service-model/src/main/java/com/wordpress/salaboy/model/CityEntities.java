@@ -22,6 +22,9 @@ public class CityEntities {
         add(initializeHeartAttackAmbulance());
         add(initializeFireAmbulance());
         add(initializeCarCrashAmbulance());
+        add(initializeBigFireTruck());
+        add(initializeMediumFireTruck());
+        add(initializeSmallFireTruck());
     }};
     
     
@@ -187,6 +190,29 @@ public class CityEntities {
         carCrashAmbulance.addKit(carCrashKit1);
         carCrashAmbulance.addKit(carCrashKit2);
         return carCrashAmbulance;
+    }
+    
+    private static FireTruck initializeBigFireTruck() {
+        
+        FireTruck bigFireTruck = new FireTruck("Big Fire Truck");
+        bigFireTruck.setTankSize(10);
+        bigFireTruck.setTankLevel(10);
+        return bigFireTruck;
+    }
+    
+    private static FireTruck initializeMediumFireTruck() {
+        
+        FireTruck mediumFireTruck = new FireTruck("Medium Fire Truck");
+        mediumFireTruck.setTankSize(5);
+        mediumFireTruck.setTankLevel(5);
+        return mediumFireTruck;
+    }
+    private static FireTruck initializeSmallFireTruck() {
+        
+        FireTruck smallFireTruck = new FireTruck("Small Fire Truck");
+        smallFireTruck.setTankSize(2);
+        smallFireTruck.setTankLevel(2);
+        return smallFireTruck;
     }
     
      public static Ambulance getAmbulanceById(EmergencyType type, String id) {

@@ -1,6 +1,7 @@
 
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,6 +18,8 @@ import org.junit.Before;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 
 
@@ -62,6 +65,13 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
 
     @Override
     protected String doGarageTask(Emergency emergency) throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
@@ -93,7 +103,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         Ambulance ambulance = new Ambulance("My Ambulance", new Date());
-        String ambulanceId = ContextTrackingServiceImpl.getInstance().newVehicleId();
+        String ambulanceId = trackingService.newVehicleId();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);
 

@@ -211,7 +211,7 @@
                     <Property name="rows" type="int" value="5"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().loadReport(this.callId).getReportString());"/>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());"/>
                   </AuxValues>
                 </Component>
               </SubComponents>

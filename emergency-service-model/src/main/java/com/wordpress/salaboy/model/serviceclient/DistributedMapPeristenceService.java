@@ -4,7 +4,9 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.ServiceChannel;
@@ -13,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.infinispan.Cache;
 import org.infinispan.config.Configuration;
@@ -33,25 +33,27 @@ import com.wordpress.salaboy.reporting.Report;
  *
  * @author salaboy
  */
-public class DistributedPeristenceServerService implements EmergencyEntitiesPersistenceService {
+public class DistributedMapPeristenceService implements PersistenceService {
 
-    private static DistributedPeristenceServerService instance;
+   // private static DistributedPeristenceServerService instance;
     private DefaultCacheManager cacheManager;
     private String nodeName;
+    private ContextTrackingService contextTracking;
 
-    public static DistributedPeristenceServerService getInstance() {
-        if (instance == null) {
-            try {
-                instance = new DistributedPeristenceServerService();
-            } catch (IOException ex) {
-                Logger.getLogger(DistributedPeristenceServerService.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return instance;
-    }
+//    public static DistributedPeristenceServerService getInstance() {
+//        if (instance == null) {
+//            try {
+//                instance = new DistributedPeristenceServerService();
+//            } catch (IOException ex) {
+//                Logger.getLogger(DistributedPeristenceServerService.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        return instance;
+//    }
 
-    private DistributedPeristenceServerService() throws IOException {
+    public DistributedMapPeristenceService(PersistenceServiceConfiguration conf) throws IOException {
 
+        
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
         Configuration cfg = new Configuration();
 
@@ -59,6 +61,10 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
+        //@TODO: BASED on conf get the correspondant one 
+        contextTracking = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        
+        
 
     }
 
@@ -70,7 +76,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeEmergency(Emergency emergency) {
         if (emergency.getId() == null || emergency.getId().equals("")) {
-            emergency.setId(ContextTrackingServiceImpl.getInstance().newEmergencyId());
+            emergency.setId(contextTracking.newEmergencyId());
         }
         if (this.getCache().get("emergencies") == null) {
             getCache().put("emergencies", new HashMap<Long, Emergency>());
@@ -83,7 +89,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeVehicle(Vehicle vehicle) {
         if (vehicle.getId() == null || vehicle.getId().equals("")) {
-            vehicle.setId(ContextTrackingServiceImpl.getInstance().newVehicleId());
+            vehicle.setId(contextTracking.newVehicleId());
         }
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
@@ -97,7 +103,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storePatient(Patient patient) {
         if (patient.getId() == null || patient.getId().equals("")) {
-            patient.setId(ContextTrackingServiceImpl.getInstance().newPatientId());
+            patient.setId(contextTracking.newPatientId());
         }
         if (this.getCache().get("patients") == null) {
             getCache().put("patients", new HashMap<String, Patient>());
@@ -110,7 +116,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeHospital(Hospital hospital) {
         if (hospital.getId() == null || hospital.getId().equals("")) {
-            hospital.setId(ContextTrackingServiceImpl.getInstance().newEmergencyEntityBuildingId());
+            hospital.setId(contextTracking.newEmergencyEntityBuildingId());
         }
         if (this.getCache().get("hospitals") == null) {
             getCache().put("hospitals", new HashMap<String, Hospital>());
@@ -124,7 +130,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeCall(Call call) {
         if (call.getId() == null || call.getId().equals("")) {
-            call.setId(ContextTrackingServiceImpl.getInstance().newCallId());
+            call.setId(contextTracking.newCallId());
         }
         if (this.getCache().get("calls") == null) {
             getCache().put("calls", new HashMap<Long, Emergency>());
@@ -137,7 +143,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeFirefightersDepartment(FirefightersDepartment firefightersDepartment) {
         if (firefightersDepartment.getId() == null || firefightersDepartment.getId().equals("")) {
-            firefightersDepartment.setId(ContextTrackingServiceImpl.getInstance().newEmergencyEntityBuildingId());
+            firefightersDepartment.setId(contextTracking.newEmergencyEntityBuildingId());
         }
         if (this.getCache().get("firefightersDepartments") == null) {
             getCache().put("firefightersDepartments", new HashMap<String, FirefightersDepartment>());
@@ -151,7 +157,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeProcedure(Procedure procedure) {
         if (procedure.getId() == null || procedure.getId().equals("")) {
-            procedure.setId(ContextTrackingServiceImpl.getInstance().newProcedureId());
+            procedure.setId(contextTracking.newProcedureId());
         }
         if (this.getCache().get("procedures") == null) {
             getCache().put("procedures", new HashMap<String, Procedure>());
@@ -164,7 +170,7 @@ public class DistributedPeristenceServerService implements EmergencyEntitiesPers
     @Override
     public void storeServiceChannel(ServiceChannel channel) {
         if (channel.getId() == null || channel.getId().equals("")) {
-            channel.setId(ContextTrackingServiceImpl.getInstance().newServiceChannelId());
+            channel.setId(contextTracking.newServiceChannelId());
         }
         if (this.getCache().get("channels") == null) {
             getCache().put("channels", new HashMap<String, ServiceChannel>());

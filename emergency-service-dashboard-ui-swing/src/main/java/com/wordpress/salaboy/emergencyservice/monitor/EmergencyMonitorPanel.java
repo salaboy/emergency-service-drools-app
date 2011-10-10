@@ -10,6 +10,8 @@
  */
 package com.wordpress.salaboy.emergencyservice.monitor;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
@@ -19,10 +21,14 @@ import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
 import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,11 +58,19 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private List<String> alerts = new ArrayList<String>();
     private Map<String, Boolean> vehicleHitEmergency = new HashMap<String, Boolean>();
     private Map<String, Boolean> vehicleHitHospital = new HashMap<String, Boolean>();
+    private final PersistenceService persistenceService;
+    private final ContextTrackingService trackingService;
 
     /** Creates new form EmergencyMonitorPanel */
-    public EmergencyMonitorPanel(String callId) {
+    public EmergencyMonitorPanel(String callId) throws IOException {
         this.callId = callId;
+        
+         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
 
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         initComponents();
 
         loadMapImage();
@@ -160,7 +174,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         auditLogjTextArea.setColumns(20);
         auditLogjTextArea.setRows(5);
         jScrollPane1.setViewportView(auditLogjTextArea);
-        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().loadReport(this.callId).getReportString());
+        auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());
 
         jButton1.setText("Refresh");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -217,7 +231,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        auditLogjTextArea.setText(DistributedPeristenceServerService.getInstance().loadReport(this.callId).getReportString());
+        auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());
         
 }//GEN-LAST:event_jButton1ActionPerformed
 

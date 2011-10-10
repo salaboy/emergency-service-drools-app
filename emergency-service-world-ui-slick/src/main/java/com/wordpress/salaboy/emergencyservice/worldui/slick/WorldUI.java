@@ -1,5 +1,7 @@
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.listener.WorldMouseListener;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.listener.WorldKeyListener;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
@@ -30,7 +32,11 @@ import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import java.io.IOException;
+
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +55,8 @@ public class WorldUI extends BasicGame {
     private EmergencyRenderer currentRenderer;
     private GlobalEmergenciesRenderer globalRenderer;
     private Map<String, ParticularEmergencyRenderer> renderers = new HashMap<String, ParticularEmergencyRenderer>();
+    private PersistenceService persistenceService;
+    private ContextTrackingService trackingService;
 
     public WorldUI() {
         super("City Map");
@@ -75,8 +83,19 @@ public class WorldUI extends BasicGame {
         gc.getInput().addKeyListener(new WorldKeyListener(this));
         gc.getInput().addMouseListener(new WorldMouseListener(this));
         
-        //Initializing Distribtued Persistence Service
-        DistributedPeristenceServerService.getInstance();
+         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        try {
+            persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        } catch (IOException ex) {
+            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        } catch (IOException ex) {
+            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         registerMessageConsumers();
 
@@ -158,7 +177,7 @@ public class WorldUI extends BasicGame {
                     System.out.println("Unknown emergency for call Id "+message.getCallId());
                     return;
                 }
-                Vehicle vehicle = DistributedPeristenceServerService.getInstance().loadVehicle(message.getVehicleId());
+                Vehicle vehicle = persistenceService.loadVehicle(message.getVehicleId());
                 switchToEmergency(message.getCallId());
                 assignVehicleToEmergency(message.getCallId(), vehicle);
             }
@@ -219,8 +238,11 @@ public class WorldUI extends BasicGame {
         
         GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(call);
         emergencies.put(call.getId(), newEmergency);
-
-        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
+        try {
+            renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
+        } catch (IOException ex) {
+            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         try {
             MessageFactory.sendMessage(new IncomingCallMessage(call));

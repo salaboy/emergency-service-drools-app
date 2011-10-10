@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.procedures;
 
@@ -20,6 +20,8 @@ import org.junit.BeforeClass;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
@@ -35,21 +37,28 @@ import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
 import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.DistributedMapPeristenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
+import java.io.IOException;
 import java.util.ArrayList;
-import org.junit.Ignore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author esteban
  */
 public class DefaultFireProcedureTest extends GridBaseTest {
 
     private HumanTaskService humanTaskServiceClient;
+    private PersistenceService persistenceService;
+    private ContextTrackingService trackingService;
 
     public DefaultFireProcedureTest() {
     }
@@ -73,19 +82,24 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
 
-        String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        String emergencyId = trackingService.newEmergencyId();
         emergency = new Emergency();
         emergency.setId(emergencyId);
 
-        String fireTruckId = ContextTrackingServiceImpl.getInstance().newVehicleId();
+        String fireTruckId = trackingService.newVehicleId();
         fireTruck = new FireTruck("FireTruck 1");
         fireTruck.setId(fireTruckId);
 
         call = new Call(1, 2, new Date());
 
-        String callId = ContextTrackingServiceImpl.getInstance().newCallId();
-        call.setId(callId);
+        // String callId = ContextTrackingServiceImpl.getInstance().newCallId();
+        // call.setId(callId);
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.FIRE);
@@ -93,10 +107,10 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
         firefightersDepartment = new FirefightersDepartment("Firefighter Department 1", 12, 1);
 
-        DistributedPeristenceServerService.getInstance().storeFirefightersDepartment(firefightersDepartment);
-        DistributedPeristenceServerService.getInstance().storeEmergency(
+        persistenceService.storeFirefightersDepartment(firefightersDepartment);
+        persistenceService.storeEmergency(
                 emergency);
-        DistributedPeristenceServerService.getInstance().storeVehicle(fireTruck);
+        persistenceService.storeVehicle(fireTruck);
         MessageServerSingleton.getInstance().start();
 
         this.coreServicesMap = new HashMap();
@@ -182,7 +196,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The emergency has ended
-        Assert.assertEquals(1,proceduresEndedCount);
+        Assert.assertEquals(1, proceduresEndedCount);
 
     }
 
@@ -291,7 +305,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         //The process didn't finish yet
-        Assert.assertEquals(0,proceduresEndedCount);
+        Assert.assertEquals(0, proceduresEndedCount);
 
         // Ok, no more fire!
         ProceduresMGMTService.getInstance().notifyProcedures(
@@ -300,7 +314,7 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The emergency has ended
-        Assert.assertEquals(1,proceduresEndedCount);
+        Assert.assertEquals(1, proceduresEndedCount);
 
     }
 
@@ -309,9 +323,12 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         parameters.put("call", call);
         parameters.put("emergency", emergency);
         parameters.put("vehicle", fireTruck);
-
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(),
-                "DefaultFireProcedure", parameters);
+        try {
+            ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(),
+                    "DefaultFireProcedure", parameters);
+        } catch (IOException ex) {
+            Logger.getLogger(DefaultFireProcedureTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Thread.sleep(2000);
     }
 

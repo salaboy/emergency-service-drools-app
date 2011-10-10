@@ -10,9 +10,19 @@
  */
 package com.wordpress.salaboy.emergencyservice.dashboard;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.monitor.EmergencyMonitorPanel;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,11 +32,19 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     private String emergencyId;
     private Emergency emergency;
     private EmergencyMonitorPanel monitor;
+    private final PersistenceService persistenceService;
+    private final ContextTrackingService trackingService;
     /** Creates new form LiveEmergencyReport */
-    public LiveEmergencyReport(String emergencyId) {
+    public LiveEmergencyReport(String emergencyId) throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         this.emergencyId = emergencyId;
         
-        this.emergency = DistributedPeristenceServerService.getInstance().loadEmergency(emergencyId);
+        this.emergency = persistenceService.loadEmergency(emergencyId);
         
         initComponents();
         configure();
@@ -91,7 +109,11 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void configure() {
-        monitor = new EmergencyMonitorPanel(emergency.getCall().getId());
+        try {
+            monitor = new EmergencyMonitorPanel(emergency.getCall().getId());
+        } catch (IOException ex) {
+            Logger.getLogger(LiveEmergencyReport.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         jTabbedMonitorPane.add(monitor);
 

@@ -14,7 +14,9 @@ public class FireTruck implements Vehicle {
     private Date emergencyReachedTime;
     private float positionX;
     private float positionY;
-
+    private int tankSize;
+    private int tankLevel;
+    
     public FireTruck() {
     }
 
@@ -27,6 +29,14 @@ public class FireTruck implements Vehicle {
 
         this.name = name;
     }
+
+    public FireTruck(String name, int tankSize, int tankLevel) {
+        this.name = name;
+        this.tankSize = tankSize;
+        this.tankLevel = tankLevel;
+    }
+    
+    
 
     public void setId(String id) {
         this.id = id;
@@ -77,8 +87,35 @@ public class FireTruck implements Vehicle {
         this.positionY = positionY;
     }
 
+    public int getTankSize() {
+        return tankSize;
+    }
+
+    public void setTankSize(int tankSize) {
+        this.tankSize = tankSize;
+    }
+
+    public int getTankLevel() {
+        return tankLevel;
+    }
+
+    public void setTankLevel(int tankLevel) {
+        this.tankLevel = tankLevel;
+    }
+
+    public Date getEmergencyReachedTime() {
+        return emergencyReachedTime;
+    }
+
+    public void setEmergencyReachedTime(Date emergencyReachedTime) {
+        this.emergencyReachedTime = emergencyReachedTime;
+    }
+
     @Override
     public String toString() {
-        return "FireTruck{" + "id=" + id + ", name=" + name + '}';
+        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + ", tankSize=" + tankSize + ", tankLevel=" + tankLevel + '}';
     }
+    
+    
+
 }
