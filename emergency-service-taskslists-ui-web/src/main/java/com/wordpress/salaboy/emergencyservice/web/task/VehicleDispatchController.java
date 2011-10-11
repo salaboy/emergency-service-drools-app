@@ -1,20 +1,22 @@
 package com.wordpress.salaboy.emergencyservice.web.task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 
 /**
  * Controller to handle selection of vehicle task.
@@ -40,9 +42,18 @@ public class VehicleDispatchController extends AbstractTaskFormController {
     }
 
     private static final String viewPrefix = "";
-
+    private PersistenceService distributedService;
+    
     public VehicleDispatchController() {
         super();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        try {
+			distributedService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     @Override
@@ -81,7 +92,7 @@ public class VehicleDispatchController extends AbstractTaskFormController {
     	//TODO support more than one selection.
     	
     	List<Vehicle> selectedVehicles = new ArrayList<Vehicle>();
-		selectedVehicles.add(DistributedPeristenceServerService.getInstance()
+		selectedVehicles.add(distributedService
 				.loadVehicle(data.get("id")));
         
                 
