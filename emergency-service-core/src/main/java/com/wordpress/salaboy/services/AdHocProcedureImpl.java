@@ -5,6 +5,7 @@
 package com.wordpress.salaboy.services;
 
 
+import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.services.workitemhandlers.AsyncStartProcedureWorkItemHandler;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.drools.builder.ResourceType;
 import org.drools.conf.EventProcessingOption;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 
 /**
  *
@@ -29,8 +31,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class AdHocProcedureImpl implements AdHocProcedure{
 
-    private String id;
-    private String callId;
+    private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
 
@@ -112,10 +113,10 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     }
     
     @Override
-    public void configure(String callId, Map<String, Object> parameters) {
-        this.callId = callId;
+    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
+        this.emergencyId = emergencyId;
         try {
-            internalSession = createAdHocProcedureSession(this.callId);
+            internalSession = createAdHocProcedureSession(this.emergencyId);
         } catch (IOException ex) {
             Logger.getLogger(AdHocProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -126,22 +127,14 @@ public class AdHocProcedureImpl implements AdHocProcedure{
                 internalSession.fireUntilHalt();
             }
         }).start();
-        internalSession.startProcess("com.wordpress.salaboy.bpmn2.AdHocProcedure", parameters);
+        ProcessInstance pi = internalSession.startProcess("com.wordpress.salaboy.bpmn2.AdHocProcedure", parameters);
+        
+        procedure.setProcessInstanceId(pi.getId());
     }
     
     
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new AsyncStartProcedureWorkItemHandler());
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

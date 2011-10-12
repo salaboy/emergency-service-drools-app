@@ -109,7 +109,11 @@ public class GenericEmergencyProcedureImpl implements GenericEmergencyProcedure 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
             for (KnowledgeBuilderError error : errors) {
-                System.out.println(">>>>>>> Error: " + error.getMessage());
+                if (error == null){
+                    System.out.println(">>>>>>> Error: Unkown error!");
+                }else{
+                    System.out.println(">>>>>>> Error: " + error.getMessage());
+                }
 
             }
             throw new IllegalStateException("Failed to parse knowledge!");

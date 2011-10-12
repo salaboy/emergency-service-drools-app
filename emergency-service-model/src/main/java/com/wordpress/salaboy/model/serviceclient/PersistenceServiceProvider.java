@@ -21,7 +21,11 @@ public class PersistenceServiceProvider {
         DISTRIBUTED_MAP, JPA, SERVICE
     };
 
-    public static PersistenceService getPersistenceService(PersistenceServiceType type, PersistenceServiceConfiguration conf) throws IOException {
+     public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type) throws IOException {
+        return getPersistenceService(type, null);
+    }
+    
+    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type, PersistenceServiceConfiguration conf) throws IOException {
         if (instances.get(type) == null) {
             switch (type) {
                 case DISTRIBUTED_MAP:

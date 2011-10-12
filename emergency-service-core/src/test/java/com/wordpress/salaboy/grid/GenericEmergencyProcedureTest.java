@@ -133,7 +133,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         GenericEmergencyProcedureImpl.getInstance().newPhoneCall(call);
 
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         doOperatorTask();
 

@@ -5,6 +5,7 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.FirefighterDeparmtmentDistanceCalculator;
+import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.FireExtinctedEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
@@ -56,8 +57,7 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  * @author esteban
  */
 public class DefaultFireProcedureImpl implements DefaultFireProcedure {
-    private String id;
-    private String callId;
+    private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
     private boolean useLocalKSession;
@@ -117,6 +117,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultFireProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
         
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_water_refill_destination.drl").getInputStream())), ResourceType.DRL);
+        
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/defaultFireProcedureEventHandling.drl").getInputStream())), ResourceType.DRL);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
@@ -132,7 +134,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         if (!useLocalKSession){
-            remoteN1.set("DefaultFireProcedureSession" + this.callId, session);
+            remoteN1.set("DefaultFireProcedureSession" + this.emergencyId, session);
         }
 
         return session;
@@ -149,27 +151,24 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     @Override
     public void vehicleReachesEmergencyNotification(VehicleHitsEmergencyEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent", event);
+        internalSession.insert(event);
     }
 
     @Override
     public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
         //we need the event as a fact in order to make inference.
         internalSession.insert(event);
-        
-        //the process is signaled
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent", event);
     }
 
     @Override
-    public void configure(String callId, Map<String, Object> parameters) {
+    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
 	if (!parameters.containsKey("emergency")){
             throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
         }
 
-        this.callId = callId;
+        this.emergencyId = emergencyId;
         try {
-            internalSession = createDefaultFireProcedureSession(this.callId);
+            internalSession = createDefaultFireProcedureSession(this.emergencyId);
         } catch (IOException ex) {
             Logger.getLogger(DefaultFireProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -183,8 +182,12 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         }).start();
         
         parameters.put("concreteProcedureId", this.procedureName);
+        parameters.put("procedure", procedure);
+        
         processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
         internalSession.insert(parameters.get("emergency"));
+        
+        procedure.setProcessInstanceId(processInstance.getId());
     }
     
     @Override
@@ -198,16 +201,6 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     public void setUseLocalKSession(boolean useLocalKSession) {
         this.useLocalKSession = useLocalKSession;
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

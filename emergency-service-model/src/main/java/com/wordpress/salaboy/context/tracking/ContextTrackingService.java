@@ -35,6 +35,8 @@ public interface ContextTrackingService  {
     public void attachProcedure(String emergencyId, String procedureId);
 
     public void attachVehicle(String procedureId, String vehicleId);
+    
+    public void attachProcedures(String parentProcedureId, String childProcedureId);
 
     public void attachServiceChannel(String emergencyId, String channelId);
 
@@ -56,6 +58,7 @@ public interface ContextTrackingService  {
     
     public GraphDatabaseService getGraphDb();
     
-    
+    //Query
+    public String getProcedureAttachedToVehicle(String vehicleId);
     
 }

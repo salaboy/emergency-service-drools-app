@@ -5,7 +5,7 @@
 package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.HospitalDistanceCalculator;
-import com.wordpress.salaboy.model.ProcedureRequest;
+import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
@@ -48,6 +48,7 @@ import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 
 /**
@@ -56,12 +57,12 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  */
 public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProcedure {
 
-    private String id;
     private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
     
     private boolean useLocalKSession;
+    private boolean logInFile;
 
     public DefaultHeartAttackProcedureImpl() {
         this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultHeartAttackProcedure";
@@ -116,9 +117,9 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultHeartAttackProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
         
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/proceduresRequestHandler.drl").getInputStream())), ResourceType.DRL);
-
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_hospital.drl").getInputStream())), ResourceType.DRL);
+        
+        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/defaultHeartAttackProcedureEventHandling.drl").getInputStream())), ResourceType.DRL);
 
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
@@ -137,7 +138,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         if (!useLocalKSession){
             remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
         }
-
+        
         return session;
 
     }
@@ -156,8 +157,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
     @Override
     public void patientPickUpNotification(VehicleHitsEmergencyEvent event) {
-        System.out.printf("Notifying %s procedure about VehicleHitsEmergencyEvent\n",procedureName);
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.PatientPickUpEvent", event);
+        internalSession.insert(event);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     }
     
     @Override
-    public void configure( String emergencyId, Map<String, Object> parameters) {
+    public void configure( String emergencyId, Procedure procedure, Map<String, Object> parameters) {
         this.emergencyId = emergencyId;
         try {
             internalSession = createDefaultHeartAttackProcedureSession(this.emergencyId);
@@ -182,19 +182,12 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
         }).start();
 
         parameters.put("concreteProcedureId", this.procedureName);
+        parameters.put("procedure", procedure);
         
-        internalSession.getWorkingMemoryEntryPoint("procedure request").insert(new ProcedureRequest(getId(), "MultiVehicleProcedure", parameters));
-        
-    }
+        ProcessInstance pi = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure",parameters);
+        internalSession.insert(pi);    
 
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
+        procedure.setProcessInstanceId(pi.getId());
     }
 
     public boolean isUseLocalKSession() {
@@ -204,6 +197,5 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     public void setUseLocalKSession(boolean useLocalKSession) {
         this.useLocalKSession = useLocalKSession;
     }
-
     
 }

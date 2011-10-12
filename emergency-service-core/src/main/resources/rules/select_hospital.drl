@@ -15,7 +15,7 @@ import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.serviceclient.*;
 import com.wordpress.salaboy.context.tracking.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
 
 
 query "getPatient"
@@ -40,7 +40,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
-                                                        from PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, null).getAllHospitals(), 
+                                                        from PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).getAllHospitals(), 
                 hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $emergency))
 
         )

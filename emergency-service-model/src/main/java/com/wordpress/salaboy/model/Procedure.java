@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class Procedure implements Serializable{
     private String id;
     private String name;
+    private Long processInstanceId;
 
     public Procedure(String name) {
         this.name = name;
@@ -37,10 +38,17 @@ public class Procedure implements Serializable{
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Procedure{" + "id=" + id + ", name=" + name + '}';
+    public Long getProcessInstanceId() {
+        return processInstanceId;
     }
 
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public String toString() {
+        return "Procedure{" + "id=" + id + ", name=" + name + ", processInstanceId=" + processInstanceId + '}';
+    }
     
 }

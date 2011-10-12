@@ -9,12 +9,9 @@ import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.cypher.commands.Query;
 import org.neo4j.cypher.javacompat.CypherParser;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 import scala.collection.Iterator;
 
 /**
@@ -163,6 +160,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public void attachProcedure(String emergencyId, String procedureId) {
+        System.out.println(">>>> Attaching Procedure "+procedureId+" to Emergency "+emergencyId);
         Transaction tx = graphDb.beginTx();
 
         try {
@@ -189,6 +187,34 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     }
 
     @Override
+    public String getProcedureAttachedToVehicle(String vehicleId){
+        Transaction tx = graphDb.beginTx();
+        try{
+            CypherParser parser = new CypherParser();
+            ExecutionEngine engine = new ExecutionEngine(this.graphDb);
+            Query query = parser.parse("start v=(vehicles, 'vehicleId:" + vehicleId + "')  match (v) <-[USE]- (w)    return w");
+            ExecutionResult result = engine.execute(query);
+            
+            if (result.isEmpty()){
+                throw new IllegalStateException("No Procedure attached to the Vehicle "+vehicleId);
+            }
+            
+            Iterator<Node> n_column = result.columnAs("w");
+            Node procedure = n_column.next();
+            
+            String procedureId = (String) procedure.getProperty("procedureId");
+            
+            tx.success();
+            
+            return procedureId;
+            
+        } finally {
+            tx.finish();
+
+        }
+    }
+    
+    @Override
     public String newVehicleId() {
 
 
@@ -212,6 +238,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     @Override
     public void attachVehicle(String procedureId, String vehicleId) {
+        System.out.println(">>>> Attaching Vehicle "+vehicleId+" to Procedure "+procedureId);
         Transaction tx = graphDb.beginTx();
 
         try {
@@ -228,6 +255,33 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
             Node vehicle = n_column.next();
 
             procedure.createRelationshipTo(vehicle, EmergencyRelationshipType.USE);
+
+            tx.success();
+        } finally {
+            tx.finish();
+
+        }
+    }
+    
+    @Override
+    public void attachProcedures(String parentProcedureId, String childProcedureId){
+        System.out.println(">>>> Attaching Procedure "+childProcedureId+" to Procedure "+parentProcedureId);
+        Transaction tx = graphDb.beginTx();
+
+        try {
+            CypherParser parser = new CypherParser();
+            ExecutionEngine engine = new ExecutionEngine(this.graphDb);
+            Query query = parser.parse("start n=(procedures, 'procedureId:" + parentProcedureId + "')  return n");
+            ExecutionResult result = engine.execute(query);
+            Iterator<Node> n_column = result.columnAs("n");
+            Node parentProcedure = n_column.next();
+
+            query = parser.parse("start n=(procedures, 'procedureId:" + childProcedureId + "')  return n");
+            result = engine.execute(query);
+            n_column = result.columnAs("n");
+            Node childProcedure = n_column.next();
+
+            parentProcedure.createRelationshipTo(childProcedure, EmergencyRelationshipType.SUB);
 
             tx.success();
         } finally {

@@ -22,10 +22,10 @@ rule "Initialize Emergency"
         not(Emergency(processInstanceId == $processInstance.id))
     then
         Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
-        String emergencyId = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).storeEmergency(emergency);
-        emergency.setId(emergencyId);
+        PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).storeEmergency(emergency);
+        
         String callId = ((Call)$processInstance.getVariable("call")).getId();
-        ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY).attachEmergency(callId, emergencyId);
+        ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY).attachEmergency(callId, emergency.getId());
         System.out.println("Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+callId);
         
         ActivePatients activePatients = new ActivePatients(emergency.getId());

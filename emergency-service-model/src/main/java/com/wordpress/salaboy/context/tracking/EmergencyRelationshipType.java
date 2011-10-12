@@ -11,5 +11,5 @@ import org.neo4j.graphdb.RelationshipType;
  * @author salaboy
  */
 public enum EmergencyRelationshipType implements RelationshipType {
-    CREATES, INSTANTIATE, USE, CONSUME
+    CREATES, INSTANTIATE, USE, CONSUME, SUB;
 }

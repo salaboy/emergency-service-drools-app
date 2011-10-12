@@ -17,8 +17,7 @@ rule "Single Phone Call Handling"
       $call: Call(processed == false) from entry-point "phoneCalls stream"
     then
       $call.setProcessed(true);
-      String callId = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).storeCall(call);
-      $call.setId(callId);
+      PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).storeCall($call);
 
       Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("call", $call);

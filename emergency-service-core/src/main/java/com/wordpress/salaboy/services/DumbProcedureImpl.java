@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -131,7 +132,7 @@ public class DumbProcedureImpl implements DumbProcedure {
     }
    
     @Override 
-    public void configure(String callId, Map<String, Object> parameters) {
+    public void configure(String callId, Procedure procedure, Map<String, Object> parameters) {
         this.callId = callId;
         try {
             internalSession = createDumbProcedureSession(this.callId);
@@ -149,13 +150,4 @@ public class DumbProcedureImpl implements DumbProcedure {
         internalSession.startProcess("com.wordpress.salaboy.bpmn2.DumbProcedure", parameters);
     }
 
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
-    }
 }

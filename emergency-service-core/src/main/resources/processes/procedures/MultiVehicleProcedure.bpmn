@@ -16,6 +16,7 @@
   <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
   <itemDefinition id="_emergency.vehiclesItem" structureRef="java.util.List" />
   <itemDefinition id="_concreteProcedureIdItem" structureRef="String" />
+  <itemDefinition id="_procedureItem" structureRef="com.wordpress.salaboy.model.Procedure" />
 
   <itemDefinition id="_12_multiInstanceItemType" />
 
@@ -34,6 +35,7 @@
     <property id="emergency" itemSubjectRef="_emergencyItem"/>
     <property id="emergency.vehicles" itemSubjectRef="_emergency.vehiclesItem"/>
     <property id="concreteProcedureId" itemSubjectRef="_concreteProcedureIdItem"/>
+    <property id="procedure" itemSubjectRef="_procedureItem"/>
 
     <!-- nodes -->
     <task id="_17" name="Notify End Of Procedure" tns:taskName="NotifyEndOfProcedure" >
@@ -57,7 +59,7 @@
       </dataInputAssociation>
     </task>
     <scriptTask id="_16" name="Script" >
-      <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; AFTER THE HUMAN TASK!!!");</script>
+      <script>System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Ammount of Selected Vahicles: "+((java.util.List)kcontext.getVariable("emergency.vehicles")).size());</script>
     </scriptTask>
     <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Select Vehicle" >
@@ -167,15 +169,40 @@
     </task>
     <startEvent id="_12-2-7" name="StartMultiple" />
     <endEvent id="_12-2-11" name="EndMultiple" />
-    <scriptTask id="_12-2-12" name="Start Process" >
-      <script>java.util.Map parameters = new java.util.HashMap();
-      
+    <scriptTask id="_12-2-12" name="Start Process" scriptFormat="http://www.java.com/java" >
+      <script>//This should be moved to a WI or to some kind of external service
+System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Starting "+concreteProcedureId+" for vehicle: "+ vehicle + " in emergency:" +emergency);  
+
+//Persistence and tracking services
+java.util.Map&lt;String, Object&gt; params = new java.util.HashMap&lt;String, Object&gt;();
+params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
+com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+
+java.util.Map parameters = new java.util.HashMap();      
 parameters.put("call", kcontext.getVariable("call"));
 parameters.put("emergency", kcontext.getVariable("emergency"));
 parameters.put("vehicle", kcontext.getVariable("vehicle"));
 insert(new com.wordpress.salaboy.model.VehiclesOnDuty(((com.wordpress.salaboy.model.Emergency)kcontext.getVariable("emergency")).getId(), (java.util.List)kcontext.getVariable("emergency.vehicles")));
-org.drools.runtime.process.ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess((String)kcontext.getVariable("concreteProcedureId"), parameters);
-insert(pi);</script>
+
+
+org.drools.runtime.process.ProcessInstance pi = kcontext.getKnowledgeRuntime().createProcessInstance((String)kcontext.getVariable("concreteProcedureId"), parameters);
+
+com.wordpress.salaboy.model.Procedure newProcedure = new com.wordpress.salaboy.model.Procedure((String)kcontext.getVariable("concreteProcedureId"));
+newProcedure.setProcessInstanceId(pi.getId());
+
+//The procedure is ready to be stored
+persistenceService.storeProcedure(newProcedure);
+
+//the vehicle is attached to the created procedure
+ trackingService.attachVehicle(newProcedure.getId(),((com.wordpress.salaboy.model.Vehicle)vehicle).getId()); 
+ 
+//the created procedure is attached to the parent procedure (this)
+trackingService.attachProcedures(procedure.getId(), newProcedure.getId());
+
+insert(pi);
+kcontext.getKnowledgeRuntime().startProcessInstance(pi.getId());</script>
     </scriptTask>
     <!-- connections -->
     <sequenceFlow id="_12-2-7-_12-2-1" sourceRef="_12-2-7" targetRef="_12-2-1" />

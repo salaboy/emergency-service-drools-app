@@ -6,23 +6,15 @@ package com.wordpress.salaboy.procedures;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.grid.SocketService;
-import org.example.ws_ht.api.TTaskAbstract;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
-import com.wordpress.salaboy.api.HumanTaskService;
-import com.wordpress.salaboy.api.HumanTaskServiceFactory;
-import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.grid.GridBaseTest;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
@@ -37,15 +29,14 @@ import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
 import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedMapPeristenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
-import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
@@ -54,25 +45,11 @@ import org.junit.Test;
  *
  * @author esteban
  */
-public class DefaultFireProcedureTest extends GridBaseTest {
+public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
-    private HumanTaskService humanTaskServiceClient;
     private PersistenceService persistenceService;
     private ContextTrackingService trackingService;
 
-    public DefaultFireProcedureTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        HumanTaskServerService.getInstance().initTaskServer();
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-
-        HumanTaskServerService.getInstance().stopTaskServer();
-    }
     private Emergency emergency = null;
     private FireTruck fireTruck = null;
     private Call call = null;
@@ -80,8 +57,12 @@ public class DefaultFireProcedureTest extends GridBaseTest {
     private MessageConsumerWorker procedureEndedWorker;
     private int proceduresEndedCount;
 
+    public DefaultFireProcedureBaseTest() {
+    }
+    
     @Before
     public void setUp() throws Exception {
+        HumanTaskServerService.getInstance().initTaskServer();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
@@ -92,10 +73,9 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         emergency = new Emergency();
         emergency.setId(emergencyId);
 
-        String fireTruckId = trackingService.newVehicleId();
         fireTruck = new FireTruck("FireTruck 1");
-        fireTruck.setId(fireTruckId);
-
+        persistenceService.storeVehicle(fireTruck);
+        
         call = new Call(1, 2, new Date());
 
         // String callId = ContextTrackingServiceImpl.getInstance().newCallId();
@@ -115,16 +95,6 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
-
-        HumanTaskServiceConfiguration taskClientConf = new HumanTaskServiceConfiguration();
-
-        taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client",
-                new JBPM5HornetQHumanTaskClientConfiguration(
-                "127.0.0.1", 5446));
-
-        humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
-        humanTaskServiceClient.initializeService();
-
 
         //Procedure Ended Worker
         procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
@@ -150,16 +120,18 @@ public class DefaultFireProcedureTest extends GridBaseTest {
         if (procedureEndedWorker != null) {
             procedureEndedWorker.stopWorker();
         }
-        this.humanTaskServiceClient.cleanUpService();
+        HumanTaskServerService.getInstance().stopTaskServer();
     }
 
     @Test
     public void defaultFireSimpleTest() throws Exception {
         //start the process
-        this.startProcess(call, emergency, fireTruck);
+        this.startProcess(call, emergency);
 
         //Because of the emergency, a new Task is ready for garage: pick the corresponding vehicle/s
-        this.testGarageTask(emergency, fireTruck);
+        List<Vehicle> trucks = new ArrayList<Vehicle>();
+        trucks.add(fireTruck);
+        this.testGarageTask(emergency, trucks);
 
         // The fire truck doesn't reach the emergency yet. No task for
         // the firefighter.
@@ -204,10 +176,12 @@ public class DefaultFireProcedureTest extends GridBaseTest {
     public void fireTruckOutOfWaterx2Test() throws Exception {
 
         //start the process
-        this.startProcess(call, emergency, fireTruck);
+        this.startProcess(call, emergency);
 
         //Because of the emergency, a new Task is ready for garage: pick the corresponding vehicle/s
-        this.testGarageTask(emergency, fireTruck);
+        List<Vehicle> trucks = new ArrayList<Vehicle>();
+        trucks.add(fireTruck);
+        this.testGarageTask(emergency, trucks);
 
         // The fire truck doesn't reach the emergency yet. No task for
         // the firefighter.
@@ -318,66 +292,22 @@ public class DefaultFireProcedureTest extends GridBaseTest {
 
     }
 
-    private void startProcess(Call call, Emergency emergency, Vehicle fireTruck) throws InterruptedException {
+    private void startProcess(Call call, Emergency emergency) throws InterruptedException {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
-        parameters.put("vehicle", fireTruck);
         try {
             ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(),
                     "DefaultFireProcedure", parameters);
         } catch (IOException ex) {
-            Logger.getLogger(DefaultFireProcedureTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DefaultFireProcedureBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         Thread.sleep(2000);
     }
 
-    private void testGarageTask(Emergency emergency, Vehicle selectedVehicle) throws Exception {
-        List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "garage_emergency_service", "", null, "", "", "", 0, 0);
-        Assert.assertNotNull(taskAbstracts);
-        Assert.assertEquals(1, taskAbstracts.size());
-        TTaskAbstract taskAbstract = taskAbstracts.get(0); // getting the first task
-        Assert.assertEquals(" Select Vehicle For " + emergency.getId() + " ", taskAbstract.getName().getLocalPart());
+    protected abstract void testGarageTask(Emergency emergency, List<Vehicle> selectedVehicles) throws Exception;
 
-        //Garage team starts working on the task
-        humanTaskServiceClient.setAuthorizedEntityId("garage_emergency_service");
-        humanTaskServiceClient.start(taskAbstract.getId());
+    protected abstract Map<String, String> getFirefighterTasks() throws Exception;
 
-
-        //A Firetruck is selected
-        Map<String, Object> info = new HashMap<String, Object>();
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        vehicles.add(selectedVehicle);
-        info.put("emergency.vehicles", vehicles);
-
-        //Garage team completes the task
-        humanTaskServiceClient.complete(taskAbstract.getId(), info);
-
-        Thread.sleep(2000);
-    }
-
-    private Map<String, String> getFirefighterTasks() throws Exception {
-        humanTaskServiceClient.setAuthorizedEntityId("firefighter");
-        List<TTaskAbstract> abstracts = humanTaskServiceClient.getMyTaskAbstracts("", "firefighter", "", null, "", "", "", 0,
-                0);
-        Map<String, String> ids = new HashMap<String, String>();
-        if (abstracts != null) {
-            for (TTaskAbstract tTaskAbstract : abstracts) {
-                ids.put(tTaskAbstract.getId(), tTaskAbstract.getName().toString());
-            }
-        }
-
-        return ids;
-    }
-
-    private void completeTask(String user, String taskId) throws Exception {
-        humanTaskServiceClient.setAuthorizedEntityId(user);
-
-        Map<String, Object> info = new HashMap<String, Object>();
-        info.put("emergency.priority", 1);
-        humanTaskServiceClient.start(taskId);
-        humanTaskServiceClient.complete(taskId, info);
-
-        Thread.sleep(2000);
-    }
+    protected abstract void completeTask(String user, String taskId) throws Exception;
 }

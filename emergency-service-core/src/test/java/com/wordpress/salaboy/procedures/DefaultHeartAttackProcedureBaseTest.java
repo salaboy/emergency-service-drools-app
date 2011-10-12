@@ -2,11 +2,7 @@ package com.wordpress.salaboy.procedures;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.grid.SocketService;
 
@@ -19,6 +15,7 @@ import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Location;
+import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
@@ -27,7 +24,9 @@ import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import java.util.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,6 +41,9 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
     private int proceduresEndedCount;
     protected PersistenceService persistenceService;
     protected ContextTrackingService trackingService;
+    
+    private Ambulance ambulance1;
+    private Ambulance ambulance2;
 
     public DefaultHeartAttackProcedureBaseTest() {
     }
@@ -69,10 +71,12 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
 
         persistenceService.storeHospital(new Hospital("My Hospital", 12, 1));
         persistenceService.storeEmergency(emergency);
-        persistenceService.storeVehicle(new Ambulance("My Ambulance Test"));
+        ambulance1 = new Ambulance("My Ambulance Number 1");
+        persistenceService.storeVehicle(ambulance1);
+        ambulance2 = new Ambulance("My Ambulance Number 2");
+        persistenceService.storeVehicle(ambulance2);
 
         MessageServerSingleton.getInstance().start();
-
 
         this.coreServicesMap = new HashMap();
         createRemoteNode();
@@ -116,16 +120,24 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
         Thread.sleep(5000);
 
-        String ambulanceId = doGarageTask(emergency);
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        vehicles.add(ambulance1);
+        
+        doGarageTask(emergency, vehicles);
 
         Thread.sleep(5000);
 
         //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulanceId, emergency.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulance1.getId(), emergency.getId(), new Date()));
 
         Thread.sleep(4000);
-
-        doDoctorTask();
+        
+        //1 task for the doctor
+        Map<String, String> doctorTasksId = getDoctorTasksId();
+        Assert.assertEquals(1, doctorTasksId.size());
+        
+        //The doctor completes the task
+        doDoctorTask(doctorTasksId.keySet().iterator().next());
 
         Thread.sleep(4000);
 
@@ -133,7 +145,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Assert.assertEquals(0, proceduresEndedCount);
 
         //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulanceId, new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulance1.getId(), new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
 
         Thread.sleep(5000);
 
@@ -141,8 +153,40 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Assert.assertEquals(1, proceduresEndedCount);
 
     }
+    
+    @Test
+    public void defaultHeartAttackWith2VehiclesTest() throws Exception {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("call", call);
+        parameters.put("emergency", emergency);
 
-    protected abstract String doGarageTask(Emergency emergency) throws Exception;
+        //we want to dispatch 2 ambulances
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        
+        vehicles.add(ambulance1);
+        vehicles.add(ambulance2);
 
-    protected abstract void doDoctorTask() throws Exception;
+        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
+        Thread.sleep(5000);
+        
+        doGarageTask(emergency, vehicles);
+        Thread.sleep(5000);
+        
+        //The vehicle 2 reaches the emergency
+        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulance2.getId(), emergency.getId(), new Date()));
+
+        Thread.sleep(4000);
+        
+        //1 task for doctor now
+        Map<String, String> doctorTasksId = getDoctorTasksId();
+        Assert.assertEquals(1, doctorTasksId.size());
+        
+        
+    }
+
+    protected abstract void doGarageTask(Emergency emergency, List<Vehicle> selectedVehicles) throws Exception;
+
+    protected abstract Map<String,String> getDoctorTasksId() throws Exception;
+    
+    protected abstract void doDoctorTask(String taskId) throws Exception;
 }

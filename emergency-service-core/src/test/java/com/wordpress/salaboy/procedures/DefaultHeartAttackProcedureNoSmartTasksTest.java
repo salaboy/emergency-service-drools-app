@@ -2,12 +2,10 @@
 package com.wordpress.salaboy.procedures;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +13,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 
-import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
@@ -27,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
@@ -64,14 +60,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
     }
 
     @Override
-    protected String doGarageTask(Emergency emergency) throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-        
+    protected void doGarageTask(Emergency emergency, List<Vehicle> selectedVehicles) throws Exception {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
@@ -101,15 +90,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
         String procedureId = (String) value.get("procedureId");
 
         Map<String, Object> info = new HashMap<String, Object>();
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        Ambulance ambulance = new Ambulance("My Ambulance", new Date());
-        String ambulanceId = trackingService.newVehicleId();
-        ambulance.setId(ambulanceId);
-        vehicles.add(ambulance);
-
-//        ContextTrackingServiceImpl.getInstance().attachVehicle(procedureId, ambulanceId);
-
-        info.put("emergency.vehicles", vehicles);
+        info.put("emergency.vehicles", selectedVehicles);
         ContentData result = new ContentData();
         result.setAccessType(AccessType.Inline);
         result.setType("java.util.Map");
@@ -122,23 +103,18 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(garageTask.getId(), "garage_emergency_service", result, completeTaskOperationHandler);
 
-        return ambulanceId;
-
     }
 
     @Override
-    protected void doDoctorTask() throws IOException, ClassNotFoundException {
-        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
-        List<TaskSummary> sums = handler.getResults();
-        assertNotNull(sums);
-        assertEquals(1, sums.size());
+    protected void doDoctorTask(String taskId) throws IOException, ClassNotFoundException {
+        
+        Long taskIdAsLong = Long.parseLong(taskId);
 
         BlockingTaskOperationResponseHandler startTaskOperationHandler = new BlockingTaskOperationResponseHandler();
-        client.start(sums.get(0).getId(), "doctor", startTaskOperationHandler);
+        client.start(taskIdAsLong, "doctor", startTaskOperationHandler);
 
         BlockingGetTaskResponseHandler getTaskHandler = new BlockingGetTaskResponseHandler();
-        client.getTask(sums.get(0).getId(), getTaskHandler);
+        client.getTask(taskIdAsLong, getTaskHandler);
         Task doctorTask = getTaskHandler.getTask();
 
         BlockingGetContentResponseHandler getContentHandler = new BlockingGetContentResponseHandler();
@@ -168,4 +144,19 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
         client.complete(doctorTask.getId(), "doctor", result, completeTaskOperationHandler);
 
     }
+
+    @Override
+    protected Map<String,String> getDoctorTasksId() throws Exception {
+        BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner("doctor", "en-UK", handler);
+        List<TaskSummary> sums = handler.getResults();
+        
+        Map<String, String> ids = new HashMap<String, String>();
+        for (TaskSummary taskSummary : sums) {
+            ids.put(taskSummary.getId()+"", taskSummary.getName());
+        }
+        
+        return ids;
+    }
+
 }
