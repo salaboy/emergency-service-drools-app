@@ -138,6 +138,21 @@ public class TrackingAndPersistenceTest {
         }
 
 
+        query = parser.parse("start v=(vehicles, 'vehicleId:" + vehicle.getId() + "')  match (v) <-[USE]- (w)    return w");
+        
+        //query = parser.parse("start s=(procedures, 'procedureId:" + procedure.getId() + "')  match (s) <-[SUB]- (p)    return p");
+
+        result = engine.execute(query);
+        n_column = result.columnAs("w");
+        
+        assertEquals(1, result.size());
+        
+         while (n_column.hasNext()) {
+            Node currentNode = n_column.next();
+            for (String key : currentNode.getPropertyKeys()) {
+                System.out.println("Property (" + key + "): " + currentNode.getProperty(key));
+            }
+        }
         //ContextTrackingServiceImpl.getInstance().shutdown();
 
 

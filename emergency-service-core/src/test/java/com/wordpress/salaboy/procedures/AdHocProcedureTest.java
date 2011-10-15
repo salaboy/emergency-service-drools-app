@@ -1,12 +1,11 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.procedures;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -63,20 +62,17 @@ public class AdHocProcedureTest extends GridBaseTest {
     private Call call = null;
     private PersistenceService persistenceService;
     private ContextTrackingService trackingService;
+
     public AdHocProcedureTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-
-        
     }
-    
 
     @Before
     public void setUp() throws Exception {
@@ -96,13 +92,13 @@ public class AdHocProcedureTest extends GridBaseTest {
 
 
         client = HumanTaskServerService.getInstance().initTaskClient();
-        
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
         persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+
+        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
     }
 
     @After
@@ -116,23 +112,26 @@ public class AdHocProcedureTest extends GridBaseTest {
         if (grid1 != null) {
             grid1.get(SocketService.class).close();
         }
+        PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
     }
 
     @Test
     public void defaultAdHocSimpleTest() throws InterruptedException, ClassNotFoundException, IOException {
-        String emergencyId = trackingService.newEmergencyId();
-        emergency = new Emergency();
-        emergency.setId(emergencyId);
+        //String emergencyId = trackingService.newEmergencyId();
         call = new Call(1, 2, new Date());
+        persistenceService.storeCall(call);
         
-        String callId = trackingService.newCallId();
-        call.setId(callId);
+        emergency = new Emergency();
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
-        
-        trackingService.attachEmergency(callId, emergencyId);
+
+        persistenceService.storeEmergency(emergency);
+       
+
+        trackingService.attachEmergency(call.getId(), emergency.getId());
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
@@ -143,42 +142,42 @@ public class AdHocProcedureTest extends GridBaseTest {
         ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
-        
-       // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-       // System.out.println("result = "+result);
+
+        // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        // System.out.println("result = "+result);
 
 
 
     }
-    
-     @Test
+
+    @Test
     public void defaultAdHocPlusTrackingTest() throws InterruptedException, ClassNotFoundException, IOException {
-        String emergencyId = trackingService.newEmergencyId();
-        emergency = new Emergency();
-        emergency.setId(emergencyId);
+        
         call = new Call(1, 2, new Date());
-        String callId = trackingService.newCallId();
-        call.setId(callId);
+        persistenceService.storeCall(call);
+        
+        emergency = new Emergency();
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
+        persistenceService.storeEmergency(emergency);
+        
 
+        trackingService.attachEmergency(call.getId(), emergency.getId());
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
         parameters.put("procedureName", "DumbProcedure");
-
-        trackingService.attachEmergency(callId, emergencyId);
+        
         ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 
-       // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
-       // System.out.println("result = "+result);
+        // String result = new ContextTrackingSimpleGraphServiceImpl(ContextTrackingServiceImpl.getInstance().getGraphDb()).graphEmergency(emergency.getId());
+        // System.out.println("result = "+result);
 
     }
-
 
     private void doOperatorTask() throws ClassNotFoundException, IOException {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
@@ -208,8 +207,8 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         //I shoudl call the tracking component here and register the new emerency
         Emergency emergency = new Emergency();
-       // String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
-       // emergency.setId(emergencyId);
+        // String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
+        // emergency.setId(emergencyId);
         emergency.setCall(retrivedCall);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
@@ -231,7 +230,7 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(sums.get(0).getId(), "operator", result, completeTaskOperationHandler);
-        
-        
+
+
     }
 }

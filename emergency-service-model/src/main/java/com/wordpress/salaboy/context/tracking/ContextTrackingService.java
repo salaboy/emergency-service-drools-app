@@ -61,4 +61,6 @@ public interface ContextTrackingService  {
     //Query
     public String getProcedureAttachedToVehicle(String vehicleId);
     
+    public void clear();
+    
 }

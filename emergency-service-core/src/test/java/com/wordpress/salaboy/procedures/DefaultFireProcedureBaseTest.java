@@ -69,27 +69,25 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
 
         trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-        String emergencyId = trackingService.newEmergencyId();
+      
         emergency = new Emergency();
-        emergency.setId(emergencyId);
+      
 
         fireTruck = new FireTruck("FireTruck 1");
         persistenceService.storeVehicle(fireTruck);
         
         call = new Call(1, 2, new Date());
-
-        // String callId = ContextTrackingServiceImpl.getInstance().newCallId();
-        // call.setId(callId);
+        persistenceService.storeCall(call);
+      
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.FIRE);
         emergency.setNroOfPeople(1);
-
+        persistenceService.storeEmergency(emergency);
         firefightersDepartment = new FirefightersDepartment("Firefighter Department 1", 12, 1);
 
         persistenceService.storeFirefightersDepartment(firefightersDepartment);
-        persistenceService.storeEmergency(
-                emergency);
+        
         persistenceService.storeVehicle(fireTruck);
         MessageServerSingleton.getInstance().start();
 
@@ -121,6 +119,9 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
             procedureEndedWorker.stopWorker();
         }
         HumanTaskServerService.getInstance().stopTaskServer();
+       PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
+        ProceduresMGMTService.clear();
     }
 
     @Test
@@ -238,7 +239,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
                 new VehicleHitsEmergencyMessage(fireTruck.getId(),
                 emergency.getId(), new Date()));
 
-        Thread.sleep(2000);
+        Thread.sleep(4000);
 
         // A new task for the firefighter should be there now
         firefighterTasks = this.getFirefighterTasks();

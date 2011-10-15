@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.context.tracking;
 
+import java.io.File;
 import java.util.UUID;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
@@ -28,15 +29,6 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     private Index<Node> vehiclesIndex;
     private Index<Node> channelsIndex;
     private Index<Node> buildingsIndex;
-    public static String defaultDB = "db/graph";
-    //private static ContextTrackingServiceImpl instance;
-
-//    public static ContextTrackingService getInstance() {
-//        if (instance == null) {
-//            instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
-//        }
-//        return instance;
-//    }
 
     public GraphDatabaseService getGraphDb() {
         return graphDb;
@@ -44,7 +36,6 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
 
     public ContextTrackingServiceImpl(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
-
         this.index = this.graphDb.index();
         this.callsIndex = index.forNodes("calls");
         this.emergenciesIndex = index.forNodes("emergencies");
@@ -370,4 +361,13 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
     public void detachEmergencyEntityBuilding(String entityBuildingId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void clear() {
+        this.graphDb.shutdown();
+    }
+    
+    
+    
+    
 }

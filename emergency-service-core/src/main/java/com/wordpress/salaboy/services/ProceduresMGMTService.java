@@ -28,7 +28,6 @@ import java.util.Map;
 public class ProceduresMGMTService {
 
     private static ProceduresMGMTService instance;
-    //private Map<String, List<ProcedureService>> proceduresByCall;
     private Map<String, List<ProcedureService>> proceduresByEmergency;
     private ProceduresMGMTService() {
         proceduresByEmergency = new HashMap<String, List<ProcedureService>>();
@@ -40,6 +39,10 @@ public class ProceduresMGMTService {
             instance = new ProceduresMGMTService();
         }
         return instance;
+    }
+    
+    public static void clear(){
+        instance = null;
     }
 
     public void newRequestedProcedure(final String emergencyId, String procedureName, Map<String, Object> parameters) throws IOException {

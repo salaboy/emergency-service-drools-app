@@ -29,10 +29,11 @@ rule "Calculate Water Refill Location"
         )
     then
         System.out.println("Calculate Water Refill Location executed in "+$processInstance.getId());
+        System.out.println("EVENT RETRACT "+$event);
+        System.out.println("SELECTED LOCATION "+$selectedLocation.getX()+"--"+$selectedLocation.getY());
+
         String callId = ((Call)$processInstance.getVariable("call")).getId();
         $processInstance.setVariable("refillDestination", new Location($selectedLocation.getX(),$selectedLocation.getY()));
-        //TODO: Send message
-        //MessageFactory.sendMessage(new HospitalSelectedMessage(callId, $selectedHospital));
         
         retract ($event);
 end

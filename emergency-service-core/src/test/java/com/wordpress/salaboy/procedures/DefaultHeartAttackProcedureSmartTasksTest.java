@@ -57,6 +57,7 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
     public void tearDown() throws Exception {
         super.tearDown();
         this.humanTaskServiceClient.cleanUpService();
+       
     }
 
     @Override

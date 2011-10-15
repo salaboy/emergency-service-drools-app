@@ -35,21 +35,12 @@ import com.wordpress.salaboy.reporting.Report;
  */
 public class DistributedMapPeristenceService implements PersistenceService {
 
-   // private static DistributedPeristenceServerService instance;
+   
     private DefaultCacheManager cacheManager;
     private String nodeName;
     private ContextTrackingService contextTracking;
 
-//    public static DistributedPeristenceServerService getInstance() {
-//        if (instance == null) {
-//            try {
-//                instance = new DistributedPeristenceServerService();
-//            } catch (IOException ex) {
-//                Logger.getLogger(DistributedPeristenceServerService.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        return instance;
-//    }
+
 
     public DistributedMapPeristenceService(PersistenceServiceConfiguration conf) throws IOException {
 
@@ -57,12 +48,12 @@ public class DistributedMapPeristenceService implements PersistenceService {
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
         Configuration cfg = new Configuration();
 
-        //cfg.setCacheMode(Configuration.CacheMode.REPL_SYNC);
+        
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
         //@TODO: BASED on conf get the correspondant one 
-        contextTracking = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        contextTracking = ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY);
         
         
 
@@ -79,7 +70,7 @@ public class DistributedMapPeristenceService implements PersistenceService {
             emergency.setId(contextTracking.newEmergencyId());
         }
         if (this.getCache().get("emergencies") == null) {
-            getCache().put("emergencies", new HashMap<Long, Emergency>());
+            getCache().put("emergencies", new HashMap<String, Emergency>());
         }
         Map<String, Emergency> emergencies = ((Map<String, Emergency>) this.getCache().get("emergencies"));
         emergencies.put(emergency.getId(), emergency);
@@ -258,6 +249,21 @@ public class DistributedMapPeristenceService implements PersistenceService {
 
     //GET ALLs
     @Override
+    public Collection<Procedure> getAllProcedures() {
+        if (this.getCache().get("procedures") == null) {
+            getCache().put("procedures", new HashMap<String, Procedure>());
+        }
+        return new ArrayList<Procedure>(((Map<String, Procedure>) this.getCache().get("procedures")).values());
+    }
+    @Override
+    public Collection<Call> getAllCalls() {
+        if (this.getCache().get("calls") == null) {
+            getCache().put("calls", new HashMap<String, Call>());
+        }
+        return new ArrayList<Call>(((Map<String, Call>) this.getCache().get("calls")).values());
+    }
+    
+    @Override
     public Collection<Vehicle> getAllVehicles() {
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
@@ -307,4 +313,12 @@ public class DistributedMapPeristenceService implements PersistenceService {
     private Cache<String, Object> getCache() {
         return cacheManager.getCache();
     }
+
+    @Override
+    public void clear() {
+        this.cacheManager.stop();
+        this.contextTracking = null;
+    }
+
+    
 }

@@ -25,8 +25,10 @@ public interface PersistenceService {
     public Collection<Hospital> getAllHospitals();
 
     public Collection<Vehicle> getAllVehicles();
-
     
+    public Collection<Call> getAllCalls();
+
+    public Collection<Procedure> getAllProcedures();
 
     //Load by ID
 
@@ -68,5 +70,7 @@ public interface PersistenceService {
     
     //Helpers
     public void addEntryToReport(String callId, String entry);
+    
+    public void clear();
     
 }

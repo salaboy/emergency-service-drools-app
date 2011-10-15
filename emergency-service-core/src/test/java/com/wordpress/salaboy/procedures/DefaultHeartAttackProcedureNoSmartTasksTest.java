@@ -1,7 +1,6 @@
 
 package com.wordpress.salaboy.procedures;
 
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -15,8 +14,6 @@ import org.junit.Before;
 
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 
 
@@ -49,6 +46,7 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
     @Before
     @Override
     public void setUp() throws Exception {
+        System.out.println("Setting up in child");
         super.setUp();
         client = HumanTaskServerService.getInstance().initTaskClient();
     }
@@ -56,7 +54,9 @@ public class DefaultHeartAttackProcedureNoSmartTasksTest extends DefaultHeartAtt
     @After
     @Override
     public void tearDown() throws Exception {
+        System.out.println("Tearing Down in child");
         super.tearDown();
+        
     }
 
     @Override
