@@ -5,6 +5,7 @@
 package com.wordpress.salaboy;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
@@ -182,7 +183,10 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
+                    //persists the emergency
                     persistenceService.storeEmergency(emergencyDetailsMessage.getEmergency());
+                    //attachs it to the call
+                    trackingService.attachEmergency(emergencyDetailsMessage.getEmergency().getCall().getId(), emergencyDetailsMessage.getEmergency().getId());
                 }
             });
             

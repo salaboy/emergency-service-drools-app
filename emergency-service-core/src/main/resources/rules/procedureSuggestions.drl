@@ -9,8 +9,6 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
 import com.wordpress.salaboy.model.serviceclient.*;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
 import com.wordpress.salaboy.messaging.MessageFactory;
 
 rule "Initialize Emergency"
@@ -22,11 +20,9 @@ rule "Initialize Emergency"
         not(Emergency(processInstanceId == $processInstance.id))
     then
         Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
-        PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).storeEmergency(emergency);
         
         String callId = ((Call)$processInstance.getVariable("call")).getId();
-        ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY).attachEmergency(callId, emergency.getId());
-        System.out.println("Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+callId);
+        System.out.println(">>>>>>> Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+callId);
         
         ActivePatients activePatients = new ActivePatients(emergency.getId());
         for(int i = 0; i < emergency.getNroOfPeople(); i ++){

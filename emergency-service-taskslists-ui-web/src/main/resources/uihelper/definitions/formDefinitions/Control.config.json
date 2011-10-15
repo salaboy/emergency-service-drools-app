@@ -46,7 +46,7 @@
      "outputFields": [
          {
             "name":"Suggested Procedures",
-            "sourceExpresion":"[DefaultHeartAttackProcedure,DefaultFireAttachProcedure,DefaultPoliceAttachProcedure]"
+            "sourceExpresion":"[DefaultHeartAttackProcedure,DefaultFireProcedure,DefaultPoliceProcedure]"
          }
      ]
  }
