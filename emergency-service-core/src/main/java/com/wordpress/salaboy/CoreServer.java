@@ -90,7 +90,7 @@ public class CoreServer {
     private MessageConsumerWorker asynchProcedureStartWorker;
     private MessageConsumerWorker procedureEndedWorker;
     private MessageConsumerWorker allProceduresEndedWorker;
-    private static boolean startWrappingServer = false;
+    private static boolean startWrappingServer = true;
 	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
 			+ "/db/data/";
     private static AbstractGraphDatabase myDb;

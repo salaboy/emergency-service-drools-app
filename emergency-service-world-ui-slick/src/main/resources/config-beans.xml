@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:drools="http://drools.org/schema/drools-spring"       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+   
+    <bean id="persistenceServiceType" class="com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType" factory-method="valueOf">
+        <constructor-arg>
+            <value>DISTRIBUTED_MAP</value>
+        </constructor-arg>
+    </bean>
+    <bean id="trackingServiceType" class="com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType" factory-method="valueOf">
+        <constructor-arg>
+            <value>REST</value>
+        </constructor-arg>
+    </bean>
+    <bean id="environmentConf" class="com.wordpress.salaboy.model.serviceclient.EnvironmentConfiguration">
+        <constructor-arg>
+            <map>
+                <entry>
+                    <key>
+                        <value>PersistenceService</value>
+                    </key>
+                    <ref bean="persistenceServiceType"/>
+                </entry>
+                <entry>
+                    <key>
+                        <value>ContextTrackingService</value>
+                    </key>
+                    <ref bean="trackingServiceType"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+   
+</beans>                              

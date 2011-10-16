@@ -8,10 +8,8 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
