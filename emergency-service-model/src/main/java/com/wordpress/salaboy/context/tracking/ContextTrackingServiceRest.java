@@ -239,7 +239,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 			String childProcedureId) {
 		try {
 			GetMethod method = new GetMethod(this.baseUri
-					+ this.createIndexUrlPath + "procedures/emergencyId/"
+					+ this.createIndexUrlPath + "procedures/procedureId/"
 					+ parentProcedureId);
 			method.addRequestHeader("Accept", this.contentType);
 			this.httpClient.executeMethod(method);
@@ -248,6 +248,7 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 					method.getResponseBodyAsString(),
 					new TypeToken<Collection<ResponseNode>>() {
 					}.getType());
+			
 			String parentNode = node.iterator().next().getSelf();
 
 			method = new GetMethod(this.baseUri + this.createIndexUrlPath
