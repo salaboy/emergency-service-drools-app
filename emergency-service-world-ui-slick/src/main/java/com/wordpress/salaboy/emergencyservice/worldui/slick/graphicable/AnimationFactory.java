@@ -5,6 +5,8 @@
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Animation;
@@ -22,12 +24,14 @@ public class AnimationFactory {
     private static SpriteSheet ambulanceSprite;
     private static SpriteSheet fireTruckSprite;
     private static SpriteSheet policeCarSprite;
-    private static SpriteSheet genericEmergencySprite;
+    private static Map<EmergencyType, SpriteSheet> emergencySprites = new EnumMap<EmergencyType, SpriteSheet>(EmergencyType.class);
     private static SpriteSheet highlightedHospitalSprite;
+    private static SpriteSheet highlightedFireFighterDepartmentSprite;
     private static Animation ambulanceAnimation;
     private static Animation fireTruckAnimation;
     private static Animation policeCarAnimation;
     private static Animation highlightedHospitalAnimation;
+    private static Animation highlightedFireFighterDepartmentAnimation;
     private static Animation genericEmergencyAnimation;
 
     public static Animation getAmbulanceAnimation() {
@@ -59,34 +63,41 @@ public class AnimationFactory {
         }
         return highlightedHospitalAnimation;
     }
+    
+    public static Animation getHighlightedFirefighterDepartmentAnimation() {
+        if (highlightedFireFighterDepartmentAnimation == null) {
+            highlightedFireFighterDepartmentAnimation = new Animation();
+            highlightedFireFighterDepartmentAnimation.setLooping(true);
+            highlightedFireFighterDepartmentAnimation.setAutoUpdate(true);
 
-    public static Animation getGenericEmergencyAnimation() {
-        if (genericEmergencyAnimation == null) {
-            genericEmergencyAnimation = new Animation();
-            genericEmergencyAnimation.setLooping(true);
-            genericEmergencyAnimation.setAutoUpdate(true);
-
-            System.out.println("Emergency Sprite: horizontal= "+getGenericEmergencySpriteSheet().getHorizontalCount()+", vertical= "+getGenericEmergencySpriteSheet().getVerticalCount());
-            
-            for (int row = 0; row < getGenericEmergencySpriteSheet().getHorizontalCount(); row++) {
-                for (int frame = 0; frame < getGenericEmergencySpriteSheet().getVerticalCount(); frame++) {
-                    genericEmergencyAnimation.addFrame(getGenericEmergencySpriteSheet().getSprite(row, frame), 250);
+            for (int row = 0; row < getHighlightedFirefighterDepartmentSpriteSheet().getHorizontalCount(); row++) {
+                for (int frame = 0; frame < getHighlightedFirefighterDepartmentSpriteSheet().getVerticalCount(); frame++) {
+                    highlightedFireFighterDepartmentAnimation.addFrame(getHighlightedFirefighterDepartmentSpriteSheet().getSprite(row,frame), 250);
                 }
             }
+        }
+        return highlightedFireFighterDepartmentAnimation;
+    }
+
+    public static Animation getGenericEmergencyAnimation() {
+        if (genericEmergencyAnimation == null){
+            genericEmergencyAnimation = getEmergencyAnimation(EmergencyType.UNDEFINED, null);
         }
         return genericEmergencyAnimation;
     }
 
-    public static Animation getEmergencyAnimation(EmergencyType emergencyType, int numberOfPeople) {
+    public static Animation getEmergencyAnimation(EmergencyType emergencyType, Integer numberOfPeople) {
         Animation emergencyAnimation = new Animation();
         emergencyAnimation.setLooping(true);
         emergencyAnimation.setAutoUpdate(true);
 
-        for (int row = 0; row < getGenericEmergencySpriteSheet().getHorizontalCount(); row++) {
-            for (int frame = 0; frame < getGenericEmergencySpriteSheet().getVerticalCount(); frame++) {
+        for (int row = 0; row < getEmergencySpriteSheet(emergencyType).getHorizontalCount(); row++) {
+            for (int frame = 0; frame < getEmergencySpriteSheet(emergencyType).getVerticalCount(); frame++) {
                 try {
-                    Image sprite = getGenericEmergencySpriteSheet().getSprite(row, frame);
-                    sprite.getGraphics().drawString("" + numberOfPeople, sprite.getWidth() / 2, sprite.getHeight() / 2);
+                    Image sprite = getEmergencySpriteSheet(emergencyType).getSprite(row, frame);
+                    if (numberOfPeople != null){
+                        sprite.getGraphics().drawString("" + numberOfPeople, sprite.getWidth() / 2, sprite.getHeight() / 2);
+                    }
                     emergencyAnimation.addFrame(sprite, 250);
                 } catch (SlickException ex) {
                     Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
@@ -140,16 +151,27 @@ public class AnimationFactory {
         }
         return highlightedHospitalSprite;
     }
-
-    private static SpriteSheet getGenericEmergencySpriteSheet() {
-        if (genericEmergencySprite == null) {
+    
+    private static SpriteSheet getHighlightedFirefighterDepartmentSpriteSheet() {
+        if (highlightedFireFighterDepartmentSprite == null) {
             try {
-                genericEmergencySprite = new SpriteSheet("data/sprites/alert.png", 32, 32, Color.magenta);
+                highlightedFireFighterDepartmentSprite = new SpriteSheet("data/sprites/bombero-brillando.png", 64, 80, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return highlightedFireFighterDepartmentSprite;
+    }
+
+    private static SpriteSheet getEmergencySpriteSheet(EmergencyType type) {
+        if (!emergencySprites.containsKey(type)) {
+            try {
+               emergencySprites.put(type, new SpriteSheet("data/sprites/alert-"+type.name()+".png", 32, 32, Color.magenta));
             } catch (SlickException ex) {
                 Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return genericEmergencySprite;
+        return emergencySprites.get(type);
     }
 
     static Animation getFireTruckAnimation() {

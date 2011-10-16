@@ -27,15 +27,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.command.Command;
-import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
-import com.wordpress.salaboy.model.messages.IncomingCallMessage;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
-
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,10 +80,9 @@ public class WorldUI extends BasicGame {
         gc.getInput().addKeyListener(new WorldKeyListener(this));
         gc.getInput().addMouseListener(new WorldMouseListener(this));
         
-         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
+        
         registerMessageConsumers();
 
     }
@@ -148,11 +145,11 @@ public class WorldUI extends BasicGame {
 
                     public void execute() {
                         System.out.println("EmergencyDetailsMessage received");
-                        if (emergencies.get(message.getEmergencyId())==null){
-                            System.out.println("Unknown emergency for call Id "+message.getEmergencyId());
+                        if (emergencies.get(message.getEmergency().getCall().getId())==null){
+                            System.out.println("Unknown emergency for call "+message.getEmergency().getCall().getId());
                             return;
                         }
-                        emergencies.get(message.getEmergencyId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
+                        emergencies.get(message.getEmergency().getCall().getId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
                     }
                 });
             }
@@ -182,23 +179,52 @@ public class WorldUI extends BasicGame {
 
                     public void execute() {
                        
-                        if (emergencies.get(message.getEmergencyId())==null){
-                            System.out.println("Unknown emergency for call Id "+message.getEmergencyId());
+                        if (emergencies.get(message.getCallId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getCallId());
                             return;
                         }
-                        selectHospitalForEmergency(message.getEmergencyId(), message.getHospital());
+                        selectHospitalForEmergency(message.getCallId(), message.getHospital());
                         
                     }
 
                 });
             }
         });
+        
+        MessageConsumerWorker firefigthersDepartmentWorker = new MessageConsumerWorker("firefigthersDepartmentWorldUI", new MessageConsumerWorkerHandler<FirefightersDepartmentSelectedMessage>() {
+
+            @Override
+            public void handleMessage(final FirefightersDepartmentSelectedMessage message) {
+                //Changes emergency animation
+                renderCommands.add(new Command() {
+
+                    public void execute() {
+                       
+                        if (emergencies.get(message.getCallId())==null){
+                            System.out.println("Unknown emergency for call Id "+message.getCallId());
+                            return;
+                        }
+                        selectFirefighterDepartmentForEmergency(message.getCallId(), message.getFirefightersDepartment());
+                        
+                    }
+
+                });
+            }
+        });
+        
         hospitalSelectedWorker.start();
         emergencyDetailsWorker.start();
         vehicleDispatchedWorker.start();
+        firefigthersDepartmentWorker.start();
     }
 
-    public void addRandomEmergency() {
+    
+    public void addRandomGenericEmergency() throws IOException {
+        this.addRandomEmergency(Emergency.EmergencyType.UNDEFINED, null);
+
+    }
+    
+    public void addRandomEmergency(Emergency.EmergencyType emergencyType, Integer numberOfPeople) throws IOException {
         
         int randomx = 0;
         int randomy = 0;
@@ -222,16 +248,23 @@ public class WorldUI extends BasicGame {
         
         System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
         Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
+        
+        PersistenceServiceProvider.getPersistenceService().storeCall(call); 
+        
         int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
         BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
         
-        GraphicableEmergency newEmergency = GraphicableFactory.newEmergency(call);
-        emergencies.put(call.getId(), newEmergency);
-        try {
-            renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
-        } catch (IOException ex) {
-            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        GraphicableEmergency newEmergency = null;
+        
+        if (emergencyType == Emergency.EmergencyType.UNDEFINED){
+            newEmergency = GraphicableFactory.newGenericEmergency(call);
+        }else{
+            newEmergency = GraphicableFactory.newEmergency(call, emergencyType, numberOfPeople);
         }
+        
+        emergencies.put(call.getId(), newEmergency);
+
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
         
         try {
             MessageFactory.sendMessage(new IncomingCallMessage(call));
@@ -266,6 +299,10 @@ public class WorldUI extends BasicGame {
     
     public void selectHospitalForEmergency(String callId, Hospital hospital) {
         this.renderers.get(callId).selectHospital(hospital);               
+    }
+    
+    public void selectFirefighterDepartmentForEmergency(String callId, FirefightersDepartment firefigthersDepartment) {
+        this.renderers.get(callId).selectFirefighterDepartment(firefigthersDepartment);               
     }
     
     
