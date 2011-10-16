@@ -52,8 +52,8 @@ public class DistributedMapPeristenceService implements PersistenceService {
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
-        //@TODO: BASED on conf get the correspondant one 
-        contextTracking = ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY);
+        ContextTrackingServiceType type = (ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation");
+        contextTracking = ContextTrackingProvider.getTrackingService(type);
         
         
 
@@ -268,6 +268,10 @@ public class DistributedMapPeristenceService implements PersistenceService {
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
+        System.out.println("Registered vehicles: ");
+        for (Vehicle vehicle : ((Map<String, Vehicle>) this.getCache().get("vehicles")).values()) {
+            System.out.println("\t"+vehicle);
+        }
         return new ArrayList<Vehicle>(((Map<String, Vehicle>) this.getCache().get("vehicles")).values());
     }
 
@@ -317,7 +321,7 @@ public class DistributedMapPeristenceService implements PersistenceService {
     @Override
     public void clear() {
         this.cacheManager.stop();
-        this.contextTracking = null;
+        this.contextTracking.clear();
     }
 
     
