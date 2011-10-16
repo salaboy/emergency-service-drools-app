@@ -48,6 +48,7 @@ import org.drools.grid.service.directory.impl.GridServiceDescriptionImpl;
 import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
@@ -132,7 +133,9 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
+        if (useLocalKSession){
+            KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
+        }
         if (!useLocalKSession){
             remoteN1.set("DefaultFireProcedureSession" + this.emergencyId, session);
         }
@@ -157,6 +160,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     @Override
     public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
         //we need the event as a fact in order to make inference.
+        System.out.println(">>>>>>>> Inserting FireTruckOutOfWaterEvent ");
         internalSession.insert(event);
     }
 

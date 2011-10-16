@@ -52,12 +52,16 @@ rule "Signal Process about FireTruck Out Of Water Event"
 
         //Get the procedure associated to the vehicle
         String vehicleId = $event.getVehicleId();
+        System.out.println(">>>>vehicleId = "+vehicleId);
         String procedureId = trackingService.getProcedureAttachedToVehicle(vehicleId);
-
+        System.out.println(">>>>procedureId = "+procedureId);
         //get the process instance id to signal:
         com.wordpress.salaboy.model.Procedure procedure = persistenceService.loadProcedure(procedureId);
         long processInstanceId = procedure.getProcessInstanceId();
-
+        System.out.println(">>>>processInstanceId = "+processInstanceId);
         //signal the process instance
         kcontext.getKnowledgeRuntime().signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent",$event,processInstanceId);
+        System.out.println(">>>>AFTER SIGNALING EVENT");
+        retract($event);  
+        System.out.println(">>>>AFTER RETRACTING EVENT");
 end

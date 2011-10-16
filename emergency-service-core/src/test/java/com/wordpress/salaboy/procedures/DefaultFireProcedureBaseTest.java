@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -88,7 +89,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         persistenceService.storeFirefightersDepartment(firefightersDepartment);
         
-        persistenceService.storeVehicle(fireTruck);
+        
         MessageServerSingleton.getInstance().start();
 
         this.coreServicesMap = new HashMap();
@@ -239,7 +240,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
                 new VehicleHitsEmergencyMessage(fireTruck.getId(),
                 emergency.getId(), new Date()));
 
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         // A new task for the firefighter should be there now
         firefighterTasks = this.getFirefighterTasks();
