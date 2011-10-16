@@ -33,7 +33,6 @@ import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
 
@@ -85,18 +84,8 @@ public class WorldUI extends BasicGame {
         
          Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        try {
-            persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        } catch (IOException ex) {
-            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-        } catch (IOException ex) {
-            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
         registerMessageConsumers();
 
     }

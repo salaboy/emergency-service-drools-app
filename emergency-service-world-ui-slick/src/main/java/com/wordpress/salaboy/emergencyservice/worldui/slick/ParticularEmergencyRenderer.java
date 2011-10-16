@@ -25,7 +25,6 @@ import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,10 +66,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
          Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
     }
 
     /**

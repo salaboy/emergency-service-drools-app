@@ -22,17 +22,13 @@ public class DistributedService {
 	private PersistenceService distributedService;
 
 	public DistributedService() {
-		Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        try {
-			distributedService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-		} catch (IOException e) {
-			throw new RuntimeException("There was an error getting persistence service", e);
-		}
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+            distributedService = PersistenceServiceProvider.getPersistenceService();
 	}
+        
 	public PersistenceService getDistributedService() {
-		return distributedService;
+            return distributedService;
 	}
 
 }

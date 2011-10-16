@@ -16,7 +16,6 @@ import com.wordpress.salaboy.emergencyservice.monitor.EmergencyMonitorPanel;
 import com.wordpress.salaboy.model.Emergency;
 
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,10 +37,9 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     public LiveEmergencyReport(String emergencyId) throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
 
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        trackingService = ContextTrackingProvider.getTrackingService();
         this.emergencyId = emergencyId;
         
         this.emergency = persistenceService.loadEmergency(emergencyId);

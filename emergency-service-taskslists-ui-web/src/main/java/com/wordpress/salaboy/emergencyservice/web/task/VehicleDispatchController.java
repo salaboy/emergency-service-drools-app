@@ -1,6 +1,5 @@
 package com.wordpress.salaboy.emergencyservice.web.task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 
 /**
@@ -48,12 +46,7 @@ public class VehicleDispatchController extends AbstractTaskFormController {
         super();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        try {
-			distributedService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+        distributedService = PersistenceServiceProvider.getPersistenceService();
     }
 
     @Override

@@ -18,7 +18,6 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.tasklists.SelectVehicleTaskListPanel;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -53,10 +52,9 @@ public class SelectVehicleTaskFormPanel extends javax.swing.JPanel {
         this.taskId = taskId;
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
 
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        trackingService = ContextTrackingProvider.getTrackingService();
         initComponents();
         
 //        lblMedBone.setVisible(false);
