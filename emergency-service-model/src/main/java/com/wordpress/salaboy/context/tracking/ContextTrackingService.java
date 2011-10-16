@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy.context.tracking;
 
-import com.wordpress.salaboy.model.ServiceChannel;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 /**

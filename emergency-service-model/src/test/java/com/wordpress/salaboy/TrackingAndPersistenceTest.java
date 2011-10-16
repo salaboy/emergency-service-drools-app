@@ -5,27 +5,56 @@
 package com.wordpress.salaboy;
 
 
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
-import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.model.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import static org.junit.Assert.*;
-import org.junit.*;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.cypher.commands.Query;
 import org.neo4j.cypher.javacompat.CypherParser;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.server.WrappingNeoServerBootstrapper;
+import org.neo4j.server.configuration.Configurator;
+import org.neo4j.server.configuration.EmbeddedServerConfigurator;
+import org.neo4j.test.ImpermanentGraphDatabase;
+
 import scala.collection.Iterator;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
+import com.wordpress.salaboy.context.tracking.json.QueryResult;
+import com.wordpress.salaboy.context.tracking.json.ResponseNode;
+import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.Procedure;
+import com.wordpress.salaboy.model.ServiceChannel;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
 
 /**
  *
@@ -153,8 +182,146 @@ public class TrackingAndPersistenceTest {
                 System.out.println("Property (" + key + "): " + currentNode.getProperty(key));
             }
         }
-        //ContextTrackingServiceImpl.getInstance().shutdown();
+        PersistenceServiceProvider.clear();
+    }
+    
+    @Test
+    public void simpleAPIPlusCypherQueryRestTest() throws IOException {
+    	//Start wrapping server
+    	ImpermanentGraphDatabase myDb = new ImpermanentGraphDatabase();
 
+		EmbeddedServerConfigurator config = new EmbeddedServerConfigurator(myDb);
+		config.configuration().setProperty(
+				Configurator.WEBSERVER_PORT_PROPERTY_KEY, 7575);
+		config.configuration().setProperty(
+				Configurator.REST_API_PATH_PROPERTY_KEY,
+				"http://localhost:7575/db/data/");
+		WrappingNeoServerBootstrapper srv = new WrappingNeoServerBootstrapper(myDb, config);
+		srv.start();
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.REST);
+        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        Call call = new Call(1, 1, new Date());
+        persistenceService.storeCall(call);
+        
+        assertNotSame("", call.getId());
+
+        call = persistenceService.loadCall(call.getId());
+        assertNotNull(call);
+
+        Emergency emergency = new Emergency();
+        persistenceService.storeEmergency(emergency);
+        assertNotSame("", emergency.getId());
+
+        emergency = persistenceService.loadEmergency(emergency.getId());
+        assertNotNull(emergency);
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        trackingService.attachEmergency(call.getId(), emergency.getId());
+
+        Procedure procedure = new Procedure("MyProcedure");
+        persistenceService.storeProcedure(procedure);
+        assertNotSame("", procedure.getId());
+
+        procedure = persistenceService.loadProcedure(procedure.getId());
+        assertNotNull(procedure);
+
+        trackingService.attachProcedure(emergency.getId(), procedure.getId());
+
+
+        Vehicle vehicle = new Ambulance();
+
+        persistenceService.storeVehicle(vehicle);
+        assertNotSame("", vehicle.getId());
+
+        vehicle = persistenceService.loadVehicle(vehicle.getId());
+        assertNotNull(vehicle);
+
+
+        trackingService.attachVehicle(procedure.getId(), vehicle.getId());
+
+        Vehicle vehicle2 = new FireTruck();
+        persistenceService.storeVehicle(vehicle2);
+        assertNotSame("", vehicle2.getId());
+
+        vehicle2 = persistenceService.loadVehicle(vehicle2.getId());
+        assertNotNull(vehicle2);
+
+        trackingService.attachVehicle(procedure.getId(), vehicle2.getId());
+
+        ServiceChannel channel = new ServiceChannel("MyChannel");
+        persistenceService.storeServiceChannel(channel);
+        assertNotSame("", channel.getId());
+        
+        channel = persistenceService.loadServiceChannel(channel.getId());
+        assertNotNull(channel);
+        
+        trackingService.attachServiceChannel(emergency.getId(), channel.getId());
+
+
+        CypherParser parser = new CypherParser();
+        ExecutionEngine engine = new ExecutionEngine(trackingService.getGraphDb());
+
+
+        //Give me all the vehicle associated with the procedures that are part of the emergency that was created by this phoneCallId
+        HttpClient client = new HttpClient();
+        PostMethod method = new PostMethod("http://localhost:7575/db/data/ext/CypherPlugin/graphdb/execute_query");
+        method.setRequestHeader("Content-type", "application/json");
+        method.setRequestHeader("Accept", "application/json");
+        String content = "{\"query\": \"start n=(calls, 'callId:" + call.getId() + "')  match (n)-[r:CREATES]->(x)-[i:INSTANTIATE]-> (w) -[u:USE]->v  return v\"}";
+        method.setRequestEntity(new StringRequestEntity(content, "application/json", "UTF-8"));
+        client.executeMethod(method);
+        
+        Gson gson = new Gson();
+
+		QueryResult result = gson.fromJson(method.getResponseBodyAsString(),
+				new TypeToken<QueryResult>() {
+				}.getType());
+
+		System.out.println("results: " + result);
+		Assert.assertEquals(2, result.getData().size());
+		for (List<ResponseNode> data : result.getData()) {
+			Map<String, String> props = data.get(0).getData();
+			for (String key : props.keySet()) {
+				System.out.println("Property ("+key+"): "+props.get(key));
+			}
+		}
+
+        client = new HttpClient();
+        method = new PostMethod("http://localhost:7575/db/data/ext/CypherPlugin/graphdb/execute_query");
+        method.setRequestHeader("Content-type", "application/json");
+        method.setRequestHeader("Accept", "application/json");
+        content = "{\"query\": \"start v=(vehicles, 'vehicleId:" + vehicle.getId() + "')  match (v) <-[USE]- (w)    return w\"}";
+        method.setRequestEntity(new StringRequestEntity(content, "application/json", "UTF-8"));
+        client.executeMethod(method);
+        
+        gson = new Gson();
+
+		result = gson.fromJson(method.getResponseBodyAsString(),
+				new TypeToken<QueryResult>() {
+				}.getType());
+                
+		System.out.println("results: " + result);
+		Assert.assertEquals(1, result.getData().size());
+		for (List<ResponseNode> data : result.getData()) {
+			Map<String, String> props = data.get(0).getData();
+			for (String key : props.keySet()) {
+				System.out.println("Property ("+key+"): "+props.get(key));
+			}
+		}
+
+		
+//        tracking.detachVehicle(vehicleId);
+//        
+//        tracking.detachProcedure(procedureId);
+//        
+//        tracking.detachEmergency(emergencyId);
+//        
+
+        myDb.shutdown();
+        srv.stop();
+        PersistenceServiceProvider.clear();
 
     }
 }

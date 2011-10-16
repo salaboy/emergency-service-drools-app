@@ -4,33 +4,19 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
-import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.messaging.MessageConsumerWorker;
-import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.CityEntities;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
-import com.wordpress.salaboy.model.events.PulseEvent;
-import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.PatientMonitorService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.drools.SystemEventListenerFactory;
-import org.drools.grid.*;
+import org.drools.grid.ConnectionFactoryService;
+import org.drools.grid.Grid;
+import org.drools.grid.GridConnection;
+import org.drools.grid.GridNode;
+import org.drools.grid.GridServiceDescription;
+import org.drools.grid.SocketService;
 import org.drools.grid.conf.GridPeerServiceConfiguration;
 import org.drools.grid.conf.impl.GridPeerConfiguration;
 import org.drools.grid.impl.GridImpl;
@@ -41,6 +27,40 @@ import org.drools.grid.service.directory.WhitePages;
 import org.drools.grid.service.directory.impl.CoreServicesLookupConfiguration;
 import org.drools.grid.service.directory.impl.WhitePagesLocalConfiguration;
 import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
+import org.neo4j.kernel.AbstractGraphDatabase;
+import org.neo4j.server.WrappingNeoServerBootstrapper;
+import org.neo4j.server.configuration.Configurator;
+import org.neo4j.server.configuration.EmbeddedServerConfigurator;
+import org.neo4j.test.ImpermanentGraphDatabase;
+
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.messaging.MessageServerSingleton;
+import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
+import com.wordpress.salaboy.model.events.PulseEvent;
+import com.wordpress.salaboy.model.messages.AllProceduresEndedMessage;
+import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
+import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
+import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
+import com.wordpress.salaboy.model.messages.IncomingCallMessage;
+import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
+import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
+import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
+import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
+import com.wordpress.salaboy.services.HumanTaskServerService;
+import com.wordpress.salaboy.services.PatientMonitorService;
+import com.wordpress.salaboy.services.ProceduresMGMTService;
 
 /**
  * @author salaboy
@@ -70,8 +90,25 @@ public class CoreServer {
     private MessageConsumerWorker asynchProcedureStartWorker;
     private MessageConsumerWorker procedureEndedWorker;
     private MessageConsumerWorker allProceduresEndedWorker;
-
+    private static boolean startWrappingServer = false;
+	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
+			+ "/db/data/";
+    private static AbstractGraphDatabase myDb;
+    private static WrappingNeoServerBootstrapper srv;
+    
     public static void main(String[] args) throws Exception {
+		if (startWrappingServer) {
+			myDb = new ImpermanentGraphDatabase();
+			EmbeddedServerConfigurator config = new EmbeddedServerConfigurator(
+					myDb);
+			config.configuration().setProperty(
+					Configurator.WEBSERVER_PORT_PROPERTY_KEY, 7575);
+			config.configuration().setProperty(
+					Configurator.REST_API_PATH_PROPERTY_KEY,
+					SERVER_API_PATH_PROP);
+			srv = new WrappingNeoServerBootstrapper(myDb, config);
+			srv.start();
+		}
         final CoreServer coreServer = new CoreServer();
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
@@ -85,6 +122,9 @@ public class CoreServer {
                     HumanTaskServerService.getInstance().stopTaskServer();
                     System.out.println("Core Server Stopped! ");
                     coreServer.stopWorkers();
+					if (srv != null) {
+						srv.stop();
+					}
                 } catch (Exception ex) {
                     System.out.println("Something goes wrong with the shutdown! ->"+ex.getMessage());
                     Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,8 +142,9 @@ public class CoreServer {
         coreServer.startServer();
         
     }
-
+    
     public void startServer() throws Exception {
+
         MessageServerSingleton.getInstance().start();
 
 

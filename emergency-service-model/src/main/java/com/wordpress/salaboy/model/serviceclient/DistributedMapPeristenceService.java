@@ -52,8 +52,8 @@ public class DistributedMapPeristenceService implements PersistenceService {
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
-        //@TODO: BASED on conf get the correspondant one 
-        contextTracking = ContextTrackingProvider.getTrackingService(ContextTrackingServiceType.IN_MEMORY);
+        ContextTrackingServiceType type = (ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation");
+        contextTracking = ContextTrackingProvider.getTrackingService(type);
         
         
 
@@ -317,7 +317,7 @@ public class DistributedMapPeristenceService implements PersistenceService {
     @Override
     public void clear() {
         this.cacheManager.stop();
-        this.contextTracking = null;
+        this.contextTracking.clear();
     }
 
     
