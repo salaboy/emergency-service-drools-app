@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationException;
+import com.wordpress.salaboy.emergencyservice.web.task.external.DistributedService;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.tracking.ContextTrackingServiceImpl;
 
 /**
  * Controller to handle the emergency operator requests.
@@ -88,6 +88,9 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         // TODO for now, only for phone call form
         Map<String, Object> info = new HashMap<String, Object>();
         Emergency emergency = new Emergency();
+        
+        //persists the emergency
+        new DistributedService().getDistributedService().storeEmergency(emergency);
         
         Location location = new Location();
         location.setLocationX(Integer.parseInt(data.get("Location X")));

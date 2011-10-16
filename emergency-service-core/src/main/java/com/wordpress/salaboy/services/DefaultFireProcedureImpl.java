@@ -67,8 +67,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultFireProcedure";
     }
 
-    private StatefulKnowledgeSession createDefaultFireProcedureSession(String callId) throws IOException {
-        System.out.println(">>>> I'm creating the "+"DefaultFireProcedure"+" procedure for emergencyId = "+callId);
+    private StatefulKnowledgeSession createDefaultFireProcedureSession(String emergencyId) throws IOException {
+        System.out.println(">>>> I'm creating the DefaultFireProcedure procedure for emergencyId = "+emergencyId);
         GridNode remoteN1 = null;
         
         KnowledgeBuilder kbuilder = null;

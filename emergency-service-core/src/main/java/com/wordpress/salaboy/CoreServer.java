@@ -158,7 +158,7 @@ public class CoreServer {
             System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
             persistenceService.storeVehicle(vehicle);
         }
-
+        
         for (Hospital hospital : CityEntities.hospitals) {
             System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
             persistenceService.storeHospital(hospital);
@@ -224,8 +224,6 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
-                    //persists the emergency
-                    persistenceService.storeEmergency(emergencyDetailsMessage.getEmergency());
                     //attachs it to the call
                     trackingService.attachEmergency(emergencyDetailsMessage.getEmergency().getCall().getId(), emergencyDetailsMessage.getEmergency().getId());
                 }

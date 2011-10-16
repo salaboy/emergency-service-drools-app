@@ -37,7 +37,7 @@ public class AsyncStartProcedureWorkItemHandler implements WorkItemHandler, Seri
         parameters.put("emergency", emergency);
 //        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
 
-        System.out.println("LET'S CREATE a new procedure name in a remote location = "+procedureName);
+        System.out.println("LET'S CREATE a new procedure name in a remote location = "+procedureName+" for emergency "+emergency);
         
         try {
             MessageFactory.sendMessage(new AsyncProcedureStartMessage(emergency.getId(), wi.getId(), procedureName, parameters));
@@ -45,7 +45,6 @@ public class AsyncStartProcedureWorkItemHandler implements WorkItemHandler, Seri
             Logger.getLogger(AsyncStartProcedureWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         wim.completeWorkItem(wi.getId(), null);
-        System.out.println("I'm going out of here!!!!!!");
     }
 
     @Override
