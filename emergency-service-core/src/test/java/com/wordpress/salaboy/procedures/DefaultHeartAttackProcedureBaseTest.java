@@ -74,10 +74,13 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         deleteRecursively(new File("/data"));
 
 
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
+        
         HumanTaskServerService.getInstance().initTaskServer();
 
         call = new Call(1, 2, new Date());

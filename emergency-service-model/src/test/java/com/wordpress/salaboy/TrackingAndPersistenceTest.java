@@ -81,14 +81,19 @@ public class TrackingAndPersistenceTest {
 
     @After
     public void tearDown() {
+        
+        PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
     }
 
     @Test
     public void simpleAPIPlusCypherQueryTest() throws IOException {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        PersistenceServiceProvider.configFile = "local-config-beans.xml";
+        ContextTrackingProvider.configFile = "local-config-beans.xml";
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
+        
+        
         Call call = new Call(1, 1, new Date());
         persistenceService.storeCall(call);
         
@@ -103,7 +108,7 @@ public class TrackingAndPersistenceTest {
 
         emergency = persistenceService.loadEmergency(emergency.getId());
         assertNotNull(emergency);
-        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        
         trackingService.attachEmergency(call.getId(), emergency.getId());
 
         Procedure procedure = new Procedure("MyProcedure");
@@ -182,7 +187,7 @@ public class TrackingAndPersistenceTest {
                 System.out.println("Property (" + key + "): " + currentNode.getProperty(key));
             }
         }
-        PersistenceServiceProvider.clear();
+        
     }
     
     @Test
@@ -199,10 +204,10 @@ public class TrackingAndPersistenceTest {
 		WrappingNeoServerBootstrapper srv = new WrappingNeoServerBootstrapper(myDb, config);
 		srv.start();
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.REST);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        PersistenceServiceProvider.configFile = "remote-config-beans.xml";
+        ContextTrackingProvider.configFile = "remote-config-beans.xml";
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
         Call call = new Call(1, 1, new Date());
         persistenceService.storeCall(call);
         
@@ -217,7 +222,7 @@ public class TrackingAndPersistenceTest {
 
         emergency = persistenceService.loadEmergency(emergency.getId());
         assertNotNull(emergency);
-        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation"));
+        
         trackingService.attachEmergency(call.getId(), emergency.getId());
 
         Procedure procedure = new Procedure("MyProcedure");
@@ -321,7 +326,7 @@ public class TrackingAndPersistenceTest {
 
         myDb.shutdown();
         srv.stop();
-        PersistenceServiceProvider.clear();
+        
 
     }
 }

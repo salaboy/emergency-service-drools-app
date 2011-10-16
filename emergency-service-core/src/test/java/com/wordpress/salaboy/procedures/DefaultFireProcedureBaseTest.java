@@ -48,8 +48,8 @@ import org.junit.Test;
  */
 public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
-    private PersistenceService persistenceService;
-    private ContextTrackingService trackingService;
+    protected PersistenceService persistenceService;
+    protected ContextTrackingService trackingService;
 
     private Emergency emergency = null;
     private FireTruck fireTruck = null;
@@ -64,12 +64,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
     @Before
     public void setUp() throws Exception {
         HumanTaskServerService.getInstance().initTaskServer();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
 
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        initializePersistenceAndTracking();
       
         emergency = new Emergency();
       
@@ -312,4 +308,6 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
     protected abstract Map<String, String> getFirefighterTasks() throws Exception;
 
     protected abstract void completeTask(String user, String taskId) throws Exception;
+    
+    protected abstract void initializePersistenceAndTracking();
 }

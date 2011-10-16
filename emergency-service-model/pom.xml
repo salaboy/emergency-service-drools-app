@@ -112,6 +112,18 @@
             <version>1.4</version>
         </dependency>
         
+        <!-- Spring DI -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>3.0.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.0.5.RELEASE</version>
+        </dependency>
+        
     </dependencies>
     <reporting>
         <plugins>

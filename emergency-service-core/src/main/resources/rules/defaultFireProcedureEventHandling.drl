@@ -9,19 +9,19 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.serviceclient.*;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
 import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.*;
 import org.drools.runtime.process.ProcessInstance;
+
 
 rule "Signal Process about Vehicle Hits Emergency Event"
     when
         $event: VehicleHitsEmergencyEvent()
     then
         System.out.println(">>>>>>>> Firetruck arrived to the Emergency");
-        //Persistence and tracking services
-        java.util.Map<String, Object> params = new java.util.HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
-        com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        
+        
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
 
         //Get the procedure associated to the vehicle
         String vehicleId = $event.getVehicleId();
@@ -44,11 +44,13 @@ rule "Signal Process about FireTruck Out Of Water Event"
     then
         System.out.println(">>>>>>>> Firetruck out of water!");
         //Persistence and tracking services
-        java.util.Map<String, Object> params = new java.util.HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
-        com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        //java.util.Map<String, Object> params = new java.util.HashMap<String, Object>();
+        //params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        //com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
+        //com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        //com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
 
         //Get the procedure associated to the vehicle
         String vehicleId = $event.getVehicleId();

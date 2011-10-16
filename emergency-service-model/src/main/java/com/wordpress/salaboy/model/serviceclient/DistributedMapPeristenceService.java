@@ -42,7 +42,7 @@ public class DistributedMapPeristenceService implements PersistenceService {
 
 
 
-    public DistributedMapPeristenceService(PersistenceServiceConfiguration conf) throws IOException {
+    public DistributedMapPeristenceService() {
 
         
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
@@ -52,8 +52,8 @@ public class DistributedMapPeristenceService implements PersistenceService {
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
-        ContextTrackingServiceType type = (ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation");
-        contextTracking = ContextTrackingProvider.getTrackingService(type);
+       // ContextTrackingServiceType type = (ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation");
+        contextTracking = ContextTrackingProvider.getTrackingService();
         
         
 

@@ -76,12 +76,14 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         client = HumanTaskServerService.getInstance().initTaskClient();
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//
+//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
     }
 
     @After

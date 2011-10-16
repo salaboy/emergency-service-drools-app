@@ -4,56 +4,65 @@
  */
 package com.wordpress.salaboy.context.tracking;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.wordpress.salaboy.model.serviceclient.EnvironmentConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.test.ImpermanentGraphDatabase;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
  * @author salaboy
  */
 public class ContextTrackingProvider {
-    private static Map<ContextTrackingServiceType, ContextTrackingService> instances = new HashMap<ContextTrackingServiceType, ContextTrackingService>();
-    public enum ContextTrackingServiceType {EMBEDDED, IN_MEMORY, REST};
+    //  private static Map<ContextTrackingServiceType, ContextTrackingService> instances = new HashMap<ContextTrackingServiceType, ContextTrackingService>();
+
+    private static ContextTrackingService instance;
+    private static ApplicationContext context;
+
+    public enum ContextTrackingServiceType {
+
+        EMBEDDED, IN_MEMORY, REST
+    };
     public static String defaultDB = "target/db/graph";
     public static final String SERVER_BASE_URL = "http://localhost:7575";
-    
-    public static ContextTrackingService getTrackingService(ContextTrackingServiceType type) throws IOException{
-        if(instances == null){
-            instances = new HashMap<ContextTrackingServiceType, ContextTrackingService>(); 
-        }
-        if(instances.get(type) == null){
-            switch(type){
-                case IN_MEMORY: 
-                        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Creating a new Instance of ImpermanentGraphDatabase");
-                        instances.put(type, new ContextTrackingServiceImpl(new ImpermanentGraphDatabase(defaultDB)));
-                        break;
-                case EMBEDDED: 
-                        instances.put(type, new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB)) );
-                        break; 
-                case REST: 
-                	instances.put(type, new ContextTrackingServiceRest(SERVER_BASE_URL) );
+    public static String configFile = "config-beans.xml";
+    public static ContextTrackingService getTrackingService() {
+        if (instance == null) {
+            context = new ClassPathXmlApplicationContext(configFile);
+            EnvironmentConfiguration conf = (EnvironmentConfiguration) context.getBean("environmentConf");
+            ContextTrackingServiceType type = (ContextTrackingServiceType) conf.get("ContextTrackingService");
+            if (type == null) {
+                throw new IllegalStateException("Persistence Service Type needs to be specified in spring");
+            }
+            switch (type) {
+                case IN_MEMORY:
+                    instance = new ContextTrackingServiceImpl(new ImpermanentGraphDatabase(defaultDB));
+                    break;
+                case EMBEDDED:
+                    instance = new ContextTrackingServiceImpl(new EmbeddedGraphDatabase(defaultDB));
+                    break;
+                case REST:
+                    instance = new ContextTrackingServiceRest(SERVER_BASE_URL);
                     break;
                 default:
-                      instances.put(type, new ContextTrackingServiceImpl(new ImpermanentGraphDatabase(defaultDB)));
-                      break;
-                    
+                    instance = new ContextTrackingServiceImpl(new ImpermanentGraphDatabase(defaultDB));
+                    break;
+
             }
-            
+
+
         }
-        return instances.get(type);
+
+        return instance;
     }
-    
-    
-    public static void clear(){
-        for(ContextTrackingService service : instances.values()){
-            service.clear();
-        }
-        instances.clear();
-        instances = null;
+
+
+    public static void clear() {
+
+        instance.clear();
+        instance = null;
     }
-     
 }

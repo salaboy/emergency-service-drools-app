@@ -143,10 +143,12 @@
     <parallelGateway id="_9" name="Gateway" gatewayDirection="Converging" />
     <scriptTask id="_10" name="Stopping Ambulance Tracking" scriptFormat="http://www.java.com/java" >
       <script>
-        Map params = new HashMap();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        //Map params = new HashMap();
+        //params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+        //PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+        //PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
         System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; Stopping Ambulance Tracking System -&gt; Report: ");
                 System.out.println(" &gt;&gt;&gt;&gt;&gt;&gt; "+persistenceService
                                         .loadReport(((Call)kcontext.getVariable("call")).getId()).getReportString());

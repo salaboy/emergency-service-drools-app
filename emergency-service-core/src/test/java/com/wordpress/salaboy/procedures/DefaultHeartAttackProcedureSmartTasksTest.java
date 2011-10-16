@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy.procedures;
 
-
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
@@ -48,16 +47,15 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-
-        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
     }
 
     @After
     public void tearDown() throws Exception {
         super.tearDown();
         this.humanTaskServiceClient.cleanUpService();
-       
+
     }
 
     @Override
@@ -113,13 +111,12 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
     protected Map<String, String> getDoctorTasksId() throws Exception {
         humanTaskServiceClient.setAuthorizedEntityId("doctor");
         List<TTaskAbstract> taskAbstracts = humanTaskServiceClient.getMyTaskAbstracts("", "doctor", "", null, "", "", "", 0, 0);
-        
+
         Map<String, String> ids = new HashMap<String, String>();
         for (TTaskAbstract taskAbstract : taskAbstracts) {
-            ids.put(taskAbstract.getId()+"", taskAbstract.getName().toString());
+            ids.put(taskAbstract.getId() + "", taskAbstract.getName().toString());
         }
-        
+
         return ids;
     }
-
 }

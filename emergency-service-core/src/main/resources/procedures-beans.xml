@@ -17,5 +17,5 @@
     <bean id="DefaultFireProcedure" class="com.wordpress.salaboy.services.DefaultFireProcedureImpl" scope="prototype">
         <property name="useLocalKSession" value="true"/>
     </bean>
-       
+    
 </beans>                              

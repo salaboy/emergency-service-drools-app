@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.procedures;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,12 @@ import org.junit.Before;
 
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
@@ -29,22 +31,43 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.neo4j.server.WrappingNeoServerBootstrapper;
+import org.neo4j.server.configuration.Configurator;
+import org.neo4j.server.configuration.EmbeddedServerConfigurator;
+import org.neo4j.test.ImpermanentGraphDatabase;
 
 /**
  *
- * @author esteban
+ * @author salaboy
+ * @author demianc
  */
-public class DefaultFireProcedureNoSmartTasksTest extends DefaultFireProcedureBaseTest {
+public class DefaultFireProcedureNoSmartRestTasksTest extends DefaultFireProcedureBaseTest {
 
     private TaskClient client;
+    private ImpermanentGraphDatabase myDb;
+    private WrappingNeoServerBootstrapper srv;
 
-    public DefaultFireProcedureNoSmartTasksTest() {
+    public DefaultFireProcedureNoSmartRestTasksTest() {
     }
 
     @Before
     @Override
     public void setUp() throws Exception {
+
+        myDb = new ImpermanentGraphDatabase();
+
+        EmbeddedServerConfigurator config = new EmbeddedServerConfigurator(myDb);
+        config.configuration().setProperty(
+                Configurator.WEBSERVER_PORT_PROPERTY_KEY, 7575);
+        config.configuration().setProperty(
+                Configurator.REST_API_PATH_PROPERTY_KEY,
+                "http://localhost:7575/db/data/");
+        srv = new WrappingNeoServerBootstrapper(myDb, config);
+        srv.start();
+
         super.setUp();
+
+
 
         client = HumanTaskServerService.getInstance().initTaskClient();
     }
@@ -52,21 +75,21 @@ public class DefaultFireProcedureNoSmartTasksTest extends DefaultFireProcedureBa
     @After
     @Override
     public void tearDown() throws Exception {
-        try{
+        try {
             super.tearDown();
-        } finally{
+            myDb.shutdown();
+            srv.stop();
+        } finally {
             this.client.disconnect();
         }
     }
-
-    
 
     @Override
     protected void testGarageTask(Emergency emergency, List<Vehicle> selectedVehicles) throws Exception {
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("garage_emergency_service", "en-UK", handler);
         List<TaskSummary> tasks = handler.getResults();
-        
+
         Assert.assertNotNull(tasks);
         Assert.assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0); // getting the first task
@@ -117,12 +140,12 @@ public class DefaultFireProcedureNoSmartTasksTest extends DefaultFireProcedureBa
         BlockingTaskSummaryResponseHandler handler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner("firefighter", "en-UK", handler);
         List<TaskSummary> sums = handler.getResults();
-        
+
         Map<String, String> ids = new HashMap<String, String>();
         for (TaskSummary taskSummary : sums) {
-            ids.put(taskSummary.getId()+"", taskSummary.getName());
+            ids.put(taskSummary.getId() + "", taskSummary.getName());
         }
-        
+
         return ids;
     }
 
@@ -162,7 +185,25 @@ public class DefaultFireProcedureNoSmartTasksTest extends DefaultFireProcedureBa
 
         BlockingTaskOperationResponseHandler completeTaskOperationHandler = new BlockingTaskOperationResponseHandler();
         client.complete(task.getId(), user, result, completeTaskOperationHandler);
-        
+
         Thread.sleep(2000);
+    }
+
+    @Override
+    protected void initializePersistenceAndTracking() {
+        PersistenceServiceProvider.configFile = "remote-config-beans.xml";
+        ContextTrackingProvider.configFile = "remote-config-beans.xml";
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
+//        try {
+//            Map<String, Object> params = new HashMap<String, Object>();
+//            params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.REST);
+//            PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+//            persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//
+//            trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(DefaultFireProcedureNoSmartRestTasksTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 }

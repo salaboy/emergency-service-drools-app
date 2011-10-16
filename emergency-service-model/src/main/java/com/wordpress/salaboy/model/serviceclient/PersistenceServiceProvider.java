@@ -4,9 +4,8 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
@@ -14,45 +13,76 @@ import java.util.Map;
  */
 public class PersistenceServiceProvider {
 
-    private static Map<PersistenceServiceType, PersistenceService> instances = new HashMap<PersistenceServiceType, PersistenceService>();
-
+    private static ApplicationContext context;
+    private static PersistenceService instance;
+    public static String configFile = "config-beans.xml";
     public enum PersistenceServiceType {
 
         DISTRIBUTED_MAP, JPA, SERVICE
     };
-
-    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type) throws IOException {
-        return getPersistenceService(type, null);
-    }
-
-    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type, PersistenceServiceConfiguration conf) throws IOException {
-        if(instances == null){
-            instances = new HashMap<PersistenceServiceType, PersistenceService>();
-        }
-        if (instances.get(type) == null) {
+    
+    public static PersistenceService getPersistenceService() {
+        if (instance == null) {
+            context = new ClassPathXmlApplicationContext(configFile);
+            EnvironmentConfiguration conf = (EnvironmentConfiguration) context.getBean("environmentConf");
+            PersistenceServiceType type = (PersistenceServiceType) conf.get("PersistenceService");
+            if(type == null){
+                throw new IllegalStateException("Persistence Service Type needs to be specified in spring");
+            }
             switch (type) {
                 case DISTRIBUTED_MAP:
-                    instances.put(type, new DistributedMapPeristenceService(conf));
+                    instance =  new DistributedMapPeristenceService();
                     break;
-
                 case JPA:
                     throw new UnsupportedOperationException("Not Implemented YET!");
-
                 case SERVICE:
                     throw new UnsupportedOperationException("Not Implemented YET!");
-
+                default:
+                    instance =  new DistributedMapPeristenceService();
 
             }
-
+            
+        
         }
-        return instances.get(type);
+
+        return instance;
+    
     }
+//
+//    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type) throws IOException {
+//        return getPersistenceService(type, null);
+//    }
+
+//    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type, PersistenceServiceConfiguration conf) throws IOException {
+//        if (instances == null) {
+//            instances = new HashMap<PersistenceServiceType, PersistenceService>();
+//        }
+//        if (instances.get(type) == null) {
+//            switch (type) {
+//                case DISTRIBUTED_MAP:
+//                    instances.put(type, new DistributedMapPeristenceService(conf));
+//                    break;
+//
+//                case JPA:
+//                    throw new UnsupportedOperationException("Not Implemented YET!");
+//
+//                case SERVICE:
+//                    throw new UnsupportedOperationException("Not Implemented YET!");
+//
+//
+//            }
+//
+//        }
+//        return instances.get(type);
+//    }
 
     public static void clear() {
-        for(PersistenceService service : instances.values()){
-            service.clear();
-        }
-        instances.clear();
-        instances = null;
+//        for (PersistenceService service : instances.values()) {
+//            service.clear();
+//        }
+//        instances.clear();
+//        instances = null;
+        instance.clear();
+        instance = null;
     }
 }

@@ -55,10 +55,10 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-grid-impl</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-spring</artifactId>
-        </dependency>
+        </dependency-->
 
         <!-- jBPM5 Dependencies -->
         <dependency>

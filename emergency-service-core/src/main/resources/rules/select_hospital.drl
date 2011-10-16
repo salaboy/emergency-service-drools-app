@@ -40,7 +40,7 @@ rule "Rank Hospital Speciality that matches EmergencyType"
         $processInstance: WorkflowProcessInstance()
         $emergency: Emergency($type: type.name)
         $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
-                                                        from PersistenceServiceProvider.getPersistenceService(PersistenceServiceType.DISTRIBUTED_MAP).getAllHospitals(), 
+                                                        from PersistenceServiceProvider.getPersistenceService().getAllHospitals(), 
                 hospitalDistanceCalculator(new HospitalDistanceCalculationData($hospital, $emergency))
 
         )

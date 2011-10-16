@@ -23,13 +23,13 @@ rule "Calculate Water Refill Location"
     when
        $processInstance: WorkflowProcessInstance()
        $emergency: Emergency($type: type.name)
-       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP).getAllFirefighterDepartments(), 
+       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments(), 
                 firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
         )
     then
         System.out.println("Calculate Water Refill Location executed in "+$processInstance.getId());
         System.out.println("EMERGENCY: "+$emergency);
-        System.out.println("FireDeps: "+PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP).getAllFirefighterDepartments().size());
+        System.out.println("FireDeps: "+PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments().size());
         
         System.out.println("SELECTED LOCATION "+$selectedLocation.getX()+"--"+$selectedLocation.getY());
 

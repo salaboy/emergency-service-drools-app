@@ -16,19 +16,22 @@ import org.junit.Before;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 
 /**
  *
- * @author esteban
+ * @author salaboy
+ * @author demianc
  */
-public class DefaultFireProcedureSmartTasksTest extends DefaultFireProcedureBaseTest {
+public class DefaultFireProcedureSmartTasksInMemoryTest extends DefaultFireProcedureBaseTest {
 
     private HumanTaskService humanTaskServiceClient;
 
-    public DefaultFireProcedureSmartTasksTest() {
+    public DefaultFireProcedureSmartTasksInMemoryTest() {
     }
 
     @Before
@@ -51,6 +54,7 @@ public class DefaultFireProcedureSmartTasksTest extends DefaultFireProcedureBase
     public void tearDown() throws Exception {
         try{
             super.tearDown();
+            
         } finally{
             this.humanTaskServiceClient.cleanUpService();
         }
@@ -106,5 +110,21 @@ public class DefaultFireProcedureSmartTasksTest extends DefaultFireProcedureBase
         humanTaskServiceClient.complete(taskId, info);
 
         Thread.sleep(2000);
+    }
+
+    @Override
+    protected void initializePersistenceAndTracking() {
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
+//         try {
+//           Map<String, Object> params = new HashMap<String, Object>();
+//           params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+//           PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+//           persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//
+//           trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(DefaultFireProcedureNoSmartInMemoryTasksTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 }
