@@ -28,6 +28,7 @@ public interface ContextTrackingService  {
     public String newEmergencyEntityBuildingId();
     
     
+    
     //Attach
     public void attachEmergency(String callId, String emergencyId);
 
@@ -59,6 +60,10 @@ public interface ContextTrackingService  {
     
     //Query
     public String getProcedureAttachedToVehicle(String vehicleId);
+    
+    public String getCallAttachedToEmergency(String emergencyId);
+            
+    public String getEmergencyAttachedToCall(String callId);
     
     public void clear();
     
