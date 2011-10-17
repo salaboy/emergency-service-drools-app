@@ -1,9 +1,5 @@
 package com.wordpress.salaboy.emergencyservice.web.task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +11,7 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import java.util.*;
 
 /**
  * Controller to handle selection of vehicle task.
@@ -65,7 +62,7 @@ public class VehicleDispatchController extends AbstractTaskFormController {
             @PathVariable("name") String name,
             @PathVariable("document") String document,
             @PathVariable("profile") String profile, Model model) {
-        return super.executeTask(taskId, action, entity, name, this.getVehicleString(document),
+        return super.executeTask(taskId, action, entity, name, this.getVehiclesIds(document),
                 profile, model);
     }
 
@@ -81,31 +78,59 @@ public class VehicleDispatchController extends AbstractTaskFormController {
 
     protected Map<String, Object> generateOutputForForm(String form,
             Map<String, String> data) {
-    	//let's parse the vehicles string. TODO change this for components, and yaml maybe.
-    	//TODO support more than one selection.
-    	
-    	List<Vehicle> selectedVehicles = new ArrayList<Vehicle>();
-		selectedVehicles.add(distributedService
-				.loadVehicle(data.get("id")));
         
-                
+        String ids = data.get("ids");
+        
+        if (ids == null){
+            throw new IllegalStateException("Missing 'ids' attribute");
+        }
+        
+        //separate each id and get the corresponding vehicle
+    	List<Vehicle> selectedVehicles = new ArrayList<Vehicle>();
+        
+        StringTokenizer st = new StringTokenizer(ids, "||");
+        while (st.hasMoreTokens()){
+            selectedVehicles.add(distributedService
+				.loadVehicle(st.nextToken()));
+        }
+        
+        if (selectedVehicles.isEmpty()){
+            throw new IllegalStateException("Empty Vehicle list for "+ids);
+        }
+		
         Map<String, Object> info = new HashMap<String, Object>();
         info.put("emergency.vehicles", selectedVehicles);
         return info;
     }
     
-    private String getVehicleString(String selected) {
-    	int start= selected.indexOf("{");
-    	int finish= selected.indexOf("}");
-    	selected = selected.substring(start + 1, finish);
-    	String[] props = selected.split(",");
-    	for (String string : props) {
-			String[] keyval = string.trim().split("=");
-			if (keyval[0].equalsIgnoreCase("id")) {
-				return keyval[1];
-			}
-		}
-    	return null;
+    private String getVehiclesIds(String selected) {
+    	String results="ids=";
+        String separator = "";
+        StringTokenizer st = new StringTokenizer(selected,"_");
+        while (st.hasMoreTokens()){
+            String vehicle = st.nextToken();
+            int start= vehicle.indexOf("{");
+            int finish= vehicle.indexOf("}");
+            if (finish < 0){
+                finish = vehicle.length();
+            }
+            vehicle = vehicle.substring(start + 1, finish);
+
+            String[] props = vehicle.split(",");
+            for (String string : props) {
+                String[] keyval = string.trim().split("=");
+                if (keyval[0].trim().equalsIgnoreCase("id")) {
+                        results += separator+keyval[1].trim();
+                        if (separator.equals("")){
+                            separator = "||";
+                        }
+                }
+            }
+        }
+        
+        System.out.println("Selected Vehicles Ids: "+results);
+        
+    	return results;
     }
 
 }

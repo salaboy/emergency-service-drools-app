@@ -6,7 +6,7 @@
     <tr>
      	<th><h3><LABEL for="${inputKey}">${inputKey}: </LABEL></h3></th>
      	<#if taskOutput[inputKey]?is_sequence>
-				<td><select name="input_${inputKey}" id="inputKey" <#if taskInput['Status']!='IN_PROGRESS'> disabled=true</#if>>
+				<td><select multiple name="input_${inputKey}" id="inputKey" <#if taskInput['Status']!='IN_PROGRESS'> disabled=true</#if>>
 					<#list taskOutput[inputKey] as sequenceItem>
 						<option>
 							${sequenceItem}

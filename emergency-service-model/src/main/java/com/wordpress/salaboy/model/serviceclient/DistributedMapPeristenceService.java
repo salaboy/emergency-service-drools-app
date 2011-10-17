@@ -249,10 +249,6 @@ public class DistributedMapPeristenceService implements PersistenceService {
         if (this.getCache().get("vehicles") == null) {
             getCache().put("vehicles", new HashMap<String, Vehicle>());
         }
-        System.out.println("Registered vehicles: ");
-        for (Vehicle vehicle : ((Map<String, Vehicle>) this.getCache().get("vehicles")).values()) {
-            System.out.println("\t"+vehicle);
-        }
         return new ArrayList<Vehicle>(((Map<String, Vehicle>) this.getCache().get("vehicles")).values());
     }
 

@@ -33,7 +33,17 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 		var output = "";
 		$(':regex(name,^input)').each(function() {
    			//...other codes...
-   			output = this.name.split('_')[1] + "=" + this.value + "," + output; 
+                        if (this.type == "select-multiple") {
+                            val = "";
+                            for (var i = 0; i < this.options.length; i++) {
+                                if (this.options[ i ].selected) {
+                                    val = val + "_" + this.options[ i ].text; 
+                                }
+                            }
+                            output = this.name.split('_')[1] + "=" + val + "," + output;
+   			}else{
+                            output = this.name.split('_')[1] + "=" + this.value + "," + output; 
+                        }
   		});
   	
 			var url = "${rc.getContextPath()}/task/${user?substring(0,2)}/execute/${user}/${profile}/${id}/${name}/" + element.split("_")[1] + "/" + output;
