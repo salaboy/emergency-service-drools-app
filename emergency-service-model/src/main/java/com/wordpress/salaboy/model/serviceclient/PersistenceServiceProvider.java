@@ -48,40 +48,10 @@ public class PersistenceServiceProvider {
         return instance;
     
     }
-//
-//    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type) throws IOException {
-//        return getPersistenceService(type, null);
-//    }
 
-//    public synchronized static PersistenceService getPersistenceService(PersistenceServiceType type, PersistenceServiceConfiguration conf) throws IOException {
-//        if (instances == null) {
-//            instances = new HashMap<PersistenceServiceType, PersistenceService>();
-//        }
-//        if (instances.get(type) == null) {
-//            switch (type) {
-//                case DISTRIBUTED_MAP:
-//                    instances.put(type, new DistributedMapPeristenceService(conf));
-//                    break;
-//
-//                case JPA:
-//                    throw new UnsupportedOperationException("Not Implemented YET!");
-//
-//                case SERVICE:
-//                    throw new UnsupportedOperationException("Not Implemented YET!");
-//
-//
-//            }
-//
-//        }
-//        return instances.get(type);
-//    }
 
     public static void clear() {
-//        for (PersistenceService service : instances.values()) {
-//            service.clear();
-//        }
-//        instances.clear();
-//        instances = null;
+        configFile = "config-beans.xml";
         instance.clear();
         instance = null;
     }

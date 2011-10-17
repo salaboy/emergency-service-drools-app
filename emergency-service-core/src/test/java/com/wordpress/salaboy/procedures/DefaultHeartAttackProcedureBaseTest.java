@@ -20,14 +20,12 @@ import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.io.File;
 import java.util.*;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -74,10 +72,6 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         deleteRecursively(new File("/data"));
 
 
-//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
         
@@ -123,8 +117,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
 
     protected void tearDown() throws Exception {
         System.out.println("Tearing Down in Super");
-        PersistenceServiceProvider.clear();
-        ContextTrackingProvider.clear();
+        
         HumanTaskServerService.getInstance().stopTaskServer();
         MessageServerSingleton.getInstance().stop();
         if (remoteN1 != null) {
@@ -136,6 +129,8 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         if (procedureEndedWorker != null) {
             procedureEndedWorker.stopWorker();
         }
+        PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
         ProceduresMGMTService.clear();
         
     }

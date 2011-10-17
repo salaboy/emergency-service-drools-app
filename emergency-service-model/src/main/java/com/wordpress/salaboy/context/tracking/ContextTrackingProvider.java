@@ -61,7 +61,7 @@ public class ContextTrackingProvider {
 
 
     public static void clear() {
-
+        configFile = "config-beans.xml";
         instance.clear();
         instance = null;
     }

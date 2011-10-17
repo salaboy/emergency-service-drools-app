@@ -4,23 +4,20 @@
  */
 package com.wordpress.salaboy.procedures;
 
+
+
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.services.HumanTaskServerService;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
@@ -31,6 +28,9 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.neo4j.server.WrappingNeoServerBootstrapper;
 import org.neo4j.server.configuration.Configurator;
 import org.neo4j.server.configuration.EmbeddedServerConfigurator;
@@ -62,7 +62,9 @@ public class DefaultFireProcedureNoSmartRestTasksTest extends DefaultFireProcedu
         config.configuration().setProperty(
                 Configurator.REST_API_PATH_PROPERTY_KEY,
                 "http://localhost:7575/db/data/");
+        
         srv = new WrappingNeoServerBootstrapper(myDb, config);
+        
         srv.start();
 
         super.setUp();
@@ -195,15 +197,5 @@ public class DefaultFireProcedureNoSmartRestTasksTest extends DefaultFireProcedu
         ContextTrackingProvider.configFile = "remote-config-beans.xml";
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
-//        try {
-//            Map<String, Object> params = new HashMap<String, Object>();
-//            params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.REST);
-//            PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//            persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//
-//            trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-//        } catch (IOException ex) {
-//            Logger.getLogger(DefaultFireProcedureNoSmartRestTasksTest.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 }

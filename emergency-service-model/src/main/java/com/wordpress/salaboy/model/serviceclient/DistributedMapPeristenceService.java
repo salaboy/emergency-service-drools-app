@@ -322,6 +322,8 @@ public class DistributedMapPeristenceService implements PersistenceService {
     public void clear() {
         this.cacheManager.stop();
         this.contextTracking.clear();
+        this.contextTracking = null;
+        this.cacheManager = null;
     }
 
     

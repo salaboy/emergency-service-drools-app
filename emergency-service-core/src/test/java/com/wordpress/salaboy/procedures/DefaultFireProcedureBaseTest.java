@@ -50,7 +50,6 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
     protected PersistenceService persistenceService;
     protected ContextTrackingService trackingService;
-
     private Emergency emergency = null;
     private FireTruck fireTruck = null;
     private Call call = null;
@@ -60,22 +59,22 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
     public DefaultFireProcedureBaseTest() {
     }
-    
+
     @Before
     public void setUp() throws Exception {
         HumanTaskServerService.getInstance().initTaskServer();
 
         initializePersistenceAndTracking();
-      
+
         emergency = new Emergency();
-      
+
 
         fireTruck = new FireTruck("FireTruck 1");
         persistenceService.storeVehicle(fireTruck);
-        
+
         call = new Call(1, 2, new Date());
         persistenceService.storeCall(call);
-      
+
         emergency.setCall(call);
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.FIRE);
@@ -84,8 +83,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         firefightersDepartment = new FirefightersDepartment("Firefighter Department 1", 12, 1);
 
         persistenceService.storeFirefightersDepartment(firefightersDepartment);
-        
-        
+
+
         MessageServerSingleton.getInstance().start();
 
         this.coreServicesMap = new HashMap();
@@ -116,7 +115,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
             procedureEndedWorker.stopWorker();
         }
         HumanTaskServerService.getInstance().stopTaskServer();
-       PersistenceServiceProvider.clear();
+        PersistenceServiceProvider.clear();
         ContextTrackingProvider.clear();
         ProceduresMGMTService.clear();
     }
@@ -308,6 +307,6 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
     protected abstract Map<String, String> getFirefighterTasks() throws Exception;
 
     protected abstract void completeTask(String user, String taskId) throws Exception;
-    
+
     protected abstract void initializePersistenceAndTracking();
 }

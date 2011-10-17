@@ -170,17 +170,8 @@ public class DefaultFireProcedureNoSmartInMemoryTasksTest extends DefaultFirePro
 
     @Override
     protected void initializePersistenceAndTracking() {
+        
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
-//        try {
-//           Map<String, Object> params = new HashMap<String, Object>();
-//           params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//           PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//           persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//
-//           trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-//        } catch (IOException ex) {
-//            Logger.getLogger(DefaultFireProcedureNoSmartInMemoryTasksTest.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 }
