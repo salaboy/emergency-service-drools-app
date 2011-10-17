@@ -32,7 +32,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 
 	}
 
-	private String getCleanSuggestedProcedure(String suggestedProceduresString) {
+	private String[] getCleanSuggestedProcedure(String suggestedProceduresString) {
 		suggestedProceduresString = suggestedProceduresString.trim();
 		if (suggestedProceduresString.startsWith("[")) {
 			suggestedProceduresString = suggestedProceduresString.substring(1);
@@ -42,7 +42,7 @@ public class ControlOperatorController extends AbstractTaskFormController {
 					suggestedProceduresString.length() - 1);
 		}
 		suggestedProceduresString = suggestedProceduresString.trim();
-		return suggestedProceduresString.split(":")[0].trim();
+		return suggestedProceduresString.split(":");
 	}
 
 	@Override

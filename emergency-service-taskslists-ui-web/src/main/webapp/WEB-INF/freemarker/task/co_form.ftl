@@ -8,7 +8,7 @@
      	<#if taskOutput[inputKey]?is_sequence>
 				<td><select multiple name="input_${inputKey}" id="inputKey" <#if taskInput['Status']!='IN_PROGRESS'> disabled=true</#if>>
 					<#list taskOutput[inputKey] as sequenceItem>
-					<option
+					<option <#if suggestedProcedure?seq_contains(sequenceItem)> selected=true </#if>
 						 >
 							${sequenceItem}
 						</option>

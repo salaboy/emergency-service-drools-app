@@ -40,6 +40,9 @@ public class SuggestedProcedures implements Serializable{
         for(String value : procedures){
             result += value + ": ";
         }
+        if (result.endsWith(":")) {
+        	result.substring(0, result.lastIndexOf(":"));
+        }
         result +="]";
         return result;
     } 
