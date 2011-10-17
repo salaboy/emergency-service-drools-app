@@ -98,7 +98,14 @@ public class VehicleDispatchController extends AbstractTaskFormController {
     	int start= selected.indexOf("{");
     	int finish= selected.indexOf("}");
     	selected = selected.substring(start + 1, finish);
-    	return selected;
+    	String[] props = selected.split(",");
+    	for (String string : props) {
+			String[] keyval = string.trim().split("=");
+			if (keyval[0].equalsIgnoreCase("id")) {
+				return keyval[1];
+			}
+		}
+    	return null;
     }
 
 }
