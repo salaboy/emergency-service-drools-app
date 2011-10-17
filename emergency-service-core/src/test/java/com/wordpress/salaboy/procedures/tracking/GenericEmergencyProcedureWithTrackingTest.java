@@ -7,14 +7,12 @@ package com.wordpress.salaboy.procedures.tracking;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.grid.*;
-import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.File;
 import java.io.IOException;
 import org.hornetq.api.core.HornetQException;
-import org.jbpm.task.AsyncTaskService;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,8 +67,9 @@ public class GenericEmergencyProcedureWithTrackingTest extends GridBaseTest {
 
 
         
-        ContextTrackingProvider.clear();
+        
         PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
     }
 
     @Test

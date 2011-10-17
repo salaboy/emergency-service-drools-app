@@ -44,7 +44,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
     private AsyncTaskService client;
     private MessageConsumerWorker asynchProcedureStartWorker;
     private PersistenceService persistenceService;
-    private ContextTrackingService trackingService;
+    private ContextTrackingService trackingService; 
 
     public GenericEmergencyProcedureTest() {
     }
@@ -59,9 +59,9 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
+
         
         HumanTaskServerService.getInstance().initTaskServer();
 
@@ -141,7 +141,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         doControlTask();
 
-        Thread.sleep(4000);
+        Thread.sleep(6000);
         //I should have one task here, that has been created by the specific procedure started
         doGarageTask();
 
@@ -178,18 +178,19 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
         ObjectInputStream ois = new ObjectInputStream(bais);
         Map<String, Object> deserializedContent = (Map<String, Object>) ois.readObject();
         Call restoredCall = (Call) deserializedContent.get("call");
+        persistenceService.storeCall(restoredCall);
 
-
-        //I shoudl call the tracking component here and register the new emerency
+      
         Emergency emergency = new Emergency();
-        //String emergencyId = ContextTrackingServiceImpl.getInstance().newEmergencyId();
-        //emergency.setId(emergencyId);
+      
         emergency.setCall(restoredCall);
-        //ContextTrackingServiceImpl.getInstance().attachEmergency(restoredCall.getId(), emergencyId);
+      
         emergency.setLocation(new Location(1, 2));
         emergency.setType(Emergency.EmergencyType.HEART_ATTACK);
         emergency.setNroOfPeople(1);
-
+        persistenceService.storeEmergency(emergency);
+        
+        trackingService.attachEmergency(restoredCall.getId(), emergency.getId());
 
         Map<String, Object> info = new HashMap<String, Object>();
         info.put("emergency", emergency);

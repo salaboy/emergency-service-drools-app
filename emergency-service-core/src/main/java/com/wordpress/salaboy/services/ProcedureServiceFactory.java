@@ -20,14 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ProcedureServiceFactory {
 
     public static ProcedureService createProcedureService(String emergencyId, String procedureName, Map<String, Object> parameters) throws IOException {
-        //initialize tracking and persistence services
-
-
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+  
         PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
         ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
 
