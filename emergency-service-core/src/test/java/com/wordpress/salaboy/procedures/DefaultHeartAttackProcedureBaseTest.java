@@ -64,9 +64,6 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
 
     protected void setUp() throws Exception {
         System.out.println("Setting up in Super");
-       
-        
-        Map<String, Object> params = new HashMap<String, Object>();
 
         deleteRecursively(new File(ContextTrackingProvider.defaultDB));
         deleteRecursively(new File("/data"));

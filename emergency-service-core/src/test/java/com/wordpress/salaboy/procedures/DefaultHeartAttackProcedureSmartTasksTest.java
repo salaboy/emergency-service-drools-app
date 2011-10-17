@@ -8,7 +8,6 @@ import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingServiceImpl;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
@@ -44,11 +43,7 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
         taskClientConf.addHumanTaskClientConfiguration("jBPM5-HT-Client", new JBPM5HornetQHumanTaskClientConfiguration("127.0.0.1", 5446));
         humanTaskServiceClient = HumanTaskServiceFactory.newHumanTaskService(taskClientConf);
         humanTaskServiceClient.initializeService();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-        persistenceService = PersistenceServiceProvider.getPersistenceService();
-        trackingService = ContextTrackingProvider.getTrackingService();
+      
     }
 
     @After
