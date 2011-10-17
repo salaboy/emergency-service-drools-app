@@ -99,8 +99,12 @@ public class ControlOperatorController extends AbstractTaskFormController {
 			Map<String, String> data) {
 		Map<String, Object> info = new HashMap<String, Object>();
 		SelectedProcedures selectedProcedures = new SelectedProcedures(emergencyId);
-		selectedProcedures.addSelectedProcedureName(data
-				.get("Suggested Procedures"));
+		String[] sps =data.get("Suggested Procedures").substring(1).split("_");
+		for (String string : sps) {
+			if (string != null && string != "") {
+				selectedProcedures.addSelectedProcedureName(string);				
+			}
+		}
 		info.put("selectedProcedures", selectedProcedures);
 		return info;
 	}
