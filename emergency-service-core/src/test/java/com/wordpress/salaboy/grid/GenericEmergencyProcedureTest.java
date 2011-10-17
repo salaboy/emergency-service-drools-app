@@ -11,7 +11,6 @@ import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
 import com.wordpress.salaboy.services.HumanTaskServerService;
@@ -60,7 +59,10 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
     @Before
     public void setUp() throws Exception {
-
+        
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
+        
         HumanTaskServerService.getInstance().initTaskServer();
 
         MessageServerSingleton.getInstance().start();
@@ -76,14 +78,8 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         client = HumanTaskServerService.getInstance().initTaskClient();
 
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//
-//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
-        persistenceService = PersistenceServiceProvider.getPersistenceService();
-        trackingService = ContextTrackingProvider.getTrackingService();
+
+        
     }
 
     @After
@@ -98,7 +94,8 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
         if (grid1 != null) {
             grid1.get(SocketService.class).close();
         }
-
+        PersistenceServiceProvider.clear();
+        ContextTrackingProvider.clear();
 
     }
 
@@ -125,8 +122,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         MessageProducer producer = MessageFactory.createMessageProducer();
         Call initialCall = new Call(1, 2, new Date());
-        //String callId = ContextTrackingServiceImpl.getInstance().newCallId();
-        //initialCall.setId(callId);
+       
         producer.sendMessage(initialCall);
         producer.stop();
 
@@ -141,11 +137,11 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
 
         //QUERY TO SEE THAT WE HAVE AN EMERGENCY ATTACHED TO THE CALL
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         doControlTask();
 
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         //I should have one task here, that has been created by the specific procedure started
         doGarageTask();
 
@@ -252,8 +248,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
         Map<String, Object> info = new HashMap<String, Object>();
         SelectedProcedures selectedProcedures = new SelectedProcedures(
                 retrivedEmergency.getId());
-//        List<String> selectedProceduresList = new ArrayList<String>();
-//        selectedProceduresList.add("DefaultHeartAttackProcedure");
+
         selectedProcedures.addSelectedProcedureName("DefaultHeartAttackProcedure");
         info.put("selectedProcedures", selectedProcedures);
 
