@@ -20,7 +20,7 @@ public class Emergency implements Serializable {
 
     public enum EmergencyType {
 
-        FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
+        UNDEFINED, FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
     };
   
     

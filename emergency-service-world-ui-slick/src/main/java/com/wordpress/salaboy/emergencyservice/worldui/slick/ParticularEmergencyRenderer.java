@@ -6,33 +6,14 @@ package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.Graphicable;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableAmbulance;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableHighlightedHospital;
-import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableVehicle;
+import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.*;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.Ambulance;
-import com.wordpress.salaboy.model.FireTruck;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.PoliceCar;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.messages.HospitalSelectedMessage;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
@@ -54,18 +35,17 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private Vehicle activeVehicle;
     private Map<Graphicable, Vehicle> vehicles;
     private GraphicableHighlightedHospital selectedHospital;
+    private GraphicableHighlightedFirefighterDepartment selectedFirefighterDepartment;
     private boolean turbo;
     private boolean hideEmergency;
     private final PersistenceService persistenceService;
     private final ContextTrackingService trackingService;
 
-    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) throws IOException {
+    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
         this.emergency = emergency;
         this.ui = ui;
         this.vehicles = new HashMap<Graphicable, Vehicle>();
         this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
-         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
     }
@@ -87,8 +67,12 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (selectedHospital != null) {
             g.draw(selectedHospital.getPolygon());
         }
+        if (selectedFirefighterDepartment != null) {
+            g.draw(selectedFirefighterDepartment.getPolygon());
+        }
     }
 
+    @Override
     public void renderAnimation(GameContainer gc, Graphics g) {
         if (!hideEmergency){        
             g.drawAnimation(emergency.getAnimation(), emergency.getPolygon().getX(), emergency.getPolygon().getY());
@@ -106,6 +90,9 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
         if (selectedHospital != null) {
             g.drawAnimation(selectedHospital.getAnimation(), selectedHospital.getPolygon().getX() - 32, selectedHospital.getPolygon().getY() - 80);
+        }
+        if (selectedFirefighterDepartment != null) {
+            g.drawAnimation(selectedFirefighterDepartment.getAnimation(), selectedFirefighterDepartment.getPolygon().getX() - 32, selectedFirefighterDepartment.getPolygon().getY() - 80);
         }
     }
 
@@ -125,7 +112,12 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     public void selectHospital(Hospital hospital) {
         selectedHospital = GraphicableFactory.newHighlightedHospital(hospital);
     }
+    
+    public void selectFirefighterDepartment(FirefightersDepartment firefigthersDepartment) {
+        selectedFirefighterDepartment = GraphicableFactory.newHighlightedFirefighterDepartment(firefigthersDepartment);
+    }
 
+    @Override
     public void onKeyPressed(int code, char key) {
         if (Input.KEY_ESCAPE == code) {
             this.ui.goToGlobalMap();
@@ -145,18 +137,22 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             selectMockHospital(1);
         } else if (Input.KEY_F6 == code) {
             selectMockHospital(2);
+        } else if (Input.KEY_F7 == code) {
+            selectMockFireDepartment(0);
         } else if (Input.KEY_LSHIFT == code) {
             this.turbo = true;
         }
 
     }
 
+    @Override
     public void onKeyReleased(int code, char key) {
         if (Input.KEY_LSHIFT == code) {
             this.turbo = false;
         }
     }
 
+    @Override
     public void onClick(int button, int x, int y, int count) {
         for (GraphicableVehicle graphicable : graphicableVehicles) {
             if (graphicable.getPolygon().contains(x, y)) {
@@ -167,6 +163,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
     }
 
+    @Override
     public void update(GameContainer gc, int delta) {
         if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
             this.moveVehicle(Input.KEY_LEFT);
@@ -412,6 +409,17 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     
     private void addMockVehicle(Vehicle vehicle){
         try {
+            
+            //Dirty way to put a free id to the vehicle
+            String vehicleId = null;
+            Random random = new Random(System.currentTimeMillis());
+            do{
+                vehicleId = random.nextLong()+""; 
+            } while(persistenceService.loadVehicle(vehicleId) != null);
+            
+            vehicle.setId(vehicleId);
+            
+            persistenceService.storeVehicle(vehicle);
             MessageFactory.sendMessage(new VehicleDispatchedMessage(this.emergency.getCallId(), vehicle.getId()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -419,9 +427,25 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     private void selectMockHospital(int index) {
-        Hospital mock = persistenceService.getAllHospitals().toArray(new Hospital[3])[index];
+        Hospital mock = null;
+        for (int i = 0; i < index+1; i++) {
+            mock = persistenceService.getAllHospitals().iterator().next();
+        }
+        
         try {
             MessageFactory.sendMessage(new HospitalSelectedMessage(this.emergency.getCallId(), mock));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void selectMockFireDepartment(int index) {
+        FirefightersDepartment mock = null;
+        for (int i = 0; i < index+1; i++) {
+            mock = persistenceService.getAllFirefighterDepartments().iterator().next();
+        }
+        try {
+            MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(this.emergency.getCallId(), mock));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }

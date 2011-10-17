@@ -11,8 +11,10 @@ import org.newdawn.slick.geom.Polygon;
 import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.CityEntities;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.EmergencyEntityBuilding;
 import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.PoliceCar;
 import com.wordpress.salaboy.model.Vehicle;
@@ -110,12 +112,39 @@ public class GraphicableFactory {
         return graphHospital;
     }
     
-     public static GraphicableEmergency newEmergency(Call call){
+    public static GraphicableHighlightedFirefighterDepartment newHighlightedFirefighterDepartment(FirefightersDepartment firefightersDepartment){
+        GraphicableHighlightedFirefighterDepartment graphFirefightersDepartment = new GraphicableHighlightedFirefighterDepartment(firefightersDepartment);
+        
+        Animation myFireFighterDepartment = AnimationFactory.getHighlightedFirefighterDepartmentAnimation();
+
+        Polygon myHospitalPolygon = new Polygon(new float[]{
+                    Math.round(firefightersDepartment.getX()) * 16, Math.round(firefightersDepartment.getY()) * 16,
+                    (Math.round(firefightersDepartment.getX()) * 16) + 16, Math.round(firefightersDepartment.getY()) * 16,
+                    (Math.round(firefightersDepartment.getX()) * 16) + 16, Math.round(firefightersDepartment.getY()) * 16 + 16,
+                    Math.round(firefightersDepartment.getX()) * 16, Math.round(firefightersDepartment.getY()) * 16 + 16
+                });
+        graphFirefightersDepartment.setAnimation(myFireFighterDepartment);
+        graphFirefightersDepartment.setPolygon(myHospitalPolygon);
+        
+        return graphFirefightersDepartment;
+    }
+    
+    public static GraphicableEmergency newGenericEmergency(Call call){
+        return newEmergency(call, EmergencyType.UNDEFINED, null);
+    }
+    
+     public static GraphicableEmergency newEmergency(Call call, EmergencyType type, Integer numberOfPeople){
          //TODO: fix this
         GraphicableEmergency graphEmergency = new GraphicableEmergency();
         
-        Animation myEmergency = AnimationFactory.getGenericEmergencyAnimation();
+        Animation myEmergency = null;
 
+        if (type == EmergencyType.UNDEFINED){
+            myEmergency = AnimationFactory.getGenericEmergencyAnimation();
+        }else{
+            myEmergency = AnimationFactory.getEmergencyAnimation(type, numberOfPeople);
+        }
+        
         Polygon myEmergencyPolygon = new Polygon(new float[]{
                     xs[call.getX()] * 16, ys[call.getY()] * 16,
                     (xs[call.getX()] * 16) + 32, ys[call.getY()] * 16,
