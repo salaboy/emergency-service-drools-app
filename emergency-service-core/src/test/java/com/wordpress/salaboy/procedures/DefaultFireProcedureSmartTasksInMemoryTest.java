@@ -114,8 +114,7 @@ public class DefaultFireProcedureSmartTasksInMemoryTest extends DefaultFireProce
 
     @Override
     protected void initializePersistenceAndTracking() {
-        PersistenceServiceProvider.configFile = "local-config-beans.xml";
-        ContextTrackingProvider.configFile = "local-config-beans.xml";
+       
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();
 

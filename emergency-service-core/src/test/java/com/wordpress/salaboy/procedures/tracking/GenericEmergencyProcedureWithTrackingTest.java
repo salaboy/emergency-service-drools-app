@@ -5,18 +5,14 @@
 package com.wordpress.salaboy.procedures.tracking;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.grid.*;
 import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
 import org.hornetq.api.core.HornetQException;
 import org.jbpm.task.AsyncTaskService;
 import org.junit.After;
@@ -38,9 +34,6 @@ import scala.collection.Iterator;
  */
 public class GenericEmergencyProcedureWithTrackingTest extends GridBaseTest {
 
-    private MessageConsumer consumer;
-    private AsyncTaskService client;
-    private MessageConsumerWorker asynchProcedureStartWorker;
     private PersistenceService persistenceService;
     private ContextTrackingService trackingService;
 
@@ -62,12 +55,6 @@ public class GenericEmergencyProcedureWithTrackingTest extends GridBaseTest {
         deleteRecursively(new File(ContextTrackingProvider.defaultDB));
         deleteRecursively(new File("/data"));
 
-
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
-//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
 
         persistenceService = PersistenceServiceProvider.getPersistenceService();
         trackingService = ContextTrackingProvider.getTrackingService();

@@ -4,64 +4,45 @@
  */
 package com.wordpress.salaboy.model.serviceclient;
 
+
+
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
-import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.Procedure;
-import com.wordpress.salaboy.model.ServiceChannel;
-import java.io.IOException;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.reporting.Report;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.infinispan.Cache;
 import org.infinispan.config.Configuration;
 import org.infinispan.config.GlobalConfiguration;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
-import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.FirefightersDepartment;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.reporting.Report;
-
 /**
  *
  * @author salaboy
  */
 public class DistributedMapPeristenceService implements PersistenceService {
-
    
     private DefaultCacheManager cacheManager;
-    private String nodeName;
     private ContextTrackingService contextTracking;
 
-
-
     public DistributedMapPeristenceService() {
-
-        
         GlobalConfiguration globalConf = GlobalConfiguration.getClusteredDefault();
         Configuration cfg = new Configuration();
-
-        
         cfg.setCacheMode(Configuration.CacheMode.DIST_SYNC);
         cfg.setNumOwners(3);
         cacheManager = new DefaultCacheManager(globalConf, cfg);
-       // ContextTrackingServiceType type = (ContextTrackingServiceType)conf.getParameters().get("ContextTrackingImplementation");
         contextTracking = ContextTrackingProvider.getTrackingService();
-        
-        
 
     }
 
     public EmbeddedCacheManager getCacheManager() {
         return cacheManager;
     }
+    
     // Stores 
 
     @Override
