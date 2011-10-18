@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class PulseEvent implements EmergencyEvent, Serializable{
+public class PulseEvent implements EmergencyVehicleEvent, Serializable{
     private static final long serialVersionUID = 1L;
     
     private boolean processed;

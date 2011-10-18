@@ -42,25 +42,13 @@ import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
+import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
 import com.wordpress.salaboy.model.events.PulseEvent;
-import com.wordpress.salaboy.model.messages.AllProceduresEndedMessage;
-import com.wordpress.salaboy.model.messages.AsyncProcedureStartMessage;
-import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
-import com.wordpress.salaboy.model.messages.IncomingCallMessage;
-import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
-import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.PatientMonitorService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.*;
 
 /**
  * @author salaboy
@@ -90,6 +78,7 @@ public class CoreServer {
     private MessageConsumerWorker asynchProcedureStartWorker;
     private MessageConsumerWorker procedureEndedWorker;
     private MessageConsumerWorker allProceduresEndedWorker;
+    private MessageConsumerWorker fireTruckDecreaseWaterLevelWorker;
     private static boolean startWrappingServer = true;
 	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
 			+ "/db/data/";
@@ -249,8 +238,8 @@ public class CoreServer {
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
                     ProceduresMGMTService.getInstance().notifyProcedures(vehicleHitsHospitalMessage);
                     
-                    //Call Patient Monitor Service removeVehicle(vehicleId)
-                    PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
+                    //Notify VehicleMGMTService
+                    VehiclesMGMTService.getInstance().vehicleRemoved(vehicleHitsHospitalMessage.getVehicleId());
                 }
             }); 
 
@@ -263,7 +252,7 @@ public class CoreServer {
                 public void handleMessage(VehicleDispatchedMessage message) {
                     vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
-                    PatientMonitorService.getInstance().newVehicleDispatched(message.getEmergencyId(), message.getVehicleId());
+                    VehiclesMGMTService.getInstance().newVehicleDispatched(message.getEmergencyId(), message.getVehicleId());
 //                    try {
 //                        Thread.sleep(3000);
 //                    } catch (InterruptedException ex) {
@@ -290,8 +279,17 @@ public class CoreServer {
                         PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
                         event.setEmergencyId(message.getEmergencyId());
                         event.setVehicleId(message.getVehicleId());
-                        PatientMonitorService.getInstance().newHeartBeatReceived(event);
+                        VehiclesMGMTService.getInstance().processEvent(event);
                     }
+                }
+            });
+            
+            //FireTruck Water Level Decreased Received
+            fireTruckDecreaseWaterLevelWorker = new MessageConsumerWorker("fireTruckDecreaseWaterLevelCoreServer", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
+                    VehiclesMGMTService.getInstance().processEvent(new FireTruckDecreaseWaterLevelEvent(message.getEmergencyId(), message.getVehicleId(), message.getTime()));
                 }
             });
 
@@ -327,6 +325,7 @@ public class CoreServer {
             asynchProcedureStartWorker.start();
             procedureEndedWorker.start();
             allProceduresEndedWorker.start();
+            fireTruckDecreaseWaterLevelWorker.start();
             
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
@@ -367,6 +366,9 @@ public class CoreServer {
         }
         if(allProceduresEndedWorker != null){
             allProceduresEndedWorker.stopWorker();
+        }
+        if(fireTruckDecreaseWaterLevelWorker != null){
+            fireTruckDecreaseWaterLevelWorker.stopWorker();
         }
         
     }

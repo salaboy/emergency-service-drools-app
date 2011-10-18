@@ -2,8 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package com.wordpress.salaboy.model.events;
+package com.wordpress.salaboy.model.messages;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,32 +11,19 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireTruckOutOfWaterEvent implements EmergencyVehicleEvent, Serializable {
+public class FireTruckDecreaseWaterLevelMessage implements Serializable ,EmergencyInterchangeMessage{
     private String emergencyId;
     private String vehicleId;
-    
     private Date time;
 
-    public FireTruckOutOfWaterEvent() {
-    }
-
-    public FireTruckOutOfWaterEvent(Date time) {
-        this.time = time;
-    }
-    
-    public FireTruckOutOfWaterEvent(String emergencyId, String vehicleId, Date time) {
+    public FireTruckDecreaseWaterLevelMessage(String emergencyId, String vehicleId, Date time) {
         this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
     }
 
-    @Override
-    public String getEmergencyId() {
-        return emergencyId;
-    }
-
-   
-
+  
+    
     public String getVehicleId() {
         return vehicleId;
     }
@@ -54,9 +40,23 @@ public class FireTruckOutOfWaterEvent implements EmergencyVehicleEvent, Serializ
         this.time = time;
     }
 
-    @Override
-    public String toString() {
-        return "FireTruckOutOfWaterEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
+    }
+    
+    
+    
+    @Override
+    public String toString() {
+        return "FireTruckDecreaseWaterLevelMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+    }
+
+   
+    
+    
+     
 }

@@ -1,0 +1,41 @@
+package vehicle.monitor.firetruck;
+
+import java.util.ArrayList;
+
+import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.events.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+
+global String emergencyId;
+
+rule "Decrease water level"
+when
+    $ft: FireTruck($id: id)
+    $evt: FireTruckDecreaseWaterLevelEvent()
+then
+
+    System.out.println("Water Level Decreased on Fire Truck "+$ft);
+
+    //retract the event
+    retract ($evt);
+
+    //decrease tank level 
+    $ft.setTankLevel($ft.getTankLevel()-1);
+
+    //update persistent information
+    PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
+    
+    //update the vehicle fact
+    update($ft);
+    
+end
+
+rule "No more water in the truck"
+when
+    $ft: FireTruck($id: id, tankLevel <=0)
+then
+    System.out.println("Fire Truck "+$ft+" ran out of water!");
+    MessageFactory.sendMessage(new FireTruckOutOfWaterMessage(emergencyId, $id, new java.util.Date()));
+end

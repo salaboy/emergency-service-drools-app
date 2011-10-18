@@ -12,7 +12,7 @@ declare PulseEvent
 end
 
 global String vehicleId;
-global String callId;
+global String emergencyId;
 
 rule "Patient with no vital sign"
     when
@@ -20,12 +20,12 @@ rule "Patient with no vital sign"
         												average($pulse)) 
     then
         //Notify about the new Emergency
-        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId, "Warning, patient without vital signs ", new java.util.Date()));
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(emergencyId, vehicleId, "Warning, patient without vital signs ", new java.util.Date()));
 end
 
 rule "Patient heart attack"
     when
         ArrayList(size > 7 ) from collect( PulseEvent( processed == false, $pulse: value) over window:time(1s) from entry-point "patientHeartbeats") 
     then
-        MessageFactory.sendMessage(new PatientMonitorAlertMessage(callId, vehicleId, "Warning, patient suffering a heart attack ", new java.util.Date()));
+        MessageFactory.sendMessage(new PatientMonitorAlertMessage(emergencyId, vehicleId, "Warning, patient suffering a heart attack ", new java.util.Date()));
 end

@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author salaboy
  */
-public class VehicleHitsHospitalEvent implements EmergencyEvent, Serializable {
+public class VehicleHitsHospitalEvent implements EmergencyVehicleEvent, Serializable {
 
     private String emergencyId;
     private String vehicleId;

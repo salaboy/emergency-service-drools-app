@@ -117,7 +117,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         } else if (Input.KEY_Q == code) {
             this.sendHeartBeat(new Random().nextInt(50));
         } else if (Input.KEY_W == code) {
-            this.sendHeartBeat(-1 * new Random().nextInt(50));
+            if (this.activeGraphicableVehicle instanceof GraphicableAmbulance){
+                this.sendHeartBeat(-1 * new Random().nextInt(50));
+            } else if(this.activeGraphicableVehicle instanceof GraphicableFireTruck){
+                this.sendWaterLevelDecreased();
+            }
         } else if (Input.KEY_E == code) {
             this.notifyAboutVehicleHittingTheEmergency();
         } else if (Input.KEY_F1 == code) {
@@ -351,6 +355,19 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
     }
     
+    private void sendWaterLevelDecreased() {
+        //only if the active vehicle is a firetruck
+        if (this.activeGraphicableVehicle == null || !(this.activeGraphicableVehicle instanceof GraphicableFireTruck)) {
+            return;
+        }
+
+        try {
+            MessageFactory.sendMessage(new FireTruckDecreaseWaterLevelMessage(this.emergency.getCallId(), this.activeVehicle.getId(), new Date()));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void removeEmergency(){
         if (this.emergency == null){
             return;
@@ -376,7 +393,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     }
 
     private void addMockFireTruck() {
-        this.addMockVehicle(new FireTruck("Mock Fire Truck"));
+        this.addMockVehicle(new FireTruck("Mock Fire Truck", 10, 10));
     }
 
     private void addMockPoliceCar() {

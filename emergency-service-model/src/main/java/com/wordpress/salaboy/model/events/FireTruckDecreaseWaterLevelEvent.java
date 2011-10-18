@@ -12,20 +12,20 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireTruckOutOfWaterEvent implements EmergencyVehicleEvent, Serializable {
+public class FireTruckDecreaseWaterLevelEvent implements EmergencyVehicleEvent, Serializable {
     private String emergencyId;
     private String vehicleId;
     
     private Date time;
 
-    public FireTruckOutOfWaterEvent() {
+    public FireTruckDecreaseWaterLevelEvent() {
     }
 
-    public FireTruckOutOfWaterEvent(Date time) {
+    public FireTruckDecreaseWaterLevelEvent(Date time) {
         this.time = time;
     }
     
-    public FireTruckOutOfWaterEvent(String emergencyId, String vehicleId, Date time) {
+    public FireTruckDecreaseWaterLevelEvent(String emergencyId, String vehicleId, Date time) {
         this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
@@ -56,7 +56,7 @@ public class FireTruckOutOfWaterEvent implements EmergencyVehicleEvent, Serializ
 
     @Override
     public String toString() {
-        return "FireTruckOutOfWaterEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+        return "FireTruckDecreaseWaterLevelEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
     }
 
 }

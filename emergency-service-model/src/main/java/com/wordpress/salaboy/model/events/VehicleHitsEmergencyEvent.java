@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class VehicleHitsEmergencyEvent implements EmergencyEvent, Serializable {
+public class VehicleHitsEmergencyEvent implements EmergencyVehicleEvent, Serializable {
     private String emergencyId;
     private String vehicleId;
     
