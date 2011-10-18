@@ -13,22 +13,22 @@ import java.util.Date;
  */
 public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInterchangeMessage {
     private String vehicleId;
-    private String callId;
+    private String emergencyId;
     private Date time;
     
-    public VehicleHitsEmergencyMessage(String vehicleId, String callId, Date time) {
+    public VehicleHitsEmergencyMessage(String vehicleId, String emergencyId, Date time) {
         this.vehicleId = vehicleId;
-        this.callId = callId;
+        this.emergencyId = emergencyId;
         this.time = time; 
     }
 
     @Override
     public String getEmergencyId() {
-        return callId;
+        return emergencyId;
     }
 
-    public void setCallId(String emergecyId) {
-        this.callId = emergecyId;
+    public void setEmergencyId(String emergecyId) {
+        this.emergencyId = emergecyId;
     }
 
     public String getVehicleId() {
@@ -49,7 +49,7 @@ public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInter
 
     @Override
     public String toString() {
-        return "VehicleHitsEmergencyMessage{" + "vehicleId=" + vehicleId + ", callId=" + callId + ", time=" + time + '}';
+        return "VehicleHitsEmergencyMessage{" + "vehicleId=" + vehicleId + ", emergencyId=" + emergencyId + ", time=" + time + '}';
     }
     
     
