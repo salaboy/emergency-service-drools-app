@@ -11,7 +11,7 @@ declare PulseEvent
     @expires ( 20s )
 end
 
-global Long vehicleId;
+global String vehicleId;
 global String callId;
 
 
