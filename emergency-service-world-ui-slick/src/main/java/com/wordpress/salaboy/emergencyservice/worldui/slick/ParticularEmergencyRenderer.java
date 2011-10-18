@@ -4,19 +4,16 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.*;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -38,16 +35,12 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private GraphicableHighlightedFirefighterDepartment selectedFirefighterDepartment;
     private boolean turbo;
     private boolean hideEmergency;
-    private final PersistenceService persistenceService;
-    private final ContextTrackingService trackingService;
 
     public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
         this.emergency = emergency;
         this.ui = ui;
         this.vehicles = new HashMap<Graphicable, Vehicle>();
         this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
-        persistenceService = PersistenceServiceProvider.getPersistenceService();
-        trackingService = ContextTrackingProvider.getTrackingService();
     }
 
     /**
@@ -125,6 +118,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             this.sendHeartBeat(new Random().nextInt(50));
         } else if (Input.KEY_W == code) {
             this.sendHeartBeat(-1 * new Random().nextInt(50));
+        } else if (Input.KEY_E == code) {
+            this.notifyAboutVehicleHittingTheEmergency();
         } else if (Input.KEY_F1 == code) {
             addMockAmbulance();
         } else if (Input.KEY_F2 == code) {
@@ -177,7 +172,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         //check for collisions
         checkCornerCollision();
-        checkEmergencyCollision();
+        //checkEmergencyCollision();
         checkHospitalCollision();
     }
 
@@ -273,25 +268,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             return false;
         }
         
-        boolean collides = false;
-
-        collides = this.activeGraphicableVehicle.getPolygon().intersects(emergency.getPolygon());
-
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAnEmergency() && !this.activeGraphicableVehicle.isAlreadyHitAnEmergency()) {
-            try {
-                this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);
-                System.out.println("EMERGENCY REACHED!");
-                MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), this.emergency.getCallId(), new Date()));
-                //hide the emergency graphicable when it is hit
-                this.setHideEmergency(true);
-            } catch (HornetQException ex) {
-                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        this.activeGraphicableVehicle.setIsCollidingWithAnEmergency(collides);
-
-        return collides;
+        return this.activeGraphicableVehicle.getPolygon().intersects(emergency.getPolygon());
 
     }
 
@@ -368,7 +345,6 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         pulse += 235;
         try {
-            this.activeGraphicableVehicle.setAlreadyHitAnEmergency(true);
             MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), pulse, new Date()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -415,11 +391,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             Random random = new Random(System.currentTimeMillis());
             do{
                 vehicleId = random.nextLong()+""; 
-            } while(persistenceService.loadVehicle(vehicleId) != null);
+            } while(this.ui.getPersistenceService().loadVehicle(vehicleId) != null);
             
             vehicle.setId(vehicleId);
             
-            persistenceService.storeVehicle(vehicle);
+            this.ui.getPersistenceService().storeVehicle(vehicle);
             MessageFactory.sendMessage(new VehicleDispatchedMessage(this.emergency.getCallId(), vehicle.getId()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -429,7 +405,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private void selectMockHospital(int index) {
         Hospital mock = null;
         for (int i = 0; i < index+1; i++) {
-            mock = persistenceService.getAllHospitals().iterator().next();
+            mock = this.ui.getPersistenceService().getAllHospitals().iterator().next();
         }
         
         try {
@@ -442,10 +418,46 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private void selectMockFireDepartment(int index) {
         FirefightersDepartment mock = null;
         for (int i = 0; i < index+1; i++) {
-            mock = persistenceService.getAllFirefighterDepartments().iterator().next();
+            mock = this.ui.getPersistenceService().getAllFirefighterDepartments().iterator().next();
         }
         try {
             MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(this.emergency.getCallId(), mock));
+        } catch (HornetQException ex) {
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Notifies that the active vehicle hit the emergency sending a 
+     * {@link VehicleHitsEmergencyMessage}. 
+     * The message is only sent if the active vehicle is actually hitting
+     * the emergency.
+     */
+    private void notifyAboutVehicleHittingTheEmergency() {
+        //if no emergency -> no hit
+        if (this.emergency == null){
+            return;
+        }
+            
+        //if no active vehicle -> no hit
+        if (this.activeGraphicableVehicle == null) {
+            return;
+        }
+        
+        //if no collition between the active vehicle and the emergency -> no notification
+        if (!this.checkEmergencyCollision()){
+            return;
+        }
+        
+        
+        System.out.println("EMERGENCY REACHED!");
+        try {
+            //get the emergency that is related to this call
+            String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+            
+            //send notification
+            MessageFactory.sendMessage(new VehicleHitsEmergencyMessage(this.activeVehicle.getId(), emergencyId, new Date()));
+            
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -304,6 +304,13 @@ public class WorldUI extends BasicGame {
     public void selectFirefighterDepartmentForEmergency(String callId, FirefightersDepartment firefigthersDepartment) {
         this.renderers.get(callId).selectFirefighterDepartment(firefigthersDepartment);               
     }
-    
+
+    public PersistenceService getPersistenceService() {
+        return persistenceService;
+    }
+
+    public ContextTrackingService getTrackingService() {
+        return trackingService;
+    }
     
 }
