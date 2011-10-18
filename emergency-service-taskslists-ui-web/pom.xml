@@ -28,11 +28,6 @@
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-model</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
-            <artifactId>emergency-service-tracking-context-component</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 		<!--dependency>
 			<groupId>com.wordpress.salaboy.emergencyservice</groupId>
 			<artifactId>emergency-service-core</artifactId>

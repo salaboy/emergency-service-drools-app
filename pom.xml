@@ -25,7 +25,6 @@
         <module>emergency-service-sensor</module>
         <module>emergency-service-doc</module>
         <module>emergency-service-dashboard-ui-swing</module>
-        <module>emergency-service-tracking-context-component</module>
         <module>run</module>
     </modules>
 
