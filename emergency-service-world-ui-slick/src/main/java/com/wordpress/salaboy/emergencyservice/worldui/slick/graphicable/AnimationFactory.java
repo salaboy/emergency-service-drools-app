@@ -21,18 +21,20 @@ import org.newdawn.slick.SpriteSheet;
  */
 public class AnimationFactory {
 
+    private static Map<EmergencyType, SpriteSheet> emergencySprites = new EnumMap<EmergencyType, SpriteSheet>(EmergencyType.class);
     private static SpriteSheet ambulanceSprite;
     private static SpriteSheet fireTruckSprite;
     private static SpriteSheet policeCarSprite;
-    private static Map<EmergencyType, SpriteSheet> emergencySprites = new EnumMap<EmergencyType, SpriteSheet>(EmergencyType.class);
     private static SpriteSheet highlightedHospitalSprite;
     private static SpriteSheet highlightedFireFighterDepartmentSprite;
+    private static SpriteSheet glowSprites;
     private static Animation ambulanceAnimation;
     private static Animation fireTruckAnimation;
     private static Animation policeCarAnimation;
     private static Animation highlightedHospitalAnimation;
     private static Animation highlightedFireFighterDepartmentAnimation;
     private static Animation genericEmergencyAnimation;
+    
 
     public static Animation getAmbulanceAnimation() {
         if (ambulanceAnimation == null) {
@@ -173,6 +175,17 @@ public class AnimationFactory {
         }
         return emergencySprites.get(type);
     }
+    
+    private static SpriteSheet getGlowSpriteSheet() {
+        if (glowSprites == null) {
+            try {
+               glowSprites = new SpriteSheet("data/sprites/glow.png", 32, 32, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return glowSprites;
+    }
 
     static Animation getFireTruckAnimation() {
         if (fireTruckAnimation == null) {
@@ -202,5 +215,25 @@ public class AnimationFactory {
             }
         }
         return policeCarAnimation;
+    }
+    
+    public static Animation addGlow (Graphicable graphicable){
+        Animation glowAnimation = new Animation();
+        glowAnimation.setLooping(false);
+        glowAnimation.setAutoUpdate(true);
+
+        for (int row = 0; row < getGlowSpriteSheet().getHorizontalCount(); row++) {
+            for (int frame = 0; frame < getGlowSpriteSheet().getVerticalCount(); frame++) {
+                try {
+                    Image sprite = getGlowSpriteSheet().getSprite(row, frame);
+                    sprite.getGraphics().drawImage(graphicable.getAnimation().getCurrentFrame(),0, 0);
+                    glowAnimation.addFrame(sprite, 250);
+                } catch (SlickException ex) {
+                    Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return glowAnimation;
     }
 }

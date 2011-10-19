@@ -14,11 +14,20 @@ import java.io.Serializable;
 public class FirefightersDepartmentSelectedMessage implements Serializable, EmergencyInterchangeMessage{
     private FirefightersDepartment firefightersDepartment;
     private String callId;
+    private String emergencyId;
 
     public FirefightersDepartmentSelectedMessage(String callId, FirefightersDepartment firefigthersDepartment) {
         this.firefightersDepartment = firefigthersDepartment;
         this.callId = callId;
     }
+
+    public FirefightersDepartmentSelectedMessage(String callId, String emergencyId, FirefightersDepartment firefightersDepartment) {
+        this.firefightersDepartment = firefightersDepartment;
+        this.callId = callId;
+        this.emergencyId = emergencyId;
+    }
+    
+    
 
     public String getCallId() {
         return callId;
@@ -43,10 +52,11 @@ public class FirefightersDepartmentSelectedMessage implements Serializable, Emer
 
     @Override
     public String getEmergencyId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return emergencyId;
     }
-    
-    
-    
-    
+
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
+    }
+
 }

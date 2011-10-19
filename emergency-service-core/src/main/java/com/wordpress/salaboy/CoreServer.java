@@ -38,9 +38,7 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.CityEntities;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
@@ -50,6 +48,7 @@ import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.*;
+import java.util.Iterator;
 
 /**
  * @author salaboy
@@ -147,14 +146,18 @@ public class CoreServer {
         
         //Init Persistence Service and add all the city entities
         for (Vehicle vehicle : CityEntities.vehicles) {
-            System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
+            System.out.println("Initializing Vehicle into the Cache - >" + vehicle);
             persistenceService.storeVehicle(vehicle);
         }
         
         for (Hospital hospital : CityEntities.hospitals) {
-            System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
+            System.out.println("Initializing Hospital into the Cache - >" + hospital);
             persistenceService.storeHospital(hospital);
         }
+        
+        FirefightersDepartment firefightersDepartment = (FirefightersDepartment)CityEntities.buildings.get("Firefighters Department");
+        System.out.println("Initializing Hospital into the Cache - >" + firefightersDepartment);
+        persistenceService.storeFirefightersDepartment(firefightersDepartment);
 
         //Init First Response Service, just to have one instance ready for new phone calls
         GenericEmergencyProcedureImpl.getInstance();

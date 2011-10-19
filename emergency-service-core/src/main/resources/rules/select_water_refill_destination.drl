@@ -36,6 +36,6 @@ rule "Calculate Water Refill Location"
         String callId = ((Call)$processInstance.getVariable("call")).getId();
         $processInstance.setVariable("refillDestination", new Location($selectedDepartment.getX(),$selectedDepartment.getY()));
         
-        MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(callId, $selectedDepartment));
+        MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(callId, $emergency.getId(), $selectedDepartment));
       
 end
