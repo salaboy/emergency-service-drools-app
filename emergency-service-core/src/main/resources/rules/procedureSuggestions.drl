@@ -15,7 +15,6 @@ rule "Initialize Emergency"
     salience 20
     ruleflow-group "suggest process"
     when
-        
         $processInstance: WorkflowProcessInstance( )
         not(Emergency(processInstanceId == $processInstance.id))
     then

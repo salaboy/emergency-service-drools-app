@@ -68,6 +68,10 @@ public class ProceduresMGMTService {
         
         String emergencyId = message.getEmergencyId();
         
+        if (!this.proceduresByEmergency.containsKey(emergencyId)){
+            throw new IllegalStateException("Unknown emergency "+emergencyId);
+        }
+        
         //convert from Message to CallEvent
         EmergencyEvent event = this.convertMessageToEvent(message);
         
