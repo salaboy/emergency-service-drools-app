@@ -5,7 +5,6 @@
 package com.wordpress.salaboy.context.tracking;
 
 import com.wordpress.salaboy.model.serviceclient.EnvironmentConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.test.ImpermanentGraphDatabase;

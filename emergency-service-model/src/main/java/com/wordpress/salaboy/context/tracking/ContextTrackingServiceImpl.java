@@ -229,7 +229,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             CypherParser parser = new CypherParser();
             ExecutionEngine engine = new ExecutionEngine(this.graphDb);
-            Query query = parser.parse("start c=(emergencies, 'emergencyId:" + emergencyId + "')  match (e) <-[CREATES]- (c)    return c");
+            Query query = parser.parse("start e=(emergencies, 'emergencyId:" + emergencyId + "')  match (e) <-[CREATES]- (c)    return c");
             ExecutionResult result = engine.execute(query);
 
             if (result.isEmpty()) {
@@ -257,7 +257,7 @@ public class ContextTrackingServiceImpl implements ContextTrackingService {
         try {
             CypherParser parser = new CypherParser();
             ExecutionEngine engine = new ExecutionEngine(this.graphDb);
-            Query query = parser.parse("start e=(calls, 'callId:" + callId + "')  match (c) -[CREATES]-> (e)    return e");
+            Query query = parser.parse("start c=(calls, 'callId:" + callId + "')  match (c) -[CREATES]-> (e)    return e");
             ExecutionResult result = engine.execute(query);
 
             if (result.isEmpty()) {

@@ -54,15 +54,26 @@
         </dependency>
         
         <!-- GRAPH DB -->
-<dependency>
+        <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
+        </dependency>
+         <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+         <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>1.4.2</version>
+            <classifier>tests</classifier>
         </dependency>
         <dependency>
             <groupId>org.neo4j.app</groupId>
             <artifactId>neo4j-server</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -78,17 +89,17 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-cypher</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j.server.plugin</groupId>
             <artifactId>neo4j-cypher-plugin</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j.server.plugin</groupId>
             <artifactId>neo4j-gremlin-plugin</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
