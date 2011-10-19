@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordpress.salaboy.emergencyservice.web.task.exception.FormValidationException;
 
 /**
- * Controller to handle doctor's update task form.
+ * Controller to handle firefighter's update task form.
  * 
- * @author calcacuervo
+ * @author esteban
  */
 @Controller
-public class DoctorsUpdateController extends AbstractTaskFormController {
+public class FirefighterUpdateController extends AbstractTaskFormController {
 
 	@Override
 	protected void addCustomFormLogic(Model model) {
@@ -27,7 +27,7 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 
 	@Override
 	protected String getTaskType() {
-		return "Doctor";
+		return "Firefighter";
 	}
 
 	@Override
@@ -37,14 +37,14 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 
 	private static final String viewPrefix = "";
 	private static final Logger logger = LoggerFactory
-			.getLogger(DoctorsUpdateController.class);
+			.getLogger(FirefighterUpdateController.class);
 
-	public DoctorsUpdateController() {
+	public FirefighterUpdateController() {
 		super();
 	}
 
 	@Override
-	@RequestMapping(value = "/task/do/{entity}/{profile}/{id}/{name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/fi/{entity}/{profile}/{id}/{name}", method = RequestMethod.GET)
 	public String taskInfo(@PathVariable("id") String id,
 			@PathVariable("entity") String entity,
 			@PathVariable("name") String name,
@@ -52,7 +52,7 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 		return super.taskInfo(id, entity, name, profile, model);
 	}
 
-	@RequestMapping(value = "/task/do/execute/{entity}/{profile}/{id}/{name}/{action}/{document}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/fi/execute/{entity}/{profile}/{id}/{name}/{action}/{document}", method = RequestMethod.GET)
 	public String executeTask(@PathVariable("id") String taskId,
 			@PathVariable("action") String action,
 			@PathVariable("entity") String entity,
@@ -63,7 +63,7 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 				profile, model);
 	}
 
-	@RequestMapping(value = "/task/do/execute/{entity}/{profile}/{id}/{name}/{action}", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/fi/execute/{entity}/{profile}/{id}/{name}/{action}", method = RequestMethod.GET)
 	public String executeTask(@PathVariable("id") String taskId,
 			@PathVariable("action") String action,
 			@PathVariable("entity") String entity,
@@ -87,7 +87,7 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 		String notes = formSubmittedData.get("Update Situation");
 		if (notes == null || notes.isEmpty()) {
 			throw new FormValidationException(
-					"Doctor, please include an update!");
+					"Sir, please include an update!");
 		}
 		try {
 			Integer.parseInt(formSubmittedData.get("Severity"));

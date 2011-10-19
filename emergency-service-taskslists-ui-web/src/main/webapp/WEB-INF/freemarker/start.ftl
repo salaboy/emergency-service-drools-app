@@ -27,8 +27,9 @@
 			<select name="user" id="user">
 				<option>operator</option>
 				<option>control</option>
-				<option>doctor</option>
 				<option>garage_emergency_service</option>
+				<option>doctor</option>
+				<option>firefighter</option>
 			</select>
 		</td>
 	</tr>
