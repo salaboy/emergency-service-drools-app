@@ -23,7 +23,7 @@ rule "Calculate Water Refill Location"
     when
        $processInstance: WorkflowProcessInstance()
        $emergency: Emergency($type: type.name)
-       $selectedLocation: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments(), 
+       $selectedDepartment: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments(), 
                 firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
         )
     then
@@ -31,11 +31,11 @@ rule "Calculate Water Refill Location"
         System.out.println("EMERGENCY: "+$emergency);
         System.out.println("FireDeps: "+PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments().size());
         
-        System.out.println("SELECTED LOCATION "+$selectedLocation.getX()+"--"+$selectedLocation.getY());
+        System.out.println("SELECTED LOCATION "+$selectedDepartment.getX()+"--"+$selectedDepartment.getY());
 
         String callId = ((Call)$processInstance.getVariable("call")).getId();
-        $processInstance.setVariable("refillDestination", new Location($selectedLocation.getX(),$selectedLocation.getY()));
+        $processInstance.setVariable("refillDestination", new Location($selectedDepartment.getX(),$selectedDepartment.getY()));
         
-      
+        MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(callId, $selectedDepartment));
       
 end

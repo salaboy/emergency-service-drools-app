@@ -159,13 +159,19 @@ public class WorldUI extends BasicGame {
 
             @Override
             public void handleMessage(final VehicleDispatchedMessage message) {
-                if (emergencies.get(message.getCallId())==null){
-                    System.out.println("Unknown emergency for call Id "+message.getCallId());
-                    return;
+                String callId = trackingService.getCallAttachedToEmergency(message.getEmergencyId());
+                
+                if (callId == null){
+                    throw new IllegalArgumentException("No Call attached to Emergency "+message.getEmergencyId());
                 }
+                
+                if (emergencies.get(callId)==null){
+                    throw new IllegalArgumentException("Unknown emergency for call Id "+callId);
+                }
+                
                 Vehicle vehicle = persistenceService.loadVehicle(message.getVehicleId());
-                switchToEmergency(message.getCallId());
-                assignVehicleToEmergency(message.getCallId(), vehicle);
+                switchToEmergency(callId);
+                assignVehicleToEmergency(callId, vehicle);
             }
         });
 

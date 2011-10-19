@@ -497,7 +497,26 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
 
     @Override
     public String getCallAttachedToEmergency(String emergencyId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            HttpClient client = new HttpClient();
+            PostMethod method = new PostMethod(this.baseUri + "/db/data/ext/CypherPlugin/graphdb/execute_query");
+            method.setRequestHeader("Content-type", "application/json");
+            method.setRequestHeader("Accept", "application/json");
+            String content = "{\"query\": \"start e=(emergencies, 'emergencyId:" + emergencyId + "')  match (c) -[CREATES]-> (e)    return c\"}";
+            method.setRequestEntity(new StringRequestEntity(content, "application/json", "UTF-8"));
+            client.executeMethod(method);
+
+            Gson gson = new Gson();
+
+            QueryResult result = gson.fromJson(method.getResponseBodyAsString(),
+                    new TypeToken<QueryResult>() {
+                    }.getType());
+            //TODO CHECK THIS WITH A TEST!
+            return result.getData().get(0).get(0).getData().get("callId");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

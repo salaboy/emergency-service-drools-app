@@ -269,7 +269,8 @@ public class UserTaskListUI extends javax.swing.JFrame {
             public void handleMessage(VehicleDispatchedMessage message) {
                 //store only the last vehicle and call id. This is going to
                 //be used later by the wiimote event generator.
-                LAST_CALL_ID = message.getCallId();
+                
+                //LAST_CALL_ID = message.getCallId();
                 LAST_DISPATCHED_VEHICLE_ID = message.getVehicleId();
             }
         });

@@ -43,6 +43,7 @@ import com.wordpress.salaboy.model.Hospital;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.events.PulseEvent;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
@@ -79,6 +80,7 @@ public class CoreServer {
     private MessageConsumerWorker procedureEndedWorker;
     private MessageConsumerWorker allProceduresEndedWorker;
     private MessageConsumerWorker fireTruckDecreaseWaterLevelWorker;
+    private MessageConsumerWorker fireTruckOutOfWaterWorker;
     private static boolean startWrappingServer = true;
 	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
 			+ "/db/data/";
@@ -292,6 +294,16 @@ public class CoreServer {
                     VehiclesMGMTService.getInstance().processEvent(new FireTruckDecreaseWaterLevelEvent(message.getEmergencyId(), message.getVehicleId(), message.getTime()));
                 }
             });
+            //FireTruck Out Of Water Received
+            fireTruckOutOfWaterWorker = new MessageConsumerWorker("fireTruckOutOfWaterCoreServer", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckOutOfWaterMessage message) {
+                    FireTruckOutOfWaterEvent fireTruckOutOfWaterEvent = new FireTruckOutOfWaterEvent(message.getEmergencyId(), message.getVehicleId(), message.getTime());
+                    VehiclesMGMTService.getInstance().processEvent(fireTruckOutOfWaterEvent);
+                    ProceduresMGMTService.getInstance().notifyProcedures(message);
+                }
+            });
 
             reportingWorker = new MessageConsumerWorker("reportingCoreServer", new MessageConsumerWorkerHandler<EmergencyInterchangeMessage>() {
 
@@ -326,6 +338,7 @@ public class CoreServer {
             procedureEndedWorker.start();
             allProceduresEndedWorker.start();
             fireTruckDecreaseWaterLevelWorker.start();
+            fireTruckOutOfWaterWorker.start();
             
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
@@ -369,6 +382,9 @@ public class CoreServer {
         }
         if(fireTruckDecreaseWaterLevelWorker != null){
             fireTruckDecreaseWaterLevelWorker.stopWorker();
+        }
+        if(fireTruckOutOfWaterWorker != null){
+            fireTruckOutOfWaterWorker.stopWorker();
         }
         
     }

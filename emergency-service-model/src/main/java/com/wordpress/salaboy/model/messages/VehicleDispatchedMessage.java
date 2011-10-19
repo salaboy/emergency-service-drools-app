@@ -11,26 +11,22 @@ import java.io.Serializable;
  * @author esteban
  */
 public class VehicleDispatchedMessage implements Serializable ,EmergencyInterchangeMessage{
-    private String callId;
+    private String emergencyId;
     private String vehicleId;
 
-    public VehicleDispatchedMessage(String callId, String vehicleId) {
-        this.callId = callId;
+    public VehicleDispatchedMessage(String emergencyId, String vehicleId) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
     }
 
     @Override
     public String getEmergencyId() {
-        return callId;
-    }
-
-    public String getCallId() {
-        return callId;
+        return emergencyId;
     }
 
     
-    public void setCallId(String callId) {
-        this.callId = callId;
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
     }
     
     public String getVehicleId() {
@@ -43,7 +39,7 @@ public class VehicleDispatchedMessage implements Serializable ,EmergencyIntercha
 
     @Override
     public String toString() {
-        return "VehicleDispatchedMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + '}';
+        return "VehicleDispatchedMessage{" + "callId=" + emergencyId + ", vehicleId=" + vehicleId + '}';
     }
     
     
