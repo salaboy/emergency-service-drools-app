@@ -19,3 +19,6 @@ hs_err_pid*.log
 /.settings/
 /emergency-service-core/db/
 /emergency-service-model/db/
+emergency-service-core/data/
+emergency-service-model/data/
+run/data/
