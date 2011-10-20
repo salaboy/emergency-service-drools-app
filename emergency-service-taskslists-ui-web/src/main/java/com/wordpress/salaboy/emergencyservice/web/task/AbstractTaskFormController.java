@@ -154,6 +154,7 @@ public abstract class AbstractTaskFormController {
 				try {
 					this.validate(map);
 				} catch (FormValidationException ex) {
+                                        ex.printStackTrace();
 					model.addAttribute("validationError", ex.getMessage());
 					return this.taskInfo(taskId, entity, name, profile, model);
 				}

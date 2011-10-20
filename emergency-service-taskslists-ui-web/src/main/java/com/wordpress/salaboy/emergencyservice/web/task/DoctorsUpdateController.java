@@ -76,7 +76,7 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 	protected Map<String, Object> generateOutputForForm(String form,
 			Map<String, String> data) {
 		Map<String, Object> info = new HashMap<String, Object>();
-		info.put("emergency.severity", Integer.parseInt(data.get("Severity")));
+		info.put("emergency.severity", Integer.parseInt(data.get("Severity").replaceAll("_", "")));
 		info.put("emergency.updatedNotes", data.get("Update Situation"));
 		return info;
 	}
@@ -90,7 +90,9 @@ public class DoctorsUpdateController extends AbstractTaskFormController {
 					"Doctor, please include an update!");
 		}
 		try {
-			Integer.parseInt(formSubmittedData.get("Severity"));
+                    //because of multiple selection list in UI, the
+                    //value of 'Serverity' can have a '_' at the beginning
+                    Integer.parseInt(formSubmittedData.get("Severity").replaceAll("_", ""));
 		} catch (NumberFormatException nfe) {
 			throw new FormValidationException("Severity must be a number");
 		}

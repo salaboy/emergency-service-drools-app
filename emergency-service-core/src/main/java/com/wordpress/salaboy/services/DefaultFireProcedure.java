@@ -4,10 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.events.EmergencyEvent;
-import com.wordpress.salaboy.model.events.FireExtinctedEvent;
-import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
-import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.events.*;
 
 /**
  *
@@ -17,4 +14,5 @@ public interface DefaultFireProcedure extends ProcedureService{
     public void vehicleReachesEmergencyNotification(VehicleHitsEmergencyEvent event);
     public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event);
     public void fireExtinctedNotification(FireExtinctedEvent event);
+    public void vehicleHitsFireDepartmentEventNotification(VehicleHitsFireDepartmentEvent vehicleHitsFireDepartmentEvent);
 }

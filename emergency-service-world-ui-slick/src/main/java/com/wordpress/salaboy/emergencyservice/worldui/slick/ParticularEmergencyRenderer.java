@@ -7,6 +7,7 @@ package com.wordpress.salaboy.emergencyservice.worldui.slick;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.*;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import java.util.*;
@@ -119,7 +120,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             if (this.activeGraphicableVehicle instanceof GraphicableAmbulance){
                 this.sendHeartBeat(-1 * new Random().nextInt(50));
             } else if(this.activeGraphicableVehicle instanceof GraphicableFireTruck){
-                this.sendWaterLevelDecreased();
+                this.throwWaterOnFire();
             }
         } else if (Input.KEY_E == code) {
             this.notifyAboutVehicleHittingTheEmergency();
@@ -408,6 +409,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             return;
         }
 
+        //if no collision -> no water
+        if (!this.checkEmergencyCollision()){
+            return;
+        }
+        
         try {
             MessageFactory.sendMessage(new FireTruckDecreaseWaterLevelMessage(this.emergency.getCallId(), this.activeVehicle.getId(), new Date()));
         } catch (HornetQException ex) {
@@ -419,7 +425,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (this.emergency == null){
             return;
         }
-        
+                
         ui.removeEmergency(emergency.getCallId());
         
         this.emergency = null;
@@ -455,6 +461,16 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 Emergency mockEmergency = new Emergency();
                 mockEmergency.setCall(this.ui.getPersistenceService().loadCall(this.emergency.getCallId()));
                 mockEmergency.setLocation(new Location(this.emergency.getCallX(), this.emergency.getCallY()));
+                mockEmergency.setNroOfPeople(10);
+                
+                if (vehicle instanceof Ambulance){
+                    mockEmergency.setType(Emergency.EmergencyType.HEART_ATTACK);
+                }else if (vehicle instanceof FireTruck){
+                    mockEmergency.setType(Emergency.EmergencyType.FIRE);
+                }else{
+                    mockEmergency.setType(Emergency.EmergencyType.UNDEFINED);
+                }
+                
                 this.ui.getPersistenceService().storeEmergency(mockEmergency);
                 
                 this.ui.getTrackingService().attachEmergency(this.emergency.getCallId(), mockEmergency.getId());
@@ -527,6 +543,45 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void throwWaterOnFire() {
+        FireTruck fireTruck = (FireTruck) this.ui.getPersistenceService().loadVehicle(this.activeVehicle.getId());
+        
+        if (fireTruck.getTankLevel() <=0){
+            //Are you kidding me? You don't have enough water! Get out of here!
+            return;
+        }
+        
+        String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+        final Emergency realEmergency = this.ui.getPersistenceService().loadEmergency(emergencyId);
+        
+        //HACK: We are using NroOfPeople as the life of the fire
+        realEmergency.setNroOfPeople(realEmergency.getNroOfPeople()-1);
+        this.ui.getPersistenceService().storeEmergency(realEmergency);
+        
+        this.sendWaterLevelDecreased();
+
+        //refresh the number
+        this.ui.addRenderCommand(new Command() {
+
+            @Override
+            public void execute() {
+                if (emergency != null){
+                    emergency.setAnimation(AnimationFactory.getEmergencyAnimation(realEmergency.getType(), realEmergency.getNroOfPeople()));
+                }
+            }
+        });
+        
+        //If there is no more fire, send a message and remove the emergency from the ui
+        if (realEmergency.getNroOfPeople() == 0){
+            this.setHideEmergency(true);
+            try {
+                MessageFactory.sendMessage(new FireExtinctedMessage(emergencyId, new Date()));
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

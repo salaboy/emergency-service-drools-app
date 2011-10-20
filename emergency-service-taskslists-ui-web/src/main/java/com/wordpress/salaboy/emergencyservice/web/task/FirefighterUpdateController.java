@@ -52,6 +52,7 @@ public class FirefighterUpdateController extends AbstractTaskFormController {
 		return super.taskInfo(id, entity, name, profile, model);
 	}
 
+        @Override
 	@RequestMapping(value = "/task/fi/execute/{entity}/{profile}/{id}/{name}/{action}/{document}", method = RequestMethod.GET)
 	public String executeTask(@PathVariable("id") String taskId,
 			@PathVariable("action") String action,
@@ -76,7 +77,7 @@ public class FirefighterUpdateController extends AbstractTaskFormController {
 	protected Map<String, Object> generateOutputForForm(String form,
 			Map<String, String> data) {
 		Map<String, Object> info = new HashMap<String, Object>();
-		info.put("emergency.severity", Integer.parseInt(data.get("Severity")));
+		info.put("emergency.severity", Integer.parseInt(data.get("Severity").replaceAll("_", "")));
 		info.put("emergency.updatedNotes", data.get("Update Situation"));
 		return info;
 	}
@@ -90,7 +91,9 @@ public class FirefighterUpdateController extends AbstractTaskFormController {
 					"Sir, please include an update!");
 		}
 		try {
-			Integer.parseInt(formSubmittedData.get("Severity"));
+                    //because of multiple selection list in UI, the
+                    //value of 'Serverity' can have a '_' at the beginning
+                    Integer.parseInt(formSubmittedData.get("Severity").replaceAll("_", ""));
 		} catch (NumberFormatException nfe) {
 			throw new FormValidationException("Severity must be a number");
 		}

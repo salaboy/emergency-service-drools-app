@@ -89,6 +89,8 @@ public class ProceduresMGMTService {
                     fireProcedure.fireTruckOutOfWaterNotification((FireTruckOutOfWaterEvent)event);
                 }else if (event instanceof FireExtinctedEvent){
                     fireProcedure.fireExtinctedNotification((FireExtinctedEvent)event);
+                }else if (event instanceof VehicleHitsFireDepartmentEvent){
+                    fireProcedure.vehicleHitsFireDepartmentEventNotification((VehicleHitsFireDepartmentEvent)event);
                 }
             }
         }

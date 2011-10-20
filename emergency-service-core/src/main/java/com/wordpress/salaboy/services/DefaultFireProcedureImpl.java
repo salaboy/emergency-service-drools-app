@@ -6,10 +6,7 @@ package com.wordpress.salaboy.services;
 
 import com.wordpress.salaboy.acc.FirefighterDeparmtmentDistanceCalculator;
 import com.wordpress.salaboy.model.Procedure;
-import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
-import com.wordpress.salaboy.model.events.FireExtinctedEvent;
-import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
-import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.services.workitemhandlers.ProcedureReportWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.DispatchVehicleWorkItemHandler;
 import com.wordpress.salaboy.workitemhandlers.NotifyEndOfProcedureWorkItemHandler;
@@ -211,5 +208,10 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     @Override
     public void fireExtinctedNotification(FireExtinctedEvent event) {
         internalSession.signalEvent("com.wordpress.salaboy.model.events.FireExtinctedEvent", event);
+    }
+
+    @Override
+    public void vehicleHitsFireDepartmentEventNotification(VehicleHitsFireDepartmentEvent vehicleHitsFireDepartmentEvent) {
+        internalSession.insert(vehicleHitsFireDepartmentEvent);
     }
 }
