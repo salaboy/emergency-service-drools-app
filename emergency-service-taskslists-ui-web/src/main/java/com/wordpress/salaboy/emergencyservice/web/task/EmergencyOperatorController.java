@@ -90,8 +90,6 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
         Emergency emergency = new Emergency();
         
         //persists the emergency
-        new DistributedService().getDistributedService().storeEmergency(emergency);
-        
         Location location = new Location();
         location.setLocationX(Integer.parseInt(data.get("Location X")));
         location.setLocationY(Integer.parseInt(data.get("Location Y")));
@@ -100,6 +98,7 @@ public class EmergencyOperatorController extends AbstractTaskFormController {
                 .get("Number Of People"))));
         emergency.setType(data.get("Emergency Type"));
         emergency.setCall(callsById.get(data.get("callId")));
+        new DistributedService().getDistributedService().storeEmergency(emergency);
         info.put("emergency", emergency);
         return info;
     }

@@ -10,16 +10,14 @@
  */
 package com.wordpress.salaboy.emergencyservice.dashboard;
 
+
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.emergencyservice.monitor.EmergencyMonitorPanel;
 import com.wordpress.salaboy.model.Emergency;
-
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,8 +33,6 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
     private final ContextTrackingService trackingService;
     /** Creates new form LiveEmergencyReport */
     public LiveEmergencyReport(String emergencyId) throws IOException {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
 
         trackingService = ContextTrackingProvider.getTrackingService();

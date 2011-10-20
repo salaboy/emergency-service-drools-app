@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 
 /*
@@ -10,29 +10,27 @@
  */
 package com.wordpress.salaboy.emergencyservice.monitor;
 
+
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
+import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
+import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
-import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +51,9 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private MessageConsumerWorker patientMonitorAlertWorker;
     private MessageConsumerWorker vehicleHitsEmergencyWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
+    private MessageConsumerWorker waterTankDecreaseWorker;
+    private MessageConsumerWorker waterTankIncreaseWorker;
+    private MessageConsumerWorker outOfWaterWorker;
     private String callId;
     private List<String> alerts = new ArrayList<String>();
     private Map<String, Boolean> vehicleHitEmergency = new HashMap<String, Boolean>();
@@ -63,8 +64,8 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     /** Creates new form EmergencyMonitorPanel */
     public EmergencyMonitorPanel(String callId) throws IOException {
         this.callId = callId;
-        
-         Map<String, Object> params = new HashMap<String, Object>();
+
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
 
@@ -99,6 +100,13 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         auditLogjTextArea = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel1 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jTruckStatusLabel = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
 
@@ -164,7 +172,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClear)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("GPS", jPanel1);
@@ -201,11 +209,86 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
         jTabbedPane.addTab("Live Report", jPanel3);
 
+        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 50));
+        jProgressBar1.setSize(new java.awt.Dimension(146, 50));
+
+        jLabel1.setText("Fire Turck Water Tank %");
+
+        jButton3.setText("<");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText(">");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jTruckStatusLabel.setBackground(new java.awt.Color(51, 255, 0));
+        jTruckStatusLabel.setForeground(new java.awt.Color(0, 255, 51));
+        jTruckStatusLabel.setText("Active Truck");
+
+        jLabel3.setText("Status");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addComponent(jButton3)
+                        .addGap(99, 99, 99)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(204, 204, 204)
+                                .addComponent(jLabel3))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
+        );
+
+        jTabbedPane.addTab("Fire Truck Status", jPanel7);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane)
+            .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -228,22 +311,38 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnClear1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());
-        
+
 }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        jProgressBar1.setValue(jProgressBar1.getValue() - 10);
+
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        jProgressBar1.setValue(jProgressBar1.getValue() + 10);
+    }//GEN-LAST:event_jButton4ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea auditLogjTextArea;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClear1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JLabel jTruckStatusLabel;
     private javax.swing.JLabel lblMap;
     private javax.swing.JList lstAlerts;
     // End of variables declaration//GEN-END:variables
@@ -280,7 +379,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         });
 
         //Vehicle Hits an Emergency Selected Worker
-        vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyMonitorPanel"+callId, new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
+        vehicleHitsEmergencyWorker = new MessageConsumerWorker("vehicleHitsEmergencyMonitorPanel" + callId, new MessageConsumerWorkerHandler<VehicleHitsEmergencyMessage>() {
 
             @Override
             public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
@@ -291,7 +390,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
 
         //Vehicle Hits an Hospital Selected Worker
-        vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalMonitorPanel"+callId, new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
+        vehicleHitsHospitalWorker = new MessageConsumerWorker("vehicleHitsHospitalMonitorPanel" + callId, new MessageConsumerWorkerHandler<VehicleHitsHospitalMessage>() {
 
             @Override
             public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
@@ -299,6 +398,27 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 cleanupPanel();
             }
         });
+
+        
+        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelEvent>() {
+
+            @Override
+            public void handleMessage(FireTruckDecreaseWaterLevelEvent message) {
+                System.out.println("I'm reciving an EVENT of water decrease level!!!");
+                jProgressBar1.setValue(jProgressBar1.getValue() - 10);
+            }
+        });
+        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterEvent>() {
+
+            @Override
+            public void handleMessage(FireTruckOutOfWaterEvent message) {
+                System.out.println("Out of Water!!! ");
+
+            }
+        });
+
+        outOfWaterWorker.start();
+        waterTankDecreaseWorker.start();
 
         vehicleHitsEmergencyWorker.start();
         vehicleHitsHospitalWorker.start();
@@ -333,7 +453,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     public void cleanupPanel() {
 
         stopPulseEmulator = true;
-
+        if (outOfWaterWorker != null) {
+            outOfWaterWorker.stopWorker();
+        }
+        if (waterTankDecreaseWorker != null) {
+            waterTankDecreaseWorker.stopWorker();
+        }
         if (vehicleHitsEmergencyWorker != null) {
             vehicleHitsEmergencyWorker.stopWorker();
         }
@@ -366,16 +491,16 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         if (hitEmergency == null) {
             hitEmergency = false;
         }
-        
+
         if (hitHospital == null) {
             hitHospital = false;
         }
 
-        if (!hitEmergency){
+        if (!hitEmergency) {
             return;
         }
-        
-        if (hitHospital){
+
+        if (hitHospital) {
             return;
         }
 
@@ -389,7 +514,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         heartBeatWidgets.get(vehicleId).updateMonitorGraph(heartBeatValue);
     }
 
-    private void processPatientAlert(Long vehicleId, Date time, String message) {
+    private void processPatientAlert(String vehicleId, Date time, String message) {
         alerts.add(0, vehicleId + " - " + message);
 
         DefaultListModel model = new DefaultListModel();
@@ -399,8 +524,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         lstAlerts.setModel(model);
         this.validate();
     }
-
-    
     private boolean stopPulseEmulator = false;
 
     private void startPulseEmulator() {
@@ -413,11 +536,15 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                         for (String vehicleId : heartBeatWidgets.keySet()) {
                             try {
                                 MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 0, new Date()));
+
+
                             } catch (HornetQException ex) {
                                 Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                         Thread.sleep(1000);
+
+
                     } catch (InterruptedException ex) {
                         Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }

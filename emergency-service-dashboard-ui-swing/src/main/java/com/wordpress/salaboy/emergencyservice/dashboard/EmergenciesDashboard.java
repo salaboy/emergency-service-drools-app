@@ -33,9 +33,7 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
 
     private final PersistenceService persistenceService;
     private final ContextTrackingService trackingService;
-    private MessageConsumerWorker waterTankDecreaseWorker;
-    private MessageConsumerWorker waterTankIncreaseWorker;
-    private MessageConsumerWorker outOfWaterWorker;
+
     /** Creates new form EmergenciesDashboard */
     public EmergenciesDashboard() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -44,11 +42,9 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
 
         trackingService = ContextTrackingProvider.getTrackingService();
         initComponents();
-        try {
-            startQueueListeners();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(EmergenciesDashboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+
+
     }
 
     /** This method is called from within the constructor to
@@ -76,13 +72,6 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         hospitalsjTable = new javax.swing.JTable();
-        jPanel7 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jLabel1 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jTruckStatusLabel = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Emergencies", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
@@ -244,82 +233,6 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Hospitals", jPanel4);
 
-        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 50));
-        jProgressBar1.setSize(new java.awt.Dimension(146, 50));
-
-        jLabel1.setText("Fire Turck Water Tank %");
-
-        jButton3.setText("<");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText(">");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jTruckStatusLabel.setBackground(new java.awt.Color(51, 255, 0));
-        jTruckStatusLabel.setForeground(new java.awt.Color(0, 255, 51));
-        jTruckStatusLabel.setText("Active Truck");
-
-        jLabel3.setText("Status");
-
-        org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel7Layout.createSequentialGroup()
-                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel7Layout.createSequentialGroup()
-                                .add(jLabel1)
-                                .add(0, 0, Short.MAX_VALUE))
-                            .add(jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .add(112, 112, 112)
-                        .add(jButton3)
-                        .add(99, 99, 99)
-                        .add(jButton4)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 99, Short.MAX_VALUE))
-                    .add(jPanel7Layout.createSequentialGroup()
-                        .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel7Layout.createSequentialGroup()
-                                .add(177, 177, 177)
-                                .add(27, 27, 27)
-                                .add(jLabel3))
-                            .add(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .add(jTruckStatusLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 325, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .add(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel7Layout.createSequentialGroup()
-                .add(39, 39, 39)
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButton3)
-                    .add(jButton4))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
-                .add(jLabel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTruckStatusLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(61, 61, 61))
-        );
-
-        jTabbedPane1.addTab("Fire Truck Status", jPanel7);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -336,77 +249,67 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void liveReportjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveReportjButtonActionPerformed
-        // TODO add your handling code here:
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    
+        Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];         
+        int i = 0;         
+        for (Hospital hospital : persistenceService.getAllHospitals()) {             
+                vehicles[i][0] = hospital.getId();             
+                vehicles[i][1] = hospital.getName();             
+                i++;         
+        }         
+        hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(vehicles,  
+                new String[]{ "ID", "Hospital"  }));     
+    }                                        
+        // TODO add your handling code here:         Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];         int i = 0;         for (Hospital hospital : persistenceService.getAllHospitals()) {             vehicles[i][0] = hospital.getId();             vehicles[i][1] = hospital.getName();             i++;         }         hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(                 vehicles,                 new String[]{                     "ID", "Hospital"                 }));     }//GEN-LAST:event_jButton1ActionPerformed
+
+        private void liveReportjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveReportjButtonActionPerformed
         int[] selected = emergenciesjTable.getSelectedRows();
-
         List<String> selectedEmergencies = new ArrayList<String>(selected.length);
-
         for (int i = 0; i < selected.length; i++) {
             selectedEmergencies.add((String) emergenciesjTable.getModel().getValueAt(i, 0));
         }
-
         openLiveReportPanel(selectedEmergencies);
-    }//GEN-LAST:event_liveReportjButtonActionPerformed
+    }
+        // TODO add your handling code here:         int[] selected = emergenciesjTable.getSelectedRows();          List<String> selectedEmergencies = new ArrayList<String>(selected.length);          for (int i = 0; i < selected.length; i++) {             selectedEmergencies.add((String) emergenciesjTable.getModel().getValueAt(i, 0));         }          openLiveReportPanel(selectedEmergencies);     }//GEN-LAST:event_liveReportjButtonActionPerformed
 
-    private void refreshjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshjButtonActionPerformed
-        // TODO add your handling code here:
-        Collection<Emergency> emergencies = (Collection<Emergency>) persistenceService.getAllEmergencies();
-        Object[][] emergenciesArray = new Object[emergencies.size()][4];
-        Iterator<Emergency> it = emergencies.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            Emergency emergency = it.next();
-            emergenciesArray[i][0] = emergency.getId();
-            emergenciesArray[i][1] = emergency.getCall().getId();
-            emergenciesArray[i][2] = emergency.getType().toString();
-            emergenciesArray[i][3] = emergency.getNroOfPeople();
-            i++;
-        }
-        emergenciesjTable.setModel(new javax.swing.table.DefaultTableModel(
-                emergenciesArray,
-                new String[]{
-                    "Emergency ID", "Call ID", "Emergency Type", "People involved"
-                }));
-
+        private void refreshjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshjButtonActionPerformed
+            // TODO add your handling code here:
+            Collection<Emergency> emergencies = (Collection<Emergency>) persistenceService.getAllEmergencies();
+            Object[][] emergenciesArray = new Object[emergencies.size()][4];
+            Iterator<Emergency> it = emergencies.iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                Emergency emergency = it.next();
+                System.out.println("Emergency -> " + emergency);
+                emergenciesArray[i][0] = emergency.getId();
+                emergenciesArray[i][1] = emergency.getCall().getId();
+                emergenciesArray[i][2] = emergency.getType().toString();
+                emergenciesArray[i][3] = emergency.getNroOfPeople();
+                i++;
+            }
+            emergenciesjTable.setModel(new javax.swing.table.DefaultTableModel(
+                    emergenciesArray,
+                    new String[]{
+                        "Emergency ID", "Call ID", "Emergency Type", "People involved"
+                    }));
     }//GEN-LAST:event_refreshjButtonActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];
-        int i = 0;
-        for (Hospital hospital : persistenceService.getAllHospitals()) {
-            vehicles[i][0] = hospital.getId();
-            vehicles[i][1] = hospital.getName();
-            i++;
-        }
-        hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(
-                vehicles,
-                new String[]{
-                    "ID", "Hospital"
-                }));
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:         jProgressBar1.setValue(jProgressBar1.getValue() - 10);     }//GEN-LAST:event_jButton3ActionPerformed
-        jProgressBar1.setValue(jProgressBar1.getValue() - 10);
-    }
-
-        private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:         jProgressBar1.setValue(jProgressBar1.getValue() + 10);     }//GEN-LAST:event_jButton4ActionPerformed
-        jProgressBar1.setValue(jProgressBar1.getValue() + 10);
-    }
+   
 
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
-            public void run() {
+        public void run() {
                 try {
                     new EmergenciesDashboard().setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(EmergenciesDashboard.class.getName()).log(Level.SEVERE, null, ex);
+                
+
+} catch (IOException ex) {
+                    Logger.getLogger(EmergenciesDashboard.class  
+
+.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -417,22 +320,15 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
     private javax.swing.JTable hospitalsjTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel jTruckStatusLabel;
     private javax.swing.JButton liveReportjButton;
     private javax.swing.JButton refreshjButton;
     // End of variables declaration//GEN-END:variables
@@ -444,32 +340,17 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
             public void run() {
                 try {
                     new LiveEmergencyReport(selectedEmergencies.get(0)).setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(EmergenciesDashboard.class.getName()).log(Level.SEVERE, null, ex);
+                
+
+} catch (IOException ex) {
+                    Logger.getLogger(EmergenciesDashboard.class  
+
+.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
         });
     }
 
-    private void startQueueListeners() throws InterruptedException {
-        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelEvent>() {
-
-            @Override
-            public void handleMessage(FireTruckDecreaseWaterLevelEvent message) {
-                System.out.println("I'm reciving an EVENT of water decrease level!!!");
-                jProgressBar1.setValue(jProgressBar1.getValue() - 10);
-            }
-        });
-        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterEvent>() {
-
-            @Override
-            public void handleMessage(FireTruckOutOfWaterEvent message) {
-                System.out.println("Out of Water!!! ");
-                
-            }
-        });
-        outOfWaterWorker.start();
-        waterTankDecreaseWorker.start();
-    }
+   
 }

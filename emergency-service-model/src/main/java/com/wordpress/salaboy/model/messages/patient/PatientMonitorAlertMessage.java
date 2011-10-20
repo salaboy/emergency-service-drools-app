@@ -14,11 +14,11 @@ import java.util.Date;
  */
 public class PatientMonitorAlertMessage implements Serializable, EmergencyInterchangeMessage {
     private String callId;
-    private Long vehicleId;
+    private String vehicleId;
     private String message;
     private Date time;
 
-    public PatientMonitorAlertMessage(String callId, Long vehicleId, String message, Date time) {
+    public PatientMonitorAlertMessage(String callId, String vehicleId, String message, Date time) {
         this.callId = callId;
         this.vehicleId = vehicleId;
         this.time = time;
@@ -41,11 +41,11 @@ public class PatientMonitorAlertMessage implements Serializable, EmergencyInterc
         this.time = time;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
