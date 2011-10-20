@@ -318,5 +318,11 @@ public class WorldUI extends BasicGame {
     public ContextTrackingService getTrackingService() {
         return trackingService;
     }
+
+    public void addRenderCommand(Command element) {
+        renderCommands.add(element);
+    }
+    
+    
     
 }

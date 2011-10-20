@@ -11,7 +11,7 @@ import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
 import com.wordpress.salaboy.context.tracking.*;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.*;
 import org.drools.runtime.process.ProcessInstance;
-
+inport com.wordpress.salaboy.model.messages.*;
 
 rule "Signal Process about Vehicle Hits Emergency Event"
     when
@@ -44,11 +44,6 @@ rule "Signal Process about FireTruck Out Of Water Event"
     then
         System.out.println(">>>>>>>> Firetruck out of water!");
         //Persistence and tracking services
-        //java.util.Map<String, Object> params = new java.util.HashMap<String, Object>();
-        //params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        //com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
-        //com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
-        //com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
         ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
 
@@ -66,4 +61,26 @@ rule "Signal Process about FireTruck Out Of Water Event"
         System.out.println(">>>>AFTER SIGNALING EVENT");
         retract($event);  
         System.out.println(">>>>AFTER RETRACTING EVENT");
+end
+
+rule "Refill Firetruck"
+    when
+        $event: VehicleHitsFireDepartmentEvent()
+    then
+        System.out.println(">>>>>>>> Firetruck refill!");
+        
+        //get the vehicle
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        FireTruck fireTruck = (FireTruck) persistenceService.loadVehicle($event.getVehicleId());
+
+        //refill vehicle
+        fireTruck.setTankLevel(fireTruck.getTankSize());
+
+        //update vehicle
+        persistenceService.storeVehicle(fireTruck);
+
+        //send notification
+        MessageFactory.sendMessage(new FireWaterRefilledMessage($event.getEmergencyId(), $event.getVehicleId(), $event.getTime()));
+
+        retract($event);
 end

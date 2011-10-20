@@ -218,6 +218,8 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
+                    //update the emergency
+                    persistenceService.storeEmergency(emergencyDetailsMessage.getEmergency());
                     //attachs it to the call
                     trackingService.attachEmergency(emergencyDetailsMessage.getEmergency().getCall().getId(), emergencyDetailsMessage.getEmergency().getId());
                 }
@@ -353,6 +355,7 @@ public class CoreServer {
             allProceduresEndedWorker.start();
             fireTruckDecreaseWaterLevelWorker.start();
             fireTruckOutOfWaterWorker.start();
+            vehicleHitsFireDepartmentWorker.start();
             
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
@@ -399,6 +402,9 @@ public class CoreServer {
         }
         if(fireTruckOutOfWaterWorker != null){
             fireTruckOutOfWaterWorker.stopWorker();
+        }
+        if(vehicleHitsFireDepartmentWorker != null){
+            vehicleHitsFireDepartmentWorker.stopWorker();
         }
         
     }
