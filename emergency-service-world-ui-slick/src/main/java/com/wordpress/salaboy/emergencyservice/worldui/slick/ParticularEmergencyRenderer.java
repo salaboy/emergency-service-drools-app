@@ -411,11 +411,6 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (this.activeGraphicableVehicle == null || !(this.activeGraphicableVehicle instanceof GraphicableFireTruck)) {
             return;
         }
-
-        //if no collision -> no water
-        if (!this.checkEmergencyCollision()){
-            return;
-        }
         
         try {
             MessageFactory.sendMessage(new FireTruckDecreaseWaterLevelMessage(this.emergency.getCallId(), this.activeVehicle.getId(), new Date()));
@@ -554,6 +549,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         
         if (fireTruck.getTankLevel() <=0){
             //Are you kidding me? You don't have enough water! Get out of here!
+            return;
+        }
+        
+        //if no collision -> no water
+        if (!this.checkEmergencyCollision()){
             return;
         }
         
