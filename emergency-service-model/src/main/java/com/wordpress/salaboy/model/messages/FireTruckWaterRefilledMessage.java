@@ -11,12 +11,12 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class FireWaterRefilledMessage implements Serializable ,EmergencyInterchangeMessage{
+public class FireTruckWaterRefilledMessage implements Serializable ,EmergencyInterchangeMessage{
     private String emergencyId;
     private String vehicleId;
     private Date time;
 
-    public FireWaterRefilledMessage(String emergencyId, String vehicleId, Date time) {
+    public FireTruckWaterRefilledMessage(String emergencyId, String vehicleId, Date time) {
         this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
@@ -52,7 +52,7 @@ public class FireWaterRefilledMessage implements Serializable ,EmergencyIntercha
     
     @Override
     public String toString() {
-        return "FireWaterRefilledMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+        return "FireTruckWaterRefilledMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
     }
 
    

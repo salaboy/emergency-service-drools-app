@@ -12,7 +12,7 @@ import com.wordpress.salaboy.context.tracking.*;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.*;
 import org.drools.runtime.process.ProcessInstance;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.messaging.MessageFactory;
+import com.wordpress.salaboy.messaging.*;
 
 rule "Signal Process about Vehicle Hits Emergency Event"
     when
@@ -81,7 +81,7 @@ rule "Refill Firetruck"
         persistenceService.storeVehicle(fireTruck);
 
         //send notification
-        MessageFactory.sendMessage(new FireWaterRefilledMessage($event.getEmergencyId(), $event.getVehicleId(), $event.getTime()));
+        MessageFactory.sendMessage(new FireTruckWaterRefilledMessage($event.getEmergencyId(), $event.getVehicleId(), $event.getTime()));
 
         retract($event);
 end

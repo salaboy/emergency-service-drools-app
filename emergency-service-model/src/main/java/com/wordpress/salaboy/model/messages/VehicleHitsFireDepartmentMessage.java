@@ -15,19 +15,21 @@ import java.util.Date;
 public class VehicleHitsFireDepartmentMessage implements Serializable, EmergencyInterchangeMessage {
     private String vehicleId;
     private String callId;
+    private String emergencyId;
     private Date time;
     private FirefightersDepartment firefightersDepartment;
     
-    public VehicleHitsFireDepartmentMessage(String vehicleId, FirefightersDepartment firefightersDepartment, String callId, Date time) {
+    public VehicleHitsFireDepartmentMessage(String vehicleId, FirefightersDepartment firefightersDepartment, String callId, String emergencyId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
+        this.emergencyId = emergencyId;
         this.time = time;
         this.firefightersDepartment = firefightersDepartment;
     }
 
     @Override
     public String getEmergencyId() {
-        return callId;
+        return emergencyId;
     }
 
     public void setCallId(String emergecyId) {

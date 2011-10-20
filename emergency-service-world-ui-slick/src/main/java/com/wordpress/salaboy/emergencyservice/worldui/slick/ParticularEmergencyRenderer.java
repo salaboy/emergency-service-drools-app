@@ -343,8 +343,11 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (collides && !this.activeGraphicableVehicle.isIsCollidingWithABuilding()) {
             System.out.println("Fire Department REACHED!: "+this.selectedFirefighterDepartment.getName());
             try {
+                //get the emergencyId attached to the call
+                String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+                
                 //notify the event
-                MessageFactory.sendMessage(new VehicleHitsFireDepartmentMessage(this.activeVehicle.getId(), selectedFirefighterDepartment.getFirefightersDepartment(), this.emergency.getCallId(), new Date()));
+                MessageFactory.sendMessage(new VehicleHitsFireDepartmentMessage(this.activeVehicle.getId(), selectedFirefighterDepartment.getFirefightersDepartment(), this.emergency.getCallId(), emergencyId, new Date()));
                 //hide the fire Department
                 this.selectedFirefighterDepartment = null;
             } catch (HornetQException ex) {
