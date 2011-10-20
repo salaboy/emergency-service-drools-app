@@ -12,6 +12,7 @@ import com.wordpress.salaboy.context.tracking.*;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.*;
 import org.drools.runtime.process.ProcessInstance;
 import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.messaging.MessageFactory;
 
 rule "Signal Process about Vehicle Hits Emergency Event"
     when
