@@ -23,6 +23,7 @@ import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.util.MessageToEventConverter;
 import java.io.File;
 import java.util.*;
 import static org.junit.Assert.*;
@@ -154,7 +155,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulance1.getId(), emergency.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance1.getId(), emergency.getId(), new Date())));
 
         Thread.sleep(4000);
 
@@ -171,7 +172,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         assertEquals(0, proceduresEndedCount);
 
         //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsHospitalMessage(ambulance1.getId(), new Hospital("Hospital A", 0, 0), emergency.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsHospitalMessage(ambulance1.getId(), new Hospital("Hospital A", 0, 0), emergency.getId(), new Date())));
 
         Thread.sleep(5000);
 
@@ -200,7 +201,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The vehicle 2 reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(new VehicleHitsEmergencyMessage(ambulance2.getId(), emergency.getId(), new Date()));
+        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance2.getId(), emergency.getId(), new Date())));
 
         Thread.sleep(4000);
 

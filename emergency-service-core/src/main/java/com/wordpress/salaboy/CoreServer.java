@@ -39,15 +39,13 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.*;
-import com.wordpress.salaboy.model.events.AllProceduresEndedEvent;
-import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
-import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
-import com.wordpress.salaboy.model.events.PulseEvent;
+import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.*;
+import com.wordpress.salaboy.services.util.MessageToEventConverter;
 import java.util.Iterator;
 
 /**
@@ -71,6 +69,7 @@ public class CoreServer {
     private MessageConsumerWorker heartBeatReceivedWorker;
     private MessageConsumerWorker vehicleDispatchedWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
+    private MessageConsumerWorker vehicleHitsFireDepartmentWorker;
     private MessageConsumerWorker vehicleHitsEmergencyWorker;
     private MessageConsumerWorker emergencyDetailsPersistenceWorker;
     private MessageConsumerWorker selectedProcedureWorker;
@@ -229,8 +228,9 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsEmergencyMessage);
                     vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().notifyProcedures(vehicleHitsEmergencyMessage);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
                 }
             });
 
@@ -240,11 +240,22 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsHospitalMessage);
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().notifyProcedures(vehicleHitsHospitalMessage);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
                     
                     //Notify VehicleMGMTService
                     VehiclesMGMTService.getInstance().vehicleRemoved(vehicleHitsHospitalMessage.getVehicleId());
+                }
+            }); 
+            
+            //Vehicle Hits a Fire Department Selected Worker
+            vehicleHitsFireDepartmentWorker = new MessageConsumerWorker("vehicleHitsFireDepartmentWorkerCoreServer", new MessageConsumerWorkerHandler<VehicleHitsFireDepartmentMessage>() {
+                @Override
+                public void handleMessage(VehicleHitsFireDepartmentMessage vehicleHitsFireDepartmentMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsFireDepartmentMessage);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
                 }
             }); 
 
@@ -302,9 +313,9 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(FireTruckOutOfWaterMessage message) {
-                    FireTruckOutOfWaterEvent fireTruckOutOfWaterEvent = new FireTruckOutOfWaterEvent(message.getEmergencyId(), message.getVehicleId(), message.getTime());
-                    VehiclesMGMTService.getInstance().processEvent(fireTruckOutOfWaterEvent);
-                    ProceduresMGMTService.getInstance().notifyProcedures(message);
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(message);
+                    VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
                 }
             });
 

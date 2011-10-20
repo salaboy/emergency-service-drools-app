@@ -4,18 +4,7 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.events.EmergencyEvent;
-import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
-import com.wordpress.salaboy.model.events.FireExtinctedEvent;
-import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
-import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
-import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
-import com.wordpress.salaboy.model.messages.EmergencyEndsMessage;
-import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
-import com.wordpress.salaboy.model.messages.FireExtinctedMessage;
-import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.events.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,19 +50,16 @@ public class ProceduresMGMTService {
      * The emergency is taken from {@link EmergencyInterchangeMessage#getCallId()}
      * Here is where message -> event -> service mapping is created
      * @param callId
-     * @param message
+     * @param event
      * @return 
      */
-    public void notifyProcedures(EmergencyInterchangeMessage message){
+    public void notifyProcedures(EmergencyEvent event){
         
-        String emergencyId = message.getEmergencyId();
+        String emergencyId = event.getEmergencyId();
         
         if (!this.proceduresByEmergency.containsKey(emergencyId)){
             throw new IllegalStateException("Unknown emergency "+emergencyId);
         }
-        
-        //convert from Message to CallEvent
-        EmergencyEvent event = this.convertMessageToEvent(message);
         
         System.out.printf("Notify procedures about %s\n",event);
         System.out.printf("Procedures registered to emergency '%s': %s \n", emergencyId, this.proceduresByEmergency.get(emergencyId).size());
@@ -109,25 +95,4 @@ public class ProceduresMGMTService {
         
     }
     
-    private EmergencyEvent convertMessageToEvent(EmergencyInterchangeMessage message){
-        if (message instanceof VehicleHitsEmergencyMessage){
-            VehicleHitsEmergencyMessage realMessage = (VehicleHitsEmergencyMessage)message;
-            return new VehicleHitsEmergencyEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
-        }else if (message instanceof VehicleHitsHospitalMessage){
-            VehicleHitsHospitalMessage realMessage = (VehicleHitsHospitalMessage)message;
-
-            return new VehicleHitsHospitalEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getHospital().getId(), realMessage.getTime());
-        }else if (message instanceof EmergencyEndsMessage){
-            EmergencyEndsMessage realMessage = (EmergencyEndsMessage)message;
-            return new EmergencyEndsEvent(realMessage.getEmergencyId(), realMessage.getTime());
-        }else if (message instanceof FireTruckOutOfWaterMessage){
-            FireTruckOutOfWaterMessage realMessage = (FireTruckOutOfWaterMessage)message;
-            return new FireTruckOutOfWaterEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
-        }else if (message instanceof FireExtinctedMessage){
-            FireExtinctedMessage realMessage = (FireExtinctedMessage)message;
-            return new FireExtinctedEvent(realMessage.getEmergencyId(), realMessage.getTime());
-        }
-        
-        throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");
-    }
 }

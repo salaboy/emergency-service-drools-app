@@ -30,16 +30,15 @@ import com.wordpress.salaboy.model.messages.FireTruckOutOfWaterMessage;
 import com.wordpress.salaboy.model.messages.ProcedureCompletedMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.util.MessageToEventConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -137,8 +136,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Now the fire truck arrives to the emergency
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new VehicleHitsEmergencyMessage(fireTruck.getId(),
-                emergency.getId(), new Date()));
+                MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
+                emergency.getId(), new Date())));
 
         Thread.sleep(2000);
 
@@ -160,7 +159,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Ok, no more fire!
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new FireExtinctedMessage(emergency.getId(), new Date()));
+                MessageToEventConverter.convertMessageToEvent(new FireExtinctedMessage(emergency.getId(), new Date())));
 
         Thread.sleep(5000);
 
@@ -187,8 +186,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Now the fire truck arrives to the emergency
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new VehicleHitsEmergencyMessage(fireTruck.getId(),
-                emergency.getId(), new Date()));
+                MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
+                emergency.getId(), new Date())));
 
         Thread.sleep(2000);
 
@@ -207,8 +206,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Sudenly, the fire truck runs out of water
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
-                new Date()));
+               MessageToEventConverter.convertMessageToEvent( new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
+                new Date())));
 
         Thread.sleep(5000);
 
@@ -232,8 +231,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // The Fire Truck returns to the emergency
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new VehicleHitsEmergencyMessage(fireTruck.getId(),
-                emergency.getId(), new Date()));
+                MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
+                emergency.getId(), new Date())));
 
         Thread.sleep(5000);
 
@@ -253,8 +252,8 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Again, the fire truck runs out of water
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
-                new Date()));
+                MessageToEventConverter.convertMessageToEvent(new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
+                new Date())));
 
         Thread.sleep(5000);
 
@@ -280,7 +279,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
 
         // Ok, no more fire!
         ProceduresMGMTService.getInstance().notifyProcedures(
-                new FireExtinctedMessage(emergency.getId(), new Date()));
+                MessageToEventConverter.convertMessageToEvent(new FireExtinctedMessage(emergency.getId(), new Date())));
 
         Thread.sleep(5000);
 
