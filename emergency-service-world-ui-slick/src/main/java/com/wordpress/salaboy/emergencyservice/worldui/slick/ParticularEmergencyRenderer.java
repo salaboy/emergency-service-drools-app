@@ -177,6 +177,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         checkCornerCollision();
         //checkEmergencyCollision();
         checkHospitalCollision();
+        checkFireDepartmentCollision();
     }
 
     private void moveVehicle(int direction) {
@@ -448,18 +449,21 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     
     private void addMockVehicle(Vehicle vehicle){
         try {
-            
-            //Dirty way to put a free id to the vehicle
-            String vehicleId = null;
-            Random random = new Random(System.currentTimeMillis());
-            do{
-                vehicleId = random.nextLong()+""; 
-            } while(this.ui.getPersistenceService().loadVehicle(vehicleId) != null);
-            
-            vehicle.setId(vehicleId);
+            //if there is no real emergency, create one
+            String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+            if ( emergencyId == null){
+                Emergency mockEmergency = new Emergency();
+                mockEmergency.setCall(this.ui.getPersistenceService().loadCall(this.emergency.getCallId()));
+                mockEmergency.setLocation(new Location(this.emergency.getCallX(), this.emergency.getCallY()));
+                this.ui.getPersistenceService().storeEmergency(mockEmergency);
+                
+                this.ui.getTrackingService().attachEmergency(this.emergency.getCallId(), mockEmergency.getId());
+                
+                emergencyId = mockEmergency.getId();
+            }
             
             this.ui.getPersistenceService().storeVehicle(vehicle);
-            MessageFactory.sendMessage(new VehicleDispatchedMessage(this.emergency.getCallId(), vehicle.getId()));
+            MessageFactory.sendMessage(new VehicleDispatchedMessage(emergencyId, vehicle.getId()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }

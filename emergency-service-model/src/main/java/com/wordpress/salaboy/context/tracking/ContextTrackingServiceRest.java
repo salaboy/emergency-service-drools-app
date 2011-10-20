@@ -512,6 +512,12 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
                     new TypeToken<QueryResult>() {
                     }.getType());
             //TODO CHECK THIS WITH A TEST!
+            
+            if (result.getData().isEmpty()){
+                //No results
+                return null;
+            }
+            
             return result.getData().get(0).get(0).getData().get("callId");
 
         } catch (Exception e) {
@@ -536,6 +542,11 @@ public class ContextTrackingServiceRest implements ContextTrackingService {
                     new TypeToken<QueryResult>() {
                     }.getType());
             //TODO CHECK THIS WITH A TEST!
+            
+            if (result.getData().isEmpty()){
+                //No results
+                return null;
+            }
             return result.getData().get(0).get(0).getData().get("emergencyId");
 
         } catch (Exception e) {
