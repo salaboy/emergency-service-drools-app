@@ -11,7 +11,7 @@ package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
  */
 public abstract class GraphicableVehicle implements Graphicable {
     private boolean isCollidingWithACorner;
-    private boolean isCollidingWithAHospital;
+    private boolean isCollidingWithABuilding;
 
     public boolean isIsCollidingWithACorner() {
         return isCollidingWithACorner;
@@ -21,12 +21,12 @@ public abstract class GraphicableVehicle implements Graphicable {
         this.isCollidingWithACorner = isCollidingWithACorner;
     }
 
-    public boolean isIsCollidingWithAHospital() {
-        return isCollidingWithAHospital;
+    public boolean isIsCollidingWithABuilding() {
+        return isCollidingWithABuilding;
     }
 
-    public void setIsCollidingWithAHospital(boolean isCollidingWithAHospital) {
-        this.isCollidingWithAHospital = isCollidingWithAHospital;
+    public void setIsCollidingWithABuilding(boolean isCollidingWithABuilding) {
+        this.isCollidingWithABuilding = isCollidingWithABuilding;
     }
 
     

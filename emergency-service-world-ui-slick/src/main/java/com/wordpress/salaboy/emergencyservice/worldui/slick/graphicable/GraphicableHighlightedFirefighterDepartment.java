@@ -12,7 +12,7 @@ import org.newdawn.slick.geom.Polygon;
  *
  * @author esteban
  */
-public class GraphicableHighlightedFirefighterDepartment implements Graphicable {
+public class GraphicableHighlightedFirefighterDepartment implements GraphicableHighlightedBuilding {
 
     private FirefightersDepartment firefightersDepartment;
     private Animation animation;
@@ -48,5 +48,10 @@ public class GraphicableHighlightedFirefighterDepartment implements Graphicable 
     @Override
     public Polygon getPolygon() {
         return this.polygon;
+    }
+    
+    @Override
+    public String getName() {
+        return this.firefightersDepartment.getName();
     }
 }

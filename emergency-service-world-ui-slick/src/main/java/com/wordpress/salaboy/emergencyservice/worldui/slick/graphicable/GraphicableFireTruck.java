@@ -40,10 +40,12 @@ public class GraphicableFireTruck extends GraphicableVehicle{
         return this.polygon;
     }
 
+    @Override
     public void setAnimation(Animation animation) {
         this.animation = animation;
     }
 
+    @Override
     public void setPolygon(Polygon polygon) {
         this.polygon = polygon;
     }

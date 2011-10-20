@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy.model.messages;
 
-import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.FirefightersDepartment;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,18 +12,17 @@ import java.util.Date;
  *
  * @author esteban
  */
-public class VehicleHitsHospitalMessage implements Serializable, EmergencyInterchangeMessage {
+public class VehicleHitsFireDepartmentMessage implements Serializable, EmergencyInterchangeMessage {
     private String vehicleId;
     private String callId;
     private Date time;
-    private Hospital hospital;
+    private FirefightersDepartment firefightersDepartment;
     
-    
-    public VehicleHitsHospitalMessage(String vehicleId, Hospital hospital, String callId, Date time) {
+    public VehicleHitsFireDepartmentMessage(String vehicleId, FirefightersDepartment firefightersDepartment, String callId, Date time) {
         this.vehicleId = vehicleId;
         this.callId = callId;
         this.time = time;
-        this.hospital = hospital;
+        this.firefightersDepartment = firefightersDepartment;
     }
 
     @Override
@@ -51,13 +50,13 @@ public class VehicleHitsHospitalMessage implements Serializable, EmergencyInterc
         this.time = time;
     }
 
-    public Hospital getHospital() {
-        return hospital;
+    public FirefightersDepartment getFirefightersDepartment() {
+        return firefightersDepartment;
     }
 
     @Override
     public String toString() {
-        return "VehicleHitsHospitalMessage{" + "vehicleId=" + vehicleId + ", callId=" + callId + ", time=" + time + ", hospital=" + hospital + '}';
+        return "VehicleHitsFireDepartmentMessage{" + "vehicleId=" + vehicleId + ", callId=" + callId + ", time=" + time + ", firefightersDepartment=" + firefightersDepartment + '}';
     }
-    
+
 }

@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -278,21 +277,29 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     public synchronized boolean checkHospitalCollision() {
 
-
+        //no active vehicle -> no collision
         if (this.activeGraphicableVehicle == null) {
             return false;
         }
-
+        
+        //the active vehicle is not an ambulance? -> no collision
+        if (!(this.activeGraphicableVehicle instanceof GraphicableAmbulance)){
+            return false;
+        }
+        
+        //no previously selected hospital -> no collision
         if (this.selectedHospital == null) {
             return false;
         }
+        
+        
         Polygon collidesWith = null;
         if (this.activeGraphicableVehicle.getPolygon().intersects(selectedHospital.getPolygon())) {
             collidesWith = selectedHospital.getPolygon();
         }
         boolean collides = collidesWith != null;
-        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithAHospital()) {
-            System.out.println("Hospital REACHED!");
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithABuilding()) {
+            System.out.println("Hospital REACHED!: "+this.selectedHospital.getName());
             try {
                 //notify the event
                 MessageFactory.sendMessage(new VehicleHitsHospitalMessage(this.activeVehicle.getId(), selectedHospital.getHospital(), this.emergency.getCallId(), new Date()));
@@ -302,10 +309,49 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        this.activeGraphicableVehicle.setIsCollidingWithAHospital(collides);
+        this.activeGraphicableVehicle.setIsCollidingWithABuilding(collides);
 
         return collides;
 
+    }
+    
+    public synchronized boolean checkFireDepartmentCollision() {
+
+        //no active vehicle -> no collision
+        if (this.activeGraphicableVehicle == null) {
+            return false;
+        }
+        
+        //the active vehicle is not a fire truck? -> no collision
+        if (!(this.activeGraphicableVehicle instanceof GraphicableFireTruck)){
+            return false;
+        }
+        
+        //no previously selected fire department -> no collision
+        if (this.selectedFirefighterDepartment == null) {
+            return false;
+        }
+        
+        
+        Polygon collidesWith = null;
+        if (this.activeGraphicableVehicle.getPolygon().intersects(selectedFirefighterDepartment.getPolygon())) {
+            collidesWith = selectedFirefighterDepartment.getPolygon();
+        }
+        boolean collides = collidesWith != null;
+        if (collides && !this.activeGraphicableVehicle.isIsCollidingWithABuilding()) {
+            System.out.println("Fire Department REACHED!: "+this.selectedFirefighterDepartment.getName());
+            try {
+                //notify the event
+                MessageFactory.sendMessage(new VehicleHitsFireDepartmentMessage(this.activeVehicle.getId(), selectedFirefighterDepartment.getFirefightersDepartment(), this.emergency.getCallId(), new Date()));
+                //hide the fire Department
+                this.selectedFirefighterDepartment = null;
+            } catch (HornetQException ex) {
+                Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        this.activeGraphicableVehicle.setIsCollidingWithABuilding(collides);
+
+        return collides;
 
     }
 

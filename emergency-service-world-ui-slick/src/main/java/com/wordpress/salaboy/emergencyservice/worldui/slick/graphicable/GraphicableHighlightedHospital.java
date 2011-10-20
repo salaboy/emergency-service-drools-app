@@ -12,7 +12,7 @@ import com.wordpress.salaboy.model.Hospital;
  *
  * @author salaboy
  */
-public class GraphicableHighlightedHospital implements Graphicable {
+public class GraphicableHighlightedHospital implements GraphicableHighlightedBuilding {
 
     private Hospital hospital;
     private Animation animation;
@@ -46,5 +46,10 @@ public class GraphicableHighlightedHospital implements Graphicable {
     @Override
     public Polygon getPolygon() {
         return this.polygon;
+    }
+
+    @Override
+    public String getName() {
+        return this.hospital.getName();
     }
 }
