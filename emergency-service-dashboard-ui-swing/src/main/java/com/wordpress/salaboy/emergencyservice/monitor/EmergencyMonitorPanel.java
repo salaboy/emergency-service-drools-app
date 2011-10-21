@@ -18,10 +18,7 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.FireTruck;
-import com.wordpress.salaboy.model.messages.FireTruckDecreaseWaterLevelMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
+import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
 import com.wordpress.salaboy.model.serviceclient.PersistenceService;
@@ -373,10 +370,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 jProgressBar1.setValue(truck.getTankLevel());
             }
         });
-        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
+        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
 
             @Override
-            public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
+            public void handleMessage(FireTruckOutOfWaterMessage message) {
+                jProgressBar1.setValue(0);
+                jProgressBar1.setBackground(Color.RED);
                 jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-off.png")));
                 
 

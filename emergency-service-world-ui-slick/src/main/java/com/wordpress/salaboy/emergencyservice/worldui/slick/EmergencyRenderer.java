@@ -15,6 +15,7 @@ public interface EmergencyRenderer {
 
     void renderPolygon(GameContainer gc, Graphics g);
     void renderAnimation(GameContainer gc, Graphics g);
+    void renderHighlightsAnimation(GameContainer gc, Graphics g);
     void update(GameContainer gc, int delta);
     void onKeyPressed(int code, char key);
     void onKeyReleased(int code, char key);

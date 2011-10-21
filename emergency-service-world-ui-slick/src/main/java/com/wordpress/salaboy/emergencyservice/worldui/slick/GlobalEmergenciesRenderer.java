@@ -79,4 +79,9 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
     @Override
     public void update(GameContainer gc, int delta) {
     }
+
+    @Override
+    public void renderHighlightsAnimation(GameContainer gc, Graphics g) {
+        // DO NOTHING HERE
+    }
 }

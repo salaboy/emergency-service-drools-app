@@ -26,7 +26,12 @@ then
 
     //update persistent information
     PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
-    
+    // decrease the remaining of the emergency
+    Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
+    emergency.setRemaining(emergency.getRemaining() - 1);
+    PersistenceServiceProvider.getPersistenceService().storeEmergency(emergency);
+    MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
+
     //update the vehicle fact
     update($ft);
     

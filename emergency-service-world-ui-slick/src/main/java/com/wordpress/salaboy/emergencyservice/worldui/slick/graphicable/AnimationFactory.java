@@ -1,10 +1,13 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,6 +31,8 @@ public class AnimationFactory {
     private static SpriteSheet highlightedHospitalSprite;
     private static SpriteSheet highlightedFireFighterDepartmentSprite;
     private static SpriteSheet glowSprites;
+    private static SpriteSheet menuBarSprite;
+    private static SpriteSheet fireEmergencyStatusSprite;
     private static Animation ambulanceAnimation;
     private static Animation fireTruckAnimation;
     private static Animation policeCarAnimation;
@@ -59,13 +64,13 @@ public class AnimationFactory {
 
             for (int row = 0; row < getHighlightedHospitalSpriteSheet().getHorizontalCount(); row++) {
                 for (int frame = 0; frame < getHighlightedHospitalSpriteSheet().getVerticalCount(); frame++) {
-                    highlightedHospitalAnimation.addFrame(getHighlightedHospitalSpriteSheet().getSprite(row,frame), 250);
+                    highlightedHospitalAnimation.addFrame(getHighlightedHospitalSpriteSheet().getSprite(row, frame), 250);
                 }
             }
         }
         return highlightedHospitalAnimation;
     }
-    
+
     public static Animation getHighlightedFirefighterDepartmentAnimation() {
         if (highlightedFireFighterDepartmentAnimation == null) {
             highlightedFireFighterDepartmentAnimation = new Animation();
@@ -74,7 +79,7 @@ public class AnimationFactory {
 
             for (int row = 0; row < getHighlightedFirefighterDepartmentSpriteSheet().getHorizontalCount(); row++) {
                 for (int frame = 0; frame < getHighlightedFirefighterDepartmentSpriteSheet().getVerticalCount(); frame++) {
-                    highlightedFireFighterDepartmentAnimation.addFrame(getHighlightedFirefighterDepartmentSpriteSheet().getSprite(row,frame), 250);
+                    highlightedFireFighterDepartmentAnimation.addFrame(getHighlightedFirefighterDepartmentSpriteSheet().getSprite(row, frame), 250);
                 }
             }
         }
@@ -82,7 +87,7 @@ public class AnimationFactory {
     }
 
     public static Animation getGenericEmergencyAnimation() {
-        if (genericEmergencyAnimation == null){
+        if (genericEmergencyAnimation == null) {
             genericEmergencyAnimation = getEmergencyAnimation(EmergencyType.UNDEFINED, null);
         }
         return genericEmergencyAnimation;
@@ -97,7 +102,7 @@ public class AnimationFactory {
             for (int frame = 0; frame < getEmergencySpriteSheet(emergencyType).getVerticalCount(); frame++) {
                 try {
                     Image sprite = getEmergencySpriteSheet(emergencyType).getSprite(row, frame);
-                    if (numberOfPeople != null){
+                    if (numberOfPeople != null) {
                         sprite.getGraphics().drawString("" + numberOfPeople, sprite.getWidth() / 2, sprite.getHeight() / 2);
                     }
                     emergencyAnimation.addFrame(sprite, 250);
@@ -106,8 +111,41 @@ public class AnimationFactory {
                 }
             }
         }
-        
+
         return emergencyAnimation;
+    }
+
+    public static Animation getMenuBarAnimation() {
+        Animation menuBarAnimation = new Animation();
+       // menuBarAnimation.setLooping(true);
+       // menuBarAnimation.setAutoUpdate(true);
+        
+      
+        
+        menuBarAnimation.addFrame(getMenuBarSpriteSheet().getSprite(0, 0), 1000);
+        
+        return menuBarAnimation;
+    }
+    
+    public static Animation getEmergencyStatusAnimation(String callId, int remaining){
+        Animation emergencyStatusAnimation = new Animation();
+        emergencyStatusAnimation.setLooping(true);
+        emergencyStatusAnimation.setAutoUpdate(true);
+        System.out.println("Call Id = "+callId);  
+        String emergencyId = ContextTrackingProvider.getTrackingService().getEmergencyAttachedToCall(callId);
+        System.out.println("Emergency Id = "+emergencyId);
+        if(emergencyId != null && !emergencyId.equals("")){
+            Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
+
+            EmergencyType type = emergency.getType();
+            int total = emergency.getNroOfPeople();
+            if(type == EmergencyType.FIRE){
+                String percentage = calculatePercentage(total, remaining);
+                emergencyStatusAnimation.addFrame(getFireEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
+            }
+        }
+        
+        return emergencyStatusAnimation;
     }
 
     public static SpriteSheet getAmbulanceSpriteSheet() {
@@ -120,7 +158,7 @@ public class AnimationFactory {
         }
         return ambulanceSprite;
     }
-    
+
     public static SpriteSheet getFireTruckSpriteSheet() {
         if (fireTruckSprite == null) {
             try {
@@ -131,8 +169,8 @@ public class AnimationFactory {
         }
         return fireTruckSprite;
     }
-    
-     public static SpriteSheet getPoliceCarSpriteSheet() {
+
+    public static SpriteSheet getPoliceCarSpriteSheet() {
         if (policeCarSprite == null) {
             try {
                 policeCarSprite = new SpriteSheet("data/sprites/policeCar.png", 32, 32, Color.magenta);
@@ -153,7 +191,7 @@ public class AnimationFactory {
         }
         return highlightedHospitalSprite;
     }
-    
+
     private static SpriteSheet getHighlightedFirefighterDepartmentSpriteSheet() {
         if (highlightedFireFighterDepartmentSprite == null) {
             try {
@@ -164,22 +202,43 @@ public class AnimationFactory {
         }
         return highlightedFireFighterDepartmentSprite;
     }
+    
+    private static SpriteSheet getFireEmergencyStatusSpriteSheet(String percentage) {
+
+        try {
+            fireEmergencyStatusSprite = new SpriteSheet("data/sprites/fire-"+percentage+".png", 143, 28, Color.magenta);
+        } catch (SlickException ex) {
+            Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fireEmergencyStatusSprite;
+    }
+
+    private static SpriteSheet getMenuBarSpriteSheet() {
+
+        try {
+            menuBarSprite = new SpriteSheet("data/sprites/menu-bar.png", 640, 48, Color.magenta);
+        } catch (SlickException ex) {
+            Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return menuBarSprite;
+    }
 
     private static SpriteSheet getEmergencySpriteSheet(EmergencyType type) {
         if (!emergencySprites.containsKey(type)) {
             try {
-               emergencySprites.put(type, new SpriteSheet("data/sprites/alert-"+type.name()+".png", 32, 32, Color.magenta));
+                emergencySprites.put(type, new SpriteSheet("data/sprites/alert-" + type.name() + ".png", 32, 32, Color.magenta));
             } catch (SlickException ex) {
                 Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return emergencySprites.get(type);
     }
-    
+
     private static SpriteSheet getGlowSpriteSheet() {
         if (glowSprites == null) {
             try {
-               glowSprites = new SpriteSheet("data/sprites/glow.png", 32, 32, Color.magenta);
+                glowSprites = new SpriteSheet("data/sprites/glow.png", 32, 32, Color.magenta);
             } catch (SlickException ex) {
                 Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -201,7 +260,7 @@ public class AnimationFactory {
         }
         return fireTruckAnimation;
     }
-    
+
     static Animation getPoliceCarAnimation() {
         if (policeCarAnimation == null) {
             policeCarAnimation = new Animation();
@@ -216,8 +275,8 @@ public class AnimationFactory {
         }
         return policeCarAnimation;
     }
-    
-    public static Animation addGlow (Graphicable graphicable){
+
+    public static Animation addGlow(Graphicable graphicable) {
         Animation glowAnimation = new Animation();
         glowAnimation.setLooping(false);
         glowAnimation.setAutoUpdate(true);
@@ -226,14 +285,36 @@ public class AnimationFactory {
             for (int frame = 0; frame < getGlowSpriteSheet().getVerticalCount(); frame++) {
                 try {
                     Image sprite = getGlowSpriteSheet().getSprite(row, frame);
-                    sprite.getGraphics().drawImage(graphicable.getAnimation().getCurrentFrame(),0, 0);
+                    sprite.getGraphics().drawImage(graphicable.getAnimation().getCurrentFrame(), 0, 0);
                     glowAnimation.addFrame(sprite, 250);
                 } catch (SlickException ex) {
                     Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        
+
         return glowAnimation;
+    }
+
+    private static String calculatePercentage(int total, int remaining) {
+        System.out.println("Total ="+total);
+        System.out.println("Remaining ="+remaining);
+        float percentage = ( 100 / total ) * remaining;
+        System.out.println("Percentage = "+percentage);
+        if(percentage == 100){
+            return "100";
+        }
+        if(percentage < 100 && percentage > 90){
+            return "90";
+        }
+        
+        if(percentage < 90 && percentage > 80){
+            return "80";
+        }
+        if(percentage < 80 && percentage > 70){
+            return "70";
+        }
+        
+        return "00";
     }
 }

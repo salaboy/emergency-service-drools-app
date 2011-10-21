@@ -30,6 +30,7 @@ public class Emergency implements Serializable {
     private int nroOfPeople;
     private Call call;
     private long processInstanceId;
+    private int remaining;
     
     //this is a map that contains the updates that the emercency will send.
     private Map<String, List<VehicleUpdate>> updates = new HashMap<String, List<VehicleUpdate>>();
@@ -37,7 +38,7 @@ public class Emergency implements Serializable {
     private Emergency(Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
         this.type = type;
         this.nroOfPeople = nroOfPeople;
-        
+        this.remaining = nroOfPeople;
     }
 
     public Emergency() {
@@ -97,10 +98,22 @@ public class Emergency implements Serializable {
         this.type = EmergencyType.valueOf(type);
     }
 
+    public int getRemaining() {
+        return remaining;
+    }
+
+    public void setRemaining(int remaining) {
+        this.remaining = remaining;
+    }
+
     @Override
     public String toString() {
-        return "Emergency{" + "id=" + id + ", type=" + type + ", location=" + location + ", nroOfPeople=" + nroOfPeople + ", call=" + call + ", processInstanceId=" + processInstanceId + '}';
+        return "Emergency{" + "id=" + id + ", type=" + type + ", location=" + location + ", nroOfPeople=" + nroOfPeople + ", call=" + call + ", processInstanceId=" + processInstanceId + ", remaining=" + remaining + '}';
     }
+    
+    
+
+    
 
    public void addUpdate(String vehicleId, VehicleUpdate update) {
 	  List<VehicleUpdate> currentUpdates = this.updates.get(vehicleId);

@@ -6,6 +6,7 @@ import com.wordpress.salaboy.emergencyservice.worldui.slick.listener.WorldMouseL
 import com.wordpress.salaboy.emergencyservice.worldui.slick.listener.WorldKeyListener;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergency;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.AnimationFactory;
+import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableEmergencyStatus;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.GraphicableFactory;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
@@ -47,6 +48,7 @@ public class WorldUI extends BasicGame {
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private int[] ys = new int[]{1, 7, 13, 19, 25};
     private Map<String, GraphicableEmergency> emergencies = new HashMap<String, GraphicableEmergency>();
+    private Map<String, GraphicableEmergencyStatus> emergenciesStatus = new HashMap<String, GraphicableEmergencyStatus>();
     public static SpriteSheet hospitalSheet;
     private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
     private EmergencyRenderer currentRenderer;
@@ -65,9 +67,9 @@ public class WorldUI extends BasicGame {
     public void init(GameContainer gc)
             throws SlickException {
         gc.setVSync(true);
-        gc.setAlwaysRender(true);
+       // gc.setAlwaysRender(true);
 
-       // hospitalSheet = new SpriteSheet("data/sprites/hospital-brillando.png", 64, 80, Color.magenta);
+       
 
         map = new BlockMap("data/cityMap.tmx");
 
@@ -111,6 +113,8 @@ public class WorldUI extends BasicGame {
         this.currentRenderer.renderAnimation(gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 2, true);
+        
+        this.currentRenderer.renderHighlightsAnimation(gc, g);
 
     }
 
@@ -132,6 +136,7 @@ public class WorldUI extends BasicGame {
 
     public synchronized void removeEmergency(String callId) {
         this.emergencies.remove(callId);
+        this.emergenciesStatus.remove(callId);
     }
 
     private void registerMessageConsumers() {
@@ -149,7 +154,9 @@ public class WorldUI extends BasicGame {
                             System.out.println("Unknown emergency for call "+message.getEmergency().getCall().getId());
                             return;
                         }
+                        
                         emergencies.get(message.getEmergency().getCall().getId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
+                        emergenciesStatus.get(message.getEmergency().getCall().getId()).setAnimation(AnimationFactory.getEmergencyStatusAnimation(message.getEmergency().getCall().getId(), message.getRemaining()));
                     }
                 });
             }
@@ -261,16 +268,19 @@ public class WorldUI extends BasicGame {
         BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
         
         GraphicableEmergency newEmergency = null;
-        
+        GraphicableEmergencyStatus newEmergencyStatus = null;
+        newEmergencyStatus = GraphicableFactory.newEmergencyStatus(call.getId());
         if (emergencyType == Emergency.EmergencyType.UNDEFINED){
             newEmergency = GraphicableFactory.newGenericEmergency(call);
+            
         }else{
             newEmergency = GraphicableFactory.newEmergency(call, emergencyType, numberOfPeople);
         }
         
         emergencies.put(call.getId(), newEmergency);
+        emergenciesStatus.put(call.getId(), newEmergencyStatus);
 
-        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency, newEmergencyStatus));
         
         try {
             MessageFactory.sendMessage(new IncomingCallMessage(call));

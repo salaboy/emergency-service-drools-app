@@ -32,15 +32,19 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private Vehicle activeVehicle;
     private Map<Graphicable, Vehicle> vehicles;
     private GraphicableHighlightedHospital selectedHospital;
+    private GraphicableMenuBar menuBar;
+    private GraphicableEmergencyStatus emergencyStatus;
     private GraphicableHighlightedFirefighterDepartment selectedFirefighterDepartment;
     private boolean turbo;
     private boolean hideEmergency;
 
-    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
+    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency, GraphicableEmergencyStatus status) {
         this.emergency = emergency;
         this.ui = ui;
+        this.emergencyStatus = status;
         this.vehicles = new HashMap<Graphicable, Vehicle>();
         this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
+        this.menuBar = GraphicableFactory.newMenuBar();
     }
 
     /**
@@ -81,12 +85,23 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         if (activeGraphicableVehicle != null) {
             g.drawAnimation(activeGraphicableVehicle.getAnimation(), activeGraphicableVehicle.getPolygon().getX(), activeGraphicableVehicle.getPolygon().getY());
         }
+       
+        
+    }
+    
+    public void renderHighlightsAnimation(GameContainer gc, Graphics g) {
         if (selectedHospital != null) {
             g.drawAnimation(selectedHospital.getAnimation(), selectedHospital.getPolygon().getX() - 32, selectedHospital.getPolygon().getY() - 80);
         }
         if (selectedFirefighterDepartment != null) {
             g.drawAnimation(selectedFirefighterDepartment.getAnimation(), selectedFirefighterDepartment.getPolygon().getX() - 32, selectedFirefighterDepartment.getPolygon().getY() - 80);
         }
+        
+        
+        g.drawAnimation(menuBar.getAnimation(),0,432);
+        
+        g.drawAnimation(emergencyStatus.getAnimation(),30,442);
+        
     }
 
     public void addVehicle(Vehicle vehicle) {

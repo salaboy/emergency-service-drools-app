@@ -19,6 +19,7 @@ public class GraphicableEmergency implements Graphicable{
     private int callY;
     private String callId;
     
+    
     public GraphicableEmergency() {
     }
 
