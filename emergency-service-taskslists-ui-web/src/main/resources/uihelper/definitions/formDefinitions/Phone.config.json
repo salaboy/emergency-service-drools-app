@@ -41,12 +41,16 @@
      ],
      "outputFields": [
          {
-            "name":"Number Of People",
+            "name":"HEART_ATTACK:Number Of People",
+            "sourceExpresion":""
+         },
+         {
+            "name":"FIRE:Intensity",
             "sourceExpresion":""
          },
          {
             "name":"Emergency Type",
-            "sourceExpresion":"[FIRE,CAR_CRASH,HEART_ATTACK,ROBBERY]"
+            "sourceExpresion":"[HEART_ATTACK,FIRE,CAR_CRASH,ROBBERY]"
          },
          {
             "name":"Location X",

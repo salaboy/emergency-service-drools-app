@@ -17,6 +17,7 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 </script>	
 	
 		<script type="text/javascript">
+		
 		var mymap = new Array();
 		
 		function init() {
@@ -26,6 +27,41 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 		<#list operations.getOperations(taskInput['Status']) as operation>
 			document.getElementById('button_${operation}').disabled = false;
 		</#list>
+		handleOnClick();
+		}
+		
+		function handleOnClick() {
+		  var options = document.getElementById('input_Emergency Type').children; 
+			for (var i = 0; i < options.length; i++) {
+		        	show(options[i].text,options[i].selected);
+			}
+		}
+		
+		function show(text,selected) {
+			var emergencyTypesMap = new Array();
+			<#list parents?keys as k>
+				var child = new Array();
+				<#assign i = 0/>
+				<#list parents[k] as c>
+					child[${i}] = '${c}';
+					<#assign i = i + 1/>
+				</#list>
+				emergencyTypesMap['${k}'] = child;
+			</#list>
+			var child = emergencyTypesMap[text];
+			if (child) {
+				for (var i = 0; i < child.length; i++) {
+					var tr = document.getElementById('tr_'+child[i]);
+					if (tr != null) {
+						if (selected) {
+							tr.style.display = '';
+						}
+						else {
+							tr.style.display = 'none';
+						}
+					}
+				}
+			}
 		}
 		
 		function buttonClicked(element)
