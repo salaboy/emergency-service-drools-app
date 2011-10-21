@@ -19,11 +19,11 @@ h3{font-size:16px; color:#fff;}
 h4{font-size:12px;}
 h5{font-size:10px;}
 a{color:#000; font-weight:bold;}
-span{color:#f03;}
+span{color:#0073c4;}
 
 .head{
 height:130px;
-	background-color:#F03;
+	background-color:#0073c4;
 	margin-bottom:20px;
 vertical-align:middle;
 background-image:url(../image/head-bg.png);
@@ -40,25 +40,25 @@ background-repeat:no-repeat;
 .head h5{color:#FFF; position:relative; left:690px; top:106px;}
 
 table{
-	border:1px solid #F03;
+	border:1px solid #0073c4;
 	border-collapse:collapse;
 	width:800px;
 	margin-bottom:10px;
 	
 }
 td{
-	border:1px solid #F03;
+	border:1px solid #0073c4;
 	border-collapse:collapse;
 	padding:10px;
 	
 }
 th{
-	border:1px solid #F03;
+	border:1px solid #0073c4;
 	border-collapse:collapse;
 	padding:5px;
 	text-align:left;
 	color:#FFF;
-	background-color:#F03;
+	background-color:#0073c4;
 }
 .special{background-color:#CCC; font-weight:bold;}
 

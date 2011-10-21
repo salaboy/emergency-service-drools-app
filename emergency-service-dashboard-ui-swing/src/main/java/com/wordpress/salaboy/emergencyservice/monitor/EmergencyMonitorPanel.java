@@ -17,8 +17,8 @@ import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
-import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
+import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.messages.FireTruckDecreaseWaterLevelMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsCornerMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
@@ -65,8 +65,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     public EmergencyMonitorPanel(String callId) throws IOException {
         this.callId = callId;
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
 
         trackingService = ContextTrackingProvider.getTrackingService();
@@ -92,7 +90,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         lstAlerts = new javax.swing.JList();
         btnClear1 = new javax.swing.JButton();
-        jTabbedPane = new javax.swing.JTabbedPane();
+        jFireTruckTabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         lblMap = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
@@ -102,11 +100,10 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
-        jLabel1 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jTruckStatusLabel = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jProgressBar2 = new javax.swing.JProgressBar();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
 
@@ -134,7 +131,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClear1))
         );
@@ -164,7 +161,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(161, 161, 161)
                         .addComponent(btnClear)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,10 +169,10 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addComponent(lblMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClear)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        jTabbedPane.addTab("GPS", jPanel1);
+        jFireTruckTabbedPane.addTab("GPS", jPanel1);
 
         auditLogjTextArea.setColumns(20);
         auditLogjTextArea.setRows(5);
@@ -193,7 +190,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -207,96 +204,72 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jTabbedPane.addTab("Live Report", jPanel3);
+        jFireTruckTabbedPane.addTab("Live Report", jPanel3);
 
         jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 50));
         jProgressBar1.setSize(new java.awt.Dimension(146, 50));
 
-        jLabel1.setText("Fire Turck Water Tank %");
-
-        jButton3.setText("<");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText(">");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         jTruckStatusLabel.setBackground(new java.awt.Color(51, 255, 0));
         jTruckStatusLabel.setForeground(new java.awt.Color(0, 255, 51));
-        jTruckStatusLabel.setText("Active Truck");
+        jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-on.png"))); // NOI18N
 
-        jLabel3.setText("Status");
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/watertanl.png"))); // NOI18N
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/overheat.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGap(112, 112, 112)
-                        .addComponent(jButton3)
-                        .addGap(99, 99, 99)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(204, 204, 204)
-                                .addComponent(jLabel3))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(jLabel1)
+                .addContainerGap()
+                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addContainerGap(21, Short.MAX_VALUE))
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(61, 61, 61))
+                .addGap(48, 48, 48)
+                .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42))
         );
 
-        jTabbedPane.addTab("Fire Truck Status", jPanel7);
+        jFireTruckTabbedPane.addTab("Fire Truck Status", jPanel7);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+            .addComponent(jFireTruckTabbedPane)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jFireTruckTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -316,32 +289,22 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
 }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        jProgressBar1.setValue(jProgressBar1.getValue() - 10);
-
-
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        jProgressBar1.setValue(jProgressBar1.getValue() + 10);
-    }//GEN-LAST:event_jButton4ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea auditLogjTextArea;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClear1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTabbedPane jFireTruckTabbedPane;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JLabel jTruckStatusLabel;
     private javax.swing.JLabel lblMap;
     private javax.swing.JList lstAlerts;
@@ -400,19 +363,22 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         });
 
         
-        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelEvent>() {
+        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
 
             @Override
-            public void handleMessage(FireTruckDecreaseWaterLevelEvent message) {
+            public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
                 System.out.println("I'm reciving an EVENT of water decrease level!!!");
-                jProgressBar1.setValue(jProgressBar1.getValue() - 10);
+                FireTruck truck = (FireTruck) persistenceService.loadVehicle(message.getVehicleId());
+                jProgressBar1.setMaximum(truck.getTankSize());
+                jProgressBar1.setValue(truck.getTankLevel());
             }
         });
-        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterEvent>() {
+        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
 
             @Override
-            public void handleMessage(FireTruckOutOfWaterEvent message) {
-                System.out.println("Out of Water!!! ");
+            public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
+                jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-off.png")));
+                
 
             }
         });
@@ -481,7 +447,8 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         this.lblMap.setIcon(map);
     }
     private Map<String, HeartBeatWidget> heartBeatWidgets = new ConcurrentHashMap<String, HeartBeatWidget>();
-
+    
+    
     private void processHeartBeat(String vehicleId, double heartBeatValue, Date time) {
         //only if the vehicle already hit the emergency, but it doesnt
         //hit the hospital yet;
@@ -503,11 +470,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         if (hitHospital) {
             return;
         }
-
+        
+       
         if (!heartBeatWidgets.containsKey(vehicleId)) {
             HeartBeatWidget widget = new HeartBeatWidget();
-            jTabbedPane.add("Ambulance " + vehicleId, widget.getChartPanel());
-            jTabbedPane.setSelectedComponent(widget.getChartPanel());
+            jFireTruckTabbedPane.add("Ambulance " + vehicleId, widget.getChartPanel());
+            jFireTruckTabbedPane.setSelectedComponent(widget.getChartPanel());
             heartBeatWidgets.put(vehicleId, widget);
         }
 
