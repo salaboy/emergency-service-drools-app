@@ -39,7 +39,6 @@ public class AnimationFactory {
     private static Animation highlightedHospitalAnimation;
     private static Animation highlightedFireFighterDepartmentAnimation;
     private static Animation genericEmergencyAnimation;
-    
 
     public static Animation getAmbulanceAnimation() {
         if (ambulanceAnimation == null) {
@@ -117,34 +116,34 @@ public class AnimationFactory {
 
     public static Animation getMenuBarAnimation() {
         Animation menuBarAnimation = new Animation();
-       // menuBarAnimation.setLooping(true);
-       // menuBarAnimation.setAutoUpdate(true);
-        
-      
-        
+        // menuBarAnimation.setLooping(true);
+        // menuBarAnimation.setAutoUpdate(true);
+
+
+
         menuBarAnimation.addFrame(getMenuBarSpriteSheet().getSprite(0, 0), 1000);
-        
+
         return menuBarAnimation;
     }
-    
-    public static Animation getEmergencyStatusAnimation(String callId, int remaining){
+
+    public static Animation getEmergencyStatusAnimation(String callId, int remaining) {
         Animation emergencyStatusAnimation = new Animation();
         emergencyStatusAnimation.setLooping(true);
         emergencyStatusAnimation.setAutoUpdate(true);
-        System.out.println("Call Id = "+callId);  
+        System.out.println("Call Id = " + callId);
         String emergencyId = ContextTrackingProvider.getTrackingService().getEmergencyAttachedToCall(callId);
-        System.out.println("Emergency Id = "+emergencyId);
-        if(emergencyId != null && !emergencyId.equals("")){
+        System.out.println("Emergency Id = " + emergencyId);
+        if (emergencyId != null && !emergencyId.equals("")) {
             Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
 
             EmergencyType type = emergency.getType();
             int total = emergency.getNroOfPeople();
-            if(type == EmergencyType.FIRE){
+            if (type == EmergencyType.FIRE) {
                 String percentage = calculatePercentage(total, remaining);
                 emergencyStatusAnimation.addFrame(getFireEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
             }
         }
-        
+
         return emergencyStatusAnimation;
     }
 
@@ -202,11 +201,11 @@ public class AnimationFactory {
         }
         return highlightedFireFighterDepartmentSprite;
     }
-    
+
     private static SpriteSheet getFireEmergencyStatusSpriteSheet(String percentage) {
 
         try {
-            fireEmergencyStatusSprite = new SpriteSheet("data/sprites/fire-"+percentage+".png", 143, 28, Color.magenta);
+            fireEmergencyStatusSprite = new SpriteSheet("data/sprites/fire-" + percentage + ".png", 143, 28, Color.magenta);
         } catch (SlickException ex) {
             Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -297,24 +296,48 @@ public class AnimationFactory {
     }
 
     private static String calculatePercentage(int total, int remaining) {
-        System.out.println("Total ="+total);
-        System.out.println("Remaining ="+remaining);
-        float percentage = ( 100 / total ) * remaining;
-        System.out.println("Percentage = "+percentage);
-        if(percentage == 100){
+        System.out.println("Total =" + total);
+        System.out.println("Remaining =" + remaining);
+        float percentage = (100 / total) * remaining;
+        System.out.println("Percentage = " + percentage);
+        if (percentage == 100) {
             return "100";
         }
-        if(percentage < 100 && percentage > 90){
+        if (percentage < 100 && percentage >= 90) {
             return "90";
         }
-        
-        if(percentage < 90 && percentage > 80){
+
+        if (percentage < 90 && percentage >= 80) {
             return "80";
         }
-        if(percentage < 80 && percentage > 70){
+        if (percentage < 80 && percentage >= 70) {
             return "70";
         }
-        
+
+        if (percentage < 70 && percentage >= 60) {
+            return "60";
+        }
+
+        if (percentage < 60 && percentage >= 50) {
+            return "50";
+        }
+
+        if (percentage < 50 && percentage >= 40) {
+            return "40";
+        }
+
+        if (percentage < 40 && percentage >= 30) {
+            return "30";
+        }
+
+        if (percentage < 30 && percentage >= 20) {
+            return "20";
+        }
+
+        if (percentage < 20 && percentage >= 10) {
+            return "10";
+        }
+
         return "00";
     }
 }

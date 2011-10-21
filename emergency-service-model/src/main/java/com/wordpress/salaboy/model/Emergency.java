@@ -54,7 +54,11 @@ public class Emergency implements Serializable {
     
 
     public void setNroOfPeople(int nroOfPeople) {
+        
         this.nroOfPeople = nroOfPeople;
+        if(this.remaining == 0){
+            this.remaining = nroOfPeople;
+        }
     }
 
     public int getNroOfPeople() {
