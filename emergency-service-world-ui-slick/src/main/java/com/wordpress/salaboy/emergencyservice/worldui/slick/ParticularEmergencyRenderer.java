@@ -574,10 +574,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         
         String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
         final Emergency realEmergency = this.ui.getPersistenceService().loadEmergency(emergencyId);
-        
-        //HACK: We are using NroOfPeople as the life of the fire
-        realEmergency.setRemaining(realEmergency.getRemaining()-1);
-        this.ui.getPersistenceService().storeEmergency(realEmergency);
+
         
         this.sendWaterLevelDecreased();
 

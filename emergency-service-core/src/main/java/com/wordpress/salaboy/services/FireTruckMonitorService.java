@@ -13,9 +13,12 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.*;
 import org.drools.conf.EventProcessingOption;
@@ -33,6 +36,8 @@ import org.drools.grid.service.directory.impl.GridServiceDescriptionImpl;
 import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -43,22 +48,26 @@ public class FireTruckMonitorService implements VehicleMonitorService{
     private StatefulKnowledgeSession session;
     private Thread sessionThread;
 
-    public FireTruckMonitorService() {
-        
+    public FireTruckMonitorService(String vehicleId) {
+        try {
+            this.session = createFireTruckMonitorSession(vehicleId);
+        } catch (IOException ex) {
+            Logger.getLogger(FireTruckMonitorService.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void newVehicleDispatched(final String emergencyId, final String vehicleId) {
-        try {
+        
             Vehicle vehicle = PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
             if (vehicle == null){
                 throw new IllegalArgumentException("Unknown Vehicle "+vehicleId);
             }
             
-            session = createFireTruckMonitorSession(vehicleId);
-            session.setGlobal("emergencyId", emergencyId);
             
+            session.setGlobal("emergencyId", emergencyId);
             session.insert(vehicle);
+            
             
             sessionThread = new Thread(new Runnable() {
                 @Override
@@ -68,9 +77,7 @@ public class FireTruckMonitorService implements VehicleMonitorService{
             });
             
             sessionThread.start();
-        } catch (IOException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+            
     }
     
     @Override
@@ -91,32 +98,47 @@ public class FireTruckMonitorService implements VehicleMonitorService{
     }
 
     private StatefulKnowledgeSession createFireTruckMonitorSession(String vehicleId) throws IOException {
-        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
-        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
-        Address addr = gsd.addAddress("socket");
-        addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
-        coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
-
-        GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
-
-        GridPeerConfiguration conf = new GridPeerConfiguration();
-        GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
-        conf.addConfiguration(coreSeviceConf);
-
-        GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
-        conf.addConfiguration(wprConf);
-
-        conf.configure(grid);
-
-        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
-        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
-        GridNode remoteN1 = conn.connect();
-
-
-        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
-
-        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/fireTruck.drl").getInputStream())), ResourceType.DRL);
-
+//        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
+//        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
+//        Address addr = gsd.addAddress("socket");
+//        addr.setObject(new InetSocketAddress[]{new InetSocketAddress("localhost", 8000)});
+//        coreServicesMap.put(WhitePages.class.getCanonicalName(), gsd);
+//
+//        GridImpl grid = new GridImpl(new ConcurrentHashMap<String, Object>());
+//
+//        GridPeerConfiguration conf = new GridPeerConfiguration();
+//        GridPeerServiceConfiguration coreSeviceConf = new CoreServicesLookupConfiguration(coreServicesMap);
+//        conf.addConfiguration(coreSeviceConf);
+//
+//        GridPeerServiceConfiguration wprConf = new WhitePagesRemoteConfiguration();
+//        conf.addConfiguration(wprConf);
+//
+//        conf.configure(grid);
+//
+//        GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
+//        GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
+//        GridNode remoteN1 = conn.connect();
+//
+//
+//        KnowledgeBuilder kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
+//
+//        kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/fireTruck.drl").getInputStream())), ResourceType.DRL);
+//
+//        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+//        if (errors != null && errors.size() > 0) {
+//            for (KnowledgeBuilderError error : errors) {
+//                System.out.println(">>>>>>> Error: " + error.getMessage());
+//
+//            }
+//            throw new IllegalStateException("Failed to parse knowledge!");
+//        }
+//        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+//        kbaseConf.setOption(EventProcessingOption.STREAM);
+//        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ClassPathResource("rules/fireTruck.drl"), ResourceType.DRL);
+        
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors != null && errors.size() > 0) {
             for (KnowledgeBuilderError error : errors) {
@@ -125,16 +147,15 @@ public class FireTruckMonitorService implements VehicleMonitorService{
             }
             throw new IllegalStateException("Failed to parse knowledge!");
         }
-        KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
+        
+        KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
-
-
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
-        remoteN1.set("FireTruckMonitorSession" + vehicleId, session);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
+        //remoteN1.set("FireTruckMonitorSession" + vehicleId, session);
 
         return session;
 

@@ -10,16 +10,26 @@ import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 
 global String emergencyId;
 
+declare TruckInTiltStatus
+    fireTruckId : String @key
+end
+
+declare FireTruckDecreaseWaterLevelEvent
+    @role ( event )
+end
+
 rule "Decrease water level"
+no-loop
 when
-    $ft: FireTruck($id: id)
-    $evt: FireTruckDecreaseWaterLevelEvent()
+    $ft: FireTruck($id: id, tankLevel > 0)
+    $evt: FireTruckDecreaseWaterLevelEvent(processed == false) 
+    not(TruckInTiltStatus(fireTruckId == $id))
 then
 
     System.out.println("Water Level Decreased on Fire Truck "+$ft);
 
     //retract the event
-    retract ($evt);
+    //retract ($evt);
 
     //decrease tank level 
     $ft.setTankLevel($ft.getTankLevel()-1);
@@ -28,13 +38,15 @@ then
     PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
    //Load emergency to notify
     Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
-    System.out.println("Emergency =  "+emergency);
-   // emergency.setRemaining(emergency.getRemaining() - 1);
-   // PersistenceServiceProvider.getPersistenceService().storeEmergency(emergency);
+    emergency.setRemaining(emergency.getRemaining()-1);
+    PersistenceServiceProvider.getPersistenceService().storeEmergency(emergency);
     MessageFactory.sendMessage(new EmergencyDetailsMessage(emergency));
 
     //update the vehicle fact
     update($ft);
+    
+    $evt.setProcessed(true);
+    update($evt);
     
 end
 
@@ -45,3 +57,47 @@ then
     System.out.println("Fire Truck "+$ft+" ran out of water!");
     MessageFactory.sendMessage(new FireTruckOutOfWaterMessage(emergencyId, $id, new java.util.Date()));
 end
+
+rule "send Water pump tilt message"
+when
+    $ft: FireTruck($id: id)
+    $events: java.util.List(size > 3) from accumulate($e: FireTruckDecreaseWaterLevelEvent(processed == true) over window:time(2s) 
+                                                                                                            , collectList($e))
+    not(TruckInTiltStatus(fireTruckId == $id))
+ 
+then
+    System.out.println(">>>>>>>>>>>Fire Truck sending tilt value = 2!");
+    
+    
+    $ft.setTiltStatus($ft.getTiltStatus() + 2);
+    PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
+    MessageFactory.sendMessage(new FireTruckWaterPumpTiltMessage(emergencyId, $id, 2));
+    update($ft);
+end
+
+
+
+rule "Water pump tilt, no allow more decrease"
+when
+    $ft: FireTruck($id: id,$waterPumpPower: waterPumpPower,  tiltStatus >= $waterPumpPower )
+    
+then
+    System.out.println(">>>>>>>>>Fire Truck in Tilt STATUS!!!");    
+    insertLogical(new TruckInTiltStatus($id));
+    
+end
+
+rule "cool water pump"
+        timer ( int: 5s )
+    when
+        
+        $ft: FireTruck($id: id, tiltStatus > 0 )
+        
+    then
+        System.out.println(">>>>>>>>>Cooling Fire Truck!!!");   
+        $ft.setTiltStatus($ft.getTiltStatus() -2);
+        update($ft);
+        PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
+        MessageFactory.sendMessage(new FireTruckWaterPumpTiltMessage(emergencyId, $id, -2));
+end
+

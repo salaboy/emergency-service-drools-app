@@ -295,7 +295,7 @@ public class AnimationFactory {
         return glowAnimation;
     }
 
-    private static String calculatePercentage(int total, int remaining) {
+    private static synchronized String calculatePercentage(int total, int remaining) {
         System.out.println("Total =" + total);
         System.out.println("Remaining =" + remaining);
         float percentage = (100 / total) * remaining;

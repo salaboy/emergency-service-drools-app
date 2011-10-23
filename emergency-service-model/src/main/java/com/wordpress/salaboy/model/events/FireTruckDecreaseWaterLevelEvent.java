@@ -15,9 +15,9 @@ import java.util.Date;
 public class FireTruckDecreaseWaterLevelEvent implements EmergencyVehicleEvent, Serializable {
     private String emergencyId;
     private String vehicleId;
-    
     private Date time;
-
+    private boolean processed;
+    
     public FireTruckDecreaseWaterLevelEvent() {
     }
 
@@ -54,9 +54,20 @@ public class FireTruckDecreaseWaterLevelEvent implements EmergencyVehicleEvent, 
         this.time = time;
     }
 
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
+    }
+
     @Override
     public String toString() {
-        return "FireTruckDecreaseWaterLevelEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + '}';
+        return "FireTruckDecreaseWaterLevelEvent{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", time=" + time + ", processed=" + processed + '}';
     }
+    
+    
+
 
 }

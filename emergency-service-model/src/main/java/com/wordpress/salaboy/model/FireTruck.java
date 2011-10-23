@@ -16,7 +16,8 @@ public class FireTruck implements Vehicle {
     private float positionY;
     private int tankSize;
     private int tankLevel;
-    
+    private int waterPumpPower = 4;
+    private int tiltStatus = 0;
     public FireTruck() {
     }
 
@@ -111,11 +112,30 @@ public class FireTruck implements Vehicle {
         this.emergencyReachedTime = emergencyReachedTime;
     }
 
+    public int getWaterPumpPower() {
+        return waterPumpPower;
+    }
+
+    public void setWaterPumpPower(int waterPumpPower) {
+        this.waterPumpPower = waterPumpPower;
+    }
+
+    public int getTiltStatus() {
+        return tiltStatus;
+    }
+
+    public void setTiltStatus(int tiltStatus) {
+        this.tiltStatus = tiltStatus;
+    }
+
     @Override
     public String toString() {
-        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + ", tankSize=" + tankSize + ", tankLevel=" + tankLevel + '}';
+        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + ", tankSize=" + tankSize + ", tankLevel=" + tankLevel + ", waterPumpPower=" + waterPumpPower + ", tiltStatus=" + tiltStatus + '}';
     }
     
+    
+   
+   
     
 
 }

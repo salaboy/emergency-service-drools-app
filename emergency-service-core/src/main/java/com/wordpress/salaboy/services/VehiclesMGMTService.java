@@ -58,7 +58,7 @@ public class VehiclesMGMTService {
             if (vehicle instanceof Ambulance){
                 service = new AmbulanceMonitorService();
             }else if (vehicle instanceof FireTruck){
-                service = new FireTruckMonitorService();
+                service = new FireTruckMonitorService(vehicleId);
             }else{
                 throw new IllegalArgumentException("Don't know how to handle a "+vehicle);
             }
