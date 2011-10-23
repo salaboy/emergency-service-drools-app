@@ -1,9 +1,9 @@
 <html>
 <head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"> 
 	<script type="text/javascript"> 
-	function getList()
+	function getList(name)
 	{
-	    var name = document.getElementById('user').value;
+	//    var name = document.getElementById('user').value;
 	
 	    window.location="../list/"+name+"/Default";
 	}
@@ -23,19 +23,27 @@
 <table>
 	<tbody><tr>
 		<th><h3>User</h3></td> 
-		<td>
-			<select name="user" id="user">
-				<option>operator</option>
-				<option>control</option>
-				<option>garage_emergency_service</option>
-				<option>doctor</option>
-				<option>firefighter</option>
-			</select>
-		</td>
+		
+                <td>
+                     <img src="${rc.getContextPath()}/static/image/operator.png" onclick="getList('operator')"/>
+                </td>
+                <td>
+                     <img src="${rc.getContextPath()}/static/image/control.png" onclick="getList('control')"/>
+                </td>
+                 <td>
+                     <img src="${rc.getContextPath()}/static/image/garage_emergency_service.png" onclick="getList('garage_emergency_service')"/>
+                </td>
+                <td>
+                     <img src="${rc.getContextPath()}/static/image/doctor.png" onclick="getList('doctor')"/>
+                </td>
+                <td>
+                     <img src="${rc.getContextPath()}/static/image/firefighter.png" onclick="getList('firefighter')"/>
+                </td>
+               
 	</tr>
 	</tbody>
 </table>
-<button type="button" onclick="getList()">Get List</button>
+
 </body>
 </html>
 	

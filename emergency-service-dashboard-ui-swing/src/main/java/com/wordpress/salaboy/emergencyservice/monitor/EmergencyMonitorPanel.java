@@ -16,7 +16,6 @@ import com.wordpress.salaboy.emergencyservice.util.AlertsIconListRenderer;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.model.messages.patient.PatientMonitorAlertMessage;
@@ -58,14 +57,13 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private Map<String, Boolean> vehicleHitHospital = new HashMap<String, Boolean>();
     private final PersistenceService persistenceService;
     private final ContextTrackingService trackingService;
+    private Map<String, FireTruckStatusJPanel> fireTruckPanels = new HashMap<String, FireTruckStatusJPanel>();
     
-    private static String vehicleIdREMOVE;
+    
+    
 
     /** Creates new form EmergencyMonitorPanel */
     public EmergencyMonitorPanel(String callId) throws IOException {
-
-        UIManager.put("ProgressBar.selectionBackground", Color.BLUE);
-        UIManager.put("Progress.selectionForeground", Color.GREEN);
 
         this.callId = callId;
 
@@ -94,7 +92,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         lstAlerts = new javax.swing.JList();
         btnClear1 = new javax.swing.JButton();
-        jFireTruckTabbedPane = new javax.swing.JTabbedPane();
+        jEmergencyTabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         lblMap = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
@@ -102,13 +100,6 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         auditLogjTextArea = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jTruckStatusLabel = new javax.swing.JLabel();
-        jProgressBar2 = new javax.swing.JProgressBar();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Alerts"));
 
@@ -177,7 +168,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jFireTruckTabbedPane.addTab("GPS", jPanel1);
+        jEmergencyTabbedPane.addTab("GPS", jPanel1);
 
         auditLogjTextArea.setColumns(20);
         auditLogjTextArea.setRows(5);
@@ -209,93 +200,25 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jFireTruckTabbedPane.addTab("Live Report", jPanel3);
-
-        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 50));
-        jProgressBar1.setSize(new java.awt.Dimension(146, 50));
-
-        jTruckStatusLabel.setBackground(new java.awt.Color(51, 255, 0));
-        jTruckStatusLabel.setForeground(new java.awt.Color(0, 255, 51));
-        jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-on.png"))); // NOI18N
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/watertanl.png"))); // NOI18N
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/overheat.png"))); // NOI18N
-
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(380, Short.MAX_VALUE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2)
-                                .addGap(35, 35, 35))))))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTruckStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addContainerGap(21, Short.MAX_VALUE))
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(jButton2))
-        );
-
-        jFireTruckTabbedPane.addTab("Fire Truck Status", jPanel7);
+        jEmergencyTabbedPane.addTab("Live Report", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jFireTruckTabbedPane)
+            .addComponent(jEmergencyTabbedPane)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jFireTruckTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jEmergencyTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        this.loadMapImage();
-    }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnClear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClear1ActionPerformed
         this.alerts.clear();
@@ -306,34 +229,23 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());
+    }//GEN-LAST:event_jButton1ActionPerformed
 
-}//GEN-LAST:event_jButton1ActionPerformed
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        System.out.println(">>>>>>>>>MANUALLY: Refreshing the tilt status of the vehicle!!!");
-        FireTruck truck = (FireTruck) persistenceService.loadVehicle(vehicleIdREMOVE);
-        jProgressBar2.setMaximum(truck.getWaterPumpPower());
-        jProgressBar2.setValue(truck.getTiltStatus());
-    }//GEN-LAST:event_jButton2ActionPerformed
+        this.loadMapImage();     }//GEN-LAST:event_btnClearActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea auditLogjTextArea;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClear1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JTabbedPane jFireTruckTabbedPane;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JTabbedPane jEmergencyTabbedPane;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JLabel jTruckStatusLabel;
     private javax.swing.JLabel lblMap;
     private javax.swing.JList lstAlerts;
     // End of variables declaration//GEN-END:variables
@@ -395,21 +307,17 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
-                System.out.println("I'm reciving an EVENT of water decrease level!!!");
-                vehicleIdREMOVE = message.getVehicleId();
-                FireTruck truck = (FireTruck) persistenceService.loadVehicle(message.getVehicleId());
-                jProgressBar1.setMaximum(truck.getTankSize());
-                jProgressBar1.setValue(truck.getTankLevel());
+                
+                getFireTruckPanel(message.getVehicleId()).decreaseWaterLevel();
+                
             }
         });
         outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
 
             @Override
             public void handleMessage(FireTruckOutOfWaterMessage message) {
-                jProgressBar1.setValue(0);
-                jProgressBar1.setBackground(Color.RED);
-                jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-off.png")));
-
+                
+                getFireTruckPanel(message.getVehicleId()).fireTruckOutOfWater();
 
             }
         });
@@ -418,15 +326,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(FireTruckWaterPumpTiltMessage message) {
-                System.out.println(">>>>>>>>>Refreshing the tilt status of the vehicle!!!");
-                FireTruck truck = (FireTruck) persistenceService.loadVehicle(message.getVehicleId());
-                System.out.println("MAXIMUM -> "+truck.getWaterPumpPower());
-                System.out.println("STATUS -> "+truck.getTiltStatus());
-                jProgressBar2.setMaximum(truck.getWaterPumpPower());
-                jProgressBar2.setValue(truck.getTiltStatus());
-
-
-
+                getFireTruckPanel(message.getVehicleId()).waterPumpOverHeat();
             }
         });
 
@@ -521,8 +421,8 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
         if (!heartBeatWidgets.containsKey(vehicleId)) {
             HeartBeatWidget widget = new HeartBeatWidget();
-            jFireTruckTabbedPane.add("Ambulance " + vehicleId, widget.getChartPanel());
-            jFireTruckTabbedPane.setSelectedComponent(widget.getChartPanel());
+            jEmergencyTabbedPane.add("Ambulance " + vehicleId, widget.getChartPanel());
+            jEmergencyTabbedPane.setSelectedComponent(widget.getChartPanel());
             heartBeatWidgets.put(vehicleId, widget);
         }
 
@@ -566,5 +466,16 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                 }
             }
         }.start();
+    }
+    
+    private FireTruckStatusJPanel getFireTruckPanel(String vehicleId){
+        if(fireTruckPanels.get(vehicleId) == null){
+            FireTruckStatusJPanel fireTruckStatusJPanel = new FireTruckStatusJPanel(vehicleId);
+            fireTruckPanels.put(vehicleId,fireTruckStatusJPanel);
+            jEmergencyTabbedPane.add(fireTruckStatusJPanel);
+            jEmergencyTabbedPane.setSelectedComponent(fireTruckStatusJPanel);
+        }
+        return fireTruckPanels.get(vehicleId);
+        
     }
 }

@@ -590,7 +590,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         });
         
         //If there is no more fire, send a message and remove the emergency from the ui
-        if (realEmergency.getRemaining() == 0){
+        if (realEmergency.getRemaining() == 1){
             this.setHideEmergency(true);
             try {
                 MessageFactory.sendMessage(new FireExtinctedMessage(emergencyId, new Date()));

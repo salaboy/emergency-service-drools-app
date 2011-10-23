@@ -352,7 +352,7 @@ public class AnimationFactory {
             return "20";
         }
 
-        if (percentage < 20 && percentage >= 10) {
+        if (percentage < 20 && percentage > 1) {
             return "10";
         }
 
