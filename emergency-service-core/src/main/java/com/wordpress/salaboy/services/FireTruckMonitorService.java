@@ -4,41 +4,24 @@
  */
 package com.wordpress.salaboy.services;
 
+import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.EmergencyVehicleEvent;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
+import com.wordpress.salaboy.model.events.FireTruckWaterRefilledEvent;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.*;
 import org.drools.conf.EventProcessingOption;
-import org.drools.grid.ConnectionFactoryService;
-import org.drools.grid.GridConnection;
-import org.drools.grid.GridNode;
-import org.drools.grid.GridServiceDescription;
-import org.drools.grid.conf.GridPeerServiceConfiguration;
-import org.drools.grid.conf.impl.GridPeerConfiguration;
-import org.drools.grid.impl.GridImpl;
-import org.drools.grid.service.directory.Address;
-import org.drools.grid.service.directory.WhitePages;
-import org.drools.grid.service.directory.impl.CoreServicesLookupConfiguration;
-import org.drools.grid.service.directory.impl.GridServiceDescriptionImpl;
-import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
-import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * @author esteban
@@ -47,7 +30,7 @@ public class FireTruckMonitorService implements VehicleMonitorService{
 
     private StatefulKnowledgeSession session;
     private Thread sessionThread;
-
+    private FactHandle truckFactHandle;
     public FireTruckMonitorService(String vehicleId) {
         try {
             this.session = createFireTruckMonitorSession(vehicleId);
@@ -66,7 +49,7 @@ public class FireTruckMonitorService implements VehicleMonitorService{
             
             
             session.setGlobal("emergencyId", emergencyId);
-            session.insert(vehicle);
+            truckFactHandle = session.insert(vehicle);
             
             
             sessionThread = new Thread(new Runnable() {
@@ -84,6 +67,8 @@ public class FireTruckMonitorService implements VehicleMonitorService{
     public void processEvent(EmergencyVehicleEvent event){
         if (event instanceof FireTruckDecreaseWaterLevelEvent){
             this.processFireTruckDecreaseWaterLevelEvent((FireTruckDecreaseWaterLevelEvent)event);
+        }else if (event instanceof FireTruckWaterRefilledEvent){
+            this.processFireTruckWaterRefilledEvent((FireTruckWaterRefilledEvent)event);
         }
     }
 
@@ -159,5 +144,11 @@ public class FireTruckMonitorService implements VehicleMonitorService{
 
         return session;
 
+    }
+
+    private void processFireTruckWaterRefilledEvent(FireTruckWaterRefilledEvent fireTruckWaterRefilledEvent) {
+        System.out.println(">>>>Updating Truck Water Refilled!!!");
+        FireTruck truck = (FireTruck)PersistenceServiceProvider.getPersistenceService().loadVehicle(fireTruckWaterRefilledEvent.getVehicleId());
+        session.update(truckFactHandle, truck);
     }
 }

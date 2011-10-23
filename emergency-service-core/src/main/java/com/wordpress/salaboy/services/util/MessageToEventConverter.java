@@ -32,7 +32,11 @@ public class MessageToEventConverter {
         }else if (message instanceof FireExtinctedMessage){
             FireExtinctedMessage realMessage = (FireExtinctedMessage)message;
             return new FireExtinctedEvent(realMessage.getEmergencyId(), realMessage.getTime());
+        }else if (message instanceof FireTruckWaterRefilledMessage){
+            FireTruckWaterRefilledMessage realMessage = (FireTruckWaterRefilledMessage)message;
+            return new FireTruckWaterRefilledEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
         }
+        
         
         throw new UnsupportedOperationException("Don't know how to convert "+message+" to CallEvent instance");
     }

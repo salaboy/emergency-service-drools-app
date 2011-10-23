@@ -46,7 +46,6 @@ import com.wordpress.salaboy.model.serviceclient.PersistenceService;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.*;
 import com.wordpress.salaboy.services.util.MessageToEventConverter;
-import java.util.Iterator;
 
 /**
  * @author salaboy
@@ -79,6 +78,7 @@ public class CoreServer {
     private MessageConsumerWorker allProceduresEndedWorker;
     private MessageConsumerWorker fireTruckDecreaseWaterLevelWorker;
     private MessageConsumerWorker fireTruckOutOfWaterWorker;
+    private MessageConsumerWorker fireTruckWaterRefillMonitorWorker;
     private static boolean startWrappingServer = true;
 	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
 			+ "/db/data/";
@@ -341,7 +341,18 @@ public class CoreServer {
                     }
                 }
             });
- 
+             
+             
+               fireTruckWaterRefillMonitorWorker = new MessageConsumerWorker("asynchFireMonitorCoreServer", new MessageConsumerWorkerHandler<FireTruckWaterRefilledMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckWaterRefilledMessage message) {
+                       
+                     VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)MessageToEventConverter.convertMessageToEvent(message));
+                   
+                }
+            });
+            fireTruckWaterRefillMonitorWorker.start();   
             reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
