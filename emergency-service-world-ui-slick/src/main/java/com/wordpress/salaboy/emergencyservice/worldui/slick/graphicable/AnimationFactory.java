@@ -27,6 +27,7 @@ public class AnimationFactory {
     private static Map<EmergencyType, SpriteSheet> emergencySprites = new EnumMap<EmergencyType, SpriteSheet>(EmergencyType.class);
     private static SpriteSheet ambulanceSprite;
     private static SpriteSheet fireTruckSprite;
+    private static SpriteSheet fireTruckGrayedSprite;
     private static SpriteSheet policeCarSprite;
     private static SpriteSheet highlightedHospitalSprite;
     private static SpriteSheet highlightedFireFighterDepartmentSprite;
@@ -35,6 +36,7 @@ public class AnimationFactory {
     private static SpriteSheet fireEmergencyStatusSprite;
     private static Animation ambulanceAnimation;
     private static Animation fireTruckAnimation;
+    private static Animation fireTruckGrayedAnimation;
     private static Animation policeCarAnimation;
     private static Animation highlightedHospitalAnimation;
     private static Animation highlightedFireFighterDepartmentAnimation;
@@ -126,24 +128,14 @@ public class AnimationFactory {
         return menuBarAnimation;
     }
 
-    public static Animation getEmergencyStatusAnimation(String callId, int remaining) {
+    public static Animation getEmergencyStatusAnimation( EmergencyType type, int total, int remaining) {
         Animation emergencyStatusAnimation = new Animation();
         emergencyStatusAnimation.setLooping(true);
         emergencyStatusAnimation.setAutoUpdate(true);
-        System.out.println("Call Id = " + callId);
-        String emergencyId = ContextTrackingProvider.getTrackingService().getEmergencyAttachedToCall(callId);
-        System.out.println("Emergency Id = " + emergencyId);
-        if (emergencyId != null && !emergencyId.equals("")) {
-            Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
-
-            EmergencyType type = emergency.getType();
-            int total = emergency.getNroOfPeople();
-            if (type == EmergencyType.FIRE) {
-                String percentage = calculatePercentage(total, remaining);
-                emergencyStatusAnimation.addFrame(getFireEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
-            }
+        if (type == EmergencyType.FIRE) {
+            String percentage = calculatePercentage(total, remaining);
+            emergencyStatusAnimation.addFrame(getFireEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
         }
-
         return emergencyStatusAnimation;
     }
 
@@ -167,6 +159,17 @@ public class AnimationFactory {
             }
         }
         return fireTruckSprite;
+    }
+
+    public static SpriteSheet getGrayedFireTruckSpriteSheet() {
+        if (fireTruckGrayedSprite == null) {
+            try {
+                fireTruckGrayedSprite = new SpriteSheet("data/sprites/sprites-bomberos-weak.png", 32, 32, Color.magenta);
+            } catch (SlickException ex) {
+                Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return fireTruckGrayedSprite;
     }
 
     public static SpriteSheet getPoliceCarSpriteSheet() {
@@ -245,7 +248,7 @@ public class AnimationFactory {
         return glowSprites;
     }
 
-    static Animation getFireTruckAnimation() {
+    public static Animation getFireTruckAnimation() {
         if (fireTruckAnimation == null) {
             fireTruckAnimation = new Animation();
             fireTruckAnimation.setLooping(false);
@@ -258,6 +261,21 @@ public class AnimationFactory {
             }
         }
         return fireTruckAnimation;
+    }
+    
+    public static Animation getFireTruckGrayedAnimation() {
+        if (fireTruckGrayedAnimation == null) {
+            fireTruckGrayedAnimation = new Animation();
+            fireTruckGrayedAnimation.setLooping(false);
+            fireTruckGrayedAnimation.setAutoUpdate(false);
+
+            for (int row = 0; row < getGrayedFireTruckSpriteSheet().getHorizontalCount(); row++) {
+                for (int frame = 0; frame < getGrayedFireTruckSpriteSheet().getVerticalCount(); frame++) {
+                    fireTruckGrayedAnimation.addFrame(getGrayedFireTruckSpriteSheet().getSprite(frame, row), 250);
+                }
+            }
+        }
+        return fireTruckGrayedAnimation;
     }
 
     static Animation getPoliceCarAnimation() {

@@ -48,9 +48,8 @@ public class WorldUI extends BasicGame {
     private int[] xs = new int[]{1, 7, 13, 19, 25, 31, 37};
     private int[] ys = new int[]{1, 7, 13, 19, 25};
     private Map<String, GraphicableEmergency> emergencies = new HashMap<String, GraphicableEmergency>();
-    private Map<String, GraphicableEmergencyStatus> emergenciesStatus = new HashMap<String, GraphicableEmergencyStatus>();
     public static SpriteSheet hospitalSheet;
-    private List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
+    private final List<Command> renderCommands = Collections.synchronizedList(new ArrayList<Command>());
     private EmergencyRenderer currentRenderer;
     private GlobalEmergenciesRenderer globalRenderer;
     private Map<String, ParticularEmergencyRenderer> renderers = new HashMap<String, ParticularEmergencyRenderer>();
@@ -98,14 +97,15 @@ public class WorldUI extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g)
             throws SlickException {
-
-        //Execute any renderCommands
-        for (Command command : this.renderCommands) {
-            command.execute();
+        
+        synchronized (this.renderCommands){
+            //Execute any renderCommands
+            for (Command command : this.renderCommands) {
+                command.execute();
+            }
+            //clear the renderCommands list
+            renderCommands.clear();
         }
-        //clear the renderCommands list
-        renderCommands.clear();
-
         this.currentRenderer.renderPolygon(gc, g);
 
         BlockMap.tmap.render(0, 0, 0, 0, BlockMap.tmap.getWidth(), BlockMap.tmap.getHeight(), 1, true);
@@ -136,7 +136,6 @@ public class WorldUI extends BasicGame {
 
     public synchronized void removeEmergency(String callId) {
         this.emergencies.remove(callId);
-        this.emergenciesStatus.remove(callId);
     }
 
     private void registerMessageConsumers() {
@@ -156,7 +155,7 @@ public class WorldUI extends BasicGame {
                         }
                         
                         emergencies.get(message.getEmergency().getCall().getId()).setAnimation(AnimationFactory.getEmergencyAnimation(message.getType(), message.getNumberOfPeople()));
-                        emergenciesStatus.get(message.getEmergency().getCall().getId()).setAnimation(AnimationFactory.getEmergencyStatusAnimation(message.getEmergency().getCall().getId(), message.getRemaining()));
+                        notifyAboutEmergencyStatusChange(message.getEmergency().getCall().getId(), message.getRemaining());
                     }
                 });
             }
@@ -225,10 +224,69 @@ public class WorldUI extends BasicGame {
             }
         });
         
+        MessageConsumerWorker fireTruckOutOfWaterWorker = new MessageConsumerWorker("fireTruckOutOfWaterWorkerUI", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
+
+            @Override
+            public void handleMessage(final FireTruckOutOfWaterMessage message) {
+                //Changes emergency animation
+                renderCommands.add(new Command() {
+
+                    @Override
+                    public void execute() {
+                        String callId = trackingService.getCallAttachedToEmergency(message.getEmergencyId());
+                        
+                        if (callId == null){
+                            System.out.println("The emergency "+message.getEmergencyId()+" doesn't have any associated call!");
+                            return;
+                        }
+                        if (emergencies.get(callId)==null){
+                            System.out.println("Unknown emergency for call Id "+callId);
+                            return;
+                        }
+                        
+                        notifyAboutFireTruckOutOfWaterToEmergency(callId, message.getVehicleId());
+                        
+                    }
+
+                });
+            }
+        });
+        
+        
+        MessageConsumerWorker fireTruckWaterRefilledWorker = new MessageConsumerWorker("fireTruckWaterRefilledWorkerUI", new MessageConsumerWorkerHandler<FireTruckWaterRefilledMessage>() {
+
+            @Override
+            public void handleMessage(final FireTruckWaterRefilledMessage message) {
+                //Changes emergency animation
+                renderCommands.add(new Command() {
+
+                    @Override
+                    public void execute() {
+                        String callId = trackingService.getCallAttachedToEmergency(message.getEmergencyId());
+                        
+                        if (callId == null){
+                            System.out.println("The emergency "+message.getEmergencyId()+" doesn't have any associated call!");
+                            return;
+                        }
+                        if (emergencies.get(callId)==null){
+                            System.out.println("Unknown emergency for call Id "+callId);
+                            return;
+                        }
+                        
+                        notifyAboutFireTruckWaterRefilledToEmergency(callId, message.getVehicleId());
+                        
+                    }
+
+                });
+            }
+        });
+        
         hospitalSelectedWorker.start();
         emergencyDetailsWorker.start();
         vehicleDispatchedWorker.start();
         firefigthersDepartmentWorker.start();
+        fireTruckOutOfWaterWorker.start();
+        fireTruckWaterRefilledWorker.start();
     }
 
     
@@ -269,7 +327,7 @@ public class WorldUI extends BasicGame {
         
         GraphicableEmergency newEmergency = null;
         GraphicableEmergencyStatus newEmergencyStatus = null;
-        newEmergencyStatus = GraphicableFactory.newEmergencyStatus(call.getId());
+        
         if (emergencyType == Emergency.EmergencyType.UNDEFINED){
             newEmergency = GraphicableFactory.newGenericEmergency(call);
             
@@ -278,9 +336,8 @@ public class WorldUI extends BasicGame {
         }
         
         emergencies.put(call.getId(), newEmergency);
-        emergenciesStatus.put(call.getId(), newEmergencyStatus);
 
-        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency, newEmergencyStatus));
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
         
         try {
             MessageFactory.sendMessage(new IncomingCallMessage(call));
@@ -320,6 +377,18 @@ public class WorldUI extends BasicGame {
     public void selectFirefighterDepartmentForEmergency(String callId, FirefightersDepartment firefigthersDepartment) {
         this.renderers.get(callId).selectFirefighterDepartment(firefigthersDepartment);               
     }
+    
+    public void notifyAboutFireTruckOutOfWaterToEmergency(String callId, String vehicleId){
+        this.renderers.get(callId).onFireTruckOutOfWater(vehicleId);
+    }
+    
+    public void notifyAboutFireTruckWaterRefilledToEmergency(String callId, String vehicleId){
+        this.renderers.get(callId).onFireTruckWaterRefilled(vehicleId);
+    }
+    
+    public void notifyAboutEmergencyStatusChange(String callId, int remaining){
+        this.renderers.get(callId).updateStatus(remaining);
+    }
 
     public PersistenceService getPersistenceService() {
         return persistenceService;
@@ -330,7 +399,9 @@ public class WorldUI extends BasicGame {
     }
 
     public void addRenderCommand(Command element) {
-        renderCommands.add(element);
+        synchronized (renderCommands){
+            renderCommands.add(element);
+        }
     }
     
     

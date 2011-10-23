@@ -167,11 +167,11 @@ public class GraphicableFactory {
         return graphMenuBar;
     }
     
-    public static GraphicableEmergencyStatus newEmergencyStatus(String callId){
+    public static GraphicableEmergencyStatus newEmergencyStatus(EmergencyType type, int total){
         GraphicableEmergencyStatus emergencyStatus = new GraphicableEmergencyStatus();
       
         
-        Animation myEmergencyStatus = AnimationFactory.getEmergencyStatusAnimation(callId, 100);
+        Animation myEmergencyStatus = AnimationFactory.getEmergencyStatusAnimation(type, total, total);
         
         Polygon myEmergencyStatusPolygon = new Polygon(new float[]{
                     0 + 30 , 432 + 10,

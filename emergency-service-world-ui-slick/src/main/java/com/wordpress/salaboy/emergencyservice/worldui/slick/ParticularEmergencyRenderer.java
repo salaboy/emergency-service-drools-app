@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hornetq.api.core.HornetQException;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -28,7 +29,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private final WorldUI ui;
     private GraphicableEmergency emergency;
     private GraphicableVehicle activeGraphicableVehicle;
-    private List<GraphicableVehicle> graphicableVehicles;
+    private Map<String,GraphicableVehicle> graphicableVehicles;
     private Vehicle activeVehicle;
     private Map<Graphicable, Vehicle> vehicles;
     private GraphicableHighlightedHospital selectedHospital;
@@ -38,13 +39,12 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
     private boolean turbo;
     private boolean hideEmergency;
 
-    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency, GraphicableEmergencyStatus status) {
+    public ParticularEmergencyRenderer(WorldUI ui, GraphicableEmergency emergency) {
         this.emergency = emergency;
         this.ui = ui;
-        this.emergencyStatus = status;
         this.vehicles = new HashMap<Graphicable, Vehicle>();
-        this.graphicableVehicles = new ArrayList<GraphicableVehicle>();
         this.menuBar = GraphicableFactory.newMenuBar();
+        this.graphicableVehicles = new HashMap<String,GraphicableVehicle>();
     }
 
     /**
@@ -58,7 +58,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             g.draw(emergency.getPolygon());
         }
         
-        for (Graphicable vehicle : graphicableVehicles) {
+        for (Graphicable vehicle : graphicableVehicles.values()) {
             g.draw(vehicle.getPolygon());
         }
         if (selectedHospital != null) {
@@ -75,7 +75,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             g.drawAnimation(emergency.getAnimation(), emergency.getPolygon().getX(), emergency.getPolygon().getY());
         }
         
-        for (Graphicable vehicle : graphicableVehicles) {
+        for (Graphicable vehicle : graphicableVehicles.values()) {
             //the active vehicle is rendered at the end
             if (activeGraphicableVehicle == null || activeGraphicableVehicle != vehicle) {
                 g.drawAnimation(vehicle.getAnimation(), vehicle.getPolygon().getX(), vehicle.getPolygon().getY());
@@ -112,7 +112,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         vehicle.setPositionY(this.activeGraphicableVehicle.getPolygon().getY());
 
         this.vehicles.put(activeGraphicableVehicle, vehicle);
-        this.graphicableVehicles.add(activeGraphicableVehicle);
+        this.graphicableVehicles.put(vehicle.getId(),activeGraphicableVehicle);
 
         this.activeVehicle = vehicle;
     }
@@ -168,7 +168,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
     @Override
     public void onClick(int button, int x, int y, int count) {
-        for (GraphicableVehicle graphicable : graphicableVehicles) {
+        for (GraphicableVehicle graphicable : graphicableVehicles.values()) {
             if (graphicable.getPolygon().contains(x, y)) {
                 this.activeGraphicableVehicle = graphicable;
                 this.activeVehicle = vehicles.get(this.activeGraphicableVehicle);
@@ -590,7 +590,7 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         });
         
         //If there is no more fire, send a message and remove the emergency from the ui
-        if (realEmergency.getNroOfPeople() == 0){
+        if (realEmergency.getRemaining() == 0){
             this.setHideEmergency(true);
             try {
                 MessageFactory.sendMessage(new FireExtinctedMessage(emergencyId, new Date()));
@@ -599,4 +599,38 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
             }
         }
     }
+    
+    public void onFireTruckOutOfWater(String vehicleId){
+        final GraphicableVehicle vehicle = this.graphicableVehicles.get(vehicleId);
+        if (vehicle == null){
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.WARNING, "Unkown Vehicle {0}", vehicleId);
+        }
+        
+        Animation fireTruckAnimation = AnimationFactory.getFireTruckGrayedAnimation().copy();
+        fireTruckAnimation.setCurrentFrame(vehicle.getAnimation().getFrame());
+        vehicle.setAnimation(fireTruckAnimation);
+    }
+    
+    public void onFireTruckWaterRefilled(String vehicleId){
+        final GraphicableVehicle vehicle = this.graphicableVehicles.get(vehicleId);
+        if (vehicle == null){
+            Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.WARNING, "Unkown Vehicle {0}", vehicleId);
+        }
+        
+        Animation fireTruckAnimation = AnimationFactory.getFireTruckAnimation().copy();
+        fireTruckAnimation.setCurrentFrame(vehicle.getAnimation().getFrame());
+        vehicle.setAnimation(fireTruckAnimation);
+        
+    }
+    
+    public void updateStatus(int remaining){
+        String emergencyId = this.ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+        Emergency realEmergency = this.ui.getPersistenceService().loadEmergency(emergencyId);
+        if (emergencyStatus == null){
+            emergencyStatus = GraphicableFactory.newEmergencyStatus(realEmergency.getType(), realEmergency.getNroOfPeople());
+        }
+        
+        emergencyStatus.setAnimation(AnimationFactory.getEmergencyStatusAnimation(realEmergency.getType(), realEmergency.getNroOfPeople(), remaining));
+    }
+    
 }
