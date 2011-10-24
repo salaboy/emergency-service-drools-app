@@ -34,6 +34,7 @@ public class AnimationFactory {
     private static SpriteSheet glowSprites;
     private static SpriteSheet menuBarSprite;
     private static SpriteSheet fireEmergencyStatusSprite;
+    private static SpriteSheet heartAttackEmergencyStatusSprite;
     private static Animation ambulanceAnimation;
     private static Animation fireTruckAnimation;
     private static Animation fireTruckGrayedAnimation;
@@ -118,11 +119,7 @@ public class AnimationFactory {
 
     public static Animation getMenuBarAnimation() {
         Animation menuBarAnimation = new Animation();
-        // menuBarAnimation.setLooping(true);
-        // menuBarAnimation.setAutoUpdate(true);
-
-
-
+      
         menuBarAnimation.addFrame(getMenuBarSpriteSheet().getSprite(0, 0), 1000);
 
         return menuBarAnimation;
@@ -135,6 +132,10 @@ public class AnimationFactory {
         if (type == EmergencyType.FIRE) {
             String percentage = calculatePercentage(total, remaining);
             emergencyStatusAnimation.addFrame(getFireEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
+        }
+        if (type == EmergencyType.HEART_ATTACK) {
+            String percentage = calculatePercentage(total, remaining);
+            emergencyStatusAnimation.addFrame(getHeartAttackEmergencyStatusSpriteSheet(percentage).getSprite(0, 0), 1000);
         }
         return emergencyStatusAnimation;
     }
@@ -213,6 +214,20 @@ public class AnimationFactory {
             Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
         return fireEmergencyStatusSprite;
+    }
+    private static SpriteSheet getHeartAttackEmergencyStatusSpriteSheet(String percentage) {
+
+        try {
+            if(!percentage.equals("00")){
+                heartAttackEmergencyStatusSprite = new SpriteSheet("data/sprites/people-x.png", 78, 28, Color.magenta);
+            } else{
+                heartAttackEmergencyStatusSprite = new SpriteSheet("data/sprites/people-ok.png", 78, 28, Color.magenta);
+            }
+            
+        } catch (SlickException ex) {
+            Logger.getLogger(GraphicableFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return heartAttackEmergencyStatusSprite;
     }
 
     private static SpriteSheet getMenuBarSpriteSheet() {

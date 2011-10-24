@@ -322,6 +322,9 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
                 MessageFactory.sendMessage(new VehicleHitsHospitalMessage(this.activeVehicle.getId(), selectedHospital.getHospital(), this.emergency.getCallId(), new Date()));
                 //hide the hospital
                 this.selectedHospital = null;
+                
+                //change status
+                this.updateStatus(0);
             } catch (HornetQException ex) {
                 Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -428,7 +431,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
         }
         
         try {
-            MessageFactory.sendMessage(new FireTruckDecreaseWaterLevelMessage(this.emergency.getCallId(), this.activeVehicle.getId(), new Date()));
+            String emergencyId = ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+            MessageFactory.sendMessage(new FireTruckDecreaseWaterLevelMessage(emergencyId, this.activeVehicle.getId(), new Date()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }

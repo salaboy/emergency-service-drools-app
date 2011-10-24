@@ -250,26 +250,22 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    
-        Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];         
-        int i = 0;         
-        for (Hospital hospital : persistenceService.getAllHospitals()) {             
-                vehicles[i][0] = hospital.getId();             
-                vehicles[i][1] = hospital.getName();             
-                i++;         
-        }         
-        hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(vehicles,  
-                new String[]{ "ID", "Hospital"  }));     
-    }                                        
+
+        Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];
+        int i = 0;
+        for (Hospital hospital : persistenceService.getAllHospitals()) {
+            vehicles[i][0] = hospital.getId();
+            vehicles[i][1] = hospital.getName();
+            i++;
+        }
+        hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(vehicles,
+                new String[]{"ID", "Hospital"}));
+    }
         // TODO add your handling code here:         Object[][] vehicles = new Object[persistenceService.getAllHospitals().size()][2];         int i = 0;         for (Hospital hospital : persistenceService.getAllHospitals()) {             vehicles[i][0] = hospital.getId();             vehicles[i][1] = hospital.getName();             i++;         }         hospitalsjTable.setModel(new javax.swing.table.DefaultTableModel(                 vehicles,                 new String[]{                     "ID", "Hospital"                 }));     }//GEN-LAST:event_jButton1ActionPerformed
 
         private void liveReportjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveReportjButtonActionPerformed
-        int[] selected = emergenciesjTable.getSelectedRows();
-        List<String> selectedEmergencies = new ArrayList<String>(selected.length);
-        for (int i = 0; i < selected.length; i++) {
-            selectedEmergencies.add((String) emergenciesjTable.getModel().getValueAt(i, 0));
-        }
-        openLiveReportPanel(selectedEmergencies);
+
+        openLiveReportPanel((String) emergenciesjTable.getModel().getValueAt(emergenciesjTable.getSelectedRow(), 0));
     }
         // TODO add your handling code here:         int[] selected = emergenciesjTable.getSelectedRows();          List<String> selectedEmergencies = new ArrayList<String>(selected.length);          for (int i = 0; i < selected.length; i++) {             selectedEmergencies.add((String) emergenciesjTable.getModel().getValueAt(i, 0));         }          openLiveReportPanel(selectedEmergencies);     }//GEN-LAST:event_liveReportjButtonActionPerformed
 
@@ -294,22 +290,19 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
                         "Emergency ID", "Call ID", "Emergency Type", "People involved"
                     }));
     }//GEN-LAST:event_refreshjButtonActionPerformed
-   
 
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
-        public void run() {
+            public void run() {
                 try {
                     new EmergenciesDashboard().setVisible(true);
-                
 
-} catch (IOException ex) {
-                    Logger.getLogger(EmergenciesDashboard.class  
 
-.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(EmergenciesDashboard.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -333,24 +326,21 @@ public class EmergenciesDashboard extends javax.swing.JFrame {
     private javax.swing.JButton refreshjButton;
     // End of variables declaration//GEN-END:variables
 
-    private void openLiveReportPanel(final List<String> selectedEmergencies) {
+    private void openLiveReportPanel(final String selectedEmergency) {
         //
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 try {
-                    new LiveEmergencyReport(selectedEmergencies.get(0)).setVisible(true);
-                
+                    System.out.println("Creating a LiveEmergencyReport with the selected Emergency = " + selectedEmergency);
+                    new LiveEmergencyReport(selectedEmergency).setVisible(true);
 
-} catch (IOException ex) {
-                    Logger.getLogger(EmergenciesDashboard.class  
 
-.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(EmergenciesDashboard.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
         });
     }
-
-   
 }

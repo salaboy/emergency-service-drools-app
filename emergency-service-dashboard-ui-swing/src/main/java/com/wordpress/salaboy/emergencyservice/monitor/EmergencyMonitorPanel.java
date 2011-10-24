@@ -51,6 +51,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private MessageConsumerWorker waterTankIncreaseWorker;
     private MessageConsumerWorker waterPumpTiltWorker;
     private MessageConsumerWorker outOfWaterWorker;
+    private MessageConsumerWorker waterRefillWorker;
     private String callId;
     private List<String> alerts = new ArrayList<String>();
     private Map<String, Boolean> vehicleHitEmergency = new HashMap<String, Boolean>();
@@ -58,7 +59,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     private final PersistenceService persistenceService;
     private final ContextTrackingService trackingService;
     private Map<String, FireTruckStatusJPanel> fireTruckPanels = new HashMap<String, FireTruckStatusJPanel>();
-    
+    private String emergencyId;
     
     
 
@@ -66,10 +67,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     public EmergencyMonitorPanel(String callId) throws IOException {
 
         this.callId = callId;
-
+        
         persistenceService = PersistenceServiceProvider.getPersistenceService();
 
         trackingService = ContextTrackingProvider.getTrackingService();
+        
+        emergencyId = trackingService.getEmergencyAttachedToCall(callId);
         initComponents();
 
         loadMapImage();
@@ -227,7 +230,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnClear1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+        System.out.println("Get REPORT FOR CALL ID="+this.callId);
         auditLogjTextArea.setText(persistenceService.loadReport(this.callId).getReportString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -255,6 +258,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(VehicleHitsCornerMessage message) {
+                System.out.println("CallId = "+callId +" -> Vehicle Id= "+message.getVehicleId());
                 if (message.getEmergencyId().equals(callId)) {
                     paintVehiclePosition(message.getVehicleId(), message.getCornerX(), message.getCornerY());
                 }
@@ -303,33 +307,46 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         });
 
 
-        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
+        waterTankDecreaseWorker = new MessageConsumerWorker("FTwaterDecreaseMonitor"+callId, new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
 
             @Override
             public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
-                
-                getFireTruckPanel(message.getVehicleId()).decreaseWaterLevel();
-                
+                if (message.getEmergencyId().equals(emergencyId)) {
+                    getFireTruckPanel(message.getVehicleId()).decreaseWaterLevel();
+                }
             }
         });
-        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
+        outOfWaterWorker = new MessageConsumerWorker("FTOutOfWaterMonitor"+callId, new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
 
             @Override
             public void handleMessage(FireTruckOutOfWaterMessage message) {
-                
-                getFireTruckPanel(message.getVehicleId()).fireTruckOutOfWater();
-
+                if (message.getEmergencyId().equals(emergencyId)) {
+                    getFireTruckPanel(message.getVehicleId()).fireTruckOutOfWater();
+                }
             }
         });
 
-        waterPumpTiltWorker = new MessageConsumerWorker("FTTiltMonitor", new MessageConsumerWorkerHandler<FireTruckWaterPumpTiltMessage>() {
+        waterPumpTiltWorker = new MessageConsumerWorker("FTTiltMonitor"+callId, new MessageConsumerWorkerHandler<FireTruckWaterPumpTiltMessage>() {
 
             @Override
             public void handleMessage(FireTruckWaterPumpTiltMessage message) {
-                getFireTruckPanel(message.getVehicleId()).waterPumpOverHeat();
+                if (message.getEmergencyId().equals(emergencyId)) {
+                    getFireTruckPanel(message.getVehicleId()).waterPumpOverHeat();
+                }
             }
         });
+        
+         waterRefillWorker = new MessageConsumerWorker("FTWaterRefillMonitor"+callId, new MessageConsumerWorkerHandler<FireTruckWaterRefilledMessage>() {
 
+            @Override
+            public void handleMessage(FireTruckWaterRefilledMessage message) {
+                if (message.getEmergencyId().equals(emergencyId)) {
+                    getFireTruckPanel(message.getVehicleId()).waterRefilled();
+                }
+            }
+        });
+         
+        waterRefillWorker.start();
         waterPumpTiltWorker.start();
         outOfWaterWorker.start();
         waterTankDecreaseWorker.start();
@@ -367,6 +384,12 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     public void cleanupPanel() {
 
         stopPulseEmulator = true;
+        if (waterRefillWorker != null) {
+            waterRefillWorker.stopWorker();
+        }
+        if (waterPumpTiltWorker != null) {
+            waterPumpTiltWorker.stopWorker();
+        }
         if (outOfWaterWorker != null) {
             outOfWaterWorker.stopWorker();
         }

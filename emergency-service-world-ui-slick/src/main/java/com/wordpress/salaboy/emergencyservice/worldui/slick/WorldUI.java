@@ -29,6 +29,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.*;
@@ -294,7 +295,39 @@ public class WorldUI extends BasicGame {
         this.addRandomEmergency(Emergency.EmergencyType.UNDEFINED, null);
 
     }
+    public void addXYEmergency( int x, int y){
+        addXYEmergency(EmergencyType.UNDEFINED, null, x, y);
+    }
+    public void addXYEmergency(EmergencyType type,Integer nroOfPeople, int x, int y){
+        
+        System.out.println("x = " + xs[x] + " -> y =" + ys[y]);
+        Call call = new Call(x, y, new Date(System.currentTimeMillis()));
+        
+        PersistenceServiceProvider.getPersistenceService().storeCall(call); 
+        
+        int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
+        BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
+        
+        GraphicableEmergency newEmergency = null;
+        
+        if (type == Emergency.EmergencyType.UNDEFINED){
+            newEmergency = GraphicableFactory.newGenericEmergency(call);
+            
+        }else{
+            newEmergency = GraphicableFactory.newEmergency(call, type, nroOfPeople);
+        }
+        
+        emergencies.put(call.getId(), newEmergency);
+
+        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
+        
+        try {
+            MessageFactory.sendMessage(new IncomingCallMessage(call));
+        } catch (HornetQException ex) {
+            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     
+    }
     public void addRandomEmergency(Emergency.EmergencyType emergencyType, Integer numberOfPeople) throws IOException {
         
         int randomx = 0;
@@ -316,34 +349,8 @@ public class WorldUI extends BasicGame {
                 }
             }
         } while (!isFreeSpace);
-        
-        System.out.println("x = " + xs[randomx] + " -> y =" + ys[randomy]);
-        Call call = new Call(randomx, randomy, new Date(System.currentTimeMillis()));
-        
-        PersistenceServiceProvider.getPersistenceService().storeCall(call); 
-        
-        int callSquare[] = {1, 1, 31, 1, 31, 31, 1, 31};
-        BlockMap.emergencies.add(new Block(xs[call.getX()] * 16, ys[call.getY()] * 16, callSquare, "callId:" + call.getId()));
-        
-        GraphicableEmergency newEmergency = null;
-        GraphicableEmergencyStatus newEmergencyStatus = null;
-        
-        if (emergencyType == Emergency.EmergencyType.UNDEFINED){
-            newEmergency = GraphicableFactory.newGenericEmergency(call);
-            
-        }else{
-            newEmergency = GraphicableFactory.newEmergency(call, emergencyType, numberOfPeople);
-        }
-        
-        emergencies.put(call.getId(), newEmergency);
-
-        renderers.put(call.getId(), new ParticularEmergencyRenderer(this,newEmergency));
-        
-        try {
-            MessageFactory.sendMessage(new IncomingCallMessage(call));
-        } catch (HornetQException ex) {
-            Logger.getLogger(WorldUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        addXYEmergency(emergencyType, numberOfPeople,randomx, randomy);
+       
     }
 
     public Map<String, GraphicableEmergency> getEmergencies() {

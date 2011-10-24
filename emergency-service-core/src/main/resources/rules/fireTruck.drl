@@ -28,15 +28,15 @@ then
 
     System.out.println("Water Level Decreased on Fire Truck "+$ft);
 
-    //retract the event
-    //retract ($evt);
+  
 
     //decrease tank level 
     $ft.setTankLevel($ft.getTankLevel()-1);
 
     //update persistent information
     PersistenceServiceProvider.getPersistenceService().storeVehicle($ft);
-   //Load emergency to notify
+   
+    //Load emergency to notify
     Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(emergencyId);
     emergency.setRemaining(emergency.getRemaining()-1);
     PersistenceServiceProvider.getPersistenceService().storeEmergency(emergency);
@@ -88,7 +88,7 @@ then
 end
 
 rule "cool water pump"
-        timer ( int: 5s )
+        timer ( int: 3s )
     when
         
         $ft: FireTruck($id: id, tiltStatus > 0 )

@@ -24,7 +24,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
         this.setName(vehicleId);
         
         initComponents();
-        jTruckStatusLabel.setText(vehicleId);
+        vehicleIDLabel.setText(" => Vehicle: "+vehicleId);
     }
 
     /** This method is called from within the constructor to
@@ -41,7 +41,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
         jProgressBar2 = new javax.swing.JProgressBar();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        vehicleIDLabel = new javax.swing.JLabel();
 
         jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 50));
         jProgressBar1.setSize(new java.awt.Dimension(146, 50));
@@ -54,7 +54,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/overheat.png"))); // NOI18N
 
-        jLabel1.setText("VehicleId: ");
+        vehicleIDLabel.setText("VehicleId: ");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -74,7 +74,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(jTruckStatusLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(18, 18, 18)
-                        .add(jLabel1)))
+                        .add(vehicleIDLabel)))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -89,7 +89,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
                 .addContainerGap(21, Short.MAX_VALUE))
             .add(layout.createSequentialGroup()
                 .add(30, 30, 30)
-                .add(jLabel1)
+                .add(vehicleIDLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(48, 48, 48)
@@ -98,12 +98,12 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JLabel jTruckStatusLabel;
+    private javax.swing.JLabel vehicleIDLabel;
     // End of variables declaration//GEN-END:variables
 
     public void decreaseWaterLevel() {
@@ -122,5 +122,9 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
         FireTruck truck = (FireTruck) PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
         jProgressBar2.setMaximum(truck.getWaterPumpPower());
         jProgressBar2.setValue(truck.getTiltStatus());
+    }
+    public void waterRefilled(){
+        FireTruck truck = (FireTruck) PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
+        jProgressBar1.setValue(truck.getTankLevel());
     }
 }

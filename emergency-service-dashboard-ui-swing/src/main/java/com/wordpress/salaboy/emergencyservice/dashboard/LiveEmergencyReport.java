@@ -104,6 +104,8 @@ public class LiveEmergencyReport extends javax.swing.JFrame {
 
     private void configure() {
         try {
+            
+            setTitle(emergency.getType().toString());
             monitor = new EmergencyMonitorPanel(emergency.getCall().getId());
         } catch (IOException ex) {
             Logger.getLogger(LiveEmergencyReport.class.getName()).log(Level.SEVERE, null, ex);

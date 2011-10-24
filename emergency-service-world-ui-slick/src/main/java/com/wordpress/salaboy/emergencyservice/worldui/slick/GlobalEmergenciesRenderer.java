@@ -51,7 +51,10 @@ public class GlobalEmergenciesRenderer implements EmergencyRenderer {
                 this.ui.addRandomGenericEmergency();
             } else if (Input.KEY_ENTER == code) {
                 this.ui.addRandomEmergency(Emergency.EmergencyType.FIRE, 10);
-            } else if (Input.KEY_ESCAPE == code) {
+            } else if (Input.KEY_V == code) {
+                this.ui.addXYEmergency(2,1);
+                this.ui.addXYEmergency(2,2);
+            }else if (Input.KEY_ESCAPE == code) {
                 this.ui.goToGlobalMap();
             }
         } catch (IOException ex) {

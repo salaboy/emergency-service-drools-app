@@ -10,10 +10,13 @@
  */
 package com.wordpress.salaboy.sensor.ui;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import com.wordpress.salaboy.sensor.EmergencyInformationDataSource;
 import com.wordpress.salaboy.sensor.SensorMessageProducer;
 import java.awt.Color;
@@ -40,7 +43,9 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
         
         wiiConfigPanel = new WiiConfigPanel(sensorMessageProducer, true);
         uDPServerPanel= new UDPServerPanel(sensorMessageProducer, true);
-                
+               
+        
+        
         this.tpnlMain.add(wiiConfigPanel);
         this.tpnlMain.add(uDPServerPanel);
         this.tpnlMain.add(new KeySheetPanel());
@@ -222,7 +227,7 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
             public void handleMessage(IncomingCallMessage incomingCallMessage) {
                 String callId = incomingCallMessage.getEmergencyId();
                 cboCallId.addItem(callId);
-                cboCallId.setSelectedItem(callId);
+                //cboCallId.setSelectedItem(callId);
             }
         });
 
@@ -232,8 +237,15 @@ public class MainFrame extends javax.swing.JFrame implements EmergencyInformatio
             @Override
             public void handleMessage(VehicleDispatchedMessage vehicleDispatchedMessage) {
                 String vehicleId = vehicleDispatchedMessage.getVehicleId();
-                cboVehicleId.addItem(vehicleId);
-                cboVehicleId.setSelectedItem(vehicleId);
+                String callId = ContextTrackingProvider.getTrackingService().getCallAttachedToEmergency(vehicleDispatchedMessage.getEmergencyId());
+                Emergency emergency = PersistenceServiceProvider.getPersistenceService().loadEmergency(vehicleDispatchedMessage.getEmergencyId());
+                System.out.println("Emergency Type = "+emergency.getType());
+                if (emergency.getType() == Emergency.EmergencyType.HEART_ATTACK){
+                    cboVehicleId.addItem(vehicleId);
+                    cboVehicleId.setSelectedItem(vehicleId);
+                    cboCallId.setSelectedItem(callId);
+                    
+                }
             }
         });
 
