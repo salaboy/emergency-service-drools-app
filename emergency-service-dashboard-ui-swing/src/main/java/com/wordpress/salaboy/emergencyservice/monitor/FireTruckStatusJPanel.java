@@ -7,6 +7,7 @@ package com.wordpress.salaboy.emergencyservice.monitor;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.awt.Color;
+import java.util.Date;
 
 /**
  *
@@ -15,13 +16,15 @@ import java.awt.Color;
 public class FireTruckStatusJPanel extends javax.swing.JPanel {
 
     private String vehicleId;
+    private final EmergencyMonitorPanel emergencyMonitorPanel;
 
     /**
      * Creates new form FireTruckStatusJPanel
      */
-    public FireTruckStatusJPanel(String vehicleId) {
+    public FireTruckStatusJPanel(EmergencyMonitorPanel emergencyMonitorPanel, String vehicleId) {
         this.vehicleId = vehicleId;
         this.setName(vehicleId);
+        this.emergencyMonitorPanel = emergencyMonitorPanel;
         
         initComponents();
         vehicleIDLabel.setText(" => Vehicle: "+vehicleId);
@@ -116,15 +119,18 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
         jProgressBar1.setValue(0);
         jProgressBar1.setBackground(Color.RED);
         jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-off.png")));
+        this.emergencyMonitorPanel.addAlert(vehicleId, new Date(), "Ran out of Water");
     }
 
     public void waterPumpOverHeat() {
         FireTruck truck = (FireTruck) PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
         jProgressBar2.setMaximum(truck.getWaterPumpPower());
         jProgressBar2.setValue(truck.getTiltStatus());
+        this.emergencyMonitorPanel.addAlert(vehicleId, new Date(), "Pump Overheated");
     }
     public void waterRefilled(){
         FireTruck truck = (FireTruck) PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
         jProgressBar1.setValue(truck.getTankLevel());
+        this.emergencyMonitorPanel.addAlert(vehicleId, new Date(), "Refilled");
     }
 }

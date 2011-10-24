@@ -280,7 +280,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
             @Override
             public void handleMessage(PatientMonitorAlertMessage message) {
                 if (message.getEmergencyId().equals(emergencyId)) {
-                    processPatientAlert(message.getVehicleId(), message.getTime(), message.getMessage());
+                    addAlert(message.getVehicleId(), message.getTime(), message.getMessage());
                 }
             }
         });
@@ -452,7 +452,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
         heartBeatWidgets.get(vehicleId).updateMonitorGraph(heartBeatValue);
     }
 
-    private void processPatientAlert(String vehicleId, Date time, String message) {
+    public void addAlert(String vehicleId, Date time, String message) {
         alerts.add(0, vehicleId + " - " + message);
 
         DefaultListModel model = new DefaultListModel();
@@ -491,7 +491,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
     
     private FireTruckStatusJPanel getFireTruckPanel(String vehicleId){
         if(fireTruckPanels.get(vehicleId) == null){
-            FireTruckStatusJPanel fireTruckStatusJPanel = new FireTruckStatusJPanel(vehicleId);
+            FireTruckStatusJPanel fireTruckStatusJPanel = new FireTruckStatusJPanel(this, vehicleId);
             fireTruckPanels.put(vehicleId,fireTruckStatusJPanel);
             jEmergencyTabbedPane.add(fireTruckStatusJPanel);
             jEmergencyTabbedPane.setSelectedComponent(fireTruckStatusJPanel);
