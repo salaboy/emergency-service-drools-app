@@ -294,10 +294,8 @@ public class CoreServer {
                     }
                     
                     if (hitEmergency && !hitHospital){
-                        PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
-                        event.setEmergencyId(message.getEmergencyId());
-                        event.setVehicleId(message.getVehicleId());
-                        VehiclesMGMTService.getInstance().processEvent(event);
+                        EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(message);
+                        VehiclesMGMTService.getInstance().processEvent((PulseEvent)event);
                     }
                 }
             });

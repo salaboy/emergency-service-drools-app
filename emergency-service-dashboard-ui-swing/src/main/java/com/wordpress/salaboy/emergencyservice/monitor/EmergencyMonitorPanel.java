@@ -269,7 +269,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(HeartBeatMessage message) {
-                if (message.getEmergencyId().equals(callId)) {
+                if (message.getEmergencyId().equals(emergencyId)) {
                     processHeartBeat(message.getVehicleId(), message.getHeartBeatValue(), message.getTime());
                 }
             }
@@ -279,7 +279,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
 
             @Override
             public void handleMessage(PatientMonitorAlertMessage message) {
-                if (message.getEmergencyId().equals(callId)) {
+                if (message.getEmergencyId().equals(emergencyId)) {
                     processPatientAlert(message.getVehicleId(), message.getTime(), message.getMessage());
                 }
             }
@@ -473,9 +473,7 @@ public class EmergencyMonitorPanel extends javax.swing.JPanel {
                     try {
                         for (String vehicleId : heartBeatWidgets.keySet()) {
                             try {
-                                MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, 0, new Date()));
-
-
+                                MessageFactory.sendMessage(new HeartBeatMessage(emergencyId, vehicleId, 0, new Date()));
                             } catch (HornetQException ex) {
                                 Logger.getLogger(EmergencyMonitorPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }

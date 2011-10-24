@@ -418,7 +418,8 @@ public class ParticularEmergencyRenderer implements EmergencyRenderer {
 
         pulse += 235;
         try {
-            MessageFactory.sendMessage(new HeartBeatMessage(this.emergency.getCallId(), this.activeVehicle.getId(), pulse, new Date()));
+            String emergencyId = ui.getTrackingService().getEmergencyAttachedToCall(this.emergency.getCallId());
+            MessageFactory.sendMessage(new HeartBeatMessage(emergencyId, this.activeVehicle.getId(), pulse, new Date()));
         } catch (HornetQException ex) {
             Logger.getLogger(ParticularEmergencyRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }

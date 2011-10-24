@@ -13,13 +13,13 @@ import java.util.Date;
  * @author esteban
  */
 public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessage{
-    private String callId;
+    private String emergencyId;
     private String vehicleId;
     private double heartBeatValue;
     private Date time;
 
-    public HeartBeatMessage(String callId, String vehicleId, double heartBeatValue, Date time) {
-        this.callId = callId;
+    public HeartBeatMessage(String emergencyId, String vehicleId, double heartBeatValue, Date time) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.heartBeatValue = heartBeatValue;
         this.time = time;
@@ -27,11 +27,7 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
 
     @Override
     public String getEmergencyId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
+        return emergencyId;
     }
 
     public double getHeartBeatValue() {
@@ -60,7 +56,7 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
 
     @Override
     public String toString() {
-        return "HeartBeatMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", heartBeatValue=" + heartBeatValue + ", time=" + time + '}';
+        return "HeartBeatMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", heartBeatValue=" + heartBeatValue + ", time=" + time + '}';
     }
     
 }

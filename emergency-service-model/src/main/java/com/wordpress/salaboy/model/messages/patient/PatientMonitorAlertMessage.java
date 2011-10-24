@@ -13,24 +13,21 @@ import java.util.Date;
  * @author esteban
  */
 public class PatientMonitorAlertMessage implements Serializable, EmergencyInterchangeMessage {
-    private String callId;
+    private String emergencyId;
     private String vehicleId;
     private String message;
     private Date time;
 
-    public PatientMonitorAlertMessage(String callId, String vehicleId, String message, Date time) {
-        this.callId = callId;
+    public PatientMonitorAlertMessage(String emergencyId, String vehicleId, String message, Date time) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
         this.message = message;
     }
 
+    @Override
     public String getEmergencyId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
+        return emergencyId;
     }
 
     public Date getTime() {
@@ -59,7 +56,7 @@ public class PatientMonitorAlertMessage implements Serializable, EmergencyInterc
 
     @Override
     public String toString() {
-        return "PatientMonitorAlertMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", message=" + message + ", time=" + time + '}';
+        return "PatientMonitorAlertMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", message=" + message + ", time=" + time + '}';
     }
     
     

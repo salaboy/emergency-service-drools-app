@@ -6,6 +6,7 @@ package com.wordpress.salaboy.services.util;
 
 import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 
 /**
  * Utility class to convert from EmergencyInterchangeMessage to EmergencyEvent
@@ -35,6 +36,12 @@ public class MessageToEventConverter {
         }else if (message instanceof FireTruckWaterRefilledMessage){
             FireTruckWaterRefilledMessage realMessage = (FireTruckWaterRefilledMessage)message;
             return new FireTruckWaterRefilledEvent(realMessage.getEmergencyId(), realMessage.getVehicleId(), realMessage.getTime());
+        }else if (message instanceof HeartBeatMessage){
+            HeartBeatMessage realMessage = (HeartBeatMessage)message;
+            PulseEvent event = new PulseEvent((int)realMessage.getHeartBeatValue());
+            event.setEmergencyId(realMessage.getEmergencyId());
+            event.setVehicleId(realMessage.getVehicleId());
+            return event;
         }
         
         
