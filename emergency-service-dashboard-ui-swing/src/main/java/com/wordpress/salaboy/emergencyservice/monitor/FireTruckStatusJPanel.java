@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.emergencyservice.monitor;
 
+import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
 import java.awt.Color;
@@ -131,6 +132,7 @@ public class FireTruckStatusJPanel extends javax.swing.JPanel {
     public void waterRefilled(){
         FireTruck truck = (FireTruck) PersistenceServiceProvider.getPersistenceService().loadVehicle(vehicleId);
         jProgressBar1.setValue(truck.getTankLevel());
+        jTruckStatusLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/data/png/fire-on.png")));
         this.emergencyMonitorPanel.addAlert(vehicleId, new Date(), "Refilled");
     }
 }
