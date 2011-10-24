@@ -5,10 +5,8 @@
 package com.wordpress.salaboy.sensor;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.sensor.udp.SensorMessageProducer;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
