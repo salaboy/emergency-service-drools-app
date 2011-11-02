@@ -4,14 +4,14 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
 
 /**
  *
  * @author salaboy
  */
 public interface DefaultHeartAttackProcedure extends ProcedureService{
-    public void patientAtHospitalNotification(PatientAtHospitalEvent event);
-    public void patientPickUpNotification(PatientPickUpEvent event);
+    public void patientAtHospitalNotification(VehicleHitsHospitalEvent event);
+    public void patientPickUpNotification(VehicleHitsEmergencyEvent event);
 }

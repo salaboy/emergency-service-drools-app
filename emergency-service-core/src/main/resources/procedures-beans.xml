@@ -5,11 +5,17 @@
        xmlns:drools="http://drools.org/schema/drools-spring"       
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
-       <bean id="DefaultHeartAttackProcedure" class="com.wordpress.salaboy.services.DefaultHeartAttackProcedureImpl"/>
-       <bean id="AdHocProcedure" class="com.wordpress.salaboy.services.AdHocProcedureImpl"/>
-       <bean id="DumbProcedure" class="com.wordpress.salaboy.services.DumbProcedureImpl"/>
+    <bean id="DefaultHeartAttackProcedure" class="com.wordpress.salaboy.services.DefaultHeartAttackProcedureImpl" scope="prototype">
+        <property name="useLocalKSession" value="false"/>
+    </bean>
+    <bean id="AdHocProcedure" class="com.wordpress.salaboy.services.AdHocProcedureImpl" scope="prototype"/>
+    <bean id="DumbProcedure" class="com.wordpress.salaboy.services.DumbProcedureImpl" scope="prototype"/>
        
        
        
        
+    <bean id="DefaultFireProcedure" class="com.wordpress.salaboy.services.DefaultFireProcedureImpl" scope="prototype">
+        <property name="useLocalKSession" value="true"/>
+    </bean>
+    
 </beans>                              

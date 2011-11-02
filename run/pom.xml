@@ -36,6 +36,9 @@
                             <executable>java</executable>
                             <arguments>
                                 <!-- mac osx for infinispan -->
+                                <!--argument>-Xmx2048m</argument>
+                                <argument>-Xms1024m</argument>
+                                <argument>-XX:MaxPermSize=1024M</argument-->
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
                                 <argument>-classpath</argument>
@@ -54,7 +57,7 @@
             </dependencies>
         </profile>
 
-        <!--world-gui -->
+        <!--city map -->
         <profile>
             <id>win32</id>
             <activation>
@@ -100,7 +103,7 @@
             </properties>
         </profile>
         <profile>
-            <id>world-ui</id>
+            <id>citymap</id>
             <properties>
                 <native.path>${project.build.directory}/natives</native.path>
             </properties>
@@ -169,41 +172,11 @@
             </repositories>
         </profile>
 
-        <!--tasklists-ui -->
-        <profile>
-            <id>tasklists-ui</id>
-            <build>
-                <defaultGoal>exec:exec</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <!-- mac osx for infinispan -->
-                                <argument>-Djgroups.bind_addr=127.0.0.1</argument>
-                                <argument>-Djava.net.preferIPv4Stack=true</argument>
-                                <argument>-classpath</argument>
-                                <classpath />
-                                <argument>com.wordpress.salaboy.emergencyservice.main.UserTaskListUI</argument>
-                            </arguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>emergency-service-taskslists-ui-swing</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
         
         
-        <!--dashboard-ui -->
+        <!--dashboard -->
         <profile>
-            <id>dashboard-ui</id>
+            <id>dashboard</id>
             <build>
                 <defaultGoal>exec:exec</defaultGoal>
                 <plugins>
@@ -244,6 +217,9 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
+				 <!-- mac osx for infinispan -->
+                                <argument>-Djgroups.bind_addr=127.0.0.1</argument>
+                                <argument>-Djava.net.preferIPv4Stack=true</argument>
                                 <argument>-d32</argument>
                                 <argument>-classpath</argument>
                                 <classpath />
@@ -263,7 +239,7 @@
 
 
         <profile>
-            <id>tasklists-ui-web</id>
+            <id>tasklists</id>
             <build>
                 <defaultGoal>exec:exec</defaultGoal>
                 <plugins>
@@ -281,7 +257,7 @@
                         </executions>
                         <configuration>
                             <executable>mvn</executable>
-                            <commandlineArgs>jetty:run-war -Ptasklists-ui-web -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=127.0.0.1</commandlineArgs>
+                            <commandlineArgs>jetty:run-war -Ptasklists -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=127.0.0.1</commandlineArgs>
                         </configuration>
                     </plugin>
                    

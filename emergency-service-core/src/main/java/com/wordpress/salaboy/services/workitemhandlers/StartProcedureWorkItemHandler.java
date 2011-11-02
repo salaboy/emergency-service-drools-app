@@ -7,9 +7,12 @@ package com.wordpress.salaboy.services.workitemhandlers;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
@@ -29,7 +32,11 @@ public class StartProcedureWorkItemHandler implements WorkItemHandler, Serializa
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("call", call);
         parameters.put("emergency", emergency);
-        ProceduresMGMTService.getInstance().newRequestedProcedure(call.getId(), procedureName, parameters);
+        try {
+            ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
+        } catch (IOException ex) {
+            Logger.getLogger(StartProcedureWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("I'm going out of here!!!!!!");
         wim.completeWorkItem(wi.getId(), null);
     }

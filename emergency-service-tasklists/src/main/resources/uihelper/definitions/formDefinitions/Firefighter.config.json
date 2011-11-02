@@ -1,0 +1,66 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+        {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Emergency Type:",
+            "sourceExpresion":"#{in:emergency.type}"
+         }
+     	
+     ],
+     "outputFields": [
+         {
+            "name":"Severity",
+            "sourceExpresion":"[1,2,3,4,5]"
+         },
+         {
+            "name":"Update Situation",
+            "sourceExpresion":""
+         }
+     ]
+ },
+ {
+     "profile": "Detailed",
+     "inputFields": [
+        {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Emergency Type:",
+            "sourceExpresion":"#{in:emergency.type}"
+         },
+         {
+            "name":"Priority",
+            "sourceExpresion":"#{task:priority}"
+         },
+         {
+            "name":"Nro Of people",
+            "sourceExpresion":"#{in:emergency.nroOfPeople}"
+         }
+     	
+     ],
+     "outputFields": [
+         {
+            "name":"Severity",
+            "sourceExpresion":"[1,2,3,4,5]"
+         },
+         {
+            "name":"Update Situation",
+            "sourceExpresion":""
+         }
+     ]
+ }
+ ]

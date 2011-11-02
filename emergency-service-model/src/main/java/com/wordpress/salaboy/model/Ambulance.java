@@ -1,19 +1,16 @@
 package com.wordpress.salaboy.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
  * @author salaboy
  */
-public class Ambulance implements Vehicle{
+public class Ambulance implements Vehicle {
 
-    private Long id;
-    
+    private String id;
     private Doctor doctorOnBoard;
     private List<MedicalKit> kits;
     private Date departureTime;
@@ -21,33 +18,29 @@ public class Ambulance implements Vehicle{
     private float positionX;
     private float positionY;
     private String name;
-    public static AtomicLong incrementalId = new AtomicLong();
-    
+   
 
-	public Ambulance() {
-		// Needed for serialization
-	}
+    public Ambulance() {
+   
+    }
 
     public Ambulance(String name, Date departureTime) {
-        this.id = Ambulance.incrementalId.getAndIncrement();
+   
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public Ambulance(String name) {
-        this.id = Ambulance.incrementalId.getAndIncrement();
         this.name = name;
     }
-    
-    
-    
-    
-    public void setId(Long id) {
+
+    @Override
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -90,8 +83,6 @@ public class Ambulance implements Vehicle{
         return patientPickedUpTime;
     }
 
-    
-
     public float getPositionX() {
         return positionX;
     }
@@ -113,25 +104,12 @@ public class Ambulance implements Vehicle{
         return "Ambulance{" + "id=" + id + ", name=" + name + '}';
     }
 
-   
-
     @Override
     public String getName() {
         return this.name;
     }
 
-	public static AtomicLong getIncrementalId() {
-		return incrementalId;
-	}
-
-	public static void setIncrementalId(AtomicLong incrementalId) {
-		Ambulance.incrementalId = incrementalId;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-    
-    
+    public void setName(String name) {
+        this.name = name;
+    }
 }

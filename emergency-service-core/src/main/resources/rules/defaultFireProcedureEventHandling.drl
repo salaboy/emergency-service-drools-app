@@ -1,0 +1,87 @@
+package com.wordpress.salaboy.procedures;
+
+
+import java.util.Map;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.events.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
+import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.*;
+import org.drools.runtime.process.ProcessInstance;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.messaging.*;
+
+rule "Signal Process about Vehicle Hits Emergency Event"
+    when
+        $event: VehicleHitsEmergencyEvent()
+    then
+        System.out.println(">>>>>>>> Firetruck arrived to the Emergency");
+        
+        
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
+
+        //Get the procedure associated to the vehicle
+        String vehicleId = $event.getVehicleId();
+        String procedureId = trackingService.getProcedureAttachedToVehicle(vehicleId);
+
+        //get the process instance id to signal:
+        com.wordpress.salaboy.model.Procedure procedure = persistenceService.loadProcedure(procedureId);
+        long processInstanceId = procedure.getProcessInstanceId();
+
+        //signal the process instance
+        kcontext.getKnowledgeRuntime().signalEvent("com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent",$event,processInstanceId);
+
+        //retract the event
+        retract($event);     
+end
+
+rule "Signal Process about FireTruck Out Of Water Event"
+    when
+        $event: FireTruckOutOfWaterEvent()
+    then
+        System.out.println(">>>>>>>> Firetruck out of water!");
+        //Persistence and tracking services
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();
+
+        //Get the procedure associated to the vehicle
+        String vehicleId = $event.getVehicleId();
+        System.out.println(">>>>vehicleId = "+vehicleId);
+        String procedureId = trackingService.getProcedureAttachedToVehicle(vehicleId);
+        System.out.println(">>>>procedureId = "+procedureId);
+        //get the process instance id to signal:
+        com.wordpress.salaboy.model.Procedure procedure = persistenceService.loadProcedure(procedureId);
+        long processInstanceId = procedure.getProcessInstanceId();
+        System.out.println(">>>>processInstanceId = "+processInstanceId);
+        //signal the process instance
+        kcontext.getKnowledgeRuntime().signalEvent("com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent",$event,processInstanceId);
+        System.out.println(">>>>AFTER SIGNALING EVENT");
+        retract($event);  
+        System.out.println(">>>>AFTER RETRACTING EVENT");
+end
+
+rule "Refill Firetruck"
+    when
+        $event: VehicleHitsFireDepartmentEvent()
+    then
+        System.out.println(">>>>>>>> Firetruck refill!");
+        
+        //get the vehicle
+        PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
+        FireTruck fireTruck = (FireTruck) persistenceService.loadVehicle($event.getVehicleId());
+
+        //refill vehicle
+        fireTruck.setTankLevel(fireTruck.getTankSize());
+
+        //update vehicle
+        persistenceService.storeVehicle(fireTruck);
+
+        //send notification
+        MessageFactory.sendMessage(new FireTruckWaterRefilledMessage($event.getEmergencyId(), $event.getVehicleId(), $event.getTime()));
+
+        retract($event);
+end

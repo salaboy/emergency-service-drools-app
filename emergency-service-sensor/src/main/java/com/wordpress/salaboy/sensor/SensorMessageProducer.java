@@ -4,9 +4,9 @@
  */
 package com.wordpress.salaboy.sensor;
 
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.sensor.udp.UDPSensorServer;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,18 +26,25 @@ public class SensorMessageProducer {
     //TODO: change double attribute to a SensorMessage object
     public void informMessage(double heartBeat) throws Exception {
         try {
-            Long callId = emergencyInformationDataSource.getCallId();
-            Long vehicleId = emergencyInformationDataSource.getVehicleId();
+            String callId = emergencyInformationDataSource.getCallId();
+            String vehicleId = emergencyInformationDataSource.getVehicleId();
             
             if (callId == null){
-                Logger.getLogger(UDPSensorServer.class.getName()).log(Level.INFO, "No call id provided!");
+                Logger.getLogger(SensorMessageProducer.class.getName()).log(Level.INFO, "No call id provided!");
                 return;
             }
+            String emergencyId = ContextTrackingProvider.getTrackingService().getEmergencyAttachedToCall(callId);
+            
+            if (emergencyId == null){
+                Logger.getLogger(SensorMessageProducer.class.getName()).log(Level.INFO, "No emergency associated to call id "+callId);
+                return;
+            }
+            
             if (vehicleId == null){
-                Logger.getLogger(UDPSensorServer.class.getName()).log(Level.INFO, "No vehicle id provided!");
+                Logger.getLogger(SensorMessageProducer.class.getName()).log(Level.INFO, "No vehicle id provided!");
                 return;
             }
-            MessageFactory.sendMessage(new HeartBeatMessage(callId, vehicleId, heartBeat, new Date()));
+            MessageFactory.sendMessage(new HeartBeatMessage(emergencyId, vehicleId, heartBeat, new Date()));
         } catch (HornetQException ex) {
             throw new Exception("Unable to add Heart Beat message into queue!", ex);
         }

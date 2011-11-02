@@ -8,25 +8,24 @@
     <name>Emergency Service - Scenario</name>
 
     <properties>
-        <drools.version>5.3.0-SNAPSHOT</drools.version>
+        <drools.version>5.4.0-SNAPSHOT</drools.version>
         <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
-        <hornetq.version>2.0.0.GA</hornetq.version>
+        <hornetq.version>2.2.2.Final</hornetq.version>
         <infinispan.version>4.2.1.FINAL</infinispan.version>
-        <netty.version>3.1.5.GA</netty.version>
+        <netty.version>3.2.0.Final</netty.version>
         <lwjgl.version>2.6</lwjgl.version>
     </properties>
 
     <modules>
         <module>emergency-service-core</module>
         <module>emergency-service-model</module>
-        <module>emergency-service-world-ui-slick</module>
-        <module>emergency-service-taskslists-ui-swing</module>
-	<module>emergency-service-taskslists-ui-web</module>
+        <module>emergency-service-citymap</module>
+        <module>emergency-service-tasklists</module>
         <module>emergency-service-sensor</module>
         <module>emergency-service-doc</module>
+        <module>emergency-service-dashboard</module>
         <module>run</module>
-    <module>emergency-service-dashboard-ui-swing</module>
-  </modules>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -43,17 +42,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-taskslists-ui-swing</artifactId>
+                <artifactId>emergency-service-tasklists</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-taskslists-ui-web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-world-ui-slick</artifactId>
+                <artifactId>emergency-service-citymap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -63,7 +57,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-dashboard-ui-swing</artifactId>
+                <artifactId>emergency-service-dashboard</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -137,11 +131,6 @@
             <dependency>
                 <groupId>org.hornetq</groupId>
                 <artifactId>hornetq-core</artifactId>
-                <version>${hornetq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hornetq</groupId>
-                <artifactId>hornetq-transports</artifactId>
                 <version>${hornetq.version}</version>
             </dependency>
             <dependency>

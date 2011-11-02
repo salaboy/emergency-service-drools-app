@@ -11,7 +11,9 @@ import java.io.Serializable;
  * @author salaboy
  */
 public interface Vehicle extends Serializable {
-    public Long getId();
+    public enum VehicleType { AMBULANCE, FIRETRUCK, POLICECAR };
+    public String getId();
+    public void setId(String id);
     public String getName();
     public float getPositionX();
     public float getPositionY();

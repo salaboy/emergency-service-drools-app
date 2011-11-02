@@ -8,7 +8,9 @@ package com.wordpress.salaboy.model;
  *
  * @author salaboy
  */
-public class EmergencyServiceCentral implements EmergencyEntityBuilding{
+public class EmergencyServiceCentral implements EmergencyEntityBuilding {
+
+    private String id;
     private int x;
     private int y;
     private String name;
@@ -17,12 +19,19 @@ public class EmergencyServiceCentral implements EmergencyEntityBuilding{
         this.name = name;
         this.x = x;
         this.y = y;
-        
+
     }
-    
-    
-    
-    
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public int getX() {
         return x;
@@ -37,5 +46,14 @@ public class EmergencyServiceCentral implements EmergencyEntityBuilding{
     public String getName() {
         return name;
     }
-    
+
+    @Override
+    public EntityBuildingType getType() {
+        return EntityBuildingType.BUILDING_911;
+    }
+
+    @Override
+    public String toString() {
+        return "EmergencyServiceCentral{" + "id=" + id + ", x=" + x + ", y=" + y + ", name=" + name + '}';
+    }
 }

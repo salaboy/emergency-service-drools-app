@@ -7,24 +7,22 @@ import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
 import com.wordpress.salaboy.messaging.MessageFactory;
 
 rule "Initialize Emergency"
     salience 20
     ruleflow-group "suggest process"
     when
-        
         $processInstance: WorkflowProcessInstance( )
         not(Emergency(processInstanceId == $processInstance.id))
     then
         Emergency emergency = (Emergency)$processInstance.getVariable("emergency");
-        System.out.println("Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+((Call)$processInstance.getVariable("call")).getId());
-        //if(emergency.getNroOfPeople() == 1){
-        //    Patient patient = (Patient)$processInstance.getVariable("patient");
-        //    System.out.println("Inserting Patient: "+patient);
-        //    insert(patient);
-        //}
+        
+        String callId = ((Call)$processInstance.getVariable("call")).getId();
+        System.out.println(">>>>>>> Emergency.call.id == "+((Emergency)$processInstance.getVariable("emergency")).getCall().getId() +" - call.id =="+callId);
+        
         ActivePatients activePatients = new ActivePatients(emergency.getId());
         for(int i = 0; i < emergency.getNroOfPeople(); i ++){
             //I should call the tracking component to attach a new patient and get the ID
@@ -53,6 +51,18 @@ rule "Suggest Heart Attack Default Procedure for 1 Patient > 20 && < 60"
     then
        System.out.println(">>>>>> Adding a Suggested Procedure: "+"DefaultHeartAttackProcedure");
        $procedures.addProcedureName("DefaultHeartAttackProcedure"); 
+       $processInstance.setVariable("suggestedProcedures",$procedures);
+end
+
+rule "Suggest Default Fire Procedure for Fire Emergency"
+    ruleflow-group "suggest process"
+    when
+        $processInstance: WorkflowProcessInstance()
+        $emergency: Emergency(type == Emergency.EmergencyType.FIRE, processInstanceId == $processInstance.id)
+        $procedures: SuggestedProcedures(emergencyId == $emergency.id)
+    then
+       System.out.println(">>>>>> Adding a Suggested Procedure: "+"DefaultFireProcedure");
+       $procedures.addProcedureName("DefaultFireProcedure"); 
        $processInstance.setVariable("suggestedProcedures",$procedures);
 end
 

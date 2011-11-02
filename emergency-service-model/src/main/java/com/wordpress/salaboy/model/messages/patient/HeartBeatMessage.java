@@ -13,25 +13,21 @@ import java.util.Date;
  * @author esteban
  */
 public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessage{
-    private Long callId;
-    private Long vehicleId;
+    private String emergencyId;
+    private String vehicleId;
     private double heartBeatValue;
     private Date time;
 
-    public HeartBeatMessage(Long callId, Long vehicleId, double heartBeatValue, Date time) {
-        this.callId = callId;
+    public HeartBeatMessage(String emergencyId, String vehicleId, double heartBeatValue, Date time) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.heartBeatValue = heartBeatValue;
         this.time = time;
     }
 
     @Override
-    public Long getCallId() {
-        return callId;
-    }
-
-    public void setCallId(Long callId) {
-        this.callId = callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
     public double getHeartBeatValue() {
@@ -50,17 +46,17 @@ public class HeartBeatMessage implements Serializable, EmergencyInterchangeMessa
         this.time = time;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
     @Override
     public String toString() {
-        return "HeartBeatMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", heartBeatValue=" + heartBeatValue + ", time=" + time + '}';
+        return "HeartBeatMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", heartBeatValue=" + heartBeatValue + ", time=" + time + '}';
     }
     
 }

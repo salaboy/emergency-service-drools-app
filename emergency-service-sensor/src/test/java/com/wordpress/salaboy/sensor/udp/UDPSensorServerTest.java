@@ -77,7 +77,7 @@ public class UDPSensorServerTest {
         datagramSocket.send(new DatagramPacket(data, 0, data.length, InetAddress.getLocalHost(), SERVER_PORT));
         datagramSocket.close();
 
-        Thread.sleep(100);
+        Thread.sleep(1000);
         
         assertEquals(1, sensorDataParser.getParsedData().size());
         assertEquals(message, sensorDataParser.getParsedData().get(0));

@@ -22,12 +22,12 @@ public class SuggestedProcedures implements Serializable{
 
     private List<String> procedures = new ArrayList<String>();
     
-    private Long emergencyId;
-    public SuggestedProcedures(Long emergencyId) {
+    private String emergencyId;
+    public SuggestedProcedures(String emergencyId) {
         this.emergencyId = emergencyId;
     }
 
-    public Long getEmergencyId() {
+    public String getEmergencyId() {
         return emergencyId;
     }
     
@@ -39,6 +39,9 @@ public class SuggestedProcedures implements Serializable{
         String result = "[";
         for(String value : procedures){
             result += value + ": ";
+        }
+        if (result.endsWith(":")) {
+        	result.substring(0, result.lastIndexOf(":"));
         }
         result +="]";
         return result;

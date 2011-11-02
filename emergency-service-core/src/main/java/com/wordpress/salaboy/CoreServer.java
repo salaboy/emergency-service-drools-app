@@ -4,34 +4,12 @@
  */
 package com.wordpress.salaboy;
 
-import com.wordpress.salaboy.model.events.PulseEvent;
-import com.wordpress.salaboy.messaging.MessageConsumerWorker;
-import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.messaging.MessageServerSingleton;
-import com.wordpress.salaboy.model.CityEntities;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.events.PatientAtHospitalEvent;
-import com.wordpress.salaboy.model.events.PatientPickUpEvent;
-import com.wordpress.salaboy.model.messages.EmergencyDetailsMessage;
-import com.wordpress.salaboy.model.messages.EmergencyInterchangeMessage;
-import com.wordpress.salaboy.model.messages.IncomingCallMessage;
-import com.wordpress.salaboy.model.messages.SelectedProcedureMessage;
-import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
-import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
-import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.serviceclient.DistributedPeristenceServerService;
-import com.wordpress.salaboy.services.DefaultHeartAttackProcedure;
-import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.IncomingCallsMGMTService;
-import com.wordpress.salaboy.services.PatientMonitorService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
-import java.util.Date;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.drools.SystemEventListenerFactory;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.Grid;
@@ -49,32 +27,77 @@ import org.drools.grid.service.directory.WhitePages;
 import org.drools.grid.service.directory.impl.CoreServicesLookupConfiguration;
 import org.drools.grid.service.directory.impl.WhitePagesLocalConfiguration;
 import org.drools.grid.timer.impl.CoreServicesSchedulerConfiguration;
+import org.neo4j.kernel.AbstractGraphDatabase;
+import org.neo4j.server.WrappingNeoServerBootstrapper;
+import org.neo4j.server.configuration.Configurator;
+import org.neo4j.server.configuration.EmbeddedServerConfigurator;
+import org.neo4j.test.ImpermanentGraphDatabase;
+
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.context.tracking.ContextTrackingService;
+import com.wordpress.salaboy.messaging.MessageConsumerWorker;
+import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
+import com.wordpress.salaboy.messaging.MessageServerSingleton;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.events.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
+import com.wordpress.salaboy.model.serviceclient.PersistenceService;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.services.*;
+import com.wordpress.salaboy.services.util.MessageToEventConverter;
 
 /**
  * @author salaboy
  * @author esteban
  */
 public class CoreServer {
+    private static PersistenceService persistenceService;
+    private static ContextTrackingService trackingService;
 
     protected Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
     protected static Grid grid;
     protected static GridNode remoteN1;
     
     
-    private Map<Long,Boolean> vehicleHitEmergency = new HashMap<Long, Boolean> ();
-    private Map<Long,Boolean> vehicleHitHospital = new HashMap<Long, Boolean> ();
+    private Map<String,Boolean> vehicleHitEmergency = new HashMap<String, Boolean> ();
+    private Map<String,Boolean> vehicleHitHospital = new HashMap<String, Boolean> ();
     
     //CurrentWorkers
     private MessageConsumerWorker reportingWorker;
     private MessageConsumerWorker heartBeatReceivedWorker;
     private MessageConsumerWorker vehicleDispatchedWorker;
     private MessageConsumerWorker vehicleHitsHospitalWorker;
+    private MessageConsumerWorker vehicleHitsFireDepartmentWorker;
     private MessageConsumerWorker vehicleHitsEmergencyWorker;
     private MessageConsumerWorker emergencyDetailsPersistenceWorker;
     private MessageConsumerWorker selectedProcedureWorker;
     private MessageConsumerWorker phoneCallsWorker;
-
+    private MessageConsumerWorker asynchProcedureStartWorker;
+    private MessageConsumerWorker procedureEndedWorker;
+    private MessageConsumerWorker allProceduresEndedWorker;
+    private MessageConsumerWorker fireTruckDecreaseWaterLevelWorker;
+    private MessageConsumerWorker fireTruckOutOfWaterWorker;
+    private MessageConsumerWorker fireTruckWaterRefillMonitorWorker;
+    private static boolean startWrappingServer = true;
+	private static final String SERVER_API_PATH_PROP = ContextTrackingProvider.SERVER_BASE_URL
+			+ "/db/data/";
+    private static AbstractGraphDatabase myDb;
+    private static WrappingNeoServerBootstrapper srv;
+    
     public static void main(String[] args) throws Exception {
+		if (startWrappingServer) {
+			myDb = new ImpermanentGraphDatabase();
+			EmbeddedServerConfigurator config = new EmbeddedServerConfigurator(
+					myDb);
+			config.configuration().setProperty(
+					Configurator.WEBSERVER_PORT_PROPERTY_KEY, 7575);
+			config.configuration().setProperty(
+					Configurator.REST_API_PATH_PROPERTY_KEY,
+					SERVER_API_PATH_PROP);
+			srv = new WrappingNeoServerBootstrapper(myDb, config);
+			srv.start();
+		}
         final CoreServer coreServer = new CoreServer();
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
@@ -88,6 +111,9 @@ public class CoreServer {
                     HumanTaskServerService.getInstance().stopTaskServer();
                     System.out.println("Core Server Stopped! ");
                     coreServer.stopWorkers();
+					if (srv != null) {
+						srv.stop();
+					}
                 } catch (Exception ex) {
                     System.out.println("Something goes wrong with the shutdown! ->"+ex.getMessage());
                     Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,12 +121,20 @@ public class CoreServer {
             }
         });
         
-        
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
+//        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
+//        persistenceService = PersistenceServiceProvider.getPersistenceService(PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//
+//        trackingService = ContextTrackingProvider.getTrackingService((ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
+        persistenceService = PersistenceServiceProvider.getPersistenceService();
+        trackingService = ContextTrackingProvider.getTrackingService();
         coreServer.startServer();
         
     }
-
+    
     public void startServer() throws Exception {
+
         MessageServerSingleton.getInstance().start();
 
 
@@ -111,17 +145,21 @@ public class CoreServer {
         
         //Init Persistence Service and add all the city entities
         for (Vehicle vehicle : CityEntities.vehicles) {
-            System.out.println("Initializing Vehicle into the Cache - >" + vehicle.toString());
-            DistributedPeristenceServerService.getInstance().storeVehicle(vehicle);
+            System.out.println("Initializing Vehicle into the Cache - >" + vehicle);
+            persistenceService.storeVehicle(vehicle);
         }
-
+        
         for (Hospital hospital : CityEntities.hospitals) {
-            System.out.println("Initializing Hospital into the Cache - >" + hospital.toString());
-            DistributedPeristenceServerService.getInstance().storeHospital(hospital);
+            System.out.println("Initializing Hospital into the Cache - >" + hospital);
+            persistenceService.storeHospital(hospital);
         }
+        
+        FirefightersDepartment firefightersDepartment = (FirefightersDepartment)CityEntities.buildings.get("Firefighters Department");
+        System.out.println("Initializing Hospital into the Cache - >" + firefightersDepartment);
+        persistenceService.storeFirefightersDepartment(firefightersDepartment);
 
         //Init First Response Service, just to have one instance ready for new phone calls
-        IncomingCallsMGMTService.getInstance();
+        GenericEmergencyProcedureImpl.getInstance();
         
         //Start Workers
         startQueuesWorkers();
@@ -137,7 +175,25 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(IncomingCallMessage incomingCallMessage) {
-                    IncomingCallsMGMTService.getInstance().newPhoneCall(incomingCallMessage.getCall());
+                    GenericEmergencyProcedureImpl.getInstance().newPhoneCall(incomingCallMessage.getCall());
+                }
+            });
+            
+            //Procedure Ended Worker
+            procedureEndedWorker = new MessageConsumerWorker("ProcedureEndedCoreServer", new MessageConsumerWorkerHandler<ProcedureCompletedMessage>() {
+
+                @Override
+                public void handleMessage(ProcedureCompletedMessage procedureEndsMessage) {
+                    GenericEmergencyProcedureImpl.getInstance().procedureCompletedNotification(procedureEndsMessage.getEmergencyId(), procedureEndsMessage.getProcedureId());
+                }
+            });
+            
+            //All Procedures Ended Worker
+            allProceduresEndedWorker = new MessageConsumerWorker("AllProceduresEndedCoreServer", new MessageConsumerWorkerHandler<AllProceduresEndedMessage>() {
+
+                @Override
+                public void handleMessage(AllProceduresEndedMessage allProceduresEndedMessage) {
+                    GenericEmergencyProcedureImpl.getInstance().allProceduresEnededNotification(new AllProceduresEndedEvent(allProceduresEndedMessage.getEmergencyId(), allProceduresEndedMessage.getEndedProcedures()));
                 }
             });
 
@@ -147,9 +203,13 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
-                    ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getCallId(),
-                            selectedProcedureMessage.getProcedureName(),
-                            selectedProcedureMessage.getParameters());
+                    try {
+                        ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
+                                selectedProcedureMessage.getProcedureName(),
+                                selectedProcedureMessage.getParameters());
+                    } catch (IOException ex) {
+                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
 
@@ -158,7 +218,10 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyDetailsMessage emergencyDetailsMessage) {
-                    DistributedPeristenceServerService.getInstance().storeEmergency(emergencyDetailsMessage.getEmergency());
+                    //update the emergency
+                    persistenceService.storeEmergency(emergencyDetailsMessage.getEmergency());
+                    //attachs it to the call
+                    trackingService.attachEmergency(emergencyDetailsMessage.getEmergency().getCall().getId(), emergencyDetailsMessage.getEmergency().getId());
                 }
             });
             
@@ -167,9 +230,9 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsEmergencyMessage);
                     vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsEmergencyMessage.getCallId()))
-                            .patientPickUpNotification(new PatientPickUpEvent(vehicleHitsEmergencyMessage.getCallId(), vehicleHitsEmergencyMessage.getVehicleId(), vehicleHitsEmergencyMessage.getTime()));
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
                 }
             });
 
@@ -179,11 +242,22 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsHospitalMessage);
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                    ((DefaultHeartAttackProcedure)ProceduresMGMTService.getInstance().getProcedureService(vehicleHitsHospitalMessage.getCallId()))
-                            .patientAtHospitalNotification(new PatientAtHospitalEvent(vehicleHitsHospitalMessage.getCallId(), vehicleHitsHospitalMessage.getVehicleId(), vehicleHitsHospitalMessage.getHospital().getId(), new Date()));
-                    //Call Patient Monitor Service removeVehicle(vehicleId)
-                    PatientMonitorService.getInstance().removeVehicle(vehicleHitsHospitalMessage.getVehicleId());
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    
+                    //Notify VehicleMGMTService
+                    VehiclesMGMTService.getInstance().vehicleRemoved(vehicleHitsHospitalMessage.getVehicleId());
+                }
+            }); 
+            
+            //Vehicle Hits a Fire Department Selected Worker
+            vehicleHitsFireDepartmentWorker = new MessageConsumerWorker("vehicleHitsFireDepartmentWorkerCoreServer", new MessageConsumerWorkerHandler<VehicleHitsFireDepartmentMessage>() {
+                @Override
+                public void handleMessage(VehicleHitsFireDepartmentMessage vehicleHitsFireDepartmentMessage) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsFireDepartmentMessage);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
                 }
             }); 
 
@@ -196,7 +270,7 @@ public class CoreServer {
                 public void handleMessage(VehicleDispatchedMessage message) {
                     vehicleHitEmergency.put(message.getVehicleId(), Boolean.FALSE);
                     vehicleHitHospital.put(message.getVehicleId(), Boolean.FALSE);
-                    PatientMonitorService.getInstance().newVehicleDispatched(message.getCallId(), message.getVehicleId());
+                    VehiclesMGMTService.getInstance().newVehicleDispatched(message.getEmergencyId(), message.getVehicleId());
 //                    try {
 //                        Thread.sleep(3000);
 //                    } catch (InterruptedException ex) {
@@ -220,11 +294,28 @@ public class CoreServer {
                     }
                     
                     if (hitEmergency && !hitHospital){
-                        PulseEvent event = new PulseEvent((int) message.getHeartBeatValue());
-                        event.setCallId(message.getCallId());
-                        event.setVehicleId(message.getVehicleId());
-                        PatientMonitorService.getInstance().newHeartBeatReceived(event);
+                        EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(message);
+                        VehiclesMGMTService.getInstance().processEvent((PulseEvent)event);
                     }
+                }
+            });
+            
+            //FireTruck Water Level Decreased Received
+            fireTruckDecreaseWaterLevelWorker = new MessageConsumerWorker("fireTruckDecreaseWaterLevelCoreServer", new MessageConsumerWorkerHandler<FireTruckDecreaseWaterLevelMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckDecreaseWaterLevelMessage message) {
+                    VehiclesMGMTService.getInstance().processEvent(new FireTruckDecreaseWaterLevelEvent(message.getEmergencyId(), message.getVehicleId(), message.getTime()));
+                }
+            });
+            //FireTruck Out Of Water Received
+            fireTruckOutOfWaterWorker = new MessageConsumerWorker("fireTruckOutOfWaterCoreServer", new MessageConsumerWorkerHandler<FireTruckOutOfWaterMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckOutOfWaterMessage message) {
+                    EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(message);
+                    VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
+                    ProceduresMGMTService.getInstance().notifyProcedures(event);
                 }
             });
 
@@ -232,10 +323,34 @@ public class CoreServer {
 
                 @Override
                 public void handleMessage(EmergencyInterchangeMessage message) {
-                    DistributedPeristenceServerService.getInstance().addEntryToReport(message.getCallId(), message.toString());
+                    persistenceService.addEntryToReport(message.getEmergencyId(), message.toString());
                 }
             });
- 
+            
+             asynchProcedureStartWorker = new MessageConsumerWorker("asyncProcedureStartCoreServer", new MessageConsumerWorkerHandler<AsyncProcedureStartMessage>() {
+
+                @Override
+                public void handleMessage(AsyncProcedureStartMessage message) {
+                      System.out.println(">>>>>>>>>>>Creating a new Procedure = "+message.getProcedureName());
+                    try {
+                        ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                    } catch (IOException ex) {
+                        Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+             
+             
+               fireTruckWaterRefillMonitorWorker = new MessageConsumerWorker("asynchFireMonitorCoreServer", new MessageConsumerWorkerHandler<FireTruckWaterRefilledMessage>() {
+
+                @Override
+                public void handleMessage(FireTruckWaterRefilledMessage message) {
+                       
+                     VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)MessageToEventConverter.convertMessageToEvent(message));
+                   
+                }
+            });
+            fireTruckWaterRefillMonitorWorker.start();   
             reportingWorker.start();
             heartBeatReceivedWorker.start();
             vehicleDispatchedWorker.start();
@@ -244,7 +359,13 @@ public class CoreServer {
             emergencyDetailsPersistenceWorker.start();
             selectedProcedureWorker.start();
             phoneCallsWorker.start();
-
+            asynchProcedureStartWorker.start();
+            procedureEndedWorker.start();
+            allProceduresEndedWorker.start();
+            fireTruckDecreaseWaterLevelWorker.start();
+            fireTruckOutOfWaterWorker.start();
+            vehicleHitsFireDepartmentWorker.start();
+            
             phoneCallsWorker.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -273,8 +394,26 @@ public class CoreServer {
         if(selectedProcedureWorker != null){
             selectedProcedureWorker.stopWorker();
         }
+        if(asynchProcedureStartWorker != null){
+            asynchProcedureStartWorker.stopWorker();
+        }
         if(phoneCallsWorker != null){
             phoneCallsWorker.stopWorker();
+        }
+        if(procedureEndedWorker != null){
+            procedureEndedWorker.stopWorker();
+        }
+        if(allProceduresEndedWorker != null){
+            allProceduresEndedWorker.stopWorker();
+        }
+        if(fireTruckDecreaseWaterLevelWorker != null){
+            fireTruckDecreaseWaterLevelWorker.stopWorker();
+        }
+        if(fireTruckOutOfWaterWorker != null){
+            fireTruckOutOfWaterWorker.stopWorker();
+        }
+        if(vehicleHitsFireDepartmentWorker != null){
+            vehicleHitsFireDepartmentWorker.stopWorker();
         }
         
     }

@@ -1,0 +1,53 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+        {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+     	{
+            "name":"Time",
+            "sourceExpresion":"#{in:emergency.call.date}"
+         },
+         {
+            "name":"Location X",
+            "sourceExpresion":"#{in:emergency.location.locationX}"
+         },
+         {
+            "name":"Location Y",
+            "sourceExpresion":"#{in:emergency.location.locationY}"
+         },
+         {
+            "name":"Type",
+            "sourceExpresion":"#{in:emergency.type}"
+         },
+         {
+            "name":"People Involved",
+            "sourceExpresion":"#{in:emergency.nroOfPeople}"
+         },
+         {
+            "name":"Patients",
+            "sourceExpresion":"#{in:activePatients.activePatients}"
+         },
+         {
+            "name":"EmergencyId",
+            "sourceExpresion":"#{in:emergency.id}"
+         },
+         {
+            "name":"suggestedProcedures",
+            "sourceExpresion":"#{in:suggestedProcedures.getSuggestedProceduresString()}"
+         }
+     ],
+     "outputFields": [
+         {
+            "name":"Suggested Procedures",
+            "sourceExpresion":"[DefaultHeartAttackProcedure,DefaultFireProcedure,DefaultPoliceProcedure]"
+         }
+     ]
+ }
+ ]

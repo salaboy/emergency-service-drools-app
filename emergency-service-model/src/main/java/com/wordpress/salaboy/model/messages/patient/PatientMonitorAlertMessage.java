@@ -13,24 +13,21 @@ import java.util.Date;
  * @author esteban
  */
 public class PatientMonitorAlertMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long callId;
-    private Long vehicleId;
+    private String emergencyId;
+    private String vehicleId;
     private String message;
     private Date time;
 
-    public PatientMonitorAlertMessage(Long callId, Long vehicleId, String message, Date time) {
-        this.callId = callId;
+    public PatientMonitorAlertMessage(String emergencyId, String vehicleId, String message, Date time) {
+        this.emergencyId = emergencyId;
         this.vehicleId = vehicleId;
         this.time = time;
         this.message = message;
     }
 
-    public Long getCallId() {
-        return callId;
-    }
-
-    public void setCallId(Long callId) {
-        this.callId = callId;
+    @Override
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
     public Date getTime() {
@@ -41,11 +38,11 @@ public class PatientMonitorAlertMessage implements Serializable, EmergencyInterc
         this.time = time;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
@@ -59,7 +56,7 @@ public class PatientMonitorAlertMessage implements Serializable, EmergencyInterc
 
     @Override
     public String toString() {
-        return "PatientMonitorAlertMessage{" + "callId=" + callId + ", vehicleId=" + vehicleId + ", message=" + message + ", time=" + time + '}';
+        return "PatientMonitorAlertMessage{" + "emergencyId=" + emergencyId + ", vehicleId=" + vehicleId + ", message=" + message + ", time=" + time + '}';
     }
     
     

@@ -1,49 +1,43 @@
 package com.wordpress.salaboy.model;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
  * @author salaboy
  */
-public class PoliceCar implements Vehicle{
+public class PoliceCar implements Vehicle {
 
-    private Long id;
+    private String id;
     private String name;
-   
     private Date departureTime;
     private Date emergencyReachedTime;
     private float positionX;
     private float positionY;
-    public static AtomicLong incrementalId = new AtomicLong();
-    
 
+    public PoliceCar() {
+    }
 
     public PoliceCar(String name, Date departureTime) {
-        this.id = PoliceCar.incrementalId.getAndIncrement();
+
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public PoliceCar(String name) {
-        this.id = PoliceCar.incrementalId.getAndIncrement();
+
         this.name = name;
     }
-    
-    
-    
-    
-    public void setId(Long id) {
+
+    @Override
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
-
-   
 
     public void setDepartureTime(Date departureTime) {
         this.departureTime = departureTime;
@@ -52,8 +46,6 @@ public class PoliceCar implements Vehicle{
     public Date getDepartureTime() {
         return departureTime;
     }
-
-   
 
     public String getName() {
         return name;
@@ -91,14 +83,4 @@ public class PoliceCar implements Vehicle{
     public String toString() {
         return "PoliceCar{" + "id=" + id + ", name=" + name + '}';
     }
-    
-    
-
-   
-
-
-   
-
-    
-    
 }

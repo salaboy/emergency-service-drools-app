@@ -1,51 +1,52 @@
 package com.wordpress.salaboy.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
  * @author salaboy
  */
-public class FireTruck implements Vehicle{
+public class FireTruck implements Vehicle {
 
-    private Long id;
+    private String id;
     private String name;
     private Date departureTime;
     private Date emergencyReachedTime;
     private float positionX;
     private float positionY;
-    public static AtomicLong incrementalId = new AtomicLong();
-    
-
+    private int tankSize;
+    private int tankLevel;
+    private int waterPumpPower = 4;
+    private int tiltStatus = 0;
+    public FireTruck() {
+    }
 
     public FireTruck(String name, Date departureTime) {
-        this.id = FireTruck.incrementalId.getAndIncrement();
         this.name = name;
         this.departureTime = departureTime;
     }
 
     public FireTruck(String name) {
-        this.id = FireTruck.incrementalId.getAndIncrement();
+
         this.name = name;
+    }
+
+    public FireTruck(String name, int tankSize, int tankLevel) {
+        this.name = name;
+        this.tankSize = tankSize;
+        this.tankLevel = tankLevel;
     }
     
     
-    
-    
-    public void setId(Long id) {
+
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
-
-   
 
     public void setDepartureTime(Date departureTime) {
         this.departureTime = departureTime;
@@ -87,12 +88,54 @@ public class FireTruck implements Vehicle{
         this.positionY = positionY;
     }
 
-    @Override
-    public String toString() {
-        return "FireTruck{" + "id=" + id + ", name=" + name + '}';
+    public int getTankSize() {
+        return tankSize;
     }
 
+    public void setTankSize(int tankSize) {
+        this.tankSize = tankSize;
+    }
+
+    public int getTankLevel() {
+        return tankLevel;
+    }
+
+    public void setTankLevel(int tankLevel) {
+        this.tankLevel = tankLevel;
+    }
+
+    public Date getEmergencyReachedTime() {
+        return emergencyReachedTime;
+    }
+
+    public void setEmergencyReachedTime(Date emergencyReachedTime) {
+        this.emergencyReachedTime = emergencyReachedTime;
+    }
+
+    public int getWaterPumpPower() {
+        return waterPumpPower;
+    }
+
+    public void setWaterPumpPower(int waterPumpPower) {
+        this.waterPumpPower = waterPumpPower;
+    }
+
+    public int getTiltStatus() {
+        return tiltStatus;
+    }
+
+    public void setTiltStatus(int tiltStatus) {
+        this.tiltStatus = tiltStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "FireTruck{" + "id=" + id + ", name=" + name + ", departureTime=" + departureTime + ", emergencyReachedTime=" + emergencyReachedTime + ", positionX=" + positionX + ", positionY=" + positionY + ", tankSize=" + tankSize + ", tankLevel=" + tankLevel + ", waterPumpPower=" + waterPumpPower + ", tiltStatus=" + tiltStatus + '}';
+    }
+    
+    
+   
    
     
-    
+
 }

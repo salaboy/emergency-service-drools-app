@@ -1,0 +1,41 @@
+package hospitalselectionrules;
+
+import com.wordpress.salaboy.model.Emergency;
+import com.wordpress.salaboy.model.Call;
+import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.Location;
+
+import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
+
+import com.wordpress.salaboy.acc.FirefightersDepartmentDistanceCalculationData;
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+import java.util.Map;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+
+rule "Calculate Water Refill Location"
+    ruleflow-group "closest-water-selection"
+    when
+       $processInstance: WorkflowProcessInstance()
+       $emergency: Emergency($type: type.name)
+       $selectedDepartment: FirefightersDepartment() from accumulate ($fd: FirefightersDepartment() from PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments(), 
+                firefighterDeparmtmentDistanceCalculator(new FirefightersDepartmentDistanceCalculationData($fd, $emergency))
+        )
+    then
+        System.out.println("Calculate Water Refill Location executed in "+$processInstance.getId());
+        System.out.println("EMERGENCY: "+$emergency);
+        System.out.println("FireDeps: "+PersistenceServiceProvider.getPersistenceService().getAllFirefighterDepartments().size());
+        
+        System.out.println("SELECTED LOCATION "+$selectedDepartment.getX()+"--"+$selectedDepartment.getY());
+
+        String callId = ((Call)$processInstance.getVariable("call")).getId();
+        $processInstance.setVariable("refillDestination", new Location($selectedDepartment.getX(),$selectedDepartment.getY()));
+        
+        MessageFactory.sendMessage(new FirefightersDepartmentSelectedMessage(callId, $emergency.getId(), $selectedDepartment));
+      
+end

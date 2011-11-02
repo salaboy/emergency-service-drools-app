@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -18,23 +19,22 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>emergency-service-model</artifactId>
         </dependency>
-
+        
+         <!-- Context Tracking Dependency -->
+        <!--dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>emergency-service-tracking-context-component</artifactId>
+            <version>${project.version}</version>
+        </dependency-->
 
         <!-- Drools Dependencies -->
-        <!-- Snapshot API -->
+        
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>knowledge-api</artifactId>
-            <version>${drools.version}</version>
             <type>jar</type>
         </dependency>
-        <!-- Release API -->
-        <!--dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-api</artifactId>
-            <version>${drools.version}</version>
-            <type>jar</type>
-        </dependency-->
+        
 
         <dependency>
             <groupId>org.drools</groupId>
@@ -55,10 +55,10 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-grid-impl</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-spring</artifactId>
-        </dependency>
+        </dependency-->
 
         <!-- jBPM5 Dependencies -->
         <dependency>
@@ -72,10 +72,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-human-task</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -180,17 +176,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hornetq</groupId>
-            <artifactId>hornetq-transports</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
         </dependency>
 
 
         <!-- TEST Dependencies -->
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <version>1.4.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -216,8 +218,28 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task</artifactId>
+            <type>jar</type>
+            <version>5.2.0-SNAPSHOT</version>
+            
+        </dependency>
     </dependencies>
-
+    <build>
+                
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                                <!-- mac osx for infinispan -->
+                        <argLine>-Djgroups.bind_addr=127.0.0.1</argLine>
+                        <argLine>-Djava.net.preferIPv4Stack=true</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <repository>
@@ -242,7 +264,17 @@
             <!--updatePolicy>always</updatePolicy-->
             <!--/snapshots-->
         </repository>
-
+        <repository>
+            <id>neo4j-release-repository</id>
+            <name>Neo4j Maven 2 release repository</name>
+            <url>http://m2.neo4j.org/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
 

@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.model.messages;
 
@@ -13,8 +13,8 @@ import java.io.Serializable;
  * @author esteban
  */
 public class EmergencyDetailsMessage implements Serializable, EmergencyInterchangeMessage {
+
     private Emergency emergency;
-    
 
     /**
      * Constructs a <code>EmergencyDetailsMessage</code> from an instance
@@ -23,21 +23,21 @@ public class EmergencyDetailsMessage implements Serializable, EmergencyInterchan
     public EmergencyDetailsMessage(Emergency emergency) {
         this.emergency = emergency;
     }
-    
+
     public int getNumberOfPeople() {
         return emergency.getNroOfPeople();
     }
 
-   
+    public int getRemaining() {
+        return emergency.getRemaining();
+    }
 
     public EmergencyType getType() {
         return emergency.getType();
     }
 
-   
-
     @Override
-    public Long getCallId() {
+    public String getEmergencyId() {
         return emergency.getCall().getId();
     }
 
@@ -49,10 +49,4 @@ public class EmergencyDetailsMessage implements Serializable, EmergencyInterchan
     public String toString() {
         return "EmergencyDetailsMessage{" + "emergency=" + emergency + '}';
     }
-
-    
-  
-
-   
-    
 }

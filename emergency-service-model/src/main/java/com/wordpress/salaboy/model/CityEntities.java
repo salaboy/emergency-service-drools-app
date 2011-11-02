@@ -6,7 +6,6 @@
 package com.wordpress.salaboy.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,9 @@ public class CityEntities {
         add(initializeHeartAttackAmbulance());
         add(initializeFireAmbulance());
         add(initializeCarCrashAmbulance());
+        add(initializeBigFireTruck());
+        add(initializeMediumFireTruck());
+        add(initializeSmallFireTruck());
     }};
     
     
@@ -53,10 +55,10 @@ public class CityEntities {
     
    
     
-    public static Ambulance getAmbulanceById(Long id){
+    public static Ambulance getAmbulanceById(String id){
         for (Map.Entry<EmergencyType, List<Ambulance>> entry : ambulances.entrySet()) {
             for (Ambulance ambulance : entry.getValue()) {
-                if (ambulance.getId().compareTo(id) == 0){
+                if (ambulance.getId().equals(id)){
                     return ambulance;
                 }
             }
@@ -66,7 +68,7 @@ public class CityEntities {
     
     public static Hospital getHospitalById(Long id){
         for (Hospital hospital : hospitals) {
-            if (hospital.getId().compareTo(id) == 0){
+            if (hospital.getId().equals(id)){
                 return hospital;
             }
         }
@@ -109,7 +111,7 @@ public class CityEntities {
     public static final Map<String, EmergencyEntityBuilding> buildings = new HashMap<String, EmergencyEntityBuilding>(){{
         put("911", new EmergencyServiceCentral("911", 2, 25));
         put("Police Department", new PoliceDepartment("Police Department", 15,7));
-        put("Firefighters Department", new FirefigthersDepartment("Firefighters Department", 25,25));
+        put("Firefighters Department", new FirefightersDepartment("Firefighters Department", 35,25));
     }};
     
     public static Hospital getHospitalByCoordinates(float x, float y) {
@@ -118,7 +120,7 @@ public class CityEntities {
         float newy = Math.round(x/16);
         
         for(Hospital thishospital : CityEntities.hospitals){
-            if(thishospital.getPositionX() == newx && thishospital.getPositionY() == newy){
+            if(thishospital.getX() == newx && thishospital.getY() == newy){
                 return thishospital;
             }
         }
@@ -190,10 +192,33 @@ public class CityEntities {
         return carCrashAmbulance;
     }
     
-     public static Ambulance getAmbulanceById(EmergencyType type, Long id) {
+    private static FireTruck initializeBigFireTruck() {
+        
+        FireTruck bigFireTruck = new FireTruck("Big Fire Truck");
+        bigFireTruck.setTankSize(10);
+        bigFireTruck.setTankLevel(10);
+        return bigFireTruck;
+    }
+    
+    private static FireTruck initializeMediumFireTruck() {
+        
+        FireTruck mediumFireTruck = new FireTruck("Medium Fire Truck");
+        mediumFireTruck.setTankSize(5);
+        mediumFireTruck.setTankLevel(5);
+        return mediumFireTruck;
+    }
+    private static FireTruck initializeSmallFireTruck() {
+        
+        FireTruck smallFireTruck = new FireTruck("Small Fire Truck");
+        smallFireTruck.setTankSize(2);
+        smallFireTruck.setTankLevel(2);
+        return smallFireTruck;
+    }
+    
+     public static Ambulance getAmbulanceById(EmergencyType type, String id) {
         
         for (Ambulance ambulancenow : CityEntities.ambulances.get(type)) {
-            if (ambulancenow.getId().compareTo(id) == 0) {
+            if (ambulancenow.getId().equals(id)) {
                 return ambulancenow;
             }
         }

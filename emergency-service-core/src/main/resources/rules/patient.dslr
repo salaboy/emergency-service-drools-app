@@ -11,8 +11,8 @@ declare PulseEvent
     @expires ( 20s )
 end
 
-global Long vehicleId;
-global Long callId;
+global String vehicleId;
+global String emergencyId;
 
 
 rule "Patient with no vital sign"

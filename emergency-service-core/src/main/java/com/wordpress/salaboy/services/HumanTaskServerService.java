@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.task.User;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;
@@ -75,6 +74,7 @@ public class HumanTaskServerService {
         User driver = new User("control");
         User hospital = new User("hospital");
         User doctor = new User("doctor");
+        User firefighter = new User("firefighter");
         User garageEmergencyService = new User("garage_emergency_service");
         User Administrator = new User("Administrator");
 
@@ -84,6 +84,7 @@ public class HumanTaskServerService {
         taskSession.addUser(driver);
         taskSession.addUser(hospital);
         taskSession.addUser(doctor);
+        taskSession.addUser(firefighter);
         taskSession.addUser(garageEmergencyService);
 
         if (server != null && server.isRunning()) {

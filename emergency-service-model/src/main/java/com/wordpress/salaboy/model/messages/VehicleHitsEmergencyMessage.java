@@ -4,7 +4,6 @@
  */
 package com.wordpress.salaboy.model.messages;
 
-import com.wordpress.salaboy.model.Hospital;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,30 +12,30 @@ import java.util.Date;
  * @author esteban
  */
 public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInterchangeMessage {
-    private Long vehicleId;
-    private Long callId;
+    private String vehicleId;
+    private String emergencyId;
     private Date time;
     
-    public VehicleHitsEmergencyMessage(Long vehicleId, Long callId, Date time) {
+    public VehicleHitsEmergencyMessage(String vehicleId, String emergencyId, Date time) {
         this.vehicleId = vehicleId;
-        this.callId = callId;
+        this.emergencyId = emergencyId;
         this.time = time; 
     }
 
     @Override
-    public Long getCallId() {
-        return callId;
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(Long emergecyId) {
-        this.callId = emergecyId;
+    public void setEmergencyId(String emergecyId) {
+        this.emergencyId = emergecyId;
     }
 
-    public Long getVehicleId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
@@ -50,7 +49,7 @@ public class VehicleHitsEmergencyMessage implements Serializable, EmergencyInter
 
     @Override
     public String toString() {
-        return "VehicleHitsEmergencyMessage{" + "vehicleId=" + vehicleId + ", callId=" + callId + ", time=" + time + '}';
+        return "VehicleHitsEmergencyMessage{" + "vehicleId=" + vehicleId + ", emergencyId=" + emergencyId + ", time=" + time + '}';
     }
     
     

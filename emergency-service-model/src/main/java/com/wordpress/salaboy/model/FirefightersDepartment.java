@@ -1,0 +1,54 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.wordpress.salaboy.model;
+
+/**
+ *
+ * @author salaboy
+ */
+public class FirefightersDepartment implements EmergencyEntityBuilding {
+    private String id;
+    private String name;
+    private int x;
+    private int y;
+
+    public FirefightersDepartment(String name, int x, int y) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public EntityBuildingType getType() {
+        return EntityBuildingType.FIREFIGHTERS_DEPARTMENT;
+    }
+    
+    
+}

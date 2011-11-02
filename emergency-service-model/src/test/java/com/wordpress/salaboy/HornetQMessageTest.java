@@ -17,6 +17,7 @@ import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.core.server.HornetQServer;
+import org.jgroups.protocols.MFC;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

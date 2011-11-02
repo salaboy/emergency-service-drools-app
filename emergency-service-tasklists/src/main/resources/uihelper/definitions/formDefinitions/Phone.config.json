@@ -1,0 +1,65 @@
+[
+ {
+     "profile": "Default",
+     "inputFields": [
+        {
+            "name":"Id",
+            "sourceExpresion":"#{task:id}"
+         },
+         {
+            "name":"Status",
+            "sourceExpresion":"#{task:status}"
+         },
+         {
+            "name":"Call",
+            "sourceExpresion":"#{in:call}"
+         },
+         {
+            "name":"Call Id",
+            "sourceExpresion":"#{in:call.id}"
+         },
+      	 {
+            "name":"Time",
+            "sourceExpresion":"#{in:call.date}"
+         },
+         {
+            "name":"Location X",
+            "sourceExpresion":"#{in:call.x}"
+         },
+         {
+            "name":"Location Y",
+            "sourceExpresion":"#{in:call.y}"
+         },
+         {
+            "name":"Phone number",
+            "sourceExpresion":"#{in:call.phoneNumber}"
+         },
+         {
+            "name":"Date",
+            "sourceExpresion":"#{in:call.date}"
+         }
+     ],
+     "outputFields": [
+         {
+            "name":"HEART_ATTACK:Number Of People",
+            "sourceExpresion":""
+         },
+         {
+            "name":"FIRE:Intensity",
+            "sourceExpresion":""
+         },
+         {
+            "name":"Emergency Type",
+            "sourceExpresion":"[HEART_ATTACK,FIRE,CAR_CRASH,ROBBERY]"
+         },
+         {
+            "name":"Location X",
+            "sourceExpresion":"#{in:call.x}"
+         },
+         {
+            "name":"Location Y",
+            "sourceExpresion":"#{in:call.y}"
+         }
+     ]
+ }
+ ]

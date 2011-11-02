@@ -1,0 +1,44 @@
+package phoneCallPrimaryService.startProcedures;
+
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+
+
+rule "Get Information To Start Procedure"
+    salience 20
+    ruleflow-group "start process"
+    when
+        $emergency: Emergency()
+        $processInstance: WorkflowProcessInstance()
+    then
+        SelectedProcedures selectedProcedures = (SelectedProcedures)$processInstance.getVariable("selectedProcedures");
+        Call call = (Call)$processInstance.getVariable("call");
+        for(int i = 0; i < selectedProcedures.size(); i++){
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("emergency", $emergency);
+            parameters.put("call", call);
+            MessageFactory.sendMessage(new SelectedProcedureMessage(selectedProcedures.get(i), call.getId(),  parameters));
+        }
+        
+       
+end
+
+rule "All Procedures are Completed"
+    no-loop true
+    when
+        $emergency: Emergency()
+        $p: ProceduresGoingOn(emergencyId == $emergency.id, $procedures: procedureIds)
+        $events: List (size == $p.size) from collect(ProcedureCompleted( emergencyId == $emergency.id))
+    then
+        for (int i=0; i < $events.size(); i++){
+            retract($events.get(i));
+        }
+        MessageFactory.sendMessage(new AllProceduresEndedMessage($emergency.getId(), $procedures ,  new java.util.Date()));
+end

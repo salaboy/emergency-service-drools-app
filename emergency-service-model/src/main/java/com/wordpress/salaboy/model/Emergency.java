@@ -5,8 +5,12 @@
 package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  *
@@ -16,27 +20,28 @@ public class Emergency implements Serializable {
 
     public enum EmergencyType {
 
-        FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
+        UNDEFINED, FIRE, CAR_CRASH, HEART_ATTACK, ROBBERY
     };
-    public static AtomicLong incrementalId = new AtomicLong();
+  
     
-    private Long id;
+    private String id;
     private EmergencyType type;
     private Location location;
     private int nroOfPeople;
     private Call call;
     private long processInstanceId;
+    private int remaining;
     
+    //this is a map that contains the updates that the emercency will send.
+    private Map<String, List<VehicleUpdate>> updates = new HashMap<String, List<VehicleUpdate>>();
     
-    private Emergency(Long id, Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
-        this.id = id;
+    private Emergency(Long callId, EmergencyType type, String location, int nroOfPeople, Date date){
         this.type = type;
         this.nroOfPeople = nroOfPeople;
-        
+        this.remaining = nroOfPeople;
     }
 
     public Emergency() {
-        this.id = Emergency.incrementalId.getAndIncrement();
     }
 
     public long getProcessInstanceId() {
@@ -47,13 +52,13 @@ public class Emergency implements Serializable {
         this.processInstanceId = processInstanceId;
     }
     
-    
 
-    public Emergency(Long id){
-        this.id = id;
-    }
     public void setNroOfPeople(int nroOfPeople) {
+        
         this.nroOfPeople = nroOfPeople;
+        if(this.remaining == 0){
+            this.remaining = nroOfPeople;
+        }
     }
 
     public int getNroOfPeople() {
@@ -69,11 +74,11 @@ public class Emergency implements Serializable {
         this.call = call;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -97,12 +102,33 @@ public class Emergency implements Serializable {
         this.type = EmergencyType.valueOf(type);
     }
 
-    @Override
-    public String toString() {
-        return "Emergency{" + "id=" + id + ", type=" + type + ", location=" + location + ", nroOfPeople=" + nroOfPeople + ", call=" + call + ", processInstanceId=" + processInstanceId + '}';
+    public int getRemaining() {
+        return remaining;
     }
 
-   
+    public void setRemaining(int remaining) {
+        this.remaining = remaining;
+    }
+
+    @Override
+    public String toString() {
+        return "Emergency{" + "id=" + id + ", type=" + type + ", location=" + location + ", nroOfPeople=" + nroOfPeople + ", call=" + call + ", processInstanceId=" + processInstanceId + ", remaining=" + remaining + '}';
+    }
     
     
+
+    
+
+   public void addUpdate(String vehicleId, VehicleUpdate update) {
+	  List<VehicleUpdate> currentUpdates = this.updates.get(vehicleId);
+	  if (currentUpdates == null) {
+		  currentUpdates = new ArrayList<VehicleUpdate>();
+		  this.updates.put(vehicleId, currentUpdates);
+	  }
+	  currentUpdates.add(update);
+   }
+    
+   public List<VehicleUpdate> getUpdatesForVehicle(String vehicleId) {
+	   return this.updates.get(vehicleId);
+   }
 }

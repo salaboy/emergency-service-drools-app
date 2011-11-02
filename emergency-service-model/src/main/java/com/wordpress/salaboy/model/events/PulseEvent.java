@@ -11,13 +11,13 @@ import java.io.Serializable;
  *
  * @author esteban
  */
-public class PulseEvent implements Serializable{
+public class PulseEvent implements EmergencyVehicleEvent, Serializable{
     private static final long serialVersionUID = 1L;
     
     private boolean processed;
     private int value;
-    private Long vehicleId;
-    private Long callId;
+    private String vehicleId;
+    private String emergencyId;
 
     public PulseEvent(int value) {
         this.value = value;
@@ -35,25 +35,28 @@ public class PulseEvent implements Serializable{
         return value;
     }
 
-    public Long getCallId() {
-        return callId;
+    @Override
+    public String getEmergencyId() {
+        return emergencyId;
     }
 
-    public void setCallId(Long callId) {
-        this.callId = callId;
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
     }
 
-    public Long getVehicleId() {
+   
+
+    public String getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
     }
 
     @Override
     public String toString() {
-        return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + callId + '}';
+        return "PulseEvent{" + "processed=" + processed + ", value=" + value + ", vehicleId=" + vehicleId + ", callId=" + emergencyId + '}';
     }
 
     @Override
@@ -74,7 +77,7 @@ public class PulseEvent implements Serializable{
         if (this.vehicleId != other.vehicleId && (this.vehicleId == null || !this.vehicleId.equals(other.vehicleId))) {
             return false;
         }
-        if (this.callId != other.callId && (this.callId == null || !this.callId.equals(other.callId))) {
+        if (this.emergencyId != other.emergencyId && (this.emergencyId == null || !this.emergencyId.equals(other.emergencyId))) {
             return false;
         }
         return true;
@@ -86,7 +89,7 @@ public class PulseEvent implements Serializable{
         hash = 31 * hash + (this.processed ? 1 : 0);
         hash = 31 * hash + this.value;
         hash = 31 * hash + (this.vehicleId != null ? this.vehicleId.hashCode() : 0);
-        hash = 31 * hash + (this.callId != null ? this.callId.hashCode() : 0);
+        hash = 31 * hash + (this.emergencyId != null ? this.emergencyId.hashCode() : 0);
         return hash;
     }
     

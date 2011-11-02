@@ -5,7 +5,8 @@ import org.drools.runtime.process.ProcessInstance;
 import java.util.Map;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.Call;
-
+import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
 
 declare Call
   @role(event)
@@ -16,6 +17,7 @@ rule "Single Phone Call Handling"
       $call: Call(processed == false) from entry-point "phoneCalls stream"
     then
       $call.setProcessed(true);
+
       Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("call", $call);
       ProcessInstance pi = kcontext.getKnowledgeRuntime().startProcess("com.wordpress.salaboy.bpmn2.GenericEmergencyProcedure", parameters);
