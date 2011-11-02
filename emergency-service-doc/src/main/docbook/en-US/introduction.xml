@@ -8,8 +8,43 @@
     <section>
         <title>Why Emergency Services?</title>
     
-        <para></para>
-         
+        <para>
+            The Emergency Service Application was built as a blue print for architect applications using 
+            the Drools and jBPM5 platform. The main goal of this application is to show how we can model and implement 
+            a complete and complex business scenario using declarative approaches like: 
+            Business Rules, Business Process and Complex Event Processing. 
+        </para>
+        <para>From the technical point of view, this application shows how components like a Rule Engine and 
+            Business Process Engine can be integrated with technologies that are widely used in most system architectures. 
+            Components -- like Distributed Caches, Transactional Frameworks, Messaging Systems, Web Services 
+            Stacks and Web Frameworks -- can be combined to work around the declarative power of rules, processes and events.
+        </para>
+    </section>
+    <section>
+        <title>Application Scope, Domain and Requirements</title>
+        <para>
+            The application was created to represent complex scenarios that are being executed by an Emergency Services 
+            company that deals with concurrent emergencies within a city. The company needs to solve different situations 
+            where different entities need to be coordinated to deal with an emergency situation. 
+        </para>
+        <para>
+            The Emergency Services Application shows how we can provide a tool that helps the company to improve their services 
+            by giving them full visibility of their actions, traceability of their resources, suggestions and advice based on 
+            the context without sacrificing any degree of flexibility that they need to solve real life situations. One of the most 
+            important requirements of the application is related to the the fact that most of the emergencies can be classified 
+            under different categories based on their characteristics. We can model guidelines to solve each of these categories 
+            but in real life, each emergency will be treated differently, depending on the context, the state of the company and 
+            their resources. For each particular situation, different actions will be evaluated, suggested and executed. 
+        </para>
+        <para>
+            Two generic situations will be described by this paper: Heart Attack Emergencies and Fire Related Emergencies. 
+            But the application is in no way limited to these two scenarios.
+        </para>
+        <para>
+            To design the application we gather, understand and formalize the knowledge that the company experts use to drive 
+            their activities.  The formalization of this knowledge will be introduced in the following sections where the Business 
+            Processes, Business Rules and Events modeled for this application are described. 
+        </para>
     </section>
     
 

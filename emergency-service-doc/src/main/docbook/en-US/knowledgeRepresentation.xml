@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+    <title>Emergency Service - Knowledge Representation</title>
+    <section>
+        <title>Declarative Knowledge Representation</title>
+        <para>
+            The application uses the concept of procedure to define the set of business processes, 
+            business rules and domain specific services that will be used to deal with an emergency. 
+            We have defined a set of default procedures that describe the activities that can be executed 
+            during specific emergencies. The “Default Heart Attack Procedure” can be used to drive a standard 
+            set of activities that needs to be executed each time a person suffers a heart attack. The “Default 
+            Fire Emergency Procedure” describes the same but for emergencies that include fire situations where we 
+            need to coordinate the firefighters department in order to mitigate the dangerous situation 
+            as soon as possible. 
+        </para>
+        <para>
+            Both procedures set up the basic activities that the company needs to execute in each specific 
+            situation, but in no way do they limit the company to add, remove or execute more activities in parallel.
+        </para>
+        <para>
+            Before executing these procedures, the company needs to identify the context of the emergency by 
+            executing a set of activities that were designed to pick up the initial information and find out 
+            what is happening. These activities are contained in a Generic Emergency Procedure that is executed 
+            each time the phone rings in the central offices. 
+        </para>
+      
+    </section>
+    <section>
+        <title>Generic Emergency Procedure</title>
+        <para>This procedure will initiate the information about an emergency and is based on the initial information that 
+            is being gathered by the phone operators of the company. Using this information, a suggestion mechanism based 
+            on Business Rules will be in charge of suggesting the most appropriate, specific procedures out of all the 
+            available procedures.   
+            
+            This generic procedure is driven by the following business process:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="../images/GenericEmergencyProcedure.png"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            The Suggest Emergency Procedures activity inside this business process uses a set of rules to analyze the context 
+            of the emergency gathered to suggest a set of procedures that fits with that specific situation. These rules will 
+            evaluate the status of the company in order to suggest viable procedures. 
+        </para>    
+        <para>    
+            Once the Suggestion rules are executed, the control expert in charge reviews the suggestions and modifies or 
+            approves the selected procedures. The business process automatically will start each selected procedure in 
+            parallel and it will wait until it receives a notification that all the specific procedures have ended. 
+        </para>
+        <para> 
+            The main purpose of this generic procedure is to speed up the activities that need to be executed for every 
+            emergency that the central offices handle. The suggestion rules help the experts by giving them a clear 
+            set of procedures that can be executed based on the current status of the company and also on the contextual 
+            and semantic information gathered for each specific situation. Once the procedures are started, a separate 
+            group of resources will be used to monitor all the activities executed for each emergency.
+        </para>
+        
+    </section>
+
+</chapter>
