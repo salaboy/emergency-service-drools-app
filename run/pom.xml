@@ -36,9 +36,9 @@
                             <executable>java</executable>
                             <arguments>
                                 <!-- mac osx for infinispan -->
-                                <argument>-Xmx2048m</argument>
+                                <!--argument>-Xmx2048m</argument>
                                 <argument>-Xms1024m</argument>
-                                <argument>-XX:MaxPermSize=1024M</argument>
+                                <argument>-XX:MaxPermSize=1024M</argument-->
                                 <argument>-Djgroups.bind_addr=127.0.0.1</argument>
                                 <argument>-Djava.net.preferIPv4Stack=true</argument>
                                 <argument>-classpath</argument>
