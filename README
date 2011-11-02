@@ -65,8 +65,10 @@ mvn -Pcore
 
 Once core is started you can start world ui and task lists web ui.
 
-From a different terminal you need to run: mvn -Pworld-ui
-From a different terminal you need to run: mvn -Ptasklists-ui-web
+From a different terminal you need to run: mvn -Pcitymap
+From a different terminal you need to run: mvn -Ptasklists
+From a different terminal you need to run: mvn -Pdashboard
+From a different terminal you need to run: mvn -Psensors
 Interacting with the application
 
 Now that we have the main three modules running we can start interacting with the application. Let's create and emergency and let's try to solve it. The following video guides you through the Heart Attack Scenario.
