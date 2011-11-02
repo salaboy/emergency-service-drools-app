@@ -19,7 +19,7 @@ import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 
 /**

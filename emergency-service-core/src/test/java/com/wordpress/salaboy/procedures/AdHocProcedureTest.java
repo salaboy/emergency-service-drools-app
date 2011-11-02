@@ -29,9 +29,8 @@ import com.wordpress.salaboy.messaging.MessageServerSingleton;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Location;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import com.wordpress.salaboy.services.ProceduresMGMTService;
 import java.io.ByteArrayInputStream;
@@ -93,9 +92,6 @@ public class AdHocProcedureTest extends GridBaseTest {
 
         client = HumanTaskServerService.getInstance().initTaskClient();
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ContextTrackingImplementation", ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        PersistenceServiceConfiguration conf = new PersistenceServiceConfiguration(params);
         persistenceService = PersistenceServiceProvider.getPersistenceService();
 
         trackingService = ContextTrackingProvider.getTrackingService();

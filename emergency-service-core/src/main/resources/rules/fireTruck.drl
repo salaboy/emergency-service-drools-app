@@ -6,7 +6,7 @@ import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 
 global String emergencyId;
 

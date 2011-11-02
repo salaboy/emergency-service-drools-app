@@ -8,8 +8,8 @@ import com.wordpress.salaboy.model.Ambulance;
 import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.EmergencyVehicleEvent;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 

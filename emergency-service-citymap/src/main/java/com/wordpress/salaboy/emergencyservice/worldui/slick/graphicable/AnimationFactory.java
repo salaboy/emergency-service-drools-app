@@ -7,7 +7,7 @@ package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;

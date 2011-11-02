@@ -42,8 +42,8 @@ import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.*;
 import com.wordpress.salaboy.services.util.MessageToEventConverter;
 

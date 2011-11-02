@@ -6,8 +6,8 @@ import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
-import com.wordpress.salaboy.model.serviceclient.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.*;
+import com.wordpress.salaboy.model.persistence.*;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.*;
 import com.wordpress.salaboy.context.tracking.*;
 import org.drools.runtime.process.ProcessInstance;
 
@@ -19,8 +19,8 @@ rule "Signal Process about Vehicle Hits Emergency Event"
         //Persistence and tracking services
         //java.util.Map<String, Object> params = new java.util.HashMap<String, Object>();
         //params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-        //com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
-        //com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+        //com.wordpress.salaboy.model.persistence.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.persistence.PersistenceServiceConfiguration(params);
+        //com.wordpress.salaboy.model.persistence.PersistenceService persistenceService = com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
         //com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
         PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
         ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();

@@ -16,7 +16,7 @@ import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.messages.IncomingCallMessage;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.sensor.EmergencyInformationDataSource;
 import com.wordpress.salaboy.sensor.SensorMessageProducer;
 import java.awt.Color;

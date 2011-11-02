@@ -33,8 +33,8 @@ import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.FirefightersDepartment;
 import com.wordpress.salaboy.model.command.Command;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.io.IOException;
 
 import java.util.Collections;

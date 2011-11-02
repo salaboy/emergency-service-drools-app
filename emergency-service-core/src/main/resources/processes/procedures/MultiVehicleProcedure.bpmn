@@ -28,7 +28,7 @@
      <tns:import name="com.wordpress.salaboy.model.Emergency" />
      <tns:import name="com.wordpress.salaboy.model.Vehicle" />
      <tns:import name="com.wordpress.salaboy.model.VehicleUpdate" />
-     <tns:import name="com.wordpress.salaboy.model.serviceclient.*" />
+     <tns:import name="com.wordpress.salaboy.model.persistence.*" />
      <tns:import name="com.wordpress.salaboy.context.tracking.*" />
     </extensionElements>
     <!-- process variables -->
@@ -177,8 +177,8 @@ System.out.println("&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Starting "+concreteProc
 //Persistence and tracking services
 //java.util.Map&lt;String, Object&gt; params = new java.util.HashMap&lt;String, Object&gt;();
 //params.put("ContextTrackingImplementation", com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType.IN_MEMORY);
-//com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration(params);
-//com.wordpress.salaboy.model.serviceclient.PersistenceService persistenceService = com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
+//com.wordpress.salaboy.model.persistence.PersistenceServiceConfiguration conf = new com.wordpress.salaboy.model.persistence.PersistenceServiceConfiguration(params);
+//com.wordpress.salaboy.model.persistence.PersistenceService persistenceService = com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.getPersistenceService(com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType.DISTRIBUTED_MAP, conf);
 //com.wordpress.salaboy.context.tracking.ContextTrackingService trackingService = com.wordpress.salaboy.context.tracking.ContextTrackingProvider.getTrackingService((com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType) conf.getParameters().get("ContextTrackingImplementation"));
 PersistenceService persistenceService = PersistenceServiceProvider.getPersistenceService();
 ContextTrackingService trackingService = ContextTrackingProvider.getTrackingService();

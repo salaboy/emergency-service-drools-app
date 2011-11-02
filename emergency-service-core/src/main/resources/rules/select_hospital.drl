@@ -13,9 +13,9 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import java.util.Map;
 import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.*;
-import com.wordpress.salaboy.model.serviceclient.*;
+import com.wordpress.salaboy.model.persistence.*;
 import com.wordpress.salaboy.context.tracking.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType;
 
 
 query "getPatient"

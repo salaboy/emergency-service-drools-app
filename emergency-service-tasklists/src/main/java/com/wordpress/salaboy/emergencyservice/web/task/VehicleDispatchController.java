@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.util.*;
 
 /**

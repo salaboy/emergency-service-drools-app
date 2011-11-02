@@ -15,12 +15,9 @@ import org.junit.Before;
 
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;

@@ -15,8 +15,8 @@ import java.util.Map;
 import com.wordpress.salaboy.messaging.*;
 import com.wordpress.salaboy.model.messages.*;
 import com.wordpress.salaboy.context.tracking.*;
-import com.wordpress.salaboy.model.serviceclient.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import com.wordpress.salaboy.model.persistence.*;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType;
 
 rule "Calculate Water Refill Location"
     ruleflow-group "closest-water-selection"

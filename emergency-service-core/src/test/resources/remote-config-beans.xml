@@ -7,7 +7,7 @@
        
    
     
-    <bean id="persistenceServiceType" class="com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType" factory-method="valueOf">
+    <bean id="persistenceServiceType" class="com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType" factory-method="valueOf">
         <constructor-arg>
             <value>DISTRIBUTED_MAP</value>
         </constructor-arg>
@@ -17,7 +17,7 @@
             <value>REST</value>
         </constructor-arg>
     </bean>
-    <bean id="environmentConf" class="com.wordpress.salaboy.model.serviceclient.EnvironmentConfiguration">
+    <bean id="environmentConf" class="com.wordpress.salaboy.model.persistence.EnvironmentConfiguration">
         <constructor-arg>
             <map>
                 <entry>

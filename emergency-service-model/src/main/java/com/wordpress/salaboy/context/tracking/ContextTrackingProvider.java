@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy.context.tracking;
 
-import com.wordpress.salaboy.model.serviceclient.EnvironmentConfiguration;
+import com.wordpress.salaboy.model.persistence.EnvironmentConfiguration;
 
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.test.ImpermanentGraphDatabase;
@@ -16,7 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author salaboy
  */
 public class ContextTrackingProvider {
-    //  private static Map<ContextTrackingServiceType, ContextTrackingService> instances = new HashMap<ContextTrackingServiceType, ContextTrackingService>();
+    
 
     private static ContextTrackingService instance;
     private static ApplicationContext context;

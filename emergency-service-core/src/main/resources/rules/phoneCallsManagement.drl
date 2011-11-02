@@ -5,8 +5,8 @@ import org.drools.runtime.process.ProcessInstance;
 import java.util.Map;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.serviceclient.*;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import com.wordpress.salaboy.model.persistence.*;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType;
 
 declare Call
   @role(event)

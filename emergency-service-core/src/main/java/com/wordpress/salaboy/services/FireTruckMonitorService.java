@@ -9,7 +9,7 @@ import com.wordpress.salaboy.model.Vehicle;
 import com.wordpress.salaboy.model.events.EmergencyVehicleEvent;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
 import com.wordpress.salaboy.model.events.FireTruckWaterRefilledEvent;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

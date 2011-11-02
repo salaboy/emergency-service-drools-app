@@ -11,7 +11,6 @@ import static org.junit.Assert.assertNotSame;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,6 @@ import scala.collection.Iterator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider.ContextTrackingServiceType;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.context.tracking.json.QueryResult;
 import com.wordpress.salaboy.context.tracking.json.ResponseNode;
@@ -51,10 +49,8 @@ import com.wordpress.salaboy.model.FireTruck;
 import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.ServiceChannel;
 import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.serviceclient.PersistenceService;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceConfiguration;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider;
-import com.wordpress.salaboy.model.serviceclient.PersistenceServiceProvider.PersistenceServiceType;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 
 /**
  *

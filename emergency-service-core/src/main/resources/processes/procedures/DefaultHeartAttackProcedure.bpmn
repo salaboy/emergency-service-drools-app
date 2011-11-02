@@ -28,7 +28,7 @@
      <tns:import name="java.util.Map" />
      <tns:import name="java.util.HashMap" />
      <tns:import name="com.wordpress.salaboy.context.tracking.*" />
-     <tns:import name="com.wordpress.salaboy.model.serviceclient.*" />
+     <tns:import name="com.wordpress.salaboy.model.persistence.*" />
     </extensionElements>
     <!-- process variables -->
     <property id="call" itemSubjectRef="_callItem"/>
