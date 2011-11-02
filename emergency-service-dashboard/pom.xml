@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>com.wordpress.salaboy.emergencyservice</groupId>
-    <artifactId>emergency-service-dashboard-ui-swing</artifactId>
+    <artifactId>emergency-service-dashboard</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Emergency Service - Dashboard UI (Swing)</name>
+    <name>Emergency Service - Dashboard</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

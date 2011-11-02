@@ -19,11 +19,11 @@
     <modules>
         <module>emergency-service-core</module>
         <module>emergency-service-model</module>
-        <module>emergency-service-world-ui-slick</module>
-        <module>emergency-service-taskslists-ui-web</module>
+        <module>emergency-service-citymap</module>
+        <module>emergency-service-tasklists</module>
         <module>emergency-service-sensor</module>
         <module>emergency-service-doc</module>
-        <module>emergency-service-dashboard-ui-swing</module>
+        <module>emergency-service-dashboard</module>
         <module>run</module>
     </modules>
 
@@ -42,12 +42,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-taskslists-ui-web</artifactId>
+                <artifactId>emergency-service-tasklists</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-world-ui-slick</artifactId>
+                <artifactId>emergency-service-citymap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -57,7 +57,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>emergency-service-dashboard-ui-swing</artifactId>
+                <artifactId>emergency-service-dashboard</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
