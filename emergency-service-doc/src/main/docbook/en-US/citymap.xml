@@ -4,19 +4,37 @@
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-    <title>Emergency Service Components</title>
-    
+    <title>Emergency Service City Map</title>
+   
+       
     <section>
-        <title>Components</title>
+        <title>Packages</title>
         <para>
-			This is an overview of the different components of Emergency Service 
-			project.
+            
+        
         </para>
     </section>
-    <xi:include href="model.xml"/>
-    <xi:include href="core.xml"/>
-    <xi:include href="citymap.xml"/>
-    <xi:include href="tasklists.xml"/>
-    <xi:include href="dashboard.xml"/>
+    <section>
+        <title>Entities</title>
+        <para>
+            
+        
+        </para>
+    </section>
+    <section>
+        <title>Services Helpers</title>
+        <para>
+            
+        
+        </para>
+    </section>
+    <section>
+        <title>Work Item Handlers</title>
+        <para>
+            
+        
+        </para>
+    </section>
+   
 
 </chapter>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="13.1">
+    <meta>
+        <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
+        <options/>
+    </meta>
+    <projectTree name="emergency-services-oxygen.xpr">
+        <folder path="en-US/"/>
+    </projectTree>
+</project>

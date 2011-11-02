@@ -16,15 +16,14 @@
     <cover>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/logo.png" />
+          <imagedata fileref="../images/logo.png"/>
         </imageobject>
       </mediaobject>
     </cover>
   </info>
 
-    
-   
-    <!--xi:include  href="preface.xml"/-->
+  <xi:include href="gettingInvolved.xml"/>
+    <xi:include href="introduction.xml"/>
     <xi:include href="components.xml"/>
     <index/>
 </book>
