@@ -266,8 +266,8 @@
                         <artifactId>maven-jetty-plugin</artifactId>
                         <version>6.1.25</version>
                         <configuration>
-                            <webApp>../emergency-service-taskslists-ui-web/target/ui.war</webApp>
-                            <tmpDirectory>../emergency-service-taskslists-ui-web/target</tmpDirectory>
+                            <webApp>../emergency-service-tasklists/target/ui.war</webApp>
+                            <tmpDirectory>../emergency-service-tasklists/target</tmpDirectory>
                             <scanIntervalSeconds>3</scanIntervalSeconds>
                             <connectors>
                                 <connector
@@ -277,7 +277,7 @@
                             </connectors>
                             
                             <contextPath>emergency-services</contextPath>
-                            <tmpDirectory>../emergency-service-taskslists-ui-web/target</tmpDirectory>
+                            <tmpDirectory>../emergency-service-tasklists/target</tmpDirectory>
 
                         </configuration>
                     </plugin>
