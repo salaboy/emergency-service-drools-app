@@ -6,5 +6,6 @@
     </meta>
     <projectTree name="emergency-services-oxygen.xpr">
         <folder path="en-US/"/>
+        <folder path="en-US/images/"/>
     </projectTree>
 </project>

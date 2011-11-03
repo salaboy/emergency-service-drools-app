@@ -35,7 +35,10 @@
                     <execution>
                         <phase>install</phase>
                         <goals>
+                            
                             <goal>generate</goal>
+                            <!--goal>bundle</goal>
+                            <goal>resources</goal-->
                         </goals>
                     </execution>
                 </executions>
@@ -76,11 +79,11 @@
                             <finalName>index.html</finalName>
                 <!-- <profilingTypeName>two_pass</profilingTypeName> -->
                         </format>
-                        <format>
+                        <!--format>
                             <formatName>pdf</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
                             <finalName>${project.artifactId}.pdf</finalName>
-                        </format>
+                        </format-->
               <!--<format>-->
                 <!--<formatName>eclipse</formatName>-->
                 <!--<stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource>-->

@@ -4,37 +4,16 @@
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-    <title>Emergency Service City Map</title>
+    <title>Emergency Service Sensors</title>
    
        
     <section>
-        <title>Packages</title>
+        <title>Main Features</title>
         <para>
             
         
         </para>
     </section>
-    <section>
-        <title>Entities</title>
-        <para>
-            
-        
-        </para>
-    </section>
-    <section>
-        <title>Services Helpers</title>
-        <para>
-            
-        
-        </para>
-    </section>
-    <section>
-        <title>Work Item Handlers</title>
-        <para>
-            
-        
-        </para>
-    </section>
-   
+    
 
 </chapter>

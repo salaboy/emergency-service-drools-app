@@ -36,10 +36,7 @@
             but in real life, each emergency will be treated differently, depending on the context, the state of the company and 
             their resources. For each particular situation, different actions will be evaluated, suggested and executed. 
         </para>
-        <para>
-            Two generic situations will be described by this paper: Heart Attack Emergencies and Fire Related Emergencies. 
-            But the application is in no way limited to these two scenarios.
-        </para>
+       
         <para>
             To design the application we gather, understand and formalize the knowledge that the company experts use to drive 
             their activities.  The formalization of this knowledge will be introduced in the following sections where the Business 
@@ -47,5 +44,130 @@
         </para>
     </section>
     
-
+    <section>
+        <title>Scenario High Level Overview</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/city.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para> In order to understand the application requirements we need to understand the context
+            in which the company operates. The following sections will describe the entities,
+            vehicles and resources that interacts in order to deal with different emergencies. You
+            will notice that the situations are being described using a business perspective without
+            including technical terminology. This fact will allow us to validate with non technical
+            people the application requirements, helping you to decouple the implementation from the
+            concrete business scenario. 
+            Each entity described will handle a limited set of resources that will affect the context of the
+            company and the entities that are being coordinated.
+        </para>
+    </section> 
+    <section>
+        <title>911 Building - Emergency Service Company</title>
+        <para> The orange building located in the bottom left corner
+            (911 building) will be in charge of dealing with the emergencies that happens within the
+            city. This building represent the main entity from the application perspective, it
+            represents all the employees and resources working to deal with multiple emergencies.
+            The 911 building will also have the responsability to dispatch ambulances to quickly
+            deal with emergencies that include injured people. 
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/entity-911.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para> 
+            Each ambulance will be monitored at all times, using a gps device that will allow us to see
+            where the ambulance is and how far away from the emergency it is. Once the ambulance pick up the 
+            patient from the emergency location, we will start recieving the patient vital signs. 
+            For more information about the GPS tracking and Patient Vital Sign monitoring go to: [link here].
+            Analyzing this information in real time will allow us to generate alerts and react if something
+            goes wrong with the patient inside the ambulance. We can also push all the information to the
+            related hospitals to keep them posted with the latest status.
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/vehicle-ambulance.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+    
+    <section>
+        <title>Hospitals</title>
+        <para>
+            We have three hospitals in this city. The hospital will be in charge of accepting injured people. Each hospital
+            will be in charge of notifying the available beds and their opperating specialities, so the emergency services company can 
+            plan and coordinate this entities.
+            
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/entity-hospital.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+    <section>
+        <title>Fire Fighters Deparment</title>
+        <para>
+            We just have one fire fighter deparment in this city. This entity will be in charge of dispatching fire trucks
+            when we need to deal with a fire situation. This entity will be also responsible to fill the fire truck's water tank.            
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/entity-firefighters.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            Fire Trucks, as ambulances, will be tracked via GPS and we will be able to monitor from the central the water tanks level
+            and the water pump heat status. This will allow us to notify the fire deparment so the can plan better how they provision,
+            different fire trucks depending the emervency severity.
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/vehicle-firetruck.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+    <section>
+        <title>Police Deparment</title>
+        <para>
+            We just have one police deparment in this city. This entity will be in charge of dispatching police cars
+            when we need police intervention. This entity will be also responsible to host prisioners when is needed.             
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/entity-policedeparment.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            All the dispatched police cars will be tracked via GPS, and the police officers inside the car will be
+            responsible to send updated information to the central about the emergency situation as soon as they arrive.
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/vehicle-policecar.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+    <section>
+        <title>Emergency Types</title>
+        <para>
+            Based on the different situations that the company is prepared to deal with, and based on the entities that 
+            the company can coordinate, they have defined a set of standard procedures that describe the most common
+            set of activities that needs to be executed for each of this categories.
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/emergency-types.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            The following chapter will explain how based on these emergency types, the company define a set of procedures and 
+            how we will formalize them using business rules, business processes and events. Then section X will describe the 
+            implementation details for each of these procedures. Section Y will describe which mechanism needs to be implemented
+            to provide flexibility to support a wide range of situations where none of the standard procedures fits one hundread 
+            percent.
+        </para>
+    </section>
+    
 </chapter>

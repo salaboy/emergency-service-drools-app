@@ -38,11 +38,14 @@
             
             This generic procedure is driven by the following business process:
         </para>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="../images/GenericEmergencyProcedure.png"/>
-            </imageobject>
-        </mediaobject>
+        <figure>
+            <title>Generic Emergency Procedure</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/GenericEmergencyProcedure.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
         <para>
             The Suggest Emergency Procedures activity inside this business process uses a set of rules to analyze the context 
             of the emergency gathered to suggest a set of procedures that fits with that specific situation. These rules will 
@@ -62,5 +65,128 @@
         </para>
         
     </section>
-
+    <section>
+        <title>Heart Attack Procedure</title>
+        <para>
+            As soon as we identify a heart attack situation, the system will automatically suggest to the expert which 
+            procedures best fit based on contextual information. If the Default Heart Attack Procedure is selected, 
+            the activities described by the following business process will be executed:
+        </para> 
+        <figure>
+            <title>Heart Attack Emergency Procedure</title>
+             <mediaobject>
+                 <imageobject>
+                     <imagedata fileref="images/DefaultHeartAttackProcedureSinglePatient.png" format="PNG"/>
+                 </imageobject>
+             </mediaobject>
+        </figure>
+        <para>
+            This sequence of activities and events defines exactly how the company must deal with a Heart Attack situation.
+            Briefly, an ambulance will be selected according to the company status and the patient information and it will 
+            be dispatched to the emergency location. Once that ambulance arrives, the Doctor will send an updated report 
+            to the central about the situation. This information will be correlated with the emergency location, 
+            the location of different hospitals based on distance, and the availability of the health-care services 
+            in each hospital to select the most appropriate facility. Once the patient is at the hospital, a report 
+            about this procedure will be created. 
+        </para>
+        <para>
+            This business process is enriched by different sets of rules that are being executed in different 
+            activities to take automated actions to speed up the service and the human involvement times. 
+            For this particular use case, a set of rules is being defined to automatically select the best 
+            hospital based on the available information.  Taking advantage of the Complex Event Process 
+            features provided by the platform, another group of rules are defined to take care of more dynamic 
+            and reactive aspects that need to be covered. 
+            
+            The following rule is one of the set of rules created for the hospital selection mechanism:
+        </para>
+        <programlisting>
+            
+            rule "Select Closest Hospital"   
+                ruleflow-group "hospital-selection"
+                when
+                    $pI: WorkflowProcessInstance()
+                    $emergency: Emergency($type: type.name)
+                    $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
+                                                                    from externalEntities.getAllHospitals(), 
+                                                                    hospitalDistanceCalculator(
+                                                                        new HospitalDistanceCalculationData(
+                                                                                $hospital, $emergency))
+                                                                    )
+                then
+                    String callId = ((Call)$pI.getVariable("call")).getId();
+                    //Send Hospital Selected Message
+                    MessageFactory.sendMessage(
+                                                new HospitalSelectedMessage(callId,
+                                                $selectedHospital)
+                                                );
+            
+            end
+            
+        </programlisting>
+        <para>
+            This basic rule calculates the closest hospital to the emergency location iterating the location of all 
+            the available hospitals. The available hospitals are being dynamically calculated based on periodical 
+            updates reports received in the central.
+        </para>
+        <para>
+            The following business rule uses the temporal operators to analyze and react based on the patient´s 
+            vital signs. Once the patient is inside the ambulance, all his/her vital signs are sent to the 
+            central offices and monitored by a set of rules that are designed to analyze anomalous situations 
+            and generate warnings. These warnings are automatic reactions executed by the system when a 
+            specific pattern is found in multiple sources of real time events. These warnings can be used to 
+            influence the hospital selection, the route to reach the selected hospital, or even trigger new 
+            on-demand procedures. 
+        </para> 
+        <programlisting>
+            rule "Patient heart attack pattern"
+                when
+                    ArrayList(size > 7 ) from collect( 
+                    PulseEvent( processed == false, $pulse: value) over window:time(1s) 
+                                                                    from entry-point "patientHeartbeats") 
+                then
+                    MessageFactory.sendMessage( new PatientMonitorAlertMessage(
+                                                                 callId, vehicleId, 
+                                                                "Warning, patient suffering a heart attack ", 
+                                                                 new java.util.Date()));
+            end
+        </programlisting>
+        <para>
+            This simple rule evaluates in real time the events that are coming from a stream called “patientHeartBeats”. 
+            If we find more than 7 events per second filtering the values of those particular events, we can say that 
+            it is very likely that the patient is having a heart attack. The application provides a configurable module 
+            that allows us to set up different devices to be used as input for these events.  We have designed a set of 
+            bindings for the Wii Remote Control Accelerometer, the IPhone Accelerometer and Android Devices Accelerometers 
+            that can be plugged as event sources.  Based on the values that are being sent by these devices, the rules 
+            will react if a pattern is found. 
+        </para>
+    </section>
+    
+    <section>
+        <title>Fire Emergency Procedure</title>
+        <para>
+            This procedure will be executed each time that the company needs to deal with a fire situation. 
+            Once again, a set of business processes and business rules will compose this procedure.  For this 
+            procedure, we will analyze a business process that describes a more dynamic set of activities that 
+            needs to be executed.
+        </para> 
+        <figure>
+            <title>Fire Emergency Procedure</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/DefaultFireEmergencyMultiTruckAdHoc.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        <para>
+            This more unstructured process allows us to represent a situation where we send one or more fire trucks to a 
+            fire emergency. Each truck will have a limited amount of water that can be recharged in the fire departments. 
+            This process is being driven by the events that are being received in the central offices, which allow us to 
+            coordinate if we need more trucks; or if the situation is under control, we can reduce the number of trucks 
+            that we are using.
+        </para>
+        <para>
+            For this procedure a set of rules is defined to control the water tanks and select the closest water provider; 
+            a planning algorithm is also used to calculate the initial amount of trucks required to deal with the fire situation. 
+        </para>
+    </section>
 </chapter>

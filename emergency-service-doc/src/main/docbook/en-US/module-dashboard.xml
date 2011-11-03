@@ -4,11 +4,15 @@
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-    <title>Emergency Service Task Lists</title>
-   
+    <title>Emergency Service Dashboard</title>
+    <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/module-dashboard.png" format="PNG"/>
+        </imageobject>
+    </mediaobject>
        
     <section>
-        <title></title>
+        <title>Packages</title>
         <para>
             
         

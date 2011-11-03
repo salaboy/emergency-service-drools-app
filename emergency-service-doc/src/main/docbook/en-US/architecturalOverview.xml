@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+    <title>Architectural Overview </title>
+    <section>
+        <title>Architecture Introduction</title>
+    
+        <para> This application was created to take advantage of different technologies to solve
+            very specific problems. All these technologies are being used to demonstrate how we can
+            solve all the technical problems that arise when we try to provide a solution that needs
+            to drive a company. The following technical components are being used to solve
+            infrastructural problems such as scalability and robustness, delegating the business
+            logic and business definitions to the Business Rule Engine and Business Process Engine.
+            Current technical components that are being integrated to the application: 
+                    
+                        
+                       
+            <itemizedlist>
+                <listitem>
+                    <para>Distributed Cache (Infinispan)</para>
+                </listitem>
+                <listitem>
+                    <para>NOSQL Graph Based Database (Neo4J)</para>
+                </listitem>
+                <listitem>
+                    <para>Query &amp; Graph Transversal frameworks (Gremlin &amp; Chyper)</para>
+                </listitem>
+                <listitem>
+                    <para>Reliable Messaging System (HornetQ) </para>
+                </listitem>
+                <listitem>
+                    <para>Web Frameworks for Presentation Layer (FreeMarker, Spring MVC) </para>
+                </listitem>
+                <listitem>
+                    <para>Interaction Component for dynamic form builder (Smart Tasks) + Human Task
+                        Component</para>
+                </listitem>
+            </itemizedlist>
+                        
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/HighLevelArchitectureEmergencyService.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+       <para>
+           The architecture of the application was created with the concept of distribution in mind. 
+           Usually the problems that we want to solve using this approach are extremely complex and 
+           can involve huge amounts of data, therefore each knowledge runtime can be instantiated in 
+           different physical or virtual machines. Using different techniques, we can coordinate and 
+           monitor these knowledge runtimes so decoupling them in order to improve performance and 
+           scalability. Most of the interactions are being handled by messaging queues which allow us 
+           to configure the reliability of the channels completely decoupled from the problems that 
+           we are trying to solve. 
+       </para>
+    </section>
+    
+    
+
+</chapter>
