@@ -151,7 +151,7 @@
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>emergency-service-world-ui-slick</artifactId>
+                    <artifactId>emergency-service-citymap</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.lwjgl</groupId>
@@ -200,7 +200,7 @@
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>emergency-service-dashboard-ui-swing</artifactId>
+                    <artifactId>emergency-service-dashboard</artifactId>
                 </dependency>
             </dependencies>
         </profile>
