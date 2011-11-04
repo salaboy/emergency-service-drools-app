@@ -35,10 +35,10 @@
                     <execution>
                         <phase>install</phase>
                         <goals>
-                            
+                            <goal>resources</goal>
                             <goal>generate</goal>
-                            <!--goal>bundle</goal>
-                            <goal>resources</goal-->
+                            
+                            
                         </goals>
                     </execution>
                 </executions>
@@ -70,12 +70,14 @@
                         <format>
                             <formatName>html_single</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
+                           
                             <finalName>index.html</finalName>
                 <!-- <profilingTypeName>two_pass</profilingTypeName> -->
                         </format>
                         <format>
                             <formatName>html</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
+                           
                             <finalName>index.html</finalName>
                 <!-- <profilingTypeName>two_pass</profilingTypeName> -->
                         </format>

@@ -7,17 +7,27 @@
     <title>Emergency Service Introduction</title>
     <section>
         <title>Why Emergency Services?</title>
-    
+        
         <para>
             The Emergency Service Application was built as a blue print for architect applications using 
             the Drools and jBPM5 platform. The main goal of this application is to show how we can model and implement 
-            a complete and complex business scenario using declarative approaches like: 
-            Business Rules, Business Process and Complex Event Processing. 
+            a complete and complex business scenarios using the declarative power of: 
+            Business Rules, Business Process and Complex Event Processing. Emergency Services is not just a simple example about
+            how to integrate these tecnologies and approaches, we are aiming to build a complete scenario that can be used
+            as a reference implementation. We want to build something real, something that scales for real usage, something 
+            that you can use and map your business scenarios to and most important something that we can use to 
+            teach new people about these amazing technologies.
         </para>
-        <para>From the technical point of view, this application shows how components like a Rule Engine and 
+        <para>
+            From the technical point of view, this application shows how components like a Rule Engine and 
             Business Process Engine can be integrated with technologies that are widely used in most system architectures. 
             Components -- like Distributed Caches, Transactional Frameworks, Messaging Systems, Web Services 
             Stacks and Web Frameworks -- can be combined to work around the declarative power of rules, processes and events.
+        </para>
+        <para>
+            We want to go one step further and that's why this document tries to illustrate some principles and decisions that 
+            we need to make in order to build applications that uses rules engines, process engines and event processing agents 
+            with more traditional components.
         </para>
     </section>
     <section>
@@ -60,6 +70,8 @@
             concrete business scenario. 
             Each entity described will handle a limited set of resources that will affect the context of the
             company and the entities that are being coordinated.
+            The size of the city and the amout of entities were selected for demonstration purposes. Using this reduced
+            amount of entities allow us to show the concepts in action without increasing the application complexity. 
         </para>
     </section> 
     <section>
@@ -70,6 +82,9 @@
             represents all the employees and resources working to deal with multiple emergencies.
             The 911 building will also have the responsability to dispatch ambulances to quickly
             deal with emergencies that include injured people. 
+        </para>
+        <para>
+            
         </para>
         <mediaobject>
             <imageobject>
