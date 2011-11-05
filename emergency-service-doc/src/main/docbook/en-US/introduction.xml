@@ -84,7 +84,10 @@
             deal with emergencies that include injured people. 
         </para>
         <para>
-            
+            All the software created inside this project aims to speed up the company activities and
+            the quality of service provided. All the software modules needs to use and expose the concepts and vocabularies that
+            the company uses every day. The main focus of this application is to provide all the mechanisms to improve how 
+            the company works.
         </para>
         <mediaobject>
             <imageobject>
@@ -92,7 +95,7 @@
             </imageobject>
         </mediaobject>
         <para> 
-            Each ambulance will be monitored at all times, using a gps device that will allow us to see
+            Each ambulance will be monitored at all times, using a GPS device that will allow us to see
             where the ambulance is and how far away from the emergency it is. Once the ambulance pick up the 
             patient from the emergency location, we will start recieving the patient vital signs. 
             For more information about the GPS tracking and Patient Vital Sign monitoring go to: [link here].
@@ -111,8 +114,9 @@
         <title>Hospitals</title>
         <para>
             We have three hospitals in this city. The hospital will be in charge of accepting injured people. Each hospital
-            will be in charge of notifying the available beds and their opperating specialities, so the emergency services company can 
-            plan and coordinate this entities.
+            will be in charge of notifying the available beds and their opperating specialities periodically, so the emergency 
+            services company can plan and coordinate these entities. These entities also support queries against their status from
+            the central offices. 
             
         </para>
         <mediaobject>
@@ -129,7 +133,7 @@
         </para>
         <mediaobject>
             <imageobject>
-                <imagedata fileref="images/entity-firefighters.png" format="PNG"/>
+                <imagedata fileref="images/entity-firefightersdepartment.png" format="PNG"/>
             </imageobject>
         </mediaobject>
         <para>
@@ -151,7 +155,7 @@
         </para>
         <mediaobject>
             <imageobject>
-                <imagedata fileref="images/entity-policedeparment.png" format="PNG"/>
+                <imagedata fileref="images/entity-policedepartment.png" format="PNG"/>
             </imageobject>
         </mediaobject>
         <para>
@@ -167,9 +171,8 @@
     <section>
         <title>Emergency Types</title>
         <para>
-            Based on the different situations that the company is prepared to deal with, and based on the entities that 
-            the company can coordinate, they have defined a set of standard procedures that describe the most common
-            set of activities that needs to be executed for each of this categories.
+            Based on the entities that the company can coordinate and a categorized set of emergency types,  the company have 
+            defined a group of standard procedures that describe the most emergency situations.
         </para>
         <mediaobject>
             <imageobject>
@@ -177,11 +180,35 @@
             </imageobject>
         </mediaobject>
         <para>
+            <emphasis>Heart Attack Emergencies</emphasis>  are situations where we need to deal with a single person 
+            that needs to be picked up and transfered to a hospital inmediately.
+        </para>
+        <para>
+            <emphasis>Injured People Emergencies</emphasis> are situations where we have more than one person that needs 
+            to be picked up and transfered to different facilities depending the level of injuries and the availability of hospitals.
+        </para>
+        <para>
+            <emphasis>Fire Emergencies</emphasis> are situations where we need to coordinate with the fire fighters department to 
+            deal with a place that is burning. We will need to understand the characteristics of the fire situation and plan based
+            on the size and capabilities of the trucks that we can dispatch. 
+        </para>
+        <para>
+            <emphasis>Assault Emergencies</emphasis> are situations where we need to coordinate with the police department to dispatch
+            a police car to the emergency location. The police car will be in charge of investigating the situation and patrol 
+            the neihbourhood.
+        </para>
+        <para>
+            <emphasis>Bank Robbery Emergencies</emphasis> are situations where we need to coordinate with the police department to dispatch
+            one or more police cars surround a bank and chase the bandals if they run away.
+        </para>
+        <para>
+            Knowing the city context and the basic set of generic/standard emergencies that the company have defined we need to design
+            a set of components that will guide and assist the company during their daily activities.
+            
             The following chapter will explain how based on these emergency types, the company define a set of procedures and 
             how we will formalize them using business rules, business processes and events. Then section X will describe the 
             implementation details for each of these procedures. Section Y will describe which mechanism needs to be implemented
-            to provide flexibility to support a wide range of situations where none of the standard procedures fits one hundread 
-            percent.
+            to provide flexibility to support a wide range of situations where none of the standard procedures fits.
         </para>
     </section>
     

@@ -9,11 +9,11 @@
         <title>Declarative Knowledge Representation</title>
         <para>
             The application uses the concept of procedure to define the set of business processes, 
-            business rules and domain specific services that will be used to deal with an emergency. 
+            business rules and domain specific services that will be used to deal with each emergency type. 
             We have defined a set of default procedures that describe the activities that can be executed 
-            during specific emergencies. The “Default Heart Attack Procedure” can be used to drive a standard 
-            set of activities that needs to be executed each time a person suffers a heart attack. The “Default 
-            Fire Emergency Procedure” describes the same but for emergencies that include fire situations where we 
+            during specific emergencies. The “Heart Attack Procedure” can be used to drive a standard 
+            set of activities that needs to be executed each time a person suffers a heart attack. The “Fire 
+            Emergency Procedure” describes the same but for emergencies that include fire situations where we 
             need to coordinate the firefighters department in order to mitigate the dangerous situation 
             as soon as possible. 
         </para>
@@ -74,11 +74,11 @@
         </para> 
         <figure>
             <title>Heart Attack Emergency Procedure</title>
-             <mediaobject>
-                 <imageobject>
-                     <imagedata fileref="images/DefaultHeartAttackProcedureSinglePatient.png" format="PNG"/>
-                 </imageobject>
-             </mediaobject>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/DefaultHeartAttackProcedureSinglePatient.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
         </figure>
         <para>
             This sequence of activities and events defines exactly how the company must deal with a Heart Attack situation.
@@ -101,26 +101,27 @@
         </para>
         <programlisting>
             
-            rule "Select Closest Hospital"   
-                ruleflow-group "hospital-selection"
-                when
-                    $pI: WorkflowProcessInstance()
-                    $emergency: Emergency($type: type.name)
-                    $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
-                                                                    from externalEntities.getAllHospitals(), 
-                                                                    hospitalDistanceCalculator(
-                                                                        new HospitalDistanceCalculationData(
-                                                                                $hospital, $emergency))
-                                                                    )
-                then
-                    String callId = ((Call)$pI.getVariable("call")).getId();
-                    //Send Hospital Selected Message
-                    MessageFactory.sendMessage(
-                                                new HospitalSelectedMessage(callId,
-                                                $selectedHospital)
-                                                );
+rule "Select Closest Hospital"   
+    ruleflow-group "hospital-selection"
+        when
+            $pI: WorkflowProcessInstance()
+            $emergency: Emergency($type: type.name)
+            $selectedHospital: Hospital() from accumulate ($hospital: Hospital() 
+                                                            from externalEntities.getAllHospitals(), 
+                                                                hospitalDistanceCalculator(
+                                                                    new HospitalDistanceCalculationData(
+                                                                                    $hospital, $emergency)
+                                                                                           )
+                                                            )
+        then
+            String callId = ((Call)$pI.getVariable("call")).getId();
+            //Send Hospital Selected Message
+            MessageFactory.sendMessage(
+                                new HospitalSelectedMessage(callId,
+                                                            $selectedHospital)
+                                                            );
             
-            end
+end
             
         </programlisting>
         <para>
@@ -138,17 +139,17 @@
             on-demand procedures. 
         </para> 
         <programlisting>
-            rule "Patient heart attack pattern"
-                when
-                    ArrayList(size > 7 ) from collect( 
-                    PulseEvent( processed == false, $pulse: value) over window:time(1s) 
-                                                                    from entry-point "patientHeartbeats") 
-                then
-                    MessageFactory.sendMessage( new PatientMonitorAlertMessage(
-                                                                 callId, vehicleId, 
-                                                                "Warning, patient suffering a heart attack ", 
-                                                                 new java.util.Date()));
-            end
+rule "Patient heart attack pattern"
+    when
+        ArrayList(size > 7 ) from collect( 
+        PulseEvent( processed == false, $pulse: value) over window:time(1s) 
+                                            from entry-point "patientHeartbeats") 
+    then
+        MessageFactory.sendMessage( new PatientMonitorAlertMessage(
+                                                callId, vehicleId,   
+                                                "Warning, patient suffering a heart attack ", 
+                                                new java.util.Date()));
+end
         </programlisting>
         <para>
             This simple rule evaluates in real time the events that are coming from a stream called “patientHeartBeats”. 
