@@ -5,27 +5,148 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
     <title>Emergency Service Installation &amp; Setup</title>
+    
+    <para>Emergency Service is a java open source application whose source
+    code is hosted in github. If you want to try it or to get involved with
+    it (improvements, patches, documentation, etc.), you first need to get
+    its source code.</para>
+    <note>
+        <para>At the moment, there are no available nor supported binaries
+        of the application. If you want to use is, you need to compile it
+        from its source code</para>
+    </note>
+
+    <para>The prerequisites of this application are: java 1.6 or grater and
+    maven 3.0.3 or grater. You can download these applications from their
+    corresponding webpages:</para>
+    
+    <itemizedlist>
+        <listitem>          
+            <ulink url="https://github.com/Salaboy/emergency-service-drools-app"/>
+        </listitem>
+        <listitem>          
+            <ulink url="https://github.com/Salaboy/emergency-service-drools-app"/>
+        </listitem>
+    </itemizedlist>
+    
     <section>
         <title>Downloading the source code</title>
         
         <para>
-           
+        As already mentioned, the source code of this application is available through github. You don't
+        need to have a github account to download the source, but you will
+        need git installed in your system.
         </para>
-        <para>Try Emergency Service and get involved with the code</para>
-        <itemizedlist>
-            <listitem>          
-                <ulink url="https://github.com/Salaboy/emergency-service-drools-app"/>
-            </listitem>
-        </itemizedlist>
         
+        <tip>
+            <para>
+                You can download git binaries from git's webpage:
+                <link ns:href="http://git-scm.com/download">http://git-scm.com/download</link>
+            </para>
+        </tip>
+        
+        <para>
+            The project's home page in github is <link ns:href="https://github.com/Salaboy/emergency-service-drools-app">
+            https://github.com/Salaboy/emergency-service-drools-app</link>.
+            The first step to start playing with Emergency Service is to 
+            make a clone of the project in you local system:
+        </para>
+        <para>
+            <command>git clone git://github.com/Salaboy/emergency-service-drools-app.git</command>
+        </para>        
+        <para>When the command ends you will have a directory called 
+        'emergency-service-drools-app' containing all the modules of the 
+        application</para>
+
     </section>
     <section>
         <title>Compiling the source code</title>
         <para>
-           
+            Source code compilation is performed by maven. Placed in the directory
+            where the source code is, you need to execute this command to 
+            start the compilation process of all the modules of the application:
         </para>
+        <para>
+            <command>mvn clean install</command>
+        </para>
+        <warning>
+            <para>The compilation process could take several minutes, specially
+            the first time you run it, because all the dependencies of the application
+            must be downloaded.
+            </para>
+        </warning>
+        <tip>
+            <para>
+            If you want to speed up the compilation process, you can ommit the
+            execution of the Unit Tests that come with the application. In order
+            to do this, you need to pass an extra option '-DskipTests=true' to
+            maven:
+            </para>
+            <para><command>mvn clean install -DskipTests=true</command></para>
+        </tip>
+        <important>
+            <para>
+            If during the compilation process you experiment issues while trying
+            to download smart-tasks library, you will need to follow the steps
+            described in this page:
+            <link ns:href="https://cloudbees.zendesk.com/entries/20078393-configuring-maven-to-access-https-repositories-with-untrusted-ssl-certificates">https://cloudbees.zendesk.com/entries/20078393-configuring-maven-to-access-https-repositories-with-untrusted-ssl-certificates</link>
+            </para>
+        </important>
     </section>
-    
+    <section>
+        <title>Executing the different modules</title>
+        <para>Emergency Service Application is composed of a set of modules. This
+        Section covers the steps you need to follow to start each of them. If
+        you want more information about each module, please refer to following
+        sections of this documentation.
+        </para>
+        <para>
+        There are 5 modules you can run: core, task list, city map, dashboard
+        and sensors. The most important module is core. In order to start all
+        the other modules, core module must be up and running. 
+        </para>
+        <para>
+        This are the commands you need to execute to start each module. In order
+        to execute these commands you need to be in 'run' directory.
+        </para>
+        
+        <itemizedlist>
+        <listitem>
+            <para>Core: <command>mvn -Pcore</command></para>
+            <para>Task List: <command>mvn -Ptasklists</command></para>
+            <para>City Map: <command>mvn -Pcitymap</command></para>
+            <para>Dashboard: <command>mvn -Pdashboard</command></para>
+            <para>Sensors: <command>mvn -Psensors</command></para>
+        </listitem>
+        </itemizedlist>
+        
+        <note>
+            <para>
+            If you are a linux user, you could find problems trying to execute
+            City Map module. These problems are related to native libraries
+            this module uses to render the city map. 
+            </para>
+            <para>
+            In order to solve this problem, you need to specify the architecture
+            of your SO in the command line:
+            </para>
+            <para>For 32 bits platforms: <command>mvn -Plinux,citymap</command></para>
+            <para>For 64 bits platforms: <command>mvn -Plinux64,citymap</command></para>
+            <para>In order to avoid errors related to caching, it is always
+            convenient to execute the following command before run City Map
+            module:</para>
+            <para><command>mvn clean</command></para>
+        </note>
+        
+        <important>
+            <para>
+            Remember that Core module must be the first module in being executed.
+            You need to wait until it is up and running before start any other
+            module.
+            </para>
+        </important>
+        
+    </section>
     
 
 </chapter>
