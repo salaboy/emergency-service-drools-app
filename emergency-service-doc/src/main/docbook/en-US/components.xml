@@ -9,12 +9,11 @@
     <section>
         <title>Components</title>
         <para>
-			This is an overview of the different components of Emergency Service 
-			project. THe following sections covers a detailed technical specificion about the the current implementation
-			and is intended to serve as guideline to future improvements. Each module will mention and explain the
-			architectural decisions that were made to implement the current version. The advantages and the drawbacks of
-			each approach will be explained and also alternative methods will be proposed.
-			
+            This is an overview of the different components of Emergency Service 
+            project. The following sections covers a detailed technical specificion about the the current implementation
+            and is intended to serve as guideline to future improvements. Each module will mention and explain the
+            architectural decisions that were made to implement the current version. The advantages and the drawbacks of
+            each approach will be explained and also alternative methods will be proposed.		
         </para>
         <para>
             For different reasons, (like time, effort, deadlines, business requirements, environment restrictions, 
@@ -22,6 +21,23 @@
             in future versions until we get everything right. Feel free to give us feedback and help us to prioritize
             the features that you think that are the most important in your own projects. 
         </para>
+        
+        <para>
+            In order to understand the technical decisions that we have made for this version of the application, we need to 
+            understand the current set of components that the application provides. Each component has its own responsibilities and 
+            its technical challenges. Understanding the current modules in the application will give us a high-level overview of how 
+            to solve different problems and how you can extend the current infrastructure to implement your own scenarios.
+            The application currently has 6 modules that will be described in the following sections:
+        </para>
+        <itemizedlist>        
+            <listitem>Model</listitem>
+            <listitem>Core</listitem>
+            <listitem>City Map</listitem>
+            <listitem>Task List User Interface</listitem>           
+            <listitem>Dashboard</listitem>
+            <listitem>Sensors</listitem>
+        </itemizedlist>  
+   
     </section>
     <xi:include href="module-model.xml"/>
     <xi:include href="module-core.xml"/>

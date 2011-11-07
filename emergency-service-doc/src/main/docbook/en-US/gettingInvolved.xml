@@ -10,11 +10,17 @@
         
         <para>
             As in every community effort we need your feedback about the features that we are providing in the project. 
-            We are open to suggestions and we are willing to help people that is interested in using Emergency Service Application 
-            to use as blueprint or just to evangelize about JBMP and Drools. We are also available to train people that 
-            wants to get involved with the project and contribute with patches, tests, documentation,  
-            new modules and utilities. We can help you to get involved and introduce you to different 
+            We are open to suggestions and we are willing to help people that is interested in using and testing the Emergency Service 
+            Application. We are also available to train people that wants to get involved with the project and contribute with 
+            patches, tests, documentation, new modules and utilities. We can help you to get involved and introduce you to different 
             topics that can be developed for the Emergency Service initiative.  
+            
+        </para>
+        <para>
+            We are working to provide as much material as we can to encourage people to learn &amp; teach about the 
+            concepts implemented inside this application. This is not just about jBPM5 &amp; Drools, is about sharing 
+            common architectural patterns and a complete use case that help people to understand the declarative power of 
+            rules, processes and complex event processing in a real life infrastructure. 
         </para>
         <para>Try Emergency Service and get involved with the code</para>
         <itemizedlist>
@@ -24,16 +30,21 @@
         </itemizedlist>
         <para>Right now we are only three community developers working on the project:</para>
         <itemizedlist>
-            <listitem>Demian &quot;@calcacuervo&quot; Calcaprina</listitem>
-            <listitem>Esteban &quot;@ilesteban&quot; Aliverti</listitem>
-            <listitem>Mauricio &quot;@salaboy&quot; Salatino</listitem>
+            <listitem>Demian &quot;<ulink url="http://www.twitter.com/calcacuervo">@calcacuervo</ulink>&quot; Calcaprina</listitem>
+            <listitem>Esteban &quot;<ulink url="http://www.twitter.com/ilesteban">@ilesteban</ulink>&quot; Aliverti</listitem>
+            <listitem>Mauricio &quot;<ulink url="http://www.twitter.com/salaboy">@salaboy</ulink>&quot; Salatino</listitem>
         </itemizedlist>	
         <para>We have also received important contributions from the following people:</para>
         <itemizedlist>        
             <listitem>Ming Fang -> Contribute with the Run Module</listitem>
-            <listitem>technoSpino -> Bug Fixes &amp; Configurations</listitem>
-            <listitem>@hanelita</listitem>           
-        </itemizedlist>   
+            <listitem><ulink url="http://www.twitter.com/technoSpino">@technoSpino</ulink> -> Bug Fixes &amp; Configurations</listitem>
+            <listitem><ulink url="http://www.twitter.com/hannelita">@hanelita</ulink></listitem>           
+        </itemizedlist>  
+        <para>
+            
+        
+        </para>
+        
     </section>
 
 </chapter>

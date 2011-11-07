@@ -24,11 +24,7 @@
             Components -- like Distributed Caches, Transactional Frameworks, Messaging Systems, Web Services 
             Stacks and Web Frameworks -- can be combined to work around the declarative power of rules, processes and events.
         </para>
-        <para>
-            We want to go one step further and that's why this document tries to illustrate some principles and decisions that 
-            we need to make in order to build applications that uses rules engines, process engines and event processing agents 
-            with more traditional components.
-        </para>
+       
     </section>
     <section>
         <title>Application Scope, Domain and Requirements</title>
@@ -91,7 +87,7 @@
         </para>
         <mediaobject>
             <imageobject>
-                <imagedata fileref="images/entity-911.png" format="PNG"/>
+                <imagedata fileref="images/entity-911-building.png" format="PNG"/>
             </imageobject>
         </mediaobject>
         <para> 
@@ -176,7 +172,7 @@
         </para>
         <mediaobject>
             <imageobject>
-                <imagedata fileref="images/emergency-types.png" format="PNG"/>
+                <imagedata fileref="images/emergency-types.png" format="PNG" scalefit="1" scale="1" align="center"/>
             </imageobject>
         </mediaobject>
         <para>

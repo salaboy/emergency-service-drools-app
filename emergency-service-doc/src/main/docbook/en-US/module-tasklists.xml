@@ -21,36 +21,72 @@
     </section>
     <section>
         <title>Roles</title>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-control.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-doctor.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-firefighter.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-garage_emergency_service.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-operator.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/roles-policeman.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
+        <para>
+            When a user needs to know what needs to be worked on, he/she needs a screen that quickly shows a 
+            list of pending tasks.  This list will just contain a brief description (or an abstract) of the real task.  
+            It's just the minimum information required by the user to understand the task that is pending, without interacting 
+            or retrieving the full structure of the task.
+        </para>
+        <para>
+            A task list that is only a summarized view of the pending tasks allows the user to choose which tasks in the list 
+            to start working on first.  We can say that a task list is an entry point for the users to understand what they 
+            need to do.
+        </para>
+        <para>
+            This module is in charge of handling all the human interactions from the company and the external entities.  
+            This module will only interact with Human Task Component started by the Core module. Version 3 implements this 
+            module as a web application which all users can access in order to interact. Future versions will include different 
+            clients to demonstrate that the task can be completed from mobile devices.
+        </para>
+        <figure>
+            <title>Operators</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-operator.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        <figure>
+            <title>Emergency Experts</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-control.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        <figure>
+            <title>Doctors</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-doctor.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        <figure>
+            <title>Fire Fighters</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-firefighter.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        <figure>
+            <title>Dispatchers</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-garage_emergency_service.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+        
+        <figure>
+            <title>Police Officers</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/roles-policeman.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
         <para>
             
             

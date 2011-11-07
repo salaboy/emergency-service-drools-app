@@ -5,15 +5,33 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
     <title>Emergency Service Core</title>
-    <mediaobject>
-        <imageobject>
-            <imagedata fileref="images/module-core.png" format="PNG"/>
-        </imageobject>
-    </mediaobject>
-       
+    <figure>
+        <title>Core Module</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/module-core.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </figure>   
     <section>
         <title>Introduction</title>
-        <para> </para>
+        <para> 
+            The core module now contains all the glue to make everything work together. The core module is 
+            responsible for starting up all the services required for the other modules. For future releases, 
+            we will decouple all the functionality for each specific service in different modules. For the sake of 
+            simplicity, when we start the core module, we start the following sub components and services:
+        </para>
+        <itemizedlist>
+            <listitem>Distributed Cache</listitem>
+            <listitem>Graph Database</listitem>
+            <listitem>Human Task Component</listitem>
+            <listitem>Generic Emergency Procedure Service</listitem>
+        </itemizedlist>	
+        <para>
+        All these components are required by the other modules in order to work and the core module is in charge 
+        of starting them. For real scenarios, all these services will be completely decoupled and started 
+        separately by different roles.
+        </para>
     </section>
     <section>
         <title>Services</title>

@@ -10,7 +10,9 @@
     <section>
         <title>Main Features</title>
         <para>
-            
+            The sensor module was designed to plug real life devices that generate streams of information in real time. 
+            Using these devices, we simulate the stream of events coming from an ambulance that represents the patient´s 
+            vital signs that we want to monitor from the central offices or the fire truck’s water tanks status. 
         
         </para>
     </section>

@@ -6,11 +6,24 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
     <title>Emergency Service City Map</title>
    
-    <mediaobject>
-        <imageobject>
-            <imagedata fileref="images/module-citymap.png" format="PNG"/>
-        </imageobject>
-    </mediaobject>  
+    <section>
+        <title>Introduction</title>
+        <para>
+            This module is for demonstration purposes only. The City Map module allows us to interact 
+        with the external world as the Emergency Services company sees it. This module was created using a 
+        2D Library that allows us to render a city map and receive information from different inputs. The City 
+        Map represents our real world, and all the events generated inside the map are propagated to the Emergency 
+        Services central offices.
+        </para>
+    </section>
+    <figure>
+        <title>City Map</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/module-citymap.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </figure>
     <section>
         <title>Packages</title>
         <para>

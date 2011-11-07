@@ -17,6 +17,12 @@
             The following sections will introduce the most important entities described inside this module as well as some helpers 
             which were included here to keep the project structure simple.
         </para>
+        
+        <para>
+            The model module contains all the definitions and vocabulary that will be used across all the layers of the application. 
+            This module contains all the data structures that need to be persisted and all the other modules include this project 
+            as a dependency. 
+        </para>
     </section>
        
     <section>
