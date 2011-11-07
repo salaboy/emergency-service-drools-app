@@ -20,13 +20,6 @@
             <artifactId>emergency-service-model</artifactId>
         </dependency>
         
-         <!-- Context Tracking Dependency -->
-        <!--dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>emergency-service-tracking-context-component</artifactId>
-            <version>${project.version}</version>
-        </dependency-->
-
         <!-- Drools Dependencies -->
         
         <dependency>
@@ -55,10 +48,6 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-grid-impl</artifactId>
         </dependency>
-        <!--dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-spring</artifactId>
-        </dependency-->
 
         <!-- jBPM5 Dependencies -->
         <dependency>
@@ -233,9 +222,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                                <!-- mac osx for infinispan -->
-                        <argLine>-Djgroups.bind_addr=127.0.0.1</argLine>
-                        <argLine>-Djava.net.preferIPv4Stack=true</argLine>
+                         
+                         <!-- mac osx for rest neo4j server --> 
+                         
+                    <argLine>-DXmx2048m</argLine>
+                    <argLine>-DXms1024m</argLine>
+                    <argLine>-DXX:MaxPermSize=1024M</argLine>
+                         <!-- mac osx for infinispan -->
+      
+                    <argLine>-Djgroups.bind_addr=127.0.0.1</argLine>
+                    <argLine>-Djava.net.preferIPv4Stack=true</argLine>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,126 @@
+package procedure.mgmt.router;
+
+import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.services.*;
+import com.wordpress.salaboy.services.*;
+
+
+import java.util.Map;
+import com.wordpress.salaboy.messaging.*;
+import com.wordpress.salaboy.model.messages.*;
+import com.wordpress.salaboy.model.events.*;
+import com.wordpress.salaboy.model.persistence.*;
+import com.wordpress.salaboy.context.tracking.*;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider.PersistenceServiceType;
+
+
+
+
+
+rule "New Procedure Request Found"
+    when
+       $procedure: ProcedureRequest($name: procedureName, $emergencyId: emergencyId, $parameters: parameters)
+    then
+       System.out.println(" >> New Procedure Request =  "+ $procedure);
+       System.out.println(" >> Procedure Name =  "+ $name);     
+       System.out.println(" >> Emergency Id  =  "+ $emergencyId);     
+       System.out.println(" >> Parameters  =  "+ $parameters);     
+       System.out.println(" >> Let's create a Service  =  "   ); 
+       ProcedureService service = ProcedureServiceFactory.createProcedureService($emergencyId, $name, $parameters);
+       System.out.println(" >> Service  =  "+ service); 
+       insert(service);
+end
+
+
+rule "Route EmergencyEndsEvent Notification to Correspondant Service"
+    when 
+        $event: EmergencyEndsEvent()
+        $service: ProcedureService(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.procedureEndsNotification($event);
+        
+end
+
+rule "Route VehicleHitsEmergencyEvent Notification to DefaultHeartAttackProcedure Service"
+    when 
+        $event: VehicleHitsEmergencyEvent()
+        $service: DefaultHeartAttackProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.patientPickUpNotification($event);
+        
+end
+
+rule "Route VehicleHitsHospitalEvent Notification to DefaultHeartAttackProcedure Service"
+    when 
+        $event: VehicleHitsHospitalEvent()
+        $service: DefaultHeartAttackProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.patientAtHospitalNotification($event);
+        
+end
+
+rule "Route VehicleHitsEmergencyEvent Notification to DefaultFireProcedure Service"
+    when 
+        $event: VehicleHitsEmergencyEvent()
+        $service: DefaultFireProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.vehicleReachesEmergencyNotification($event);
+        
+end
+
+rule "Route FireTruckOutOfWaterEvent Notification to DefaultFireProcedure Service"
+    when 
+        $event: FireTruckOutOfWaterEvent()
+        $service: DefaultFireProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.fireTruckOutOfWaterNotification($event);
+        
+end
+
+rule "Route FireExtinctedEvent Notification to DefaultFireProcedure Service"
+    when 
+        $event: FireExtinctedEvent()
+        $service: DefaultFireProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.fireExtinctedNotification($event);
+        
+end
+
+rule "Route VehicleHitsFireDepartmentEvent Notification to DefaultFireProcedure Service"
+    when 
+        $event: VehicleHitsFireDepartmentEvent()
+        $service: DefaultFireProcedure(emergencyId == $event.emergencyId)
+        
+    then
+        System.out.println(">> Routing Event = "+$event);
+        System.out.println(">> To Service = "+$service);
+        $service.vehicleHitsFireDepartmentEventNotification($event);
+        
+end
+
+rule "No Service to Route Event"
+    when
+        $event: EmergencyEvent()
+        not(ProcedureService(emergencyId == $event.emergencyId))
+    then
+        System.out.println(">> Unable to ROUTE = "+$event +". There is no service to route it!");
+end
+

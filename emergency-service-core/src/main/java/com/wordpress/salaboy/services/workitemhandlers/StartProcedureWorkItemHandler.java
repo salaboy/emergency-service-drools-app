@@ -6,7 +6,7 @@ package com.wordpress.salaboy.services.workitemhandlers;
 
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTServiceImpl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class StartProcedureWorkItemHandler implements WorkItemHandler, Serializa
         parameters.put("call", call);
         parameters.put("emergency", emergency);
         try {
-            ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
+            ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(), procedureName, parameters);
         } catch (IOException ex) {
             Logger.getLogger(StartProcedureWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

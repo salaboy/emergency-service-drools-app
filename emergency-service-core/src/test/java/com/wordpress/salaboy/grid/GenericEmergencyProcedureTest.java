@@ -14,7 +14,7 @@ import com.wordpress.salaboy.model.persistence.PersistenceService;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.GenericEmergencyProcedureImpl;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTServiceImpl;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -108,7 +108,7 @@ public class GenericEmergencyProcedureTest extends GridBaseTest {
             public void handleMessage(AsyncProcedureStartMessage message) {
                 System.out.println(">>>>>>>>>>>Creating a new Procedure = " + message.getProcedureName());
                 try {
-                    ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                    ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
                 } catch (IOException ex) {
                     Logger.getLogger(GenericEmergencyProcedureTest.class.getName()).log(Level.SEVERE, null, ex);
                 }

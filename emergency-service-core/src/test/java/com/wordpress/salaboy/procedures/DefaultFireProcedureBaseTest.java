@@ -32,7 +32,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsEmergencyMessage;
 import com.wordpress.salaboy.model.persistence.PersistenceService;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTServiceImpl;
 import com.wordpress.salaboy.services.util.MessageToEventConverter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         HumanTaskServerService.getInstance().stopTaskServer();
         PersistenceServiceProvider.clear();
         ContextTrackingProvider.clear();
-        ProceduresMGMTService.clear();
+        ProceduresMGMTServiceImpl.clear();
     }
 
     @Test
@@ -135,7 +135,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         // Now the fire truck arrives to the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
                 emergency.getId(), new Date())));
 
@@ -158,7 +158,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertEquals(0, proceduresEndedCount);
 
         // Ok, no more fire!
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new FireExtinctedMessage(emergency.getId(), new Date())));
 
         Thread.sleep(5000);
@@ -185,7 +185,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         // Now the fire truck arrives to the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
                 emergency.getId(), new Date())));
 
@@ -205,7 +205,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         // Sudenly, the fire truck runs out of water
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                MessageToEventConverter.convertMessageToEvent( new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
                 new Date())));
 
@@ -230,7 +230,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         // The Fire Truck returns to the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(fireTruck.getId(),
                 emergency.getId(), new Date())));
 
@@ -251,7 +251,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertTrue(firefighterTasks.isEmpty());
 
         // Again, the fire truck runs out of water
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new FireTruckOutOfWaterMessage(emergency.getId(), fireTruck.getId(),
                 new Date())));
 
@@ -278,7 +278,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         Assert.assertEquals(0, proceduresEndedCount);
 
         // Ok, no more fire!
-        ProceduresMGMTService.getInstance().notifyProcedures(
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(
                 MessageToEventConverter.convertMessageToEvent(new FireExtinctedMessage(emergency.getId(), new Date())));
 
         Thread.sleep(5000);
@@ -293,7 +293,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         parameters.put("call", call);
         parameters.put("emergency", emergency);
         try {
-            ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(),
+            ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(),
                     "DefaultFireProcedure", parameters);
         } catch (IOException ex) {
             Logger.getLogger(DefaultFireProcedureBaseTest.class.getName()).log(Level.SEVERE, null, ex);

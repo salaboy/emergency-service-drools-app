@@ -25,5 +25,9 @@ public interface ProcedureService {
      * @param parameters
      */
     public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters);
+    
+    public String getProcedureId();
+    
+    public String getEmergencyId();
 
 }

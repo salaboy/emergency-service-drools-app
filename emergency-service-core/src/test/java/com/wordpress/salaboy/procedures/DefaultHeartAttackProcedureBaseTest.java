@@ -22,7 +22,7 @@ import com.wordpress.salaboy.model.messages.VehicleHitsHospitalMessage;
 import com.wordpress.salaboy.model.persistence.PersistenceService;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTServiceImpl;
 import com.wordpress.salaboy.services.util.MessageToEventConverter;
 import java.io.File;
 import java.util.*;
@@ -129,7 +129,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         }
         PersistenceServiceProvider.clear();
         ContextTrackingProvider.clear();
-        ProceduresMGMTService.clear();
+        ProceduresMGMTServiceImpl.clear();
         
     }
 
@@ -142,7 +142,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         parameters.put("emergency", emergency);
 
         assertEquals(0, persistenceService.getAllProcedures().size());
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
+        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
 
         Thread.sleep(5000);
         assertEquals(1, persistenceService.getAllProcedures().size());
@@ -155,7 +155,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The vehicle reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance1.getId(), emergency.getId(), new Date())));
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance1.getId(), emergency.getId(), new Date())));
 
         Thread.sleep(4000);
 
@@ -172,7 +172,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         assertEquals(0, proceduresEndedCount);
 
         //The vehicle reaches the hospital
-        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsHospitalMessage(ambulance1.getId(), new Hospital("Hospital A", 0, 0), emergency.getId(), new Date())));
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsHospitalMessage(ambulance1.getId(), new Hospital("Hospital A", 0, 0), emergency.getId(), new Date())));
 
         Thread.sleep(5000);
 
@@ -193,7 +193,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         vehicles.add(ambulance1);
         vehicles.add(ambulance2);
         assertEquals(0, persistenceService.getAllProcedures().size());
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
+        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(), "DefaultHeartAttackProcedure", parameters);
         Thread.sleep(5000);
         assertEquals(1, persistenceService.getAllProcedures().size());
 
@@ -201,7 +201,7 @@ public abstract class DefaultHeartAttackProcedureBaseTest extends GridBaseTest {
         Thread.sleep(5000);
 
         //The vehicle 2 reaches the emergency
-        ProceduresMGMTService.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance2.getId(), emergency.getId(), new Date())));
+        ProceduresMGMTServiceImpl.getInstance().notifyProcedures(MessageToEventConverter.convertMessageToEvent(new VehicleHitsEmergencyMessage(ambulance2.getId(), emergency.getId(), new Date())));
 
         Thread.sleep(4000);
 

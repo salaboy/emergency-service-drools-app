@@ -1,9 +1,8 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.services;
-
 
 import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.events.EmergencyEndsEvent;
@@ -29,19 +28,20 @@ import org.drools.runtime.process.ProcessInstance;
  *
  * @author salaboy
  */
-public class AdHocProcedureImpl implements AdHocProcedure{
+public class AdHocProcedureImpl implements AdHocProcedure {
 
     private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
+    private String procedureId;
 
     public AdHocProcedureImpl() {
         this.procedureName = "AdHocProcedure";
     }
 
     private StatefulKnowledgeSession createAdHocProcedureSession(String callId) throws IOException {
-       
-        
+
+
 //        Map<String, GridServiceDescription> coreServicesMap = new HashMap<String, GridServiceDescription>();
 //        GridServiceDescriptionImpl gsd = new GridServiceDescriptionImpl(WhitePages.class.getName());
 //        Address addr = gsd.addAddress("socket");
@@ -89,7 +89,7 @@ public class AdHocProcedureImpl implements AdHocProcedure{
 //        remoteN1.set("AdHocProcedureSession" + this.callId, session);
 //
 //        return session;
-        
+
         System.out.println("Starting Local Session because Remote takes to long!!!");
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(new ClassPathResource("processes/procedures/AdHocProcedure.bpmn"), ResourceType.BPMN2);
@@ -111,9 +111,10 @@ public class AdHocProcedureImpl implements AdHocProcedure{
         return ksession;
 
     }
-    
+
     @Override
     public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
+        this.procedureId = procedure.getId();
         this.emergencyId = emergencyId;
         try {
             internalSession = createAdHocProcedureSession(this.emergencyId);
@@ -123,16 +124,16 @@ public class AdHocProcedureImpl implements AdHocProcedure{
         setWorkItemHandlers(internalSession);
 
         new Thread(new Runnable() {
+
             public void run() {
                 internalSession.fireUntilHalt();
             }
         }).start();
         ProcessInstance pi = internalSession.startProcess("com.wordpress.salaboy.bpmn2.AdHocProcedure", parameters);
-        
+
         procedure.setProcessInstanceId(pi.getId());
     }
-    
-    
+
     private void setWorkItemHandlers(StatefulKnowledgeSession session) {
         session.getWorkItemManager().registerWorkItemHandler("Start Procedure", new AsyncStartProcedureWorkItemHandler());
     }
@@ -141,6 +142,17 @@ public class AdHocProcedureImpl implements AdHocProcedure{
     public void procedureEndsNotification(EmergencyEndsEvent event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
+
+    @Override
+    public String getProcedureId() {
+        if (this.procedureId == null && this.procedureId.equals("")) {
+            throw new IllegalStateException("Procedure Service wasn't configured, you must configure it first!");
+        }
+        return procedureId;
+    }
+
+    @Override
+    public String getEmergencyId() {
+        return this.emergencyId;
+    }
 }

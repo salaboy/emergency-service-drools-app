@@ -47,6 +47,7 @@ import org.drools.grid.service.directory.impl.GridServiceDescriptionImpl;
 import org.drools.grid.service.directory.impl.WhitePagesRemoteConfiguration;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
@@ -60,7 +61,7 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
     private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
-    
+    private String procedureId;
     private boolean useLocalKSession;
     private boolean logInFile;
 
@@ -137,6 +138,8 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
         if (!useLocalKSession){
             remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
+        }else{
+            KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
         }
         
         return session;
@@ -196,6 +199,19 @@ public class DefaultHeartAttackProcedureImpl implements DefaultHeartAttackProced
 
     public void setUseLocalKSession(boolean useLocalKSession) {
         this.useLocalKSession = useLocalKSession;
+    }
+
+    @Override
+    public String getProcedureId() {
+        if(this.procedureId == null && this.procedureId.equals("")){
+            throw new IllegalStateException("Procedure Service wasn't configured, you must configure it first!");
+        }
+        return procedureId;
+    }
+
+    @Override
+    public String getEmergencyId() {
+        return this.emergencyId;
     }
     
 }

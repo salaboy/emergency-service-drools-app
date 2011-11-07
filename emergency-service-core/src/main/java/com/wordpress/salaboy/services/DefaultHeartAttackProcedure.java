@@ -4,8 +4,8 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 import com.wordpress.salaboy.model.events.VehicleHitsEmergencyEvent;
+import com.wordpress.salaboy.model.events.VehicleHitsHospitalEvent;
 
 /**
  *

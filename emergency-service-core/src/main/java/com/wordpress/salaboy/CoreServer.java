@@ -204,7 +204,7 @@ public class CoreServer {
                 @Override
                 public void handleMessage(SelectedProcedureMessage selectedProcedureMessage) {
                     try {
-                        ProceduresMGMTService.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
+                        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(selectedProcedureMessage.getEmergencyId(),
                                 selectedProcedureMessage.getProcedureName(),
                                 selectedProcedureMessage.getParameters());
                     } catch (IOException ex) {
@@ -232,7 +232,7 @@ public class CoreServer {
                 public void handleMessage(VehicleHitsEmergencyMessage vehicleHitsEmergencyMessage) {
                     EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsEmergencyMessage);
                     vehicleHitEmergency.put(vehicleHitsEmergencyMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    ProceduresMGMTServiceImpl.getInstance().notifyProcedures(event);
                 }
             });
 
@@ -244,7 +244,7 @@ public class CoreServer {
                 public void handleMessage(VehicleHitsHospitalMessage vehicleHitsHospitalMessage) {
                     EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsHospitalMessage);
                     vehicleHitHospital.put(vehicleHitsHospitalMessage.getVehicleId(), Boolean.TRUE);
-                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    ProceduresMGMTServiceImpl.getInstance().notifyProcedures(event);
                     
                     //Notify VehicleMGMTService
                     VehiclesMGMTService.getInstance().vehicleRemoved(vehicleHitsHospitalMessage.getVehicleId());
@@ -256,7 +256,7 @@ public class CoreServer {
                 @Override
                 public void handleMessage(VehicleHitsFireDepartmentMessage vehicleHitsFireDepartmentMessage) {
                     EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(vehicleHitsFireDepartmentMessage);
-                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    ProceduresMGMTServiceImpl.getInstance().notifyProcedures(event);
                     VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
                 }
             }); 
@@ -315,7 +315,7 @@ public class CoreServer {
                 public void handleMessage(FireTruckOutOfWaterMessage message) {
                     EmergencyEvent event = MessageToEventConverter.convertMessageToEvent(message);
                     VehiclesMGMTService.getInstance().processEvent((EmergencyVehicleEvent)event);
-                    ProceduresMGMTService.getInstance().notifyProcedures(event);
+                    ProceduresMGMTServiceImpl.getInstance().notifyProcedures(event);
                 }
             });
 
@@ -333,7 +333,7 @@ public class CoreServer {
                 public void handleMessage(AsyncProcedureStartMessage message) {
                       System.out.println(">>>>>>>>>>>Creating a new Procedure = "+message.getProcedureName());
                     try {
-                        ProceduresMGMTService.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
+                        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(message.getEmergencyId(), message.getProcedureName(), message.getParameters());
                     } catch (IOException ex) {
                         Logger.getLogger(CoreServer.class.getName()).log(Level.SEVERE, null, ex);
                     }

@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.services;
 
@@ -55,9 +55,11 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
  * @author esteban
  */
 public class DefaultFireProcedureImpl implements DefaultFireProcedure {
+
     private String emergencyId;
     private StatefulKnowledgeSession internalSession;
     private String procedureName;
+    private String procedureId;
     private boolean useLocalKSession;
     private ProcessInstance processInstance;
 
@@ -66,9 +68,9 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     }
 
     private StatefulKnowledgeSession createDefaultFireProcedureSession(String emergencyId) throws IOException {
-        System.out.println(">>>> I'm creating the DefaultFireProcedure procedure for emergencyId = "+emergencyId);
+        System.out.println(">>>> I'm creating the DefaultFireProcedure procedure for emergencyId = " + emergencyId);
         GridNode remoteN1 = null;
-        
+
         KnowledgeBuilder kbuilder = null;
         KnowledgeBase kbase = null;
         if (useLocalKSession) {
@@ -103,7 +105,7 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
             KnowledgeBuilderConfiguration kbuilderConf = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilderConfiguration();
             kbuilderConf.setOption(AccumulateFunctionOption.get("firefighterDeparmtmentDistanceCalculator", new FirefighterDeparmtmentDistanceCalculator()));
             kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder(kbuilderConf);
-            
+
             KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
             kbaseConf.setOption(EventProcessingOption.STREAM);
             kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
@@ -111,11 +113,11 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/MultiVehicleProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
-        
+
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DefaultFireProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
-        
+
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/select_water_refill_destination.drl").getInputStream())), ResourceType.DRL);
-        
+
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("rules/defaultFireProcedureEventHandling.drl").getInputStream())), ResourceType.DRL);
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
@@ -130,10 +132,10 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        if (useLocalKSession){
+        if (useLocalKSession) {
             KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
         }
-        if (!useLocalKSession){
+        if (!useLocalKSession) {
             remoteN1.set("DefaultFireProcedureSession" + this.emergencyId, session);
         }
 
@@ -163,7 +165,8 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
     @Override
     public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
-	if (!parameters.containsKey("emergency")){
+        this.procedureId = procedure.getId();
+        if (!parameters.containsKey("emergency")) {
             throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
         }
 
@@ -176,22 +179,23 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
         setWorkItemHandlers(internalSession);
 
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 internalSession.fireUntilHalt();
             }
         }).start();
-        
+
         parameters.put("concreteProcedureId", this.procedureName);
         parameters.put("procedure", procedure);
-        
+
         internalSession.insert(parameters.get("emergency"));
         processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
-        
-        
+
+
         procedure.setProcessInstanceId(processInstance.getId());
     }
-    
+
     @Override
     public void procedureEndsNotification(EmergencyEndsEvent event) {
         internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
@@ -213,5 +217,18 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
     @Override
     public void vehicleHitsFireDepartmentEventNotification(VehicleHitsFireDepartmentEvent vehicleHitsFireDepartmentEvent) {
         internalSession.insert(vehicleHitsFireDepartmentEvent);
+    }
+
+    @Override
+    public String getProcedureId() {
+        if (this.procedureId == null && this.procedureId.equals("")) {
+            throw new IllegalStateException("Procedure Service wasn't configured, you must configure it first!");
+        }
+        return procedureId;
+    }
+
+    @Override
+    public String getEmergencyId() {
+        return this.emergencyId;
     }
 }

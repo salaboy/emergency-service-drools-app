@@ -32,7 +32,7 @@ import com.wordpress.salaboy.model.Location;
 import com.wordpress.salaboy.model.persistence.PersistenceService;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
-import com.wordpress.salaboy.services.ProceduresMGMTService;
+import com.wordpress.salaboy.services.ProceduresMGMTServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -135,7 +135,7 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("procedureName", "DumbProcedure");
 
 
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
+        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 
@@ -166,7 +166,7 @@ public class AdHocProcedureTest extends GridBaseTest {
         parameters.put("emergency", emergency);
         parameters.put("procedureName", "DumbProcedure");
         
-        ProceduresMGMTService.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
+        ProceduresMGMTServiceImpl.getInstance().newRequestedProcedure(emergency.getId(), "AdHocProcedure", parameters);
 
         Thread.sleep(5000);
 
