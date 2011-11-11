@@ -42,13 +42,13 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.context.tracking.json.QueryResult;
 import com.wordpress.salaboy.context.tracking.json.ResponseNode;
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
 import com.wordpress.salaboy.model.Procedure;
 import com.wordpress.salaboy.model.ServiceChannel;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.persistence.PersistenceService;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 

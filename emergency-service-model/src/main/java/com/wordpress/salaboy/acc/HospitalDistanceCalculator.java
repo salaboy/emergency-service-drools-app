@@ -6,7 +6,7 @@
 package com.wordpress.salaboy.acc;
 
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.buildings.Hospital;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;

@@ -6,7 +6,7 @@
 package com.wordpress.salaboy.acc;
 
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
 import java.io.Serializable;
 
 /**

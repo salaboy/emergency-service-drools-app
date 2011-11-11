@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.model;
+package com.wordpress.salaboy.model.vehicles;
 
 import java.io.Serializable;
 

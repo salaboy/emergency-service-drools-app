@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
-import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.geom.Polygon;
 

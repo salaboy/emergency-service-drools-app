@@ -1,9 +1,6 @@
 package com.wordpress.salaboy.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -11,19 +8,15 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Patient implements Serializable {
 
-    
     private String id;
     private int age;
     private String gender;
-    private List<Alert> alerts;
-  //  public static AtomicLong incrementalId = new AtomicLong();
-    
+
     public Patient() {
-        
     }
 
-    public Patient( int age, String gender) {
-      //  this.id = Patient.incrementalId.getAndIncrement();
+    public Patient(int age, String gender) {
+
         this.age = age;
         this.gender = gender;
     }
@@ -52,24 +45,9 @@ public class Patient implements Serializable {
         this.id = id;
     }
 
-    public void setAlerts(List<Alert> alerts) {
-        this.alerts = alerts;
+    @Override
+    public String toString() {
+        return "Patient{" + "id=" + id + ", age=" + age + ", gender=" + gender + '}';
     }
 
-    public List<Alert> getAlerts() {
-        if (alerts == null) {
-            alerts = new ArrayList<Alert>();
-        }
-        return alerts;
-    }
-
-    public void addAlert(Alert alert) {
-        getAlerts().add(alert);
-    }
-
-	@Override
-	public String toString() {
-		return "Patient " + id + " Age:" + age + " Gender " + gender;
-	}
 }
-

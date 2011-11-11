@@ -2,17 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.model;
+package com.wordpress.salaboy.model.buildings;
 
+import com.wordpress.salaboy.model.buildings.EntityBuilding;
 import java.util.ArrayList;
 import java.util.List;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
+import com.wordpress.salaboy.model.Patient;
 
 /**
  *
  * @author salaboy
  */
-public class Hospital implements EmergencyEntityBuilding {
+public class Hospital implements EntityBuilding {
 
     private String id;
     private int availableBeds;

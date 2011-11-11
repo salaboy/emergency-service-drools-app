@@ -4,6 +4,12 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick;
 
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
+import com.wordpress.salaboy.model.vehicles.PoliceCar;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
 import com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable.*;
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.*;

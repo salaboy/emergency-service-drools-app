@@ -7,9 +7,9 @@ package com.wordpress.salaboy.procedures;
 import com.wordpress.salaboy.api.HumanTaskService;
 import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import java.util.*;
 import junit.framework.Assert;
@@ -80,7 +80,7 @@ public class DefaultHeartAttackProcedureSmartTasksTest extends DefaultHeartAttac
 
         Map<String, Object> info = new HashMap<String, Object>();
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        Ambulance ambulance = new Ambulance("My Ambulance", new Date());
+        Ambulance ambulance = new Ambulance("My Ambulance");
         String ambulanceId = trackingService.newVehicleId();
         ambulance.setId(ambulanceId);
         vehicles.add(ambulance);

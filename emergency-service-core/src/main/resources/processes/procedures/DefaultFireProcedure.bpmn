@@ -14,7 +14,7 @@
 
   <itemDefinition id="_callItem" structureRef="com.wordpress.salaboy.model.Call" />
   <itemDefinition id="_emergencyItem" structureRef="com.wordpress.salaboy.model.Emergency" />
-  <itemDefinition id="_vehicleItem" structureRef="com.wordpress.salaboy.model.FireTruck" />
+  <itemDefinition id="_vehicleItem" structureRef="com.wordpress.salaboy.model.vehicles.FireTruck" />
   <itemDefinition id="_procedureIdItem" />
   <itemDefinition id="_emergency.severityItem" structureRef="Integer" />
   <itemDefinition id="_emergency.updatedNotesItem" structureRef="String" />

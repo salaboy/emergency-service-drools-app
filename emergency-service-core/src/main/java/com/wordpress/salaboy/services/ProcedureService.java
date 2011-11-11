@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 package com.wordpress.salaboy.services;
 
@@ -14,9 +14,8 @@ import java.util.Map;
  */
 public interface ProcedureService {
 
-    
     public void procedureEndsNotification(EmergencyEndsEvent event);
-    
+
     /**
      * Configuration method for the Procedure. 
      * @param emergencyId
@@ -25,9 +24,10 @@ public interface ProcedureService {
      * @param parameters
      */
     public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters);
-    
+
     public String getProcedureId();
-    
+
     public String getEmergencyId();
 
+    public String getProcedureName();
 }

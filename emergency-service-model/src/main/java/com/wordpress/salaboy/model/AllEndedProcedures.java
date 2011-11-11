@@ -11,6 +11,9 @@ import java.util.List;
 /**
  *
  * @author salaboy
+ * 
+ * @TODO: test if we can delete this and just use the AllProceduresEndedEvent class
+ * this class looks useless
  */
 public class AllEndedProcedures implements Serializable{
     

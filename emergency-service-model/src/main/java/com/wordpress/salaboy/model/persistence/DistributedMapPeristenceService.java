@@ -6,6 +6,9 @@ package com.wordpress.salaboy.model.persistence;
 
 
 
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.model.*;

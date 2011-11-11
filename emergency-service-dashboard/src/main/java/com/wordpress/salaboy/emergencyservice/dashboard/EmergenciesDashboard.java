@@ -15,7 +15,7 @@ import com.wordpress.salaboy.context.tracking.ContextTrackingService;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.buildings.Hospital;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;
 import com.wordpress.salaboy.model.persistence.PersistenceService;

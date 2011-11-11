@@ -5,7 +5,7 @@
 package com.wordpress.salaboy.emergencyservice.monitor;
 
 import com.wordpress.salaboy.messaging.MessageFactory;
-import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import java.awt.Color;
 import java.util.Date;

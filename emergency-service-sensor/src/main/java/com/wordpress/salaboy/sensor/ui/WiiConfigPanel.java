@@ -15,7 +15,7 @@ import com.intel.bluetooth.BlueCoveImpl;
 import com.wordpress.salaboy.model.CityEntities;
 import com.wordpress.salaboy.messaging.MessageConsumerWorker;
 import com.wordpress.salaboy.messaging.MessageConsumerWorkerHandler;
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
 import com.wordpress.salaboy.model.messages.patient.HeartBeatMessage;
 import com.wordpress.salaboy.sensor.SensorMessageProducer;
 import java.util.Collection;

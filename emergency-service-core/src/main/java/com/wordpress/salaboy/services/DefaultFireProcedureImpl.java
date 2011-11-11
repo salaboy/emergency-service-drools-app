@@ -22,13 +22,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBaseFactoryService;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeBuilderFactoryService;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.grid.ConnectionFactoryService;
@@ -53,21 +47,88 @@ import org.jbpm.task.service.hornetq.CommandBasedHornetQWSHumanTaskHandler;
 /**
  *
  * @author esteban
+ * @author salaboy
  */
-public class DefaultFireProcedureImpl implements DefaultFireProcedure {
+public class DefaultFireProcedureImpl extends AbstractProcedureService implements DefaultFireProcedure {
 
     private String emergencyId;
-    private StatefulKnowledgeSession internalSession;
-    private String procedureName;
     private String procedureId;
-    private boolean useLocalKSession;
     private ProcessInstance processInstance;
 
     public DefaultFireProcedureImpl() {
-        this.procedureName = "com.wordpress.salaboy.bpmn2.DefaultFireProcedure";
+        super("com.wordpress.salaboy.bpmn2.DefaultFireProcedure");
     }
 
-    private StatefulKnowledgeSession createDefaultFireProcedureSession(String emergencyId) throws IOException {
+    @Override
+    public void vehicleReachesEmergencyNotification(VehicleHitsEmergencyEvent event) {
+        internalSession.insert(event);
+    }
+
+    @Override
+    public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
+        //@TODO: add proper log
+        System.out.println(">>>>>>>> Inserting FireTruckOutOfWaterEvent ");
+        internalSession.insert(event);
+    }
+
+    @Override
+    public void fireExtinctedNotification(FireExtinctedEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireExtinctedEvent", event);
+    }
+
+    @Override
+    public void vehicleHitsFireDepartmentEventNotification(VehicleHitsFireDepartmentEvent vehicleHitsFireDepartmentEvent) {
+        internalSession.insert(vehicleHitsFireDepartmentEvent);
+    }
+
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+        internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
+    }
+
+    @Override
+    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
+        if (!parameters.containsKey("emergency")) {
+            throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
+        }
+
+        this.emergencyId = emergencyId;
+        this.procedureId = procedure.getId();
+
+        try {
+            internalSession = createDefaultFireProcedureKnowledgeContext(this.emergencyId);
+        } catch (IOException ex) {
+            Logger.getLogger(DefaultFireProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        setWorkItemHandlers(internalSession);
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                internalSession.fireUntilHalt();
+            }
+        }).start();
+
+        parameters.put("concreteProcedureId", this.procedureName);
+        parameters.put("procedure", procedure);
+
+        internalSession.insert(parameters.get("emergency"));
+        processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
+
+
+        procedure.setProcessInstanceId(processInstance.getId());
+    }
+
+    private void setWorkItemHandlers(StatefulKnowledgeSession session) {
+        session.getWorkItemManager().registerWorkItemHandler("Report", new ProcedureReportWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicle", new DispatchVehicleWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("NotifyEndOfProcedure", new NotifyEndOfProcedureWorkItemHandler());
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
+
+    }
+
+    private StatefulKnowledgeSession createDefaultFireProcedureKnowledgeContext(String emergencyId) throws IOException {
         System.out.println(">>>> I'm creating the DefaultFireProcedure procedure for emergencyId = " + emergencyId);
         GridNode remoteN1 = null;
 
@@ -141,82 +202,6 @@ public class DefaultFireProcedureImpl implements DefaultFireProcedure {
 
         return session;
 
-    }
-
-    private void setWorkItemHandlers(StatefulKnowledgeSession session) {
-        session.getWorkItemManager().registerWorkItemHandler("Report", new ProcedureReportWorkItemHandler());
-        session.getWorkItemManager().registerWorkItemHandler("DispatchSelectedVehicle", new DispatchVehicleWorkItemHandler());
-        session.getWorkItemManager().registerWorkItemHandler("NotifyEndOfProcedure", new NotifyEndOfProcedureWorkItemHandler());
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedHornetQWSHumanTaskHandler(session));
-
-    }
-
-    @Override
-    public void vehicleReachesEmergencyNotification(VehicleHitsEmergencyEvent event) {
-        internalSession.insert(event);
-    }
-
-    @Override
-    public void fireTruckOutOfWaterNotification(FireTruckOutOfWaterEvent event) {
-        //we need the event as a fact in order to make inference.
-        System.out.println(">>>>>>>> Inserting FireTruckOutOfWaterEvent ");
-        internalSession.insert(event);
-    }
-
-    @Override
-    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
-        this.procedureId = procedure.getId();
-        if (!parameters.containsKey("emergency")) {
-            throw new IllegalStateException("Trying to start DefaultFireProcedure wihtout passing an Emergency!");
-        }
-
-        this.emergencyId = emergencyId;
-        try {
-            internalSession = createDefaultFireProcedureSession(this.emergencyId);
-        } catch (IOException ex) {
-            Logger.getLogger(DefaultFireProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        setWorkItemHandlers(internalSession);
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                internalSession.fireUntilHalt();
-            }
-        }).start();
-
-        parameters.put("concreteProcedureId", this.procedureName);
-        parameters.put("procedure", procedure);
-
-        internalSession.insert(parameters.get("emergency"));
-        processInstance = internalSession.startProcess("com.wordpress.salaboy.bpmn2.MultiVehicleProcedure", parameters);
-
-
-        procedure.setProcessInstanceId(processInstance.getId());
-    }
-
-    @Override
-    public void procedureEndsNotification(EmergencyEndsEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.EmergencyEndsEvent", event);
-    }
-
-    public boolean isUseLocalKSession() {
-        return useLocalKSession;
-    }
-
-    public void setUseLocalKSession(boolean useLocalKSession) {
-        this.useLocalKSession = useLocalKSession;
-    }
-
-    @Override
-    public void fireExtinctedNotification(FireExtinctedEvent event) {
-        internalSession.signalEvent("com.wordpress.salaboy.model.events.FireExtinctedEvent", event);
-    }
-
-    @Override
-    public void vehicleHitsFireDepartmentEventNotification(VehicleHitsFireDepartmentEvent vehicleHitsFireDepartmentEvent) {
-        internalSession.insert(vehicleHitsFireDepartmentEvent);
     }
 
     @Override

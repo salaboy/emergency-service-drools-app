@@ -20,7 +20,6 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.*;
-import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.grid.ConnectionFactoryService;
 import org.drools.grid.GridConnection;
@@ -43,27 +42,58 @@ import org.drools.runtime.StatefulKnowledgeSession;
  *
  * @author salaboy
  */
-public class DumbProcedureImpl implements DumbProcedure {
+public class DumbProcedureImpl extends AbstractProcedureService implements DumbProcedure {
 
-    private String id;
     private String emergencyId;
-    private StatefulKnowledgeSession internalSession;
-    private String procedureName;
     private String procedureId;
-    private boolean useLocalKSession = true;
     public DumbProcedureImpl() {
-        this.procedureName = "DumbProcedure";
+        super("DumbProcedure");
     }
 
-    private StatefulKnowledgeSession createDumbProcedureSession(String emergencyId) throws IOException {
-        System.out.println(">>>> I'm creating the " + "DumbProcedure" + " procedure for emergencyId = " + emergencyId);
-        GridNode remoteN1 = null;
+    @Override
+    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
+        this.emergencyId = emergencyId;
+        this.procedureId = procedure.getId();
+        try {
+            internalSession = createDumbProcedureKnowledgeContext(this.emergencyId);
+        } catch (IOException ex) {
+            Logger.getLogger(DumbProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+        new Thread(new Runnable() {
+
+            public void run() {
+                internalSession.fireUntilHalt();
+            }
+        }).start();
+
+        internalSession.startProcess("com.wordpress.salaboy.bpmn2.DumbProcedure", parameters);
+    }
+
+    @Override
+    public void procedureEndsNotification(EmergencyEndsEvent event) {
+        // Do Nothing, this is a Dumb Process
+    }
+
+    @Override
+    public String getProcedureId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getEmergencyId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private StatefulKnowledgeSession createDumbProcedureKnowledgeContext(String emergencyId) throws IOException {
+        //Add Propper Logging
+        System.out.println(">>>> I'm creating the " + "DumbProcedure" + " procedure for emergencyId = " + emergencyId);
+
+        GridNode remoteN1 = null;
         KnowledgeBuilder kbuilder = null;
         KnowledgeBase kbase = null;
-        
+
         if (useLocalKSession) {
-            
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kbaseConf.setOption(EventProcessingOption.STREAM);
@@ -89,10 +119,8 @@ public class DumbProcedureImpl implements DumbProcedure {
             GridServiceDescription<GridNode> n1Gsd = grid.get(WhitePages.class).lookup("n1");
             GridConnection<GridNode> conn = grid.get(ConnectionFactoryService.class).createConnection(n1Gsd);
             remoteN1 = conn.connect();
-            
-            
             kbuilder = remoteN1.get(KnowledgeBuilderFactoryService.class).newKnowledgeBuilder();
-            
+
             KnowledgeBaseConfiguration kbaseConf = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBaseConfiguration();
             kbaseConf.setOption(EventProcessingOption.STREAM);
             kbase = remoteN1.get(KnowledgeBaseFactoryService.class).newKnowledgeBase(kbaseConf);
@@ -100,7 +128,6 @@ public class DumbProcedureImpl implements DumbProcedure {
         }
 
         kbuilder.add(new ByteArrayResource(IOUtils.toByteArray(new ClassPathResource("processes/procedures/DumbProcedure.bpmn").getInputStream())), ResourceType.BPMN2);
-
 
 
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
@@ -112,66 +139,20 @@ public class DumbProcedureImpl implements DumbProcedure {
             throw new IllegalStateException("Failed to parse knowledge!");
         }
 
-        
+
 
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-       
+
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        if (!useLocalKSession){
-            remoteN1.set("DefaultHeartAttackProcedureSession" + emergencyId, session);
-        }else{
+
+        if (useLocalKSession) {
             KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
         }
-        
+
+        if (!useLocalKSession) {
+            remoteN1.set("DumbProcedureSession" + emergencyId, session);
+        }
 
         return session;
-
-
-    }
-
-    @Override
-    public void procedureEndsNotification(EmergencyEndsEvent event) {
-        System.out.println("DUMB PROCEDURE ENDED BY ENDS NOTIFICATIONS!!!!");
-    }
-
-    @Override
-    public void configure(String emergencyId, Procedure procedure, Map<String, Object> parameters) {
-        this.emergencyId = emergencyId;
-        procedureId = procedure.getId();
-        try {
-            internalSession = createDumbProcedureSession(this.emergencyId);
-        } catch (IOException ex) {
-            Logger.getLogger(DumbProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        new Thread(new Runnable() {
-
-            public void run() {
-                internalSession.fireUntilHalt();
-            }
-        }).start();
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^Starting DUMB PROCEDURE");
-        internalSession.startProcess("com.wordpress.salaboy.bpmn2.DumbProcedure", parameters);
-    }
-
-    @Override
-    public String getProcedureId() {
-        if (this.procedureId == null && this.procedureId.equals("")) {
-            throw new IllegalStateException("Procedure Service wasn't configured, you must configure it first!");
-        }
-        return procedureId;
-    }
-    
-    public boolean isUseLocalKSession() {
-        return useLocalKSession;
-    }
-
-    public void setUseLocalKSession(boolean useLocalKSession) {
-        this.useLocalKSession = useLocalKSession;
-    }
-
-    @Override
-    public String getEmergencyId() {
-        return this.emergencyId;
     }
 }

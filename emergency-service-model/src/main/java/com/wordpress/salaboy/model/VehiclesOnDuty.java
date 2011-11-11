@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.model;
 
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import java.io.Serializable;
 import java.util.List;
 

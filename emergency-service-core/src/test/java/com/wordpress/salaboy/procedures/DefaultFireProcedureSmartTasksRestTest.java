@@ -18,7 +18,7 @@ import com.wordpress.salaboy.api.HumanTaskServiceFactory;
 import com.wordpress.salaboy.conf.HumanTaskServiceConfiguration;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.smarttasks.jbpm5wrapper.conf.JBPM5HornetQHumanTaskClientConfiguration;
 import org.neo4j.server.WrappingNeoServerBootstrapper;
@@ -29,7 +29,9 @@ import org.neo4j.test.ImpermanentGraphDatabase;
 /**
  *
  * @author salaboy
- * @author demianc
+ * @author demianc'
+ * 
+ * @TODO: This test is causing OutOfMemoryException in OSX
  */
 public class DefaultFireProcedureSmartTasksRestTest extends DefaultFireProcedureBaseTest {
 

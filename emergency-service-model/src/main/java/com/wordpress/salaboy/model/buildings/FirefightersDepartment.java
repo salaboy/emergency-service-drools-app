@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.wordpress.salaboy.model;
+package com.wordpress.salaboy.model.buildings;
 
 /**
  *
  * @author salaboy
  */
-public class FirefightersDepartment implements EmergencyEntityBuilding {
+public class FirefightersDepartment implements EntityBuilding {
     private String id;
     private String name;
     private int x;

@@ -8,7 +8,7 @@ package com.wordpress.salaboy.procedures;
 
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 import java.io.ByteArrayInputStream;

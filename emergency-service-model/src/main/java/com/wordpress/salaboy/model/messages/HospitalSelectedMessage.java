@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy.model.messages;
 
-import com.wordpress.salaboy.model.Hospital;
+import com.wordpress.salaboy.model.buildings.Hospital;
 import java.io.Serializable;
 
 /**

@@ -1,4 +1,4 @@
-package com.wordpress.salaboy.model;
+package com.wordpress.salaboy.model.vehicles;
 
 import java.util.Date;
 

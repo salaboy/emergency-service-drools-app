@@ -26,7 +26,7 @@
      <tns:import name="com.wordpress.salaboy.model.Call" />
      <tns:import name="org.jbpm.workflow.instance.node.WorkItemNodeInstance" />
      <tns:import name="com.wordpress.salaboy.model.Emergency" />
-     <tns:import name="com.wordpress.salaboy.model.Vehicle" />
+     <tns:import name="com.wordpress.salaboy.model.vehicles.Vehicle" />
      <tns:import name="com.wordpress.salaboy.model.VehicleUpdate" />
      <tns:import name="com.wordpress.salaboy.model.persistence.*" />
      <tns:import name="com.wordpress.salaboy.context.tracking.*" />
@@ -198,7 +198,7 @@ newProcedure.setProcessInstanceId(pi.getId());
 persistenceService.storeProcedure(newProcedure);
 
 //the vehicle is attached to the created procedure
- trackingService.attachVehicle(newProcedure.getId(),((com.wordpress.salaboy.model.Vehicle)vehicle).getId()); 
+ trackingService.attachVehicle(newProcedure.getId(),((com.wordpress.salaboy.model.vehicles.Vehicle)vehicle).getId()); 
  
 //the created procedure is attached to the parent procedure (this)
 trackingService.attachProcedures(procedure.getId(), newProcedure.getId());

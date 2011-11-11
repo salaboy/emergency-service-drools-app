@@ -5,7 +5,7 @@
 
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
-import com.wordpress.salaboy.model.FireTruck;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.geom.Polygon;
 

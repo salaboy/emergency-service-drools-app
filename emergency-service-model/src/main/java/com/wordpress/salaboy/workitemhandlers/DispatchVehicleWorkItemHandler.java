@@ -6,7 +6,7 @@ package com.wordpress.salaboy.workitemhandlers;
 
 import com.wordpress.salaboy.messaging.MessageFactory;
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.messages.VehicleDispatchedMessage;
 import java.util.logging.Level;
 import java.util.logging.Logger;

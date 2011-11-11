@@ -2,7 +2,7 @@ package hospitalselectionrules;
 
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Call;
-import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.buildings.*;
 import com.wordpress.salaboy.model.Location;
 
 import com.wordpress.salaboy.model.events.FireTruckOutOfWaterEvent;

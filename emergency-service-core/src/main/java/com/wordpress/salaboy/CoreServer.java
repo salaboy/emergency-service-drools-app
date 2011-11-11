@@ -4,6 +4,9 @@
  */
 package com.wordpress.salaboy;
 
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

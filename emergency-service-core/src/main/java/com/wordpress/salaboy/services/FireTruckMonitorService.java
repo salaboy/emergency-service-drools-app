@@ -4,8 +4,8 @@
  */
 package com.wordpress.salaboy.services;
 
-import com.wordpress.salaboy.model.FireTruck;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.events.EmergencyVehicleEvent;
 import com.wordpress.salaboy.model.events.FireTruckDecreaseWaterLevelEvent;
 import com.wordpress.salaboy.model.events.FireTruckWaterRefilledEvent;

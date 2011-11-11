@@ -8,7 +8,10 @@ import java.util.Date;
 
 /**
  *
- * @author salaboy
+ * @author salaboy 
+ * 
+ * This entity represent a new Emergency Call
+ * 
  */
 public class Call implements Serializable {
 
@@ -16,7 +19,6 @@ public class Call implements Serializable {
     private Date date;
     private Long processId;
     private String phoneNumber;
-    
     private int x; //location detected from the phonenumber :)
     private int y; //location detected from the phonenumber :)
     private String time;
@@ -24,7 +26,6 @@ public class Call implements Serializable {
     private boolean processed = false;
 
     public Call() {
-    
     }
 
     public Call(int x, int y, Date date) {
@@ -117,6 +118,6 @@ public class Call implements Serializable {
 
     @Override
     public String toString() {
-        return "Call{" + "id=" + id + ", date=" + date + ", processId=" + processId + ", phoneNumber=" + phoneNumber + ", x=" + x + ", y=" + y + ", time=" + time + ", calendar=" + calendar + ", processed=" + processed + '}';
+        return "Call{" + "id=" + id + ", date=" + date + ", processId=" + processId + ", phoneNumber=" + phoneNumber + ", x=" + x + ", y=" + y + ", time=" + time + ", processed=" + processed + '}';
     }
 }

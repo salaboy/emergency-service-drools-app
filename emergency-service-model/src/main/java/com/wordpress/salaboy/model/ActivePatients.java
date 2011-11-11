@@ -11,6 +11,13 @@ import java.util.List;
 /**
  *
  * @author salaboy
+ * 
+ * This class contains a reference to all the active 
+ * patients related with an emergency.
+ * 
+ * This entity is being used in the Procedure Suggestion Rules (procedureSuggestions.drl)
+ * and inside the GenericEmergencyProcedure.bpmn
+ * 
  */
 public class ActivePatients implements Serializable {
     

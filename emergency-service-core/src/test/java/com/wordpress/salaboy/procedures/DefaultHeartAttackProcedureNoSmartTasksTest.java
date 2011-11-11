@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.wordpress.salaboy.model.Emergency;
-import com.wordpress.salaboy.model.Vehicle;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.services.HumanTaskServerService;
 
 

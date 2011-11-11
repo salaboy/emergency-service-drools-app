@@ -4,6 +4,7 @@ package com.wordpress.salaboy.procedures;
 import java.util.Map;
 import java.util.HashMap;
 import com.wordpress.salaboy.model.*;
+import com.wordpress.salaboy.model.vehicles.*;
 import com.wordpress.salaboy.model.events.*;
 import com.wordpress.salaboy.model.Emergency.EmergencyType;
 import com.wordpress.salaboy.model.persistence.*;

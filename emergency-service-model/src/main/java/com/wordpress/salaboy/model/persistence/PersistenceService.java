@@ -4,6 +4,9 @@
  */
 package com.wordpress.salaboy.model.persistence;
 
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
 import com.wordpress.salaboy.model.*;
 import com.wordpress.salaboy.reporting.Report;
 import java.util.Collection;

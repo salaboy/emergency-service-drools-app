@@ -4,7 +4,7 @@
  */
 package com.wordpress.salaboy.model.messages;
 
-import com.wordpress.salaboy.model.FirefightersDepartment;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
 import java.io.Serializable;
 import java.util.Date;
 

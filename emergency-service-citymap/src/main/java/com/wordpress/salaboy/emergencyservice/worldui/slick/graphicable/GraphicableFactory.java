@@ -4,6 +4,13 @@
  */
 package com.wordpress.salaboy.emergencyservice.worldui.slick.graphicable;
 
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.buildings.FirefightersDepartment;
+import com.wordpress.salaboy.model.buildings.EntityBuilding;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
+import com.wordpress.salaboy.model.vehicles.PoliceCar;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
+import com.wordpress.salaboy.model.vehicles.FireTruck;
 import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
 import com.wordpress.salaboy.model.*;
 import org.newdawn.slick.Animation;
@@ -36,7 +43,7 @@ public class GraphicableFactory {
         GraphicableAmbulance graphAmbulance = new GraphicableAmbulance(ambulance);
 
         Animation myAmbulance = AnimationFactory.getAmbulanceAnimation().copy();
-        EmergencyEntityBuilding central = CityEntities.buildings.get("911");
+        EntityBuilding central = CityEntities.buildings.get("911");
         Polygon myPolygon = new Polygon(new float[]{
                     (central.getX() * 16), central.getY() * 16,
                     (central.getX() * 16) + 28, (central.getY() * 16),
@@ -53,7 +60,7 @@ public class GraphicableFactory {
         GraphicableFireTruck graphFireTruck = new GraphicableFireTruck(fireTruck);
 
         Animation myFireTruck = AnimationFactory.getFireTruckAnimation().copy();
-        EmergencyEntityBuilding firefighters = CityEntities.buildings.get("Firefighters Department");
+        EntityBuilding firefighters = CityEntities.buildings.get("Firefighters Department");
         Polygon myPolygon = new Polygon(new float[]{
                     firefighters.getX() * 16, firefighters.getY() * 16,
                     (firefighters.getX() * 16) + 28, (firefighters.getY() * 16),
@@ -70,7 +77,7 @@ public class GraphicableFactory {
         GraphicablePoliceCar graphPoliceCar = new GraphicablePoliceCar(policeCar);
 
         Animation myPoliceCar = AnimationFactory.getPoliceCarAnimation().copy();
-        EmergencyEntityBuilding policeDepartment = CityEntities.buildings.get("Police Department");
+        EntityBuilding policeDepartment = CityEntities.buildings.get("Police Department");
         Polygon myPolygon = new Polygon(new float[]{
                     policeDepartment.getX() * 16, policeDepartment.getY() * 16,
                     (policeDepartment.getX() * 16) + 28, (policeDepartment.getY() * 16),

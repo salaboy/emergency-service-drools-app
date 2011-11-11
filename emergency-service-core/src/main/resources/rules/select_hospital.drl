@@ -3,8 +3,8 @@ package hospitalselectionrules;
 import com.wordpress.salaboy.model.Emergency;
 import com.wordpress.salaboy.model.Call;
 import com.wordpress.salaboy.model.Patient;
-import com.wordpress.salaboy.model.Hospital;
-import com.wordpress.salaboy.model.Ambulance;
+import com.wordpress.salaboy.model.buildings.Hospital;
+import com.wordpress.salaboy.model.vehicles.Ambulance;
 
 import com.wordpress.salaboy.acc.HospitalDistanceCalculationData;
 
