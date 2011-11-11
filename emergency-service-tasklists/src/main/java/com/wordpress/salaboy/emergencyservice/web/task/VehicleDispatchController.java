@@ -1,17 +1,18 @@
 package com.wordpress.salaboy.emergencyservice.web.task;
 
 
+
+
+import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
+import com.wordpress.salaboy.model.persistence.PersistenceService;
+import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
+import com.wordpress.salaboy.model.vehicles.Vehicle;
+import java.util.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.wordpress.salaboy.context.tracking.ContextTrackingProvider;
-import com.wordpress.salaboy.model.Vehicle;
-import com.wordpress.salaboy.model.persistence.PersistenceService;
-import com.wordpress.salaboy.model.persistence.PersistenceServiceProvider;
-import java.util.*;
 
 /**
  * Controller to handle selection of vehicle task.
