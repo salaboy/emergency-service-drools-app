@@ -1,0 +1,149 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.wordpress.salaboy</groupId>
+    <artifactId>hospital-service</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>hospital-service</name>
+    <url>http://maven.apache.org</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-aar-maven-plugin</artifactId>
+                <version>1.6.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <aarName>HospitalService</aarName>
+                    
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-aar1</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>aar</goal>
+                        </goals>
+                        <configuration>
+                            <aarName>
+                                HospitalService
+                            </aarName>
+                            <servicesXmlFile>
+                                ${basedir}/src/main/resources/META-INF/services.xml
+                            </servicesXmlFile>
+                            <includeDependencies>true</includeDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            
+        </plugins>
+    </build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+  
+  
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>knowledge-api</artifactId>
+            <!--version>5.1.1</version-->
+            <version>5.4.0-SNAPSHOT</version>
+            <!--version>5.3.0.Final</version-->
+        </dependency>
+    
+       
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <!--version>5.1.1</version-->
+            <version>5.4.0-SNAPSHOT</version>
+            <!--version>5.3.0.Final</version-->
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <!--version>5.1.1</version-->
+            <version>5.4.0-SNAPSHOT</version>
+           <!--version>5.3.0.Final</version-->
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow</artifactId>
+           
+            <version>5.2.0-SNAPSHOT</version>
+           
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow-builder</artifactId>
+            
+            <version>5.2.0-SNAPSHOT</version>
+           
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
+           
+            <version>5.2.0-SNAPSHOT</version>
+           
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task</artifactId>
+            <version>5.2.0-SNAPSHOT</version>
+           
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.161</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <name>jboss</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+  
+</project>

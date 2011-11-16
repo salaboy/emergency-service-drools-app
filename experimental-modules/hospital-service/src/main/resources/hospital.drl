@@ -1,0 +1,23 @@
+package test;
+
+import com.wordpress.salaboy.hospital.*;
+
+query "getAvailableBeds" ()
+    Hospital($availableBeds: availableBeds )
+end
+
+rule "request bed"
+    no-loop
+    when
+        $hospital: Hospital()
+        $bedRequest: RequestBed()
+    then
+
+        $hospital.setAvailableBeds($hospital.getAvailableBeds()-1);
+        update($hospital);
+        System.out.println("Requesting a bed!");    
+        kcontext.getKnowledgeRuntime().startProcess("NewPatientCheckIn", null);
+        System.out.println("Getting ready for recieving a new patient");
+end
+
+

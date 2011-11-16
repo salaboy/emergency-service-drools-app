@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceGroup>
+    <service name="HospitalService" scope="application">
+        <parameter
+                locked="true"
+                name="ServiceClass">com.wordpress.salaboy.hospital.HospitalServiceImpl</parameter>
+        <!--All public methods of the service class are exposed by default-->
+        <parameter name="EnableChildFirstClassLoading">true</parameter>
+        
+    </service>
+</serviceGroup>
