@@ -20,4 +20,13 @@ rule "request bed"
         System.out.println("Getting ready for recieving a new patient");
 end
 
+rule "assign bed"
+    no-loop
+    ruleflow-group "assign-bed"
+    when
+        
+    then
+        System.out.println("Assigning a bed...");
+end
+
 

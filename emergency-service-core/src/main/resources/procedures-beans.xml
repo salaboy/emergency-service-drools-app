@@ -8,14 +8,14 @@
     <bean id="DefaultHeartAttackProcedure" class="com.wordpress.salaboy.services.DefaultHeartAttackProcedureImpl" scope="prototype">
         <property name="useLocalKSession" value="false"/>
     </bean>
-    <bean id="AdHocProcedure" class="com.wordpress.salaboy.services.AdHocProcedureImpl" scope="prototype"/>
-    <bean id="DumbProcedure" class="com.wordpress.salaboy.services.DumbProcedureImpl" scope="prototype"/>
-       
-       
-       
-       
+    <bean id="AdHocProcedure" class="com.wordpress.salaboy.services.AdHocProcedureImpl" scope="prototype">
+        <property name="useLocalKSession" value="false"/>
+    </bean>
+    <bean id="DumbProcedure" class="com.wordpress.salaboy.services.DumbProcedureImpl" scope="prototype">
+        <property name="useLocalKSession" value="false"/>
+    </bean> 
     <bean id="DefaultFireProcedure" class="com.wordpress.salaboy.services.DefaultFireProcedureImpl" scope="prototype">
-        <property name="useLocalKSession" value="true"/>
+        <property name="useLocalKSession" value="false"/>
     </bean>
     
 </beans>                              

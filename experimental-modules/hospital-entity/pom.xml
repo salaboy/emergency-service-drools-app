@@ -147,6 +147,13 @@
             <artifactId>emergency-service-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!-- commented due to jbpm-testing-framework is not yet available on maven repos 
+        <dependency>
+        	<groupId>org.jbpm</groupId>
+        	<artifactId>jbpm-testing-framework</artifactId>
+        	<version>5.2.0-SNAPSHOT</version>
+        </dependency>
+        -->
     </dependencies>
     
     
@@ -156,7 +163,7 @@
             <name>jboss</name>
             <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
-        
+
          <repository>
             <id>PlugTree</id>
             <name>PlugTree-Snapshots-CloudBees</name>
