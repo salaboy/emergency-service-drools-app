@@ -5,11 +5,11 @@
     <parent>
         <artifactId>emergency-service</artifactId>
         <groupId>com.wordpress.salaboy.emergencyservice</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.4-SNAPSHOT</version>
     </parent>
     <groupId>com.wordpress.salaboy.emergencyservice</groupId>
     <artifactId>emergency-service-sensor</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
     <name>Emergency Service - Sensor</name>
     <url>http://maven.apache.org</url>
     
