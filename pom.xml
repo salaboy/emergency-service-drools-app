@@ -24,6 +24,7 @@
         <module>emergency-service-sensor</module>
         <module>emergency-service-doc</module>
         <module>emergency-service-dashboard</module>
+        <module>experimental-modules/hospital-entity</module>
         <module>run</module>
     </modules>
 

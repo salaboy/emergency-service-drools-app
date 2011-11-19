@@ -4,11 +4,15 @@
  */
 package com.wordpress.salaboy.model.roles;
 
+import java.io.Serializable;
+
 /**
  *
  * @author salaboy
  */
-public interface Role {
+public interface Role extends Serializable{
     public String getId();
     public String getName();
+    public String getStringId();
+    public void setStringId(String stringId);
 }

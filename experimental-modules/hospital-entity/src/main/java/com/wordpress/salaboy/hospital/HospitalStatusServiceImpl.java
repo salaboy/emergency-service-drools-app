@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.hospital;
 
+import com.wordpress.salaboy.model.roles.Role;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -37,7 +38,7 @@ import org.mvel2.compiler.ExpressionCompiler;
  *
  * @author salaboy
  */
-public class HospitalServiceImpl implements HospitalService {
+public class HospitalStatusServiceImpl implements HospitalStatusService {
 
     private StatefulKnowledgeSession ksession;
     public static final List updated = new ArrayList();
@@ -45,6 +46,7 @@ public class HospitalServiceImpl implements HospitalService {
     public static final List added = new ArrayList();
     protected EntityManagerFactory emf;
     protected Map<String, User> users;
+    protected Map<String, Role> roles;
     protected Map<String, Group> groups;
     protected TaskService taskService;
     protected TaskServiceSession taskSession;
@@ -53,7 +55,7 @@ public class HospitalServiceImpl implements HospitalService {
         return Persistence.createEntityManagerFactory("org.jbpm.task");
     }
 
-    public HospitalServiceImpl() {
+    public HospitalStatusServiceImpl() {
         System.out.println("Creating new Hospital Service! " + System.currentTimeMillis());
         createKnowledgeBasedHospital();
     }
@@ -89,12 +91,14 @@ public class HospitalServiceImpl implements HospitalService {
 
 
         ksession = kbase.newStatefulKnowledgeSession();
-        
+
         initTaskService();
-        
+
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SyncWSHumanTaskHandler(
                 new LocalTaskService(taskSession), ksession));
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+
+        initRoles();
 
         new Thread() {
 
@@ -141,7 +145,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         taskSession = taskService.createSession();
-        
+
         loadUsersAndGroups(taskService);
     }
 
@@ -156,8 +160,7 @@ public class HospitalServiceImpl implements HospitalService {
         return 0;
 
     }
-    
-    
+
     private void loadUsersAndGroups(TaskService taskService) {
         Map vars = new HashMap();
 
@@ -167,38 +170,43 @@ public class HospitalServiceImpl implements HospitalService {
             reader = new InputStreamReader(new ClassPathResource("org/jbpm/task/LoadUsers.mvel").getInputStream());
             users = (Map<String, User>) eval(reader, vars);
             for (User user : users.values()) {
+
                 taskSession.addUser(user);
             }
         } catch (IOException ex) {
-            Logger.getLogger(HospitalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HospitalStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (reader != null) reader.close();
+                if (reader != null) {
+                    reader.close();
+                }
                 reader = null;
             } catch (IOException ex) {
-                Logger.getLogger(HospitalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(HospitalStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
         try {
             reader = new InputStreamReader(new ClassPathResource("org/jbpm/task/LoadGroups.mvel").getInputStream());
-            groups = (Map<String, Group>) eval(reader,  vars);
+            groups = (Map<String, Group>) eval(reader, vars);
             for (Group group : groups.values()) {
                 taskSession.addGroup(group);
             }
         } catch (IOException ex) {
-            Logger.getLogger(HospitalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HospitalStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (reader != null) try {
-                reader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(HospitalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(HospitalStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
 
     private Object eval(Reader reader,
-                       Map vars) {
+            Map vars) {
         try {
             return eval(toString(reader),
                     vars);
@@ -226,8 +234,26 @@ public class HospitalServiceImpl implements HospitalService {
         context.addPackageImport("org.jbpm.task.service");
         context.addPackageImport("org.jbpm.task.query");
         context.addPackageImport("java.util");
+        context.addPackageImport("com.wordpress.salaboy.model.roles");
 
         vars.put("now", new Date());
         return MVEL.executeExpression(compiler.compile(context), vars);
+    }
+
+    private void initRoles() {
+        try {
+            Map vars = new HashMap();
+            Reader reader = null;
+
+            reader = new InputStreamReader(new ClassPathResource("org/jbpm/task/LoadRoles.mvel").getInputStream());
+            roles = (Map<String, Role>) eval(reader, vars);
+            
+            for(Role role : roles.values()){
+                ksession.insert(role);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(HospitalStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

@@ -1,0 +1,11 @@
+roles = [ 
+          'front-desk'  : new FrontDesk( 'front-desk'),     
+          'operator'  : new Operator( 'operator'),
+          'doctor'  : new Doctor( 'doctor'),     
+          'patient'  : new Patient( 'patient'),     
+          'nurse'      : new Nurse('nurse'),
+          'hospital-resource-planner'  : new HospitalResourcePlanner( 'hospital-resource-planner')
+        ];       
+
+return roles;
+        

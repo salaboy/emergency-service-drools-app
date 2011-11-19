@@ -14,7 +14,7 @@
       <bpmn2:outgoing>_235B625C-8BBA-4582-AD12-195FC15A20A0</bpmn2:outgoing>
       <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_A">
         <bpmn2:resourceAssignmentExpression id="__PsFUhBGEeGBTKcmXm90_A">
-          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">hospital-expert</bpmn2:formalExpression>
+          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">hospital-resource-planner</bpmn2:formalExpression>
         </bpmn2:resourceAssignmentExpression>
       </bpmn2:potentialOwner>
     </bpmn2:userTask>

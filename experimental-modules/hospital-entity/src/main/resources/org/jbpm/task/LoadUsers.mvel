@@ -1,0 +1,12 @@
+users = [ 
+          'front-desk'  : new User( 'front-desk'),     
+          'operator'  : new User( 'operator'),
+          'doctor'  : new User( 'doctor'),     
+          'patient'  : new User( 'patient'),     
+          'nurse'      : new User('nurse'),
+          'hospital-resource-planner'  : new User( 'hospital-resource-planner'),
+          'admin'      : new User('Administrator')
+        ];       
+
+return users;
+        

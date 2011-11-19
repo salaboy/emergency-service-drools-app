@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author salaboy
  */
-public interface HospitalService {
+public interface HospitalStatusService {
     public int getAvailableBeds();  
     public List<String> getSpecialities();
     public String requestBed(String id);

@@ -4,8 +4,7 @@
  */
 package com.wordpress.salaboy.service;
 
-import com.wordpress.salaboy.hospital.HospitalService;
-import com.wordpress.salaboy.hospital.HospitalServiceImpl;
+import com.wordpress.salaboy.hospital.HospitalStatusServiceImpl;
 import org.junit.*;
 
 /**
@@ -36,7 +35,7 @@ public class ServiceTest {
     @Test
     public void hello() throws InterruptedException {
         
-        HospitalServiceImpl service = new HospitalServiceImpl();
+        HospitalStatusServiceImpl service = new HospitalStatusServiceImpl();
         System.out.println("Available Bed = "+service.getAvailableBeds());
         Thread.sleep(2000);
         service.requestBed("myID");
@@ -51,6 +50,8 @@ public class ServiceTest {
         
         Thread.sleep(2000);
         System.out.println("Available Bed = "+service.getAvailableBeds());
+        
+        
         
        
         

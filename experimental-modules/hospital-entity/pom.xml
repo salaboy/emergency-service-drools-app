@@ -1,14 +1,19 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wordpress.salaboy</groupId>
-    <artifactId>hospital-service</artifactId>
+    
+     <parent>
+        <artifactId>emergency-service</artifactId>
+        <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../</relativePath>
+    </parent>
+    <artifactId>hospital-entity</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hospital-service</name>
+    <name>Emergency Services :: Hospital Entity</name>
     <url>http://maven.apache.org</url>
     <build>
         <plugins>
@@ -137,12 +142,29 @@
             <artifactId>h2</artifactId>
             <version>1.3.161</version>
         </dependency>
+        <dependency>
+            <groupId>com.wordpress.salaboy.emergencyservice</groupId>
+            <artifactId>emergency-service-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+    
+    
     <repositories>
         <repository>
             <id>jboss</id>
             <name>jboss</name>
             <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        
+         <repository>
+            <id>PlugTree</id>
+            <name>PlugTree-Snapshots-CloudBees</name>
+            <url>https://repository-plugtree-org.forge.cloudbees.com/snapshot/</url>
+            <!--snapshots -->
+            <!--enabled>true</enabled -->
+            <!--updatePolicy>always</updatePolicy -->
+            <!--/snapshots -->
         </repository>
     </repositories>
   
