@@ -298,7 +298,7 @@ public abstract class DefaultFireProcedureBaseTest extends GridBaseTest {
         } catch (IOException ex) {
             Logger.getLogger(DefaultFireProcedureBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Thread.sleep(2000);
+        Thread.sleep(4000);
     }
 
     protected abstract void testGarageTask(Emergency emergency, List<Vehicle> selectedVehicles) throws Exception;
