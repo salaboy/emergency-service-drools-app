@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_vW62sRkWEeG-vc6tTUwdtg">
+  <bpmn2:collaboration id="_vW8E0BkWEeG-vc6tTUwdtg">
+    <bpmn2:participant id="_vW8r4BkWEeG-vc6tTUwdtg" name="Internal" processRef="appointment"/>
+  </bpmn2:collaboration>
+  <bpmn2:itemDefinition id="_sPatient" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_sTimer" structureRef="java.lang.String"/>
+  <bpmn2:message id="_2_InMessage" itemRef="_sPatient"/>
+  <bpmn2:interface id="_2_ServiceInterface" name="com.wordpress.salaboy.hospital.service.AppointmentService">
+    <bpmn2:operation id="_2_ServiceOperation" name="scheduleAppointment">
+      <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+    <bpmn2:operation id="_3_ServiceOperation" name="rescheduleAppointment">
+      <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+    <bpmn2:operation id="_4_ServiceOperation" name="followUp">
+      <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="appointment" name="Process for Internal" isExecutable="true">
+    <bpmn2:startEvent id="_wIZW8BkWEeG-vc6tTUwdtg" name="Call">
+      <bpmn2:outgoing>_XMCKkBkXEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_4nAiABkWEeG-vc6tTUwdtg" name="Request Appointment Information">
+      <bpmn2:incoming>_XMCKkBkXEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_XmFCQRkXEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_A">
+        <bpmn2:resourceAssignmentExpression>
+          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">hospital-resource-planner</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:serviceTask id="__G7LwBkWEeG-vc6tTUwdtg" name="Schedule Appointment" implementation="Other" operationRef="_2_ServiceOperation">
+      <bpmn2:incoming>_XmFCQRkXEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_x-USkRkdEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:userTask id="_HD4bQBkXEeG-vc6tTUwdtg" name="Check Up Report">
+      <bpmn2:incoming>_ULNZsRkeEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_YjWi0BkXEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_C">
+        <bpmn2:resourceAssignmentExpression>
+          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_C">doctor</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:serviceTask id="_LldwEBkXEeG-vc6tTUwdtg" name="Follow Up" implementation="Other" operationRef="_4_ServiceOperation">
+      <bpmn2:incoming>_YjWi0BkXEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_Y3aHQBkXEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="_NOm4IBkXEeG-vc6tTUwdtg" name="End">
+      <bpmn2:incoming>_Y3aHQBkXEeG-vc6tTUwdtg</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="_V5YP4BkXEeG-vc6tTUwdtg" name="End">
+      <bpmn2:incoming>_ZpZk4RkXEeG-vc6tTUwdtg</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:serviceTask id="_TgLj4BkXEeG-vc6tTUwdtg" name="Reschedule Appointment" implementation="Other" operationRef="_3_ServiceOperation">
+      <bpmn2:incoming>_87VZwRkdEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_ZpZk4RkXEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="_XMCKkBkXEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_wIZW8BkWEeG-vc6tTUwdtg" targetRef="_4nAiABkWEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_XmFCQRkXEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_4nAiABkWEeG-vc6tTUwdtg" targetRef="__G7LwBkWEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_YjWi0BkXEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_HD4bQBkXEeG-vc6tTUwdtg" targetRef="_LldwEBkXEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_Y3aHQBkXEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_LldwEBkXEeG-vc6tTUwdtg" targetRef="_NOm4IBkXEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_ZpZk4RkXEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_TgLj4BkXEeG-vc6tTUwdtg" targetRef="_V5YP4BkXEeG-vc6tTUwdtg"/>
+    <bpmn2:subProcess id="_nWA3IBkdEeG-vc6tTUwdtg" name="SubProcess">
+      <bpmn2:incoming>_x-USkRkdEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_ULNZsRkeEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:startEvent id="_psMrYBkdEeG-vc6tTUwdtg" name="Start">
+        <bpmn2:outgoing>_xNSeQBkdEeG-vc6tTUwdtg</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="_rpFO0BkdEeG-vc6tTUwdtg" name="End">
+        <bpmn2:incoming>_xdfdcBkdEeG-vc6tTUwdtg</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:userTask id="_C3478BkXEeG-vc6tTUwdtg" name="Check in Patient">
+        <bpmn2:incoming>_xNSeQBkdEeG-vc6tTUwdtg</bpmn2:incoming>
+        <bpmn2:outgoing>_xdfdcBkdEeG-vc6tTUwdtg</bpmn2:outgoing>
+        <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_B">
+          <bpmn2:resourceAssignmentExpression>
+            <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_C">hospital-resource-planner</bpmn2:formalExpression>
+          </bpmn2:resourceAssignmentExpression>
+        </bpmn2:potentialOwner>
+      </bpmn2:userTask>
+      <bpmn2:sequenceFlow id="_xNSeQBkdEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_psMrYBkdEeG-vc6tTUwdtg" targetRef="_C3478BkXEeG-vc6tTUwdtg"/>
+      <bpmn2:sequenceFlow id="_xdfdcBkdEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_C3478BkXEeG-vc6tTUwdtg" targetRef="_rpFO0BkdEeG-vc6tTUwdtg"/>
+      
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="_ULNZsRkeEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_nWA3IBkdEeG-vc6tTUwdtg" targetRef="_HD4bQBkXEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_x-USkRkdEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="__G7LwBkWEeG-vc6tTUwdtg" targetRef="_nWA3IBkdEeG-vc6tTUwdtg"/>
+    <bpmn2:boundaryEvent id="_6Os0YBkdEeG-vc6tTUwdtg" name="Boundary event" attachedToRef="_nWA3IBkdEeG-vc6tTUwdtg">
+      <bpmn2:outgoing>_87VZwRkdEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_9UW9wBkdEeG-vc6tTUwdtg">
+      	<bpmn2:timeDuration xsi:type="tFormalExpression">#{timer}</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="_87VZwRkdEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_6Os0YBkdEeG-vc6tTUwdtg" targetRef="_TgLj4BkXEeG-vc6tTUwdtg"/>
+    <bpmn2:property id="patient" itemSubjectRef="_sPatient"/>
+    <bpmn2:property id="timer" itemSubjectRef="_sTimer"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_hUHN0BkXEeG-vc6tTUwdtg">
+    <bpmndi:BPMNPlane id="_hUHN0RkXEeG-vc6tTUwdtg" bpmnElement="appointment">
+      <bpmndi:BPMNShape id="_nWMdUBkdEeG-vc6tTUwdtg" bpmnElement="_nWA3IBkdEeG-vc6tTUwdtg">
+        <dc:Bounds height="171.0" width="295.0" x="446.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_wI67YBkWEeG-vc6tTUwdtg" bpmnElement="_wIZW8BkWEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="70.0" y="253.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_4nNWUBkWEeG-vc6tTUwdtg" bpmnElement="_4nAiABkWEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="140.0" y="246.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="__G_dMBkWEeG-vc6tTUwdtg" bpmnElement="__G7LwBkWEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="300.0" y="246.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_C38mUBkXEeG-vc6tTUwdtg" bpmnElement="_C3478BkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="539.0" y="112.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_HD8ssBkXEeG-vc6tTUwdtg" bpmnElement="_HD4bQBkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="600.0" y="246.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_LlhacBkXEeG-vc6tTUwdtg" bpmnElement="_LldwEBkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="760.0" y="246.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_NOp7cBkXEeG-vc6tTUwdtg" bpmnElement="_NOm4IBkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="940.0" y="253.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_TgPOQBkXEeG-vc6tTUwdtg" bpmnElement="_TgLj4BkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="600.0" y="393.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_V5bTMBkXEeG-vc6tTUwdtg" bpmnElement="_V5YP4BkXEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="936.0" y="407.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_psPusBkdEeG-vc6tTUwdtg" bpmnElement="_psMrYBkdEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="472.0" y="119.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_rpISIBkdEeG-vc6tTUwdtg" bpmnElement="_rpFO0BkdEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="697.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_6OupkBkdEeG-vc6tTUwdtg" bpmnElement="_6Os0YBkdEeG-vc6tTUwdtg">
+        <dc:Bounds height="36.0" width="36.0" x="471.0" y="199.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_XMUecBkXEeG-vc6tTUwdtg" bpmnElement="_XMCKkBkXEeG-vc6tTUwdtg" sourceElement="_wI67YBkWEeG-vc6tTUwdtg" targetElement="_4nNWUBkWEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="106.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="140.0" y="271.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_XmFpUBkXEeG-vc6tTUwdtg" bpmnElement="_XmFCQRkXEeG-vc6tTUwdtg" sourceElement="_4nNWUBkWEeG-vc6tTUwdtg" targetElement="__G_dMBkWEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="250.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="300.0" y="271.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_YjXJ4BkXEeG-vc6tTUwdtg" bpmnElement="_YjWi0BkXEeG-vc6tTUwdtg" sourceElement="_HD8ssBkXEeG-vc6tTUwdtg" targetElement="_LlhacBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="710.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="271.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_Y3auUBkXEeG-vc6tTUwdtg" bpmnElement="_Y3aHQBkXEeG-vc6tTUwdtg" sourceElement="_LlhacBkXEeG-vc6tTUwdtg" targetElement="_NOp7cBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="870.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="940.0" y="271.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_ZpazABkXEeG-vc6tTUwdtg" bpmnElement="_ZpZk4RkXEeG-vc6tTUwdtg" sourceElement="_TgPOQBkXEeG-vc6tTUwdtg" targetElement="_V5bTMBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="710.0" y="418.0"/>
+        <di:waypoint xsi:type="dc:Point" x="936.0" y="425.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_xNTFUBkdEeG-vc6tTUwdtg" bpmnElement="_xNSeQBkdEeG-vc6tTUwdtg" sourceElement="_psPusBkdEeG-vc6tTUwdtg" targetElement="_C38mUBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="508.0" y="137.0"/>
+        <di:waypoint xsi:type="dc:Point" x="539.0" y="137.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_xdgEgBkdEeG-vc6tTUwdtg" bpmnElement="_xdfdcBkdEeG-vc6tTUwdtg" sourceElement="_C38mUBkXEeG-vc6tTUwdtg" targetElement="_rpISIBkdEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="649.0" y="137.0"/>
+        <di:waypoint xsi:type="dc:Point" x="697.0" y="147.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_x-U5oBkdEeG-vc6tTUwdtg" bpmnElement="_x-USkRkdEeG-vc6tTUwdtg" sourceElement="__G_dMBkWEeG-vc6tTUwdtg" targetElement="_nWMdUBkdEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="355.0" y="246.0"/>
+        <di:waypoint xsi:type="dc:Point" x="446.0" y="135.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_yUGVUBkdEeG-vc6tTUwdtg" bpmnElement="_yUFuQRkdEeG-vc6tTUwdtg" sourceElement="_nWMdUBkdEeG-vc6tTUwdtg" targetElement="_HD8ssBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="593.0" y="221.0"/>
+        <di:waypoint xsi:type="dc:Point" x="655.0" y="246.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_87Wn4BkdEeG-vc6tTUwdtg" bpmnElement="_87VZwRkdEeG-vc6tTUwdtg" sourceElement="_6OupkBkdEeG-vc6tTUwdtg" targetElement="_TgPOQBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="489.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="655.0" y="393.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_ULOn0BkeEeG-vc6tTUwdtg" bpmnElement="_ULNZsRkeEeG-vc6tTUwdtg" sourceElement="_nWMdUBkdEeG-vc6tTUwdtg" targetElement="_HD8ssBkXEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="593.0" y="221.0"/>
+        <di:waypoint xsi:type="dc:Point" x="655.0" y="246.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
