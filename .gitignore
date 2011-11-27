@@ -22,3 +22,4 @@ hs_err_pid*.log
 emergency-service-core/data/
 emergency-service-model/data/
 run/data/
+tooling/jbpm-installer-5.2-SNAPSHOT/
