@@ -12,9 +12,8 @@ rule "request bed"
         $hospital: Hospital()
         $bedRequest: RequestBed()
     then
+        Patient patient = new Patient();
 
-        $hospital.setAvailableBeds($hospital.getAvailableBeds()-1);
-        update($hospital);
         System.out.println("Requesting a bed!");    
         kcontext.getKnowledgeRuntime().startProcess("NewPatientCheckIn", null);
         System.out.println("Getting ready for recieving a new patient");
@@ -24,9 +23,12 @@ rule "assign bed"
     no-loop
     ruleflow-group "assign-bed"
     when
-        
+        $hospital: Hospital(availableBeds > 0)
     then
         System.out.println("Assigning a bed...");
+        $hospital.setAvailableBeds($hospital.getAvailableBeds()-1);
+        update($hospital);
+        
 end
 
 

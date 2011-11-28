@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_69SUgBkkEeG-vc6tTUwdtg">
+  <bpmn2:collaboration id="_69SUgRkkEeG-vc6tTUwdtg">
+    <bpmn2:participant id="_69SUghkkEeG-vc6tTUwdtg" name="Internal" processRef="_69V-4BkkEeG-vc6tTUwdtg"/>
+  </bpmn2:collaboration>
+  <bpmn2:itemDefinition id="_sPatient" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_sTimer" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="RequestMessageType" />
+  <bpmn2:itemDefinition id="ReplyMessageType" />
+  <bpmn2:message id="ReplyMessage" itemRef="ReplyMessageType" />
+  <bpmn2:message id="RequestMessage" itemRef="RequestMessageType" />
+  <bpmn2:message id="_2_InMessage" itemRef="_sPatient"/>
+  <bpmn2:interface id="_2_ServiceInterface" name="com.wordpress.salaboy.hospital.service.PatientTestService">
+    <bpmn2:operation id="_2_ServiceOperation" name="gatherResult">
+      <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="patientTest" name="Process for Internal" isExecutable="true">
+  <bpmn2:property id="timer" itemSubjectRef="_sTimer"/>
+    <bpmn2:startEvent id="_7xf_sBkkEeG-vc6tTUwdtg" name="Start">
+      <bpmn2:outgoing>_imU7QRklEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_9E3FABkkEeG-vc6tTUwdtg" name="Request Appointment Information">
+      <bpmn2:incoming>_imU7QRklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_i8UZYRklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_A">
+        <bpmn2:resourceAssignmentExpression>
+          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">hospital-resource-planner</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:intermediateThrowEvent id="_B0nYsBklEeG-vc6tTUwdtg" name="Throw">
+      <bpmn2:incoming>_i8UZYRklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_jPvEoRklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="_fAZWYBklEeG-vc6tTUwdtg" messageRef="RequestMessage"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:eventBasedGateway id="_EFyKEBklEeG-vc6tTUwdtg" eventGatewayType="Exclusive" gatewayDirection="Diverging">
+      <bpmn2:incoming>_jPvEoRklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_jjKW8RklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:outgoing>_j6Vg0BklEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:eventBasedGateway>
+    <bpmn2:intermediateCatchEvent id="_100" name="Message">
+      <bpmn2:incoming>_jjKW8RklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_kz17sBklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="_fAZWYRklEeG-vc6tTUwdtg" messageRef="ReplyMessage"/>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:intermediateCatchEvent id="_HcBGEBklEeG-vc6tTUwdtg" name="Timer">
+      <bpmn2:incoming>_j6Vg0BklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_kMyiwBklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_fAZWYhklEeG-vc6tTUwdtg">
+      	<bpmn2:timeDuration xsi:type="tFormalExpression">#{timer}</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:serviceTask id="_MEyA8BklEeG-vc6tTUwdtg" name="Gather Results"  implementation="Other" operationRef="_2_ServiceOperation">
+      <bpmn2:incoming>_kMyiwBklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_kau4IRklEeG-vc6tTUwdtg</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:exclusiveGateway id="_5" name="Join" gatewayDirection="Converging" />
+    <bpmn2:scriptTask id="_PfqMYBklEeG-vc6tTUwdtg" name="Send test report to doctor" scriptFormat="java">
+      <bpmn2:incoming>_kau4IRklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:incoming>_kz17sBklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_lRVwARklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Sending report to doctor&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:userTask id="_V3B-IBklEeG-vc6tTUwdtg" name="Analyze results and write patient report">
+      <bpmn2:incoming>_lRVwARklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_lh-NABklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_A">
+        <bpmn2:resourceAssignmentExpression>
+          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">doctor</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:scriptTask id="_bm65IBklEeG-vc6tTUwdtg" name="Send report" scriptFormat="java">
+      <bpmn2:incoming>_lh-NABklEeG-vc6tTUwdtg</bpmn2:incoming>
+      <bpmn2:outgoing>_lwkCoRklEeG-vc6tTUwdtg</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Sending report&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_gLEZwBklEeG-vc6tTUwdtg" name="End">
+      <bpmn2:incoming>_lwkCoRklEeG-vc6tTUwdtg</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_imU7QRklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_7xf_sBkkEeG-vc6tTUwdtg" targetRef="_9E3FABkkEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_i8UZYRklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_9E3FABkkEeG-vc6tTUwdtg" targetRef="_B0nYsBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_jPvEoRklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_B0nYsBklEeG-vc6tTUwdtg" targetRef="_EFyKEBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_jjKW8RklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_EFyKEBklEeG-vc6tTUwdtg" targetRef="_100"/>
+    <bpmn2:sequenceFlow id="_j6Vg0BklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_EFyKEBklEeG-vc6tTUwdtg" targetRef="_HcBGEBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_kMyiwBklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_HcBGEBklEeG-vc6tTUwdtg" targetRef="_MEyA8BklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_kau4IRklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_MEyA8BklEeG-vc6tTUwdtg" targetRef="_5"/>
+    <bpmn2:sequenceFlow id="_kz17sBklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_100" targetRef="_5"/>
+    <bpmn2:sequenceFlow id="_lRVwARklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_PfqMYBklEeG-vc6tTUwdtg" targetRef="_V3B-IBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_lh-NABklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_V3B-IBklEeG-vc6tTUwdtg" targetRef="_bm65IBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_lwkCoRklEeG-vc6tTUwdtg" name="Sequence Flow" sourceRef="_bm65IBklEeG-vc6tTUwdtg" targetRef="_gLEZwBklEeG-vc6tTUwdtg"/>
+    <bpmn2:sequenceFlow id="_lwkCoRklEeG-vc6tTUwdth" name="Sequence Flow" sourceRef="_5" targetRef="_PfqMYBklEeG-vc6tTUwdtg"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_fAZWYxklEeG-vc6tTUwdtg">
+    <bpmndi:BPMNPlane id="_fAZ9cBklEeG-vc6tTUwdtg" bpmnElement="_69V-4BkkEeG-vc6tTUwdtg">
+      <bpmndi:BPMNShape id="_7xjDABkkEeG-vc6tTUwdtg" bpmnElement="_7xf_sBkkEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="66.0" y="267.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9E6IUBkkEeG-vc6tTUwdtg" bpmnElement="_9E3FABkkEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="150.0" y="260.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_B0p08BklEeG-vc6tTUwdtg" bpmnElement="_B0nYsBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="310.0" y="267.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_EF1NYBklEeG-vc6tTUwdtg" bpmnElement="_EFyKEBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="65.0" width="50.0" x="400.0" y="252.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_Gz1EsBklEeG-vc6tTUwdtg" bpmnElement="_100">
+        <dc:Bounds height="51.0" width="36.0" x="470.0" y="180.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_HcDiUBklEeG-vc6tTUwdtg" bpmnElement="_HcBGEBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="470.0" y="340.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_ME1rUBklEeG-vc6tTUwdtg" bpmnElement="_MEyA8BklEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="540.0" y="333.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_Pft2wBklEeG-vc6tTUwdtg" bpmnElement="_PfqMYBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="700.0" y="271.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_V3FogBklEeG-vc6tTUwdtg" bpmnElement="_V3B-IBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="840.0" y="271.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_bm98cBklEeG-vc6tTUwdtg" bpmnElement="_bm65IBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="50.0" width="110.0" x="990.0" y="271.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_gLG2ABklEeG-vc6tTUwdtg" bpmnElement="_gLEZwBklEeG-vc6tTUwdtg">
+        <dc:Bounds height="51.0" width="36.0" x="1140.0" y="278.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_imViUBklEeG-vc6tTUwdtg" bpmnElement="_imU7QRklEeG-vc6tTUwdtg" sourceElement="_7xjDABkkEeG-vc6tTUwdtg" targetElement="_9E6IUBkkEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="102.0" y="285.0"/>
+        <di:waypoint xsi:type="dc:Point" x="150.0" y="285.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_i8VAcBklEeG-vc6tTUwdtg" bpmnElement="_i8UZYRklEeG-vc6tTUwdtg" sourceElement="_9E6IUBkkEeG-vc6tTUwdtg" targetElement="_B0p08BklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="260.0" y="285.0"/>
+        <di:waypoint xsi:type="dc:Point" x="310.0" y="285.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_jPwSwBklEeG-vc6tTUwdtg" bpmnElement="_jPvEoRklEeG-vc6tTUwdtg" sourceElement="_B0p08BklEeG-vc6tTUwdtg" targetElement="_EF1NYBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="346.0" y="285.0"/>
+        <di:waypoint xsi:type="dc:Point" x="400.0" y="277.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_jjK-ABklEeG-vc6tTUwdtg" bpmnElement="_jjKW8RklEeG-vc6tTUwdtg" sourceElement="_EF1NYBklEeG-vc6tTUwdtg" targetElement="_Gz1EsBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="252.0"/>
+        <di:waypoint xsi:type="dc:Point" x="470.0" y="198.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_j6WH4BklEeG-vc6tTUwdtg" bpmnElement="_j6Vg0BklEeG-vc6tTUwdtg" sourceElement="_EF1NYBklEeG-vc6tTUwdtg" targetElement="_HcDiUBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="303.0"/>
+        <di:waypoint xsi:type="dc:Point" x="470.0" y="358.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_kMzJ0BklEeG-vc6tTUwdtg" bpmnElement="_kMyiwBklEeG-vc6tTUwdtg" sourceElement="_HcDiUBklEeG-vc6tTUwdtg" targetElement="_ME1rUBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="506.0" y="358.0"/>
+        <di:waypoint xsi:type="dc:Point" x="540.0" y="358.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_kavfMBklEeG-vc6tTUwdtg" bpmnElement="_kau4IRklEeG-vc6tTUwdtg" sourceElement="_ME1rUBklEeG-vc6tTUwdtg" targetElement="_Pft2wBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="650.0" y="358.0"/>
+        <di:waypoint xsi:type="dc:Point" x="700.0" y="296.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_kz2iwBklEeG-vc6tTUwdtg" bpmnElement="_kz17sBklEeG-vc6tTUwdtg" sourceElement="_Gz1EsBklEeG-vc6tTUwdtg" targetElement="_Pft2wBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="506.0" y="198.0"/>
+        <di:waypoint xsi:type="dc:Point" x="700.0" y="296.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_lRWXEBklEeG-vc6tTUwdtg" bpmnElement="_lRVwARklEeG-vc6tTUwdtg" sourceElement="_Pft2wBklEeG-vc6tTUwdtg" targetElement="_V3FogBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="810.0" y="296.0"/>
+        <di:waypoint xsi:type="dc:Point" x="840.0" y="296.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_lh-0EBklEeG-vc6tTUwdtg" bpmnElement="_lh-NABklEeG-vc6tTUwdtg" sourceElement="_V3FogBklEeG-vc6tTUwdtg" targetElement="_bm98cBklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="950.0" y="296.0"/>
+        <di:waypoint xsi:type="dc:Point" x="990.0" y="296.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_lwkpsBklEeG-vc6tTUwdtg" bpmnElement="_lwkCoRklEeG-vc6tTUwdtg" sourceElement="_bm98cBklEeG-vc6tTUwdtg" targetElement="_gLG2ABklEeG-vc6tTUwdtg">
+        <di:waypoint xsi:type="dc:Point" x="1100.0" y="296.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1140.0" y="296.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
