@@ -55,7 +55,26 @@
                     </execution>
                 </executions>
             </plugin>
-            
+           
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>2.3.2</version>
+               <executions>
+                  <execution>
+                     <phase>package</phase>
+                     <goals>
+                        <goal>jar</goal>
+                     </goals>
+                     <configuration>
+                        <classifier>guvnor</classifier>
+                        <excludes>
+                           <exclude>**/*ServiceImpl*</exclude>
+                        </excludes>
+                     </configuration>
+                  </execution>
+               </executions>
+            </plugin> 
             
         </plugins>
     </build>

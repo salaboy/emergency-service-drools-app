@@ -322,25 +322,22 @@
     <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
          destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
     <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
-          tofile="${tomcat.server.deploy.dir}/jbpm-gwt-console-server.war"
+          tofile="${tomcat.server.deploy.dir}/gwt-console-server.war"
           overwrite="true" />
     <copy file="${install.home}/target/jbpm-gwt-console-${jBPM.version}.war"
-          tofile="${tomcat.server.deploy.dir}/jbpm-gwt-console.war"
+          tofile="${tomcat.server.deploy.dir}/gwt-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
     <!-- db configuration -->
-    <copy file="${install.home}/db/testDS1-ds.xml"
-          tofile="${tomcat.server.deploy.dir}/testDS1-ds.xml"
+    <copy file="${install.home}/db/server.xml"
+          tofile="${tomcat.server.conf.dir}/server.xml"
           overwrite="true" />
     <copy todir="${tomcat.server.lib.dir}" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
     <!-- authentication configuration -->
-    <copy file="${install.home}/auth/users.properties"
-          tofile="${tomcat.server.conf.dir}/users.properties"
-          overwrite="true" />
-    <copy file="${install.home}/auth/roles.properties"
-          tofile="${tomcat.server.conf.dir}/roles.properties"
+    <copy file="${install.home}/auth/tomcat-users.xml"
+          tofile="${tomcat.server.conf.dir}/tomcat-users.xml"
           overwrite="true" />
     <!-- reporting -->
     <antcall target="install.reporting.into.tomcat" />
