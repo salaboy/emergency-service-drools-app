@@ -122,7 +122,7 @@ public class MyMoteFinder {
             
             
             if (!device.getBluetoothAddress().equals(MyMoteFinder.wiiMoteId)) {
-                log.info("Returning.. bad device!!!");
+                log.info("Returning.. bad device!!!"+device.getBluetoothAddress());
                 return;
 
             }
