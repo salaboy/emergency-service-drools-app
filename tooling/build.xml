@@ -6,33 +6,16 @@
 
   <property name="install.home" value="./" />
 
-  <property name="tomcat.server.conf.dir" value="${tomcat.home}/conf" />
-  <property name="tomcat.server.data.dir" value="${tomcat.home}/data" />
-  <property name="tomcat.server.deploy.dir" value="${tomcat.home}/webapps" />
-  <property name="tomcat.server.lib.dir" value="${tomcat.home}/lib" />
-  <property name="tomcat.server.birt.dir" value="${tomcat.server.data.dir}/birt"/>
-  <property name="tomcat.bind.address" value="localhost" />
+  <property name="jboss.server.conf.dir" value="${jboss.home}/server/${jboss.server.configuration}/conf" />
+  <property name="jboss.server.lib.dir" value="${jboss.home}/server/${jboss.server.configuration}/lib" />
+  <property name="jboss.bind.address" value="localhost" />
 
   <property name="eclipse.workspace.dir" value="${install.home}/workspace"/>
 
-  <property name="tomcat.download.url" value="http://apache.dattatec.com/tomcat/tomcat-6/v6.0.33/bin/apache-tomcat-6.0.33.zip"/>
   <property name="h2.download.url" value="http://repo1.maven.org/maven2/com/h2database/h2/1.2.124/h2-1.2.124.jar"/>
   <property name="slf4j.download.url" value="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.11/slf4j-jdk14-1.5.11.jar"/>
   <property name="birt.download.url" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;mirror_id=1"/>
-
-  <!-- sets the proxy -->
-  <target name="set.proxy">
-    <echo message="Setting proxy..."/>
-    <!-- Feel free to uncomment and configure the following line
-         to make downloads possible through a proxy -->
-    <!--
-        <setproxy proxyhost="Host name or IP of your proxy" 
-	          proxyport="Port number of your proxy. Defaults to 80" 
-		  proxyuser="Plain text proxy username. If not needed, remove this attribute" 
-		  proxypassword="Plain text proxy password. If not needed, remove this attribute"/>
-     -->
-  </target>
-
+	
   <!-- ############ DOWNLOAD ############ -->
 
   <!-- Download H2 -->
@@ -71,32 +54,67 @@
   </target>
 
   <!-- Download JBoss AS -->
-  <target name="download.tomcat.check">
-    <echo message="Checking Tomcat download ..." />
-    <condition property="tomcat.not.available">
+  <target name="check.jboss.version">
+    <condition property="jboss.version.is.5">
+      <equals arg1="${jboss.server.version}" arg2="5.1.0.GA" />
+    </condition>
+    <condition property="jboss.version.is.7">
+      <equals arg1="${jboss.server.version}" arg2="7.0.2.Final" />
+    </condition>
+  </target>
+  <target name="download.jboss.check">
+    <echo message="Checking JBoss AS download ..." />
+    <condition property="jboss.not.available">
       <not>
-        <available file="${install.home}/lib/tomcat-${tomcat.server.version}.zip" />
+        <available file="${install.home}/lib/jboss-as-${jboss.server.version}.zip" />
       </not>
     </condition>
   </target>
-  <target name="download.tomcat" depends="download.tomcat.check" if="tomcat.not.available">
-    <echo message="Getting Tomcat ..." />
+  <target name="download.jboss" depends="download.jboss.check" if="jboss.not.available">
+    <echo message="Getting JBoss AS ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${tomcat.download.url}" dest="${install.home}/lib/tomcat-${tomcat.server.version}.zip"  />
+    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-as-${jboss.server.version}.zip"  />
   </target>
-  <!-- Download Log4J -->
-  <target name="download.log4j.check">
-    <echo message="Checking Log4J ..." />
-    <condition properyt="log4j.not.available">
+
+  <!-- Download JBoss7 TransactionManagerLookup -->
+  <target name="download.jboss7tml.check">
+    <echo message="Checking JBoss7 TransactionManagerLookup ..."/>
+    <condition property="jboss7tml.not.available">
       <not>
-        <available file="${install.home}/lib/log4j-1.2.16.jar" />
+        <available file="${install.home}/lib/jboss7tml-1.0.0-SNAPSHOT.jar" />
       </not>
     </condition>
   </target>
-  <target name="download.log4j">
-    <echo message="Getting Log4J ..."/>
+  <target name="download.jboss7tml" depends="download.jboss7tml.check" if="jboss7tml.not.available">
+    <echo message="Getting JBoss7 TransactionManagerLookup ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://repo1.maven.org/maven2/log4j/log4j/1.2.16/log4j-1.2.16.jar" dest="${install.home}/lib/log4j-1.2.16.jar" />
+    <get src="http://repository-plugtree-org.forge.cloudbees.com/snapshot/com/wordpress/marianbuenosayres/jboss7tml/1.0.0-SNAPSHOT/jboss7tml-1.0.0-20111202.150519-1.jar" dest="${install.home}/lib/jboss7tml-1.0.0-SNAPSHOT.jar" />
+  </target>
+
+  <!-- Download drools static versions -->
+  <target name="download.drools.jars.check">
+     <echo message="Checking Drools JARs ..." />
+     <condition property="drools.jars.not.available">
+       <not>
+         <and>
+           <available file="${install.home}/lib/drools-compiler-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/drools-core-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/drools-persistence-jpa-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/drools-decisiontables-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/drools-templates-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/drools-verifier-5.3.0.Final.jar" />
+         </and>
+       </not>
+     </condition>
+  </target>
+  <target name="download.drools.jars" depends="download.drools.jars.check" if="drools.jars.not.available">
+    <echo message="Getting Drools JARs ..." />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-compiler/5.3.0.Final/drools-compiler-5.3.0.Final.jar" dest="${install.home}/lib/drools-compiler-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-core/5.3.0.Final/drools-core-5.3.0.Final.jar" dest="${install.home}/lib/drools-core-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-persistence-jpa/5.3.0.Final/drools-persistence-jpa-5.3.0.Final.jar" dest="${install.home}/lib/drools-persistence-jpa-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-decisiontables/5.3.0.Final/drools-decisiontables-5.3.0.Final.jar" dest="${install.home}/lib/drools-decisiontables-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-templates/5.3.0.Final/drools-templates-5.3.0.Final.jar" dest="${install.home}/lib/drools-templates-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-verifier/5.3.0.Final/drools-verifier-5.3.0.Final.jar" dest="${install.home}/lib/drools-verifier-5.3.0.Final.jar" />
   </target>
 
   <!-- Download Eclipse -->
@@ -199,14 +217,14 @@
     <echo message="Checking Drools Guvnor download ..." />
     <condition property="drools.guvnor.not.available">
       <not>
-        <available file="${install.home}/lib/guvnor-webapp-${drools.guvnor.version}.war" />
+        <available file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war" />
       </not>
     </condition>
   </target>  
   <target name="download.drools.guvnor" depends="download.drools.guvnor.check" if="drools.guvnor.not.available">
     <echo message="Getting Drools Guvnor ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.guvnor.url}" dest="${install.home}/lib/guvnor-webapp-${drools.guvnor.version}.war"  />
+    <get src="${drools.guvnor.url}" dest="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"/>
   </target>
 
   <!-- Download Designer -->
@@ -221,39 +239,39 @@
   <target name="download.designer" depends="download.designer.check" if="designer.not.available">
     <echo message="Getting Designer ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war"  />
-  </target>
-  
-  <!-- Download jBPM Form Builder -->
-  <target name="download.form.builder.check">
-    <echo message="Checking Form Builder download ..." />
-	<condition property="form.builder.not.available">
-	  <not>
-	    <available file="${install.home}/lib/jbpm-form-builder-${jbpm.form.builder.version}.war" />
-	  </not>
-	</condition>
-  </target>
-  <target name="download.form.builder" depends="download.form.builder.check" if="form.builder.not.available">
-    <echo message="Getting Form Builder ..." />
-	<mkdir dir="${install.home}/lib"/>
-	<get src="${jbpm.form.builder.url}" dest="${install.home}/lib/jbpm-form-builder-${jbpm.form.builder.version}.war" />
+    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war" />
   </target>
 
-  <!-- Download jBPM & Drools Eclipse plugins -->
-  <target name="download.drools.eclipse.check">
-    <echo message="Checking Drools Eclipse download ..." />
-    <condition property="drools.eclipse.not.available">
+  <!-- Download jBPM Form Builder -->
+  <target name="download.jBPM-form-builder.check">
+    <echo message="Checking Form Builder download ..." />
+    <condition property="form.builder.not.available">
       <not>
-        <available file="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip" />
+        <available file="${install.home}/lib/jbpm-form-builder-${form.builder.version}.war" />
       </not>
     </condition>
   </target>
-  <target name="download.drools.eclipse" depends="download.drools.eclipse.check" if="drools.eclipse.not.available">
-    <echo message="Getting Drools Eclipse ..." />
+  <target name="download.jBPM-form-builder" depends="download.jBPM-form-builder.check" if="form.builder.not.available">
+    <echo message="Getting Form Builder ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.eclipse.url}" dest="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip"  />
+    <get src="${form.builder.url}" dest="${install.home}/lib/jbpm-form-builder-${form.builder.version}.war" />
   </target>
 
+  <!-- Download jBPM and Drools Eclipse plugins -->
+  <target name="download.droolsjbpm.eclipse.check">
+    <echo message="Checking jBPM and Drools Eclipse download ..." />
+    <condition property="droolsjbpm.eclipse.not.available">
+      <not>
+        <available file="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.droolsjbpm.eclipse" depends="download.droolsjbpm.eclipse.check" if="droolsjbpm.eclipse.not.available">
+    <echo message="Getting jBPM and Drools Eclipse ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${droolsjbpm.eclipse.url}" dest="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip"  />
+  </target>
+  
   <!-- Download jBPM gwt-console -->
   <target name="download.jBPM.gwt-console.check">
     <echo message="Checking jBPM gwt-console download ..." />
@@ -272,35 +290,149 @@
   <!-- ############ INSTALL ############ -->
 
   <!-- Install JBoss AS -->
-  <target name="install.tomcat" depends="download.tomcat,download.log4j">
-    <unzip src="${install.home}/lib/tomcat-${tomcat.server.version}.zip" dest="${install.home}" />
-    <chmod perm="a+x" file="${install.home}/apache-tomcat-${tomcat.server.version}/bin/*.sh" />
-    <copy file="${install.home}/lib/log4j-1.2.16.jar" tofile="${tomcat.server.lib.dir}/log4j-1.2.16.jar" overwrite="true" />
-    <mkdir dir="${tomcat.server.data.dir}" />
+  <target name="install.jboss" depends="download.jboss">
+    <unzip src="${install.home}/lib/jboss-as-${jboss.server.version}.zip" dest="${install.home}" />
+    <chmod perm="a+x" file="${jboss.home}/bin/run.sh" />
+    <chmod perm="a+x" file="${jboss.home}/bin/shutdown.sh" />
+    <chmod perm="a+x" file="${jboss.home}/bin/standalone.sh" />
+    <chmod perm="a+x" file="${jboss.home}/bin/jboss-admin.sh" />
   </target>
 
-  <target name="install.guvnor.into.tomcat" depends="download.drools.guvnor">
-    <copy file="${install.home}/lib/guvnor-webapp-${drools.guvnor.version}.war"
-          tofile="${tomcat.server.deploy.dir}/drools-guvnor.war"
+  <!-- Install guvnor -->
+  <target name="install.guvnor.into.jboss" depends="download.drools.jars,download.drools.guvnor,check.jboss.version">
+    <mkdir dir="${install.home}/target" />
+    <unzip src="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war" dest="${install.home}/target" /> 
+    <delete>
+      <fileset dir="${install.home}/target/WEB-INF/lib" includes="drools-compiler-*.jar" />
+      <fileset dir="${install.home}/target/WEB-INF/lib" includes="drools-core-*.jar" />
+      <fileset dir="${install.home}/target/WEB-INF/lib" includes="drools-decisiontables-*.jar" />
+      <fileset dir="${install.home}/target/WEB-INF/lib" includes="drools-templates-*.jar" />
+      <fileset dir="${install.home}/target/WEB-INF/lib" includes="drools-verifier-*.jar" />
+    </delete> 
+    <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
+          tofile="${install.home}/target/WEB-INF/lib/drools-compiler-5.3.0.Final.jar"
           overwrite="true" />
-  </target> 
-		
+    <copy file="${install.home}/lib/drools-core-5.3.0.Final.jar"
+          tofile="${install.home}/target/WEB-INF/lib/drools-core-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-decisiontables-5.3.0.Final.jar"
+          tofile="${install.home}/target/WEB-INF/lib/drools-decisiontables-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-templates-5.3.0.Final.jar"
+          tofile="${install.home}/target/WEB-INF/lib/drools-templates-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-verifier-5.3.0.Final.jar"
+          tofile="${install.home}/target/WEB-INF/lib/drools-verifier-5.3.0.Final.jar"
+          overwrite="true" />
+    <zip basedir="${install.home}/target" destfile="${install.home}/lib/drools-guvnor.war" />
+    <copy file="${install.home}/lib/drools-guvnor.war"
+          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+          overwrite="true" />
+    <delete dir="${install.home}/target" />
+  </target>  	
+
   <!-- Install designer -->
-  <target name="install.designer.into.tomcat" depends="download.designer">
+  <target name="install.designer.into.jboss" depends="download.designer,check.jboss.version">
     <copy file="${install.home}/lib/designer-${designer.version}.war"
-          tofile="${tomcat.server.deploy.dir}/designer.war"
+          tofile="${jboss.server.deploy.dir}/designer.war"
           overwrite="true" />
   </target>
-
-  <!-- Install jBPM Form Builder -->
-  <target name="install.jBPM-form-builder.into.tomcat" depends="download.form.builder">
-    <copy file="${install.home}/lib/jbpm-form-builder-${jbpm.form.builder.version}.war"
-		  tofile="${tomcat.server.deploy.dir}/jbpm-form-builder.war"
-		  overwrite="true" />
+  		
+  <target name="install.jBPM-form-builder.into.jboss" depends="download.jBPM-form-builder">
+    <copy file="${install.home}/lib/jbpm-form-builder-${form.builder.version}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-form-builder.war"
+          overwrite="true" />
   </target>
-  
+	
   <!-- Install gwt-console -->
-  <target name="install.jBPM-gwt-console.into.tomcat" depends="download.h2,download.birt,download.jBPM.gwt-console">
+  <target name="install.jBPM-gwt-console.into.jboss" depends="download.h2,download.birt,download.jBPM.gwt-console">
+    <antcall target="install.jBPM-gwt-console.into.jboss5" />
+    <antcall target="install.jBPM-gwt-console.into.jboss7" />
+  </target>
+  <target name="install.jBPM-gwt-console.into.jboss7" depends="download.drools.jars,download.jboss7tml,check.jboss.version" if="jboss.version.is.7">
+    <!-- gwt-console -->
+    <mkdir dir="${install.home}/target"/>
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" />
+    <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war"/>
+    <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+           dest="${install.home}/target/jbpm-gwt-console-server-war"/>
+    <copy file="${install.home}/lib/jboss7tml-1.0.0-SNAPSHOT.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jboss7tml-1.0.0-SNAPSHOT.jar"
+          overwrite="true" />
+    <mkdir dir="${install.home}/target/jbpm-gwt-core-jar" />
+    <unzip src="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-gwt-core-${jBPM.version}.jar"
+           dest="${install.home}/target/jbpm-gwt-core-jar"/>
+    <copy file="${install.home}/conf/jbpm.console.properties"
+          tofile="${install.home}/target/jbpm-gwt-core-jar/jbpm.console.properties"
+          overwrite="true" />
+    <jar basedir="${install.home}/target/jbpm-gwt-core-jar" 
+         destfile="${install.home}/target/jbpm-gwt-core-${jBPM.version}.jar" />
+    <delete>
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-compiler-*.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-core-*.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-persistence-jpa-*.jar" />
+    </delete>
+    <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
+          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-core-5.3.0.Final.jar"
+          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-core-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/target/jbpm-gwt-core-${jBPM.version}.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-gwt-core-${jBPM.version}.jar"
+          overwrite="true" />
+    <copy file="${install.home}/conf/jbpm.console.properties"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/jbpm.console.properties"
+          overwrite="true" />
+    <copy file="${install.home}/db/hibernate.cfg.xml"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/hibernate.cfg.xml"
+          overwrite="true" />
+    <copy file="${install.home}/db/persistence_jboss7.xml"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
+          overwrite="true" />
+    <copy file="${install.home}/auth/users.properties"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/users.properties"
+          overwrite="true" />
+    <copy file="${install.home}/auth/roles.properties"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/roles.properties"
+          overwrite="true" />
+    <copy file="${install.home}/jbpm-tm.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-tm.jar"
+          overwrite="true" />
+    <copy file="${install.home}/model/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
+          overwrite="true" />
+    <copy file="${install.home}/model/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
+          overwrite="true" />
+    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" overwrite="true">
+      <fileset dir="${install.home}/db/driver"/>
+    </copy>
+    <!-- Fix for conflicting javassist jar -->
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.6.0.GA.jar"/>
+    <!-- Other configuration like work item handlers -->
+    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
+      <fileset dir="${install.home}/conf"/>
+    </copy>
+    <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
+         destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
+    <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console-server.war"
+          overwrite="true" />
+    <copy file="${install.home}/target/jbpm-gwt-console-${jBPM.version}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console.war"
+          overwrite="true" />
+    <delete dir="${install.home}/target"/>
+    <copy file="${install.home}/standalone.xml"
+          tofile="${jboss.home}/standalone/configuration/standalone.xml"
+          overwrite="true" />
+    <!-- reporting -->
+    <antcall target="install.reporting.into.jboss" />
+  </target>
+  <target name="install.jBPM-gwt-console.into.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">
     <!-- gwt-console -->
     <mkdir dir="${install.home}/target"/>
     <unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" />
@@ -314,7 +446,15 @@
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
           overwrite="true" />
     <!-- Fix for conflicting javassist jar -->
-    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.6.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/xml-apis-1.3.04.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hibernate-annotations-3.4.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hibernate-commons-annotations-3.1.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hibernate-core-3.3.2.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hibernate-entitymanager-3.4.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hibernate-tools-3.2.3.GA.jar"/>
+  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/ejb3-persistence-1.0.2.GA.jar"/>
+  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.4.GA.jar"/>
+  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.14.0-GA.jar"/>
     <!-- Other configuration like work item handlers -->
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
@@ -322,46 +462,50 @@
     <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
          destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
     <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
-          tofile="${tomcat.server.deploy.dir}/gwt-console-server.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console-server.war"
           overwrite="true" />
     <copy file="${install.home}/target/jbpm-gwt-console-${jBPM.version}.war"
-          tofile="${tomcat.server.deploy.dir}/gwt-console.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
     <!-- db configuration -->
-    <copy file="${install.home}/db/server.xml"
-          tofile="${tomcat.server.conf.dir}/server.xml"
+    <copy file="${install.home}/db/jBPM-ds.xml"
+          tofile="${jboss.server.deploy.dir}/jBPM-ds.xml"
           overwrite="true" />
-    <copy todir="${tomcat.server.lib.dir}" overwrite="true">
+    <copy todir="${jboss.server.lib.dir}" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
     <!-- authentication configuration -->
-    <copy file="${install.home}/auth/tomcat-users.xml"
-          tofile="${tomcat.server.conf.dir}/tomcat-users.xml"
+    <copy file="${install.home}/auth/users.properties"
+          tofile="${jboss.server.conf.dir}/users.properties"
+          overwrite="true" />
+    <copy file="${install.home}/auth/roles.properties"
+          tofile="${jboss.server.conf.dir}/roles.properties"
           overwrite="true" />
     <!-- reporting -->
-    <antcall target="install.reporting.into.tomcat" />
+    <antcall target="install.reporting.into.jboss" />
   </target>
 
-  <target name="install.reporting.into.tomcat" depends="check.birt" if="birt.download" >
+  <!-- Install gwt-console -->
+  <target name="install.reporting.into.jboss" depends="check.birt" if="birt.download" >
     <mkdir dir="${install.home}/target"/>
     <unzip src="${install.home}/lib/birt-runtime-2_3_2_2.zip"
            dest="${install.home}/target"/>
-    <mkdir dir="${tomcat.server.birt.dir}"/>
-    <mkdir dir="${tomcat.server.birt.dir}/ReportEngine"/>
-    <copy todir="${tomcat.server.birt.dir}/ReportEngine" overwrite="true">
+    <mkdir dir="${jboss.server.data.dir}/birt"/>
+    <mkdir dir="${jboss.server.data.dir}/birt/ReportEngine"/>
+    <copy todir="${jboss.server.data.dir}/birt/ReportEngine" overwrite="true">
       <fileset dir="${install.home}/target/birt-runtime-2_3_2/ReportEngine"/>
     </copy>
-    <delete dir="${install.home}/target"/>
     <copy file="${install.home}/report/overall_activity.rptdesign"
-          tofile="${tomcat.server.birt.dir}/overall_activity.rptdesign"
+          tofile="${jboss.server.data.dir}/birt/overall_activity.rptdesign"
           overwrite="true"/>
     <copy file="${install.home}/report/process_summary.rptdesign"
-          tofile="${tomcat.server.birt.dir}/process_summary.rptdesign"
+          tofile="${jboss.server.data.dir}/birt/process_summary.rptdesign"
           overwrite="true"/>
-    <copy todir="${tomcat.server.birt.dir}/ReportEngine/plugins/org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers" overwrite="true">
+    <copy todir="${jboss.server.data.dir}/birt/ReportEngine/plugins/org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
+    <delete dir="${install.home}/target"/>
   </target>
 
   <!-- Install Eclipse -->
@@ -385,31 +529,54 @@
   </target>
 
   <!-- Install Eclipse plugins -->
-  <target name="install.jBPM.runtime" depends="download.jBPM.bin">
+  <target name="install.jBPM.runtime" depends="download.drools.jars,download.jBPM.bin">
     <!-- create runtime -->
     <mkdir dir="${install.home}/runtime"/>
     <unzip src="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/runtime" />
+    <delete>
+      <fileset dir="${install.home}/runtime/lib" includes="drools-compiler-*.jar" />
+      <fileset dir="${install.home}/runtime/lib" includes="drools-core-*.jar" />
+      <fileset dir="${install.home}/runtime/lib" includes="drools-persistence-jpa-*.jar" />
+    </delete>
+    <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
+          tofile="${install.home}/runtime/lib/drools-core-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-core-5.3.0.Final.jar"
+          tofile="${install.home}/runtime/lib/drools-core-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          tofile="${install.home}/runtime/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/model/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
+          tofile="${install.home}/runtime/lib/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
+          overwrite="true" />
+    <copy file="${install.home}/model/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
+          tofile="${install.home}/runtime/lib/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
+          overwrite="true" />
   </target>
 
   <!-- Install Eclipse plugins -->
-  <target name="install.drools-eclipse.into.eclipse" depends="download.drools.eclipse">
+  <target name="install.droolsjbpm-eclipse.into.eclipse" depends="download.droolsjbpm.eclipse">
     <!-- install plugins -->
-  	<mkdir dir="${eclipse.home}/drools-update-site"/>
-    <unzip src="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip" dest="${eclipse.home}/drools-update-site" />
+    <mkdir dir="${eclipse.home}/droolsjbpm-update-site"/>
+    <unzip src="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip" dest="${eclipse.home}/droolsjbpm-update-site" />
     <copy todir="${eclipse.home}/features" overwrite="true">
-      <fileset dir="${eclipse.home}/drools-update-site/features"/>
+      <fileset dir="${eclipse.home}/droolsjbpm-update-site/features"/>
     </copy>
     <copy todir="${eclipse.home}/plugins" overwrite="true">
-      <fileset dir="${eclipse.home}/drools-update-site/plugins"/>
+      <fileset dir="${eclipse.home}/droolsjbpm-update-site/plugins"/>
     </copy>
-    <delete dir="${eclipse.home}/drools-update-site"/>
+    <delete dir="${eclipse.home}/droolsjbpm-update-site"/>
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="set.proxy,install.tomcat,install.guvnor.into.tomcat,install.designer.into.tomcat,install.jBPM-gwt-console.into.tomcat,install.jBPM-form-builder.into.tomcat,install.eclipse,install.jBPM.runtime,install.drools-eclipse.into.eclipse" />
-  
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+
+  <!-- Install Demo (Eclipse) -->
+  <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.tomcat,install.guvnor.into.tomcat,install.designer.into.tomcat,install.jBPM-gwt-console.into.tomcat,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
   
   <!-- ############ START/STOP ############ -->
 
@@ -429,28 +596,82 @@
     </java>
   </target>
 
-  <!-- Start Tomcat -->
-  <target name="start.tomcat">
-    <property name="tomcat.full.path.win" location="${tomcat.home}/bin/startup.bat" />
-    <exec executable="${tomcat.full.path.win}" spawn="yes"
+  <!-- Start JBoss AS -->
+  <target name="start.jboss">
+    <antcall target="start.jboss5" />
+    <antcall target="start.jboss7" />
+  </target>
+  <target name="start.jboss7" depends="check.jboss.version" if="jboss.version.is.7">
+    <property name="jboss.full.path.win" location="${jboss.home}/bin/standalone.bat" />
+    <exec executable="${jboss.full.path.win}" spawn="yes"
           osfamily="windows">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
-      <arg value="-Djboss.server.data.dir=${tomcat.server.data.dir}" />
     </exec>
-    <property name="tomcat.full.path.linux" location="${tomcat.home}/bin/startup.sh" />
-    <exec executable="${tomcat.full.path.linux}" spawn="yes" osfamily="unix">
+    <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
+    <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
-      <arg value="-Djboss.server.data.dir=${tomcat.server.data.dir}" />
+    </exec>
+    <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
+             checkeveryunit="second" timeoutproperty="jboss.timeout">
+      <socket server="${jboss.bind.address}" port="8080" />
+    </waitfor>
+    <fail if="jboss.timeout" message="JBoss AS7 did not start within 5 minutes"/>
+  </target>
+  <target name="start.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">
+    <property name="jboss.full.path.win" location="${jboss.home}/bin/run.bat" />
+    <exec executable="${jboss.full.path.win}" spawn="yes"
+          osfamily="windows">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
+      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
+    </exec>
+    <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
+    <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
+      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
+    </exec>
+    <waitfor maxwait="10" maxwaitunit="minute" checkevery="30"
+             checkeveryunit="second" timeoutproperty="jboss.timeout">
+      <socket server="${jboss.bind.address}" port="8080" />
+    </waitfor>
+    <fail if="jboss.timeout" message="JBoss AS5 did not start within 10 minutes"/>
+  </target>
+  <!-- Stop JBoss AS -->
+  <target name="stop.jboss">
+    <antcall target="stop.jboss5" />
+    <antcall target="stop.jboss7" />
+  </target>
+  <target name="stop.jboss7" depends="check.jboss.version" if="jboss.version.is.7">
+    <exec executable="${jboss.home}/bin/jboss-admin.bat"
+          osfamily="windows">
+      <arg value="--connect" />
+      <arg value="command=:shutdown" />
+    </exec>
+    <exec executable="${jboss.home}/bin/jboss-admin.sh" osfamily="unix">
+      <arg value="--connect" />
+      <arg value="command=:shutdown" />
     </exec>
   </target>
-  <!-- Stop Tomcat -->
-  <target name="stop.tomcat">
-    <exec executable="${tomcat.home}/bin/shutdown.bat"
+  <target name="stop.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">
+    <exec executable="${jboss.home}/bin/shutdown.bat"
           osfamily="windows">
+      <arg value="-s" />
+      <arg value="jnp://${jboss.bind.address}:1099" />
+      <arg value="-S" />
     </exec>
-    <exec executable="${tomcat.home}/bin/shutdown.sh" osfamily="unix">
+    <exec executable="${jboss.home}/bin/shutdown.sh" osfamily="unix">
+      <arg value="-s" />
+      <arg value="jnp://${jboss.bind.address}:1099" />
+      <arg value="-S" />
     </exec>
   </target>
 
@@ -463,12 +684,16 @@
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
     <exec executable="${eclipse.home}/eclipse" spawn="yes" os="Linux">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
   	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
     <exec executable="./generate.mac.eclipse.preferences.sh" osfamily="mac"/>
@@ -477,6 +702,8 @@
       <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="../../../../mac.eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
   </target>
 
@@ -502,19 +729,22 @@
   </target>
 
   <!-- Start Demo -->
-  <target name="start.demo" depends="start.h2,start.tomcat,start.eclipse,start.human.task" />
+  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
   
+  <!-- Start Demo (Eclipse) -->
+  <target name="start.demo.eclipse" depends="start.h2,start.eclipse,start.human.task" />
+
   <!-- Start Demo (No Eclipse)--> 
-  <target name="start.demo.noeclipse" depends="start.h2,start.tomcat,start.human.task" />	
+  <target name="start.demo.noeclipse" depends="start.h2,start.jboss,start.human.task" />	
   
   <!-- Stop Demo -->
-  <target name="stop.demo" depends="stop.h2,stop.tomcat" />
+  <target name="stop.demo" depends="stop.h2,stop.jboss" />
 
   <!-- ############ CLEAN ############ -->
 	
-  <!-- Clean tomcat -->
-  <target name="clean.tomcat">
-    <delete dir="${install.home}/apache-tomcat-${tomcat.server.version}"/>
+  <!-- Clean jboss -->
+  <target name="clean.jboss">
+    <delete dir="${jboss.home}"/>
     <delete dir="${install.home}/repository"/>
     <delete file="${install.home}/repository.xml"/>
   </target>
@@ -527,8 +757,8 @@
   </target>
 
   <!-- Clean Demo -->
-  <target name="clean.demo" depends="clean.tomcat,clean.eclipse" />
+  <target name="clean.demo" depends="clean.jboss,clean.eclipse" />
   <!-- Clean Demo (No Eclipse) -->
-  <target name="clean.demo.noeclipse" depends="clean.tomcat" />
+  <target name="clean.demo.noeclipse" depends="clean.jboss" />
 	
 </project>
