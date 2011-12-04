@@ -66,7 +66,7 @@ public class HospitalStatusServiceImpl implements HospitalStatusService {
 
     public String requestBed(String id) {
         System.out.println("Requesting a Bed " + System.currentTimeMillis());
-        ksession.insert(new RequestBed(id));
+        ksession.insert(new BedRequest(id));
         return UUID.randomUUID().toString();
     }
 

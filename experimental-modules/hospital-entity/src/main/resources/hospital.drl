@@ -1,23 +1,23 @@
 package test;
-
 import com.wordpress.salaboy.hospital.*;
+import com.wordpress.salaboy.model.roles.*;
 
-query "getAvailableBeds" ()
-    Hospital($availableBeds: availableBeds )
-end
+//query "getAvailableBeds" ()
+//    Hospital($availableBeds: availableBeds )
+//end
 
-rule "request bed"
-    no-loop
-    when
-        $hospital: Hospital()
-        $bedRequest: RequestBed()
-    then
-        Patient patient = new Patient();
+///rule "request bed"
+//    no-loop
+//    when
+//        $hospital: Hospital()
+//        $bedRequest: RequestBed()
+//    then
+//        Patient patient = new Patient("John Doe");
 
-        System.out.println("Requesting a bed!");    
-        kcontext.getKnowledgeRuntime().startProcess("NewPatientCheckIn", null);
-        System.out.println("Getting ready for recieving a new patient");
-end
+//        System.out.println("Requesting a bed!");    
+//        kcontext.getKnowledgeRuntime().startProcess("NewPatientCheckIn", null);
+//        System.out.println("Getting ready for recieving a new patient");
+//end
 
 rule "assign bed"
     no-loop

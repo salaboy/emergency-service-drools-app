@@ -1,72 +1,182 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="__PsFUBBGEeGBTKcmXm90_A" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" targetNamespace="http://www.omg.org/bpmn20">
-  <bpmn2:process id="NewPatientCheckIn" drools:packageName="com.salaboy.wordpress" name="" isExecutable="true">
-    <bpmn2:startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" drools:bgcolor="#ffffff" name="">
-      <bpmn2:outgoing>_318CA172-935E-4856-8A81-486676F0C9E5</bpmn2:outgoing>
-    </bpmn2:startEvent>
-    <bpmn2:businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" drools:bgcolor="#b1c2d6" drools:ruleFlowGroup="assign-bed" name="Assign Bed">
-      <bpmn2:incoming>_318CA172-935E-4856-8A81-486676F0C9E5</bpmn2:incoming>
-      <bpmn2:outgoing>_7D996980-E628-4B58-9F76-F4EB72C7AD35</bpmn2:outgoing>
-    </bpmn2:businessRuleTask>
-    <bpmn2:sequenceFlow id="_318CA172-935E-4856-8A81-486676F0C9E5" sourceRef="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" targetRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7"/>
-    <bpmn2:userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" drools:bgcolor="#b1c2d6" name="Prepare Staff to receive patient">
-      <bpmn2:incoming>_7D996980-E628-4B58-9F76-F4EB72C7AD35</bpmn2:incoming>
-      <bpmn2:outgoing>_235B625C-8BBA-4582-AD12-195FC15A20A0</bpmn2:outgoing>
-      <bpmn2:potentialOwner id="__PsFURBGEeGBTKcmXm90_A">
-        <bpmn2:resourceAssignmentExpression id="__PsFUhBGEeGBTKcmXm90_A">
-          <bpmn2:formalExpression id="__PsFUxBGEeGBTKcmXm90_A">hospital-resource-planner</bpmn2:formalExpression>
-        </bpmn2:resourceAssignmentExpression>
-      </bpmn2:potentialOwner>
-    </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="_7D996980-E628-4B58-9F76-F4EB72C7AD35" sourceRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7" targetRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8"/>
-    <bpmn2:userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" drools:bgcolor="#b1c2d6" name="Check In Patient">
-      <bpmn2:incoming>_235B625C-8BBA-4582-AD12-195FC15A20A0</bpmn2:incoming>
-      <bpmn2:outgoing>_A784371E-6AE9-4C5B-98AD-3FD80B9DFE9B</bpmn2:outgoing>
-      <bpmn2:potentialOwner id="__PsFVBBGEeGBTKcmXm90_A">
-        <bpmn2:resourceAssignmentExpression id="__PsFVRBGEeGBTKcmXm90_A">
-          <bpmn2:formalExpression id="__PsFVhBGEeGBTKcmXm90_A">nurse</bpmn2:formalExpression>
-        </bpmn2:resourceAssignmentExpression>
-      </bpmn2:potentialOwner>
-    </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="_235B625C-8BBA-4582-AD12-195FC15A20A0" sourceRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8" targetRef="_17906C7A-0495-412D-927C-E936977ADE6B"/>
-    <bpmn2:endEvent id="_EAAB750D-537B-447D-8D31-5BD33110F838" drools:bgcolor="#ffffff" name="">
-      <bpmn2:incoming>_A784371E-6AE9-4C5B-98AD-3FD80B9DFE9B</bpmn2:incoming>
-    </bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="_A784371E-6AE9-4C5B-98AD-3FD80B9DFE9B" sourceRef="_17906C7A-0495-412D-927C-E936977ADE6B" targetRef="_EAAB750D-537B-447D-8D31-5BD33110F838"/>
-  </bpmn2:process>
-  <bpmndi:BPMNDiagram id="__PsFVxBGEeGBTKcmXm90_A">
-    <bpmndi:BPMNPlane id="__PsFWBBGEeGBTKcmXm90_A" bpmnElement="NewPatientCheckIn">
-      <bpmndi:BPMNShape id="__PssYBBGEeGBTKcmXm90_A" bpmnElement="_F452FF19-66B0-4D84-92E0-8AF0623B60CF">
-        <dc:Bounds height="30.0" width="30.0" x="102.0" y="184.0"/>
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.omg.org/bpmn20"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_bedRequestItem" structureRef="com.wordpress.salaboy.hospital.BedRequest" />
+  <itemDefinition id="_checkInResultsItem" structureRef="com.wordpress.salaboy.hospital.CheckInResults" />
+
+  <process processType="Private" isExecutable="true" id="NewPatientCheckIn" name="" tns:packageName="com.salaboy.wordpress" >
+
+    <!-- process variables -->
+    <property id="bedRequest" itemSubjectRef="_bedRequestItem"/>
+    <property id="checkInResults" itemSubjectRef="_checkInResultsItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="" />
+    <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
+    </businessRuleTask>
+    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate Staff" >
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <script>System.out.println("Bed Request = "+kcontext.getVariable("bedRequest"));
+                kcontext.getKnowledgeRuntime().insert(kcontext.getVariable("bedRequest"));</script>
+        </tns:onEntry-script>
+      </extensionElements>
+      <ioSpecification>
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput" name="timestamp" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput" name="requestingEntity" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput" name="patientAge" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput" name="patientGender" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="patientStatus" />
+        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="gate" />
+        <inputSet>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{bedRequest.timestamp}</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{bedRequest.requestingEntity}</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{bedRequest.patientAge}</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{bedRequest.patientGender}</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{bedRequest.patientStatus}</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</sourceRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</from>
+          <to xsi:type="tFormalExpression">gate</to>
+        </assignment>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>hospital-resource-planner</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check In Patient" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>nurse</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_EAAB750D-537B-447D-8D31-5BD33110F838" name="" />
+    <task id="_6" name="Notify Gate to Ambulance" tns:taskName="Notification System" >
+      <ioSpecification>
+        <dataInput id="_6_#{checkInResults.gate}Input" name="#{checkInResults.gate}" />
+        <inputSet>
+          <dataInputRefs>_6_#{checkInResults.gate}Input</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>gate</sourceRef>
+        <targetRef>_6_#{checkInResults.gate}Input</targetRef>
+      </dataInputAssociation>
+    </task>
+
+    <!-- connections -->
+    <sequenceFlow id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF-_88F9E7F2-D069-4312-8BB1-66257EB897A7" sourceRef="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" targetRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7" />
+    <sequenceFlow id="_88F9E7F2-D069-4312-8BB1-66257EB897A7-_20DF2104-985A-4926-8D45-80A09FBDFAE8" sourceRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7" targetRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8" />
+    <sequenceFlow id="_6-_17906C7A-0495-412D-927C-E936977ADE6B" sourceRef="_6" targetRef="_17906C7A-0495-412D-927C-E936977ADE6B" />
+    <sequenceFlow id="_17906C7A-0495-412D-927C-E936977ADE6B-_EAAB750D-537B-447D-8D31-5BD33110F838" sourceRef="_17906C7A-0495-412D-927C-E936977ADE6B" targetRef="_EAAB750D-537B-447D-8D31-5BD33110F838" />
+    <sequenceFlow id="_20DF2104-985A-4926-8D45-80A09FBDFAE8-_6" sourceRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="NewPatientCheckIn" >
+      <bpmndi:BPMNShape bpmnElement="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" >
+        <dc:Bounds x="16" y="17" width="48" height="48" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="__PssYRBGEeGBTKcmXm90_A" bpmnElement="_88F9E7F2-D069-4312-8BB1-66257EB897A7">
-        <dc:Bounds height="80.0" width="100.0" x="177.0" y="159.0"/>
+      <bpmndi:BPMNShape bpmnElement="_88F9E7F2-D069-4312-8BB1-66257EB897A7" >
+        <dc:Bounds x="96" y="16" width="100" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="__PssYhBGEeGBTKcmXm90_A" bpmnElement="_318CA172-935E-4856-8A81-486676F0C9E5">
-        <di:waypoint xsi:type="dc:Point" x="117.0" y="199.0"/>
-        <di:waypoint xsi:type="dc:Point" x="227.0" y="199.0"/>
+      <bpmndi:BPMNShape bpmnElement="_20DF2104-985A-4926-8D45-80A09FBDFAE8" >
+        <dc:Bounds x="228" y="16" width="136" height="51" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_17906C7A-0495-412D-927C-E936977ADE6B" >
+        <dc:Bounds x="615" y="16" width="157" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_EAAB750D-537B-447D-8D31-5BD33110F838" >
+        <dc:Bounds x="804" y="17" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="396" y="17" width="187" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_F452FF19-66B0-4D84-92E0-8AF0623B60CF-_88F9E7F2-D069-4312-8BB1-66257EB897A7" >
+        <di:waypoint x="40" y="41" />
+        <di:waypoint x="146" y="41" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="__PssYxBGEeGBTKcmXm90_A" bpmnElement="_20DF2104-985A-4926-8D45-80A09FBDFAE8">
-        <dc:Bounds height="80.0" width="100.0" x="315.0" y="159.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="__PssZBBGEeGBTKcmXm90_A" bpmnElement="_7D996980-E628-4B58-9F76-F4EB72C7AD35">
-        <di:waypoint xsi:type="dc:Point" x="227.0" y="199.0"/>
-        <di:waypoint xsi:type="dc:Point" x="365.0" y="199.0"/>
+      <bpmndi:BPMNEdge bpmnElement="_88F9E7F2-D069-4312-8BB1-66257EB897A7-_20DF2104-985A-4926-8D45-80A09FBDFAE8" >
+        <di:waypoint x="146" y="41" />
+        <di:waypoint x="296" y="41" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="__PssZRBGEeGBTKcmXm90_A" bpmnElement="_17906C7A-0495-412D-927C-E936977ADE6B">
-        <dc:Bounds height="80.0" width="100.0" x="450.0" y="159.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="__PssZhBGEeGBTKcmXm90_A" bpmnElement="_235B625C-8BBA-4582-AD12-195FC15A20A0">
-        <di:waypoint xsi:type="dc:Point" x="365.0" y="199.0"/>
-        <di:waypoint xsi:type="dc:Point" x="500.0" y="199.0"/>
+      <bpmndi:BPMNEdge bpmnElement="_6-_17906C7A-0495-412D-927C-E936977ADE6B" >
+        <di:waypoint x="489" y="41" />
+        <di:waypoint x="693" y="41" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="__PssZxBGEeGBTKcmXm90_A" bpmnElement="_EAAB750D-537B-447D-8D31-5BD33110F838">
-        <dc:Bounds height="28.0" width="28.0" x="592.0" y="182.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="__PssaBBGEeGBTKcmXm90_A" bpmnElement="_A784371E-6AE9-4C5B-98AD-3FD80B9DFE9B">
-        <di:waypoint xsi:type="dc:Point" x="500.0" y="199.0"/>
-        <di:waypoint xsi:type="dc:Point" x="606.0" y="196.0"/>
+      <bpmndi:BPMNEdge bpmnElement="_17906C7A-0495-412D-927C-E936977ADE6B-_EAAB750D-537B-447D-8D31-5BD33110F838" >
+        <di:waypoint x="693" y="41" />
+        <di:waypoint x="828" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_20DF2104-985A-4926-8D45-80A09FBDFAE8-_6" >
+        <di:waypoint x="296" y="41" />
+        <di:waypoint x="489" y="41" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+
+</definitions>
