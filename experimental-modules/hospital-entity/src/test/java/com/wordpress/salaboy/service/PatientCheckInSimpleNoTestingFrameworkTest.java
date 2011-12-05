@@ -4,32 +4,21 @@ package com.wordpress.salaboy.service;
 
 
 
-import com.wordpress.salaboy.hospital.BedRequest;
-import org.drools.runtime.process.WorkflowProcessInstance;
-import com.wordpress.salaboy.hospital.CheckInResults;
-import com.wordpress.salaboy.hospital.Hospital;
 import com.wordpress.salaboy.service.helpers.AutoHumanWorkItemHandler;
 import com.wordpress.salaboy.service.helpers.NotificationSystemWorkItemHandler;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.builder.*;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.process.*;
-import org.drools.event.rule.*;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +36,7 @@ public class PatientCheckInSimpleNoTestingFrameworkTest {
     @Test
     public void testPatientCheckInProcess() {
         HashMap<String, Object> input = new HashMap<String, Object>();
-        BedRequest bedRequest = new BedRequest("1", System.currentTimeMillis(), "911", 45, "John Doe", "M", "heart attack");
+        
         input.put("bedrequest.date", "20111205");
         input.put("bedrequest.entity", "911");
         input.put("bedrequest.patientage", "45");

@@ -1,0 +1,14 @@
+import org.drools.process.core.datatype.impl.type.StringDataType;
+[
+  // the Notification System work item
+  [
+    "name" : "Notification System",
+    "parameters" : [
+      "Message" : new StringDataType(),
+      
+    ],
+    "displayName" : "Notification System",
+    "icon" : "notification.png"
+  ]
+
+]

@@ -4,7 +4,7 @@ roles = [
           'doctor'  : new Doctor( 'doctor'),     
           'patient'  : new Patient( 'patient'),     
           'nurse'      : new Nurse('nurse'),
-          'hospital-resource-planner'  : new HospitalResourcePlanner( 'hospital-resource-planner')
+          'hospital'  : new HospitalResourcePlanner( 'hospital')
         ];       
 
 return roles;
