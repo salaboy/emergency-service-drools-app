@@ -4,7 +4,7 @@ users = [
           'doctor'  : new User( 'doctor'),     
           'patient'  : new User( 'patient'),     
           'nurse'      : new User('nurse'),
-          'hospital-resource-planner'  : new User( 'hospital-resource-planner'),
+          'hospital'  : new User( 'hospital'),
           'admin'      : new User('Administrator')
         ];       
 

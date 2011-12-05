@@ -105,7 +105,7 @@
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
-          <formalExpression>hospital-resource-planner</formalExpression>
+          <formalExpression>hospital</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
