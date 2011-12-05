@@ -30,9 +30,7 @@ public class NotificationSystemWorkItemHandler implements WorkItemHandler {
             System.out.println(">>>>>>> Key: " + key + "  -- Value: " + workItem.getParameter(key));
         }
         Map<String, Object> results = new HashMap<String, Object>();
-        CheckInResults checkInResult = new CheckInResults("3", (String) workItem.getParameter("gate"), -1);
-        checkInResult.setNotified(true);
-        results.put("results", checkInResult);
+        results.put("checkinresults.notified", "true");
         manager.completeWorkItem(workItemId, results);
     }
 
