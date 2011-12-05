@@ -12,45 +12,45 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_bedrequest.idItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.dateItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.entityItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.patientageItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.patientnameItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.patientgenderItem" structureRef="String" />
-  <itemDefinition id="_bedrequest.patientstatusItem" structureRef="String" />
-  <itemDefinition id="_checkinresults.gateItem" structureRef="String" />
-  <itemDefinition id="_checkinresults.checkedinItem" structureRef="String" />  
-  <itemDefinition id="_checkinresults.notifiedItem" structureRef="String" />
-  <itemDefinition id="_checkinresults.timeItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_idItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_dateItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_entityItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientageItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientnameItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientgenderItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientstatusItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_gateItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_checkedinItem" structureRef="String" />  
+  <itemDefinition id="_checkinresults_notifiedItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_timeItem" structureRef="String" />
     
 
   <process processType="Private" isExecutable="true" id="NewPatientCheckIn" name="Patient Check In" tns:packageName="defaultPackage" >
 
     <!-- process variables -->
-    <property id="bedrequest.id" itemSubjectRef="_bedrequest.idItem"/>
-    <property id="bedrequest.date" itemSubjectRef="_bedrequest.dateItem"/>
-    <property id="bedrequest.entity" itemSubjectRef="_bedrequest.entityItem"/>
-    <property id="bedrequest.patientage" itemSubjectRef="_bedrequest.patientageItem"/>
-    <property id="bedrequest.patientname" itemSubjectRef="_bedrequest.patientnameItem"/>
-    <property id="bedrequest.patientgender" itemSubjectRef="_bedrequest.patientgenderItem"/>
-    <property id="bedrequest.patientstatus" itemSubjectRef="_bedrequest.patientstatusItem"/>
-    <property id="checkinresults.gate" itemSubjectRef="_checkinresults.gateItem"/>
-    <property id="checkinresults.checkedin" itemSubjectRef="_checkinresults.checkedinItem"/>
-    <property id="checkinresults.notified" itemSubjectRef="_checkinresults.notifiedItem"/>
-    <property id="checkinresults.time" itemSubjectRef="_checkinresults.timeItem"/>
+    <property id="bedrequest_id" itemSubjectRef="_bedrequest_idItem"/>
+    <property id="bedrequest_date" itemSubjectRef="_bedrequest_dateItem"/>
+    <property id="bedrequest_entity" itemSubjectRef="_bedrequest_entityItem"/>
+    <property id="bedrequest_patientage" itemSubjectRef="_bedrequest_patientageItem"/>
+    <property id="bedrequest_patientname" itemSubjectRef="_bedrequest_patientnameItem"/>
+    <property id="bedrequest_patientgender" itemSubjectRef="_bedrequest_patientgenderItem"/>
+    <property id="bedrequest_patientstatus" itemSubjectRef="_bedrequest_patientstatusItem"/>
+    <property id="checkinresults_gate" itemSubjectRef="_checkinresults_gateItem"/>
+    <property id="checkinresults_checkedin" itemSubjectRef="_checkinresults_checkedinItem"/>
+    <property id="checkinresults_notified" itemSubjectRef="_checkinresults_notifiedItem"/>
+    <property id="checkinresults_time" itemSubjectRef="_checkinresults_timeItem"/>
     <!-- nodes -->
     <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="">
         <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
           <script>
-                System.out.println(" - ID: "+kcontext.getVariable("bedrequest.id"));
-                System.out.println(" - DATE : "+kcontext.getVariable("bedrequest.date"));
-                System.out.println(" - ENTITY : "+kcontext.getVariable("bedrequest.entity"));
-                System.out.println(" - PATIENT AGE : "+kcontext.getVariable("bedrequest.patientage"));
-                System.out.println(" - PATIENT NAME : "+kcontext.getVariable("bedrequest.patientname"));
-                System.out.println(" - PATIENT GENDER : "+kcontext.getVariable("bedrequest.patientgender"));
-                System.out.println(" - PATIENT STATUS : "+kcontext.getVariable("bedrequest.patientstatus"));
+                System.out.println(" - ID: "+kcontext.getVariable("bedrequest_id"));
+                System.out.println(" - DATE : "+kcontext.getVariable("bedrequest_date"));
+                System.out.println(" - ENTITY : "+kcontext.getVariable("bedrequest_entity"));
+                System.out.println(" - PATIENT AGE : "+kcontext.getVariable("bedrequest_patientage"));
+                System.out.println(" - PATIENT NAME : "+kcontext.getVariable("bedrequest_patientname"));
+                System.out.println(" - PATIENT GENDER : "+kcontext.getVariable("bedrequest_patientgender"));
+                System.out.println(" - PATIENT STATUS : "+kcontext.getVariable("bedrequest_patientstatus"));
                     
                 //System.out.println("Bed Request = "+kcontext.getVariable("bedRequest"));
                 //kcontext.getKnowledgeRuntime().insert();
@@ -60,15 +60,23 @@
     </startEvent>
     <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
     </businessRuleTask>
-    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate Staff" >
+    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate_Staff" >
       <ioSpecification>
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput" name="bedrequest.date" />
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput" name="bedrequest.patientage" />
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput" name="bedrequest.entity" />
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput" name="bedrequest.patientgender" />
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="bedrequest.patientstatus" />
-        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="checkinresults.gate" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput" name="Content" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput" name="Comment" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput" name="Skippable" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput" name="TaskName" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput" name="bedrequest_date" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput" name="bedrequest_patientage" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput" name="bedrequest_entity" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput" name="bedrequest_patientgender" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="bedrequest_patientstatus" />
+        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="checkinresults_gate" />
         <inputSet>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</dataInputRefs>
@@ -80,41 +88,74 @@
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>bedrequest.date</sourceRef>
+        <sourceRef>content</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task for staff coordination.</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Coordinate_Staff</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_date</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>bedrequest.patientage</sourceRef>
+        <sourceRef>bedrequest_patientage</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>bedrequest.entity</sourceRef>
+        <sourceRef>bedrequest_entity</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>bedrequest.patientgender</sourceRef>
+        <sourceRef>bedrequest_patientgender</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</targetRef>
       </dataInputAssociation>
       <dataInputAssociation>
-        <sourceRef>bedrequest.patientstatus</sourceRef>
+        <sourceRef>bedrequest_patientstatus</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</targetRef>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</sourceRef>
-        <targetRef>checkinresults.gate</targetRef>
+        <targetRef>checkinresults_gate</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
-          <formalExpression>hospital-resource-planner</formalExpression>
+          <formalExpression>hospital</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-    <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check In Patient" >
+    <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check_In_Patient" >
       <ioSpecification>
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput" name="checkinresults.notified" />
-        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput" name="checkinresults.checkedin" />
-        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput" name="checkinresults.time" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput" name="Content" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput" name="Comment" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput" name="Skippable" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput" name="TaskName" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput" name="checkinresults_notified" />
+        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput" name="checkinresults_checkedin" />
+        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput" name="checkinresults_time" />
         <inputSet>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput</dataInputRefs>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</dataInputRefs>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</dataInputRefs>
+	    <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</dataInputRefs>
             <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput</dataInputRefs>
         </inputSet>
         <outputSet>
@@ -123,16 +164,41 @@
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>checkinresults.notified</sourceRef>
+        <sourceRef>content</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task for checking in patient.</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Check_In_Patient</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>checkinresults_notified</sourceRef>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput</targetRef>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput</sourceRef>
-        <targetRef>checkinresults.checkedin</targetRef>
+        <targetRef>checkinresults_checkedin</targetRef>
       </dataOutputAssociation>
       <dataOutputAssociation>
         <sourceRef>_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput</sourceRef>
-        <targetRef>checkinresults.time</targetRef>
+        <targetRef>checkinresults_time</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -143,8 +209,8 @@
     <endEvent id="_EAAB750D-537B-447D-8D31-5BD33110F838" name="" />
     <task id="_6" name="Notify Gate to Ambulance" tns:taskName="Notification System" >
       <ioSpecification>
-        <dataInput id="_6_gateInput" name="checkinresults.gate" />
-        <dataOutput id="_6_resultsOutput" name="checkinresults.notified" />
+        <dataInput id="_6_gateInput" name="checkinresults_gate" />
+        <dataOutput id="_6_resultsOutput" name="checkinresults_notified" />
         <inputSet>
           <dataInputRefs>_6_gateInput</dataInputRefs>
         </inputSet>
@@ -153,12 +219,12 @@
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>checkinresults.gate</sourceRef>
+        <sourceRef>checkinresults_gate</sourceRef>
         <targetRef>_6_gateInput</targetRef>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_6_resultsOutput</sourceRef>
-        <targetRef>checkinresults.notified</targetRef>
+        <targetRef>checkinresults_notified</targetRef>
       </dataOutputAssociation>
     </task>
 
