@@ -75,11 +75,11 @@
 //		assertThat("Coordinate Staff",isInActivity(pi));
 //		HashMap<String, Object> result = new HashMap<String, Object>();
 //		CheckInResults firstResult = new CheckInResults("2");
-//		firstResult.setGate("second-flor-gate");
+//		firstResult.setGate("second-floor-gate");
 //		result.put("outcome", firstResult);
 //		taskClient.performLifeCycle("hospital-resource-planner", null, "en-UK", result);
 //		
-//		assertThat("second-flor-gate", variableValue(pi, "#{checkInResults.gate}"));
+//		assertThat("second-floor-gate", variableValue(pi, "#{checkInResults.gate}"));
 //		assertThat("3", variableValue(pi, "#{checkInResults.id}"));
 //		assertThat("true", variableValue(pi, "#{checkInResults.notified}"));
 //		
@@ -92,7 +92,7 @@
 //		result.put("outcome", lastResult);
 //		taskClient.performLifeCycle("nurse", null, "en-UK", result);
 //		
-//		assertThat("second-flor-gate", variableValue(pi, "#{checkInResults.gate}"));
+//		assertThat("second-floor-gate", variableValue(pi, "#{checkInResults.gate}"));
 //		assertThat("3", variableValue(pi, "#{checkInResults.id}"));
 //		assertThat("true", variableValue(pi, "#{checkInResults.notified}"));
 //		assertThat("true", variableValue(pi, "#{checkInResults.checkedIn}"));

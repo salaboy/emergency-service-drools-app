@@ -15,23 +15,24 @@
   <itemDefinition id="_bedRequestItem" structureRef="com.wordpress.salaboy.hospital.BedRequest" />
   <itemDefinition id="_checkInResultsItem" structureRef="com.wordpress.salaboy.hospital.CheckInResults" />
 
-  <process processType="Private" isExecutable="true" id="NewPatientCheckIn" name="" tns:packageName="com.salaboy.wordpress" >
+  <process processType="Private" isExecutable="true" id="NewPatientCheckIn" name="Patient Check In" tns:packageName="defaultPackage" >
 
     <!-- process variables -->
     <property id="bedRequest" itemSubjectRef="_bedRequestItem"/>
     <property id="checkInResults" itemSubjectRef="_checkInResultsItem"/>
 
     <!-- nodes -->
-    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="" />
-    <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
-    </businessRuleTask>
-    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate Staff" >
-      <extensionElements>
+    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="">
+        <extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
           <script>System.out.println("Bed Request = "+kcontext.getVariable("bedRequest"));
                 kcontext.getKnowledgeRuntime().insert(kcontext.getVariable("bedRequest"));</script>
         </tns:onEntry-script>
       </extensionElements>
+    </startEvent>
+    <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
+    </businessRuleTask>
+    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate Staff" >
       <ioSpecification>
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput" name="timestamp" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput" name="requestingEntity" />
