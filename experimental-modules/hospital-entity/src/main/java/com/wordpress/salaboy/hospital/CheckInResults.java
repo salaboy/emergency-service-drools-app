@@ -14,6 +14,8 @@ public class CheckInResults implements Serializable{
     private String id;
     private String gate;
     private long checkinTimestamp;
+    private boolean notified;
+    private boolean checkedIn;
     
     public CheckInResults(String id) {
         this.id = id;
@@ -50,6 +52,22 @@ public class CheckInResults implements Serializable{
     public void setGate(String gate) {
         this.gate = gate;
     }
+
+	public void setNotified(boolean notified) {
+		this.notified = notified;
+	}
+
+	public boolean isNotified() {
+		return notified;
+	}
+
+	public void setCheckedIn(boolean checkedIn) {
+		this.checkedIn = checkedIn;
+	}
+
+	public boolean isCheckedIn() {
+		return checkedIn;
+	}
     
     
     

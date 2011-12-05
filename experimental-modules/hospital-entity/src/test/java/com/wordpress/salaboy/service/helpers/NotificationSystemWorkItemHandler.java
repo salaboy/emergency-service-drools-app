@@ -4,10 +4,13 @@
  */
 package com.wordpress.salaboy.service.helpers;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+
+import com.wordpress.salaboy.hospital.CheckInResults;
 
 /**
  *
@@ -26,7 +29,11 @@ public class NotificationSystemWorkItemHandler implements WorkItemHandler {
         for (String key : workItem.getParameters().keySet()) {
             System.out.println(">>>>>>> Key: " + key + "  -- Value: " + workItem.getParameter(key));
         }
-
+        Map<String, Object> results = new HashMap<String, Object>();
+        CheckInResults checkInResult = new CheckInResults("3", (String) workItem.getParameter("gate"), -1);
+        checkInResult.setNotified(true);
+        results.put("results", checkInResult);
+        manager.completeWorkItem(workItemId, results);
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

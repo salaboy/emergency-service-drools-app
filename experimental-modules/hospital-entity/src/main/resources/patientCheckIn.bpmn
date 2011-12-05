@@ -38,7 +38,7 @@
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput" name="patientAge" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput" name="patientGender" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="patientStatus" />
-        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="gate" />
+        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_outcomeOutput" name="outcome" />
         <inputSet>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</dataInputRefs>
@@ -47,7 +47,7 @@
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</dataInputRefs>
         </inputSet>
         <outputSet>
-          <dataOutputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</dataOutputRefs>
+          <dataOutputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_outcomeOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
@@ -86,11 +86,8 @@
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</sourceRef>
-        <assignment>
-          <from xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</from>
-          <to xsi:type="tFormalExpression">gate</to>
-        </assignment>
+        <sourceRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_outcomeOutput</sourceRef>
+        <targetRef>checkInResults</targetRef>
       </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -100,11 +97,17 @@
     </userTask>
     <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check In Patient" >
       <ioSpecification>
+      	<dataOutput id="_9_results" name="outcome" />
         <inputSet>
         </inputSet>
         <outputSet>
+        	<dataOutputRefs>_9_results</dataOutputRefs>
         </outputSet>
       </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>_9_results</sourceRef>
+        <targetRef>checkInResults</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>nurse</formalExpression>
@@ -114,17 +117,26 @@
     <endEvent id="_EAAB750D-537B-447D-8D31-5BD33110F838" name="" />
     <task id="_6" name="Notify Gate to Ambulance" tns:taskName="Notification System" >
       <ioSpecification>
-        <dataInput id="_6_#{checkInResults.gate}Input" name="#{checkInResults.gate}" />
+        <dataInput id="_6_gateInput" name="gate" />
+        <dataOutput id="_8_results" name="results" />
         <inputSet>
-          <dataInputRefs>_6_#{checkInResults.gate}Input</dataInputRefs>
+          <dataInputRefs>_6_gateInput</dataInputRefs>
         </inputSet>
         <outputSet>
+        <dataOutputRefs>_8_results</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>gate</sourceRef>
-        <targetRef>_6_#{checkInResults.gate}Input</targetRef>
+        <targetRef>_6_gateInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{checkInResults.gate}</from>
+          <to xsi:type="tFormalExpression">_6_gateInput</to>
+        </assignment>
       </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_8_results</sourceRef>
+        <targetRef>checkInResults</targetRef>
+      </dataOutputAssociation>
     </task>
 
     <!-- connections -->
