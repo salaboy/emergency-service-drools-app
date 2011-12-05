@@ -88,14 +88,16 @@ public class PatientCheckInSimpleNoTestingFrameworkTest {
         session.getWorkItemManager().completeWorkItem(autoHumanWorkItemHandler.getWorkItemId(), result);
         
         
+        assertEquals("second-floor-gate", pI.getVariable("checkinresults.gate"));
+        assertEquals("1201", pI.getVariable("checkinresults.time"));
+        assertEquals("true", pI.getVariable("checkinresults.notified"));
+        assertEquals("true", pI.getVariable("checkinresults.checkedin"));
         
-        
-        System.out.println("Check In Result Gate = "+pI.getVariable("checkinresults.gate"));
-            System.out.println("Check In Result Check In timestamp = "+pI.getVariable("checkinresults.time"));
-        
-        System.out.println("Check In Is Notified = "+pI.getVariable("checkinresults.notified"));
-        System.out.println("Check In Is Succesfully Checked In = "+pI.getVariable("checkinresults.checkedin"));
-//        
+        System.out.println("-> Check In Result Gate = "+pI.getVariable("checkinresults.gate"));
+        System.out.println("-> Check In Result Check In timestamp = "+pI.getVariable("checkinresults.time"));
+        System.out.println("-> Check In Is Notified = "+pI.getVariable("checkinresults.notified"));
+        System.out.println("-> Check In Is Succesfully Checked In = "+pI.getVariable("checkinresults.checkedin"));
+       
         
 
         assertEquals(pI.getState(), ProcessInstance.STATE_COMPLETED);

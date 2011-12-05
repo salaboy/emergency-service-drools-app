@@ -4,6 +4,7 @@
  */
 package com.wordpress.salaboy.hospital;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author salaboy
  */
-public class Hospital {
+public class Hospital implements Serializable{
 
     private String id;
     private int availableBeds;
