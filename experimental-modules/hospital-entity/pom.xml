@@ -27,34 +27,7 @@
                 </configuration>
             </plugin>
             
-            <plugin>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-aar-maven-plugin</artifactId>
-                <version>1.6.1</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <aarName>HospitalService</aarName>
-                    
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>create-aar1</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>aar</goal>
-                        </goals>
-                        <configuration>
-                            <aarName>
-                                HospitalService
-                            </aarName>
-                            <servicesXmlFile>
-                                ${basedir}/src/main/resources/META-INF/services.xml
-                            </servicesXmlFile>
-                            <includeDependencies>true</includeDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            
            
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
