@@ -9,6 +9,7 @@
         <version>0.4-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
+    <groupId>com.wordpress.salaboy.emergencyservice</groupId>
     <artifactId>hospital-entity</artifactId>
     <version>0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -68,8 +69,8 @@
             <groupId>org.drools</groupId>
             <artifactId>knowledge-api</artifactId>
             <!--version>5.1.1</version-->
-            <version>5.4.0-SNAPSHOT</version>
-            <!--version>5.3.0.Final</version-->
+            <!--version>5.4.0-SNAPSHOT</version-->
+            <version>5.3.0.Final</version>
         </dependency>
     
        
@@ -77,15 +78,15 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
             <!--version>5.1.1</version-->
-            <version>5.4.0-SNAPSHOT</version>
-            <!--version>5.3.0.Final</version-->
+            <!--version>5.4.0-SNAPSHOT</version-->
+            <version>5.3.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <!--version>5.1.1</version-->
-            <version>5.4.0-SNAPSHOT</version>
-           <!--version>5.3.0.Final</version-->
+            <!--version>5.4.0-SNAPSHOT</version-->
+           <version>5.3.0.Final</version>
         </dependency> 
         
         <dependency>
@@ -139,13 +140,13 @@
             <artifactId>emergency-service-model</artifactId>
             <version>0.4-SNAPSHOT</version>
         </dependency>
-        <!-- commented due to jbpm-testing-framework is not yet available on maven repos 
+        <!-- commented due to jbpm-testing-framework is not yet available on maven repos -->
         <dependency>
         	<groupId>org.jbpm</groupId>
         	<artifactId>jbpm-testing-framework</artifactId>
         	<version>5.2.0-SNAPSHOT</version>
         </dependency>
-        -->
+        
     </dependencies>
     
     

@@ -37,12 +37,12 @@ public class PatientCheckInSimpleNoTestingFrameworkTest {
     public void testPatientCheckInProcess() {
         HashMap<String, Object> input = new HashMap<String, Object>();
         
-        input.put("bedrequest.date", "20111205");
-        input.put("bedrequest.entity", "911");
-        input.put("bedrequest.patientage", "45");
-        input.put("bedrequest.patientname", "John Doe");
-        input.put("bedrequest.patientgender", "M");
-        input.put("bedrequest.patientstatus", "heart attack");
+        input.put("bedrequest_date", "20111205");
+        input.put("bedrequest_entity", "911");
+        input.put("bedrequest_patientage", "45");
+        input.put("bedrequest_patientname", "John Doe");
+        input.put("bedrequest_patientgender", "M");
+        input.put("bedrequest_patientstatus", "heart attack");
         
         
         AutoHumanWorkItemHandler autoHumanWorkItemHandler = new AutoHumanWorkItemHandler();
@@ -56,11 +56,11 @@ public class PatientCheckInSimpleNoTestingFrameworkTest {
         assertEquals(pI.getState(), ProcessInstance.STATE_ACTIVE);
         
         
-        assertEquals(autoHumanWorkItemHandler.getInput().get("bedrequest.patientage"), "45");
+        assertEquals(autoHumanWorkItemHandler.getInput().get("bedrequest_patientage"), "45");
         
         
         HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put("checkinresults.gate", "second-floor-gate");
+        result.put("checkinresults_gate", "second-floor-gate");
         session.getWorkItemManager().completeWorkItem(autoHumanWorkItemHandler.getWorkItemId(), result);
         
         assertEquals(pI.getState(), ProcessInstance.STATE_ACTIVE);
@@ -72,23 +72,21 @@ public class PatientCheckInSimpleNoTestingFrameworkTest {
         result = new HashMap<String, Object>();
 	
        
-        result.put("checkinresults.checkedin", "true");
-        result.put("checkinresults.time", "1201");
+        result.put("checkinresults_checkedin", "true");
+        result.put("checkinresults_time", "1201");
         session.getWorkItemManager().completeWorkItem(autoHumanWorkItemHandler.getWorkItemId(), result);
         
         
-        assertEquals("second-floor-gate", pI.getVariable("checkinresults.gate"));
-        assertEquals("1201", pI.getVariable("checkinresults.time"));
-        assertEquals("true", pI.getVariable("checkinresults.notified"));
-        assertEquals("true", pI.getVariable("checkinresults.checkedin"));
+        assertEquals("second-floor-gate", pI.getVariable("checkinresults_gate"));
+        assertEquals("1201", pI.getVariable("checkinresults_time"));
+        assertEquals("true", pI.getVariable("checkinresults_notified"));
+        assertEquals("true", pI.getVariable("checkinresults_checkedin"));
         
-        System.out.println("-> Check In Result Gate = "+pI.getVariable("checkinresults.gate"));
-        System.out.println("-> Check In Result Check In timestamp = "+pI.getVariable("checkinresults.time"));
-        System.out.println("-> Check In Is Notified = "+pI.getVariable("checkinresults.notified"));
-        System.out.println("-> Check In Is Succesfully Checked In = "+pI.getVariable("checkinresults.checkedin"));
+        System.out.println("-> Check In Result Gate = "+pI.getVariable("checkinresults_gate"));
+        System.out.println("-> Check In Result Check In timestamp = "+pI.getVariable("checkinresults_time"));
+        System.out.println("-> Check In Is Notified = "+pI.getVariable("checkinresults_notified"));
+        System.out.println("-> Check In Is Succesfully Checked In = "+pI.getVariable("checkinresults_checkedin"));
        
-        
-
         assertEquals(pI.getState(), ProcessInstance.STATE_COMPLETED);
     }
 
