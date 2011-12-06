@@ -103,6 +103,8 @@
            <available file="${install.home}/lib/drools-decisiontables-5.3.0.Final.jar" />
            <available file="${install.home}/lib/drools-templates-5.3.0.Final.jar" />
            <available file="${install.home}/lib/drools-verifier-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/droolsjbpm-ide-common-5.3.0.Final.jar" />
+           <available file="${install.home}/lib/knowledge-api-5.3.0.Final.jar" />
          </and>
        </not>
      </condition>
@@ -115,6 +117,8 @@
     <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-decisiontables/5.3.0.Final/drools-decisiontables-5.3.0.Final.jar" dest="${install.home}/lib/drools-decisiontables-5.3.0.Final.jar" />
     <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-templates/5.3.0.Final/drools-templates-5.3.0.Final.jar" dest="${install.home}/lib/drools-templates-5.3.0.Final.jar" />
     <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/drools-verifier/5.3.0.Final/drools-verifier-5.3.0.Final.jar" dest="${install.home}/lib/drools-verifier-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/droolsjbpm-ide-common/5.3.0.Final/droolsjbpm-ide-common-5.3.0.Final.jar" dest="${install.home}/lib/droolsjbpm-ide-common-5.3.0.Final.jar" />
+    <get src="https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/drools/knowledge-api/5.3.0.Final/knowledge-api-5.3.0.Final.jar" dest="${install.home}/lib/knowledge-api-5.3.0.Final.jar" />
   </target>
 
   <!-- Download Eclipse -->
@@ -195,6 +199,25 @@
     <mkdir dir="${install.home}/lib"/>
     <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.6.2/R201102251600/GEF-SDK-3.6.2.zip"
          dest="${install.home}/lib/GEF-SDK-3.6.2.zip"  />
+  </target>
+
+  <!-- Download jBPM wars -->
+  <target name="download.jBPM.wars.check">
+    <echo message="Checkking jBPM wars download ..." />
+    <condition property="jBPM.wars.not.available">
+      <not>
+        <and>
+          <available file="${install.home}/lib/jbpm-gwt-console-${jBPM.version}.war" />
+          <available file="${install.home}/lib/jbpm-gwt-console-server-${jBPM.version}.war" />
+        </and>
+      </not>
+    </condition>
+  </target>
+  <target name="download.jBPM.wars" depends="download.jBPM.wars.check" if="jBPM.wars.not.available">
+    <echo message="Getting jBPM wars ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-gwt-console-${jBPM.version}.war" />
+    <get src="${jBPM.server.url}" dest="${install.home}/lib/jbpm-gwt-console-server-${jBPM.version}.war" /> 
   </target>
 
   <!-- Download jBPM binaries -->
@@ -324,6 +347,9 @@
     <copy file="${install.home}/lib/drools-verifier-5.3.0.Final.jar"
           tofile="${install.home}/target/WEB-INF/lib/drools-verifier-5.3.0.Final.jar"
           overwrite="true" />
+    <!-- copy file="${install.home}/auth/beans.xml" 
+          tofile="${install.home}/target/WEB-INF/beans.xml"
+          overwrite="true" / -->
     <zip basedir="${install.home}/target" destfile="${install.home}/lib/drools-guvnor.war" />
     <copy file="${install.home}/lib/drools-guvnor.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
@@ -349,12 +375,12 @@
     <antcall target="install.jBPM-gwt-console.into.jboss5" />
     <antcall target="install.jBPM-gwt-console.into.jboss7" />
   </target>
-  <target name="install.jBPM-gwt-console.into.jboss7" depends="download.drools.jars,download.jboss7tml,check.jboss.version" if="jboss.version.is.7">
+  <target name="install.jBPM-gwt-console.into.jboss7" depends="download.drools.jars,download.jBPM.wars,download.jboss7tml,check.jboss.version" if="jboss.version.is.7">
     <!-- gwt-console -->
     <mkdir dir="${install.home}/target"/>
-    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" />
+    <!--unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" / -->
     <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war"/>
-    <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+    <unzip src="${install.home}/lib/jbpm-gwt-console-server-${jBPM.version}.war"
            dest="${install.home}/target/jbpm-gwt-console-server-war"/>
     <copy file="${install.home}/lib/jboss7tml-1.0.0-SNAPSHOT.jar"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jboss7tml-1.0.0-SNAPSHOT.jar"
@@ -371,15 +397,38 @@
       <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-compiler-*.jar" />
       <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-core-*.jar" />
       <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-persistence-jpa-*.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="drools-verifier-*.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="droolsjbpm-ide-common-*.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="commons-logging-1.0.4.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="freemarker-2.3.8.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="gwt-console-rpc-2.3.0-20111121.233032-24.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="gwt-console-server-integration-2.3.0-20111121.233042-24.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-bam-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-bpmn2-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-flow-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-flow-builder-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-human-task-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="jbpm-workitems-5.1.2.Final.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="knowledge-api-5.3.1-20111126.051557-36.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="resteasy-jaxb-provider-2.2.0.GA.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="report-core-1.4.0-SNAPSHOT.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="javassist-3.4.GA.jar" />
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" includes="report-shared-1.4.0-SNAPSHOT.jar" />
     </delete>
     <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
-          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler-5.3.0.Final.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-compiler-5.3.0.Final.jar"
           overwrite="true" />
     <copy file="${install.home}/lib/drools-core-5.3.0.Final.jar"
-          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-core-5.3.0.Final.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-core-5.3.0.Final.jar"
           overwrite="true" />
     <copy file="${install.home}/lib/drools-persistence-jpa-5.3.0.Final.jar"
-          tofile="${install.home}target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-persistence-jpa-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/drools-verifier-5.3.0.Final.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/drools-verifier-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/droolsjbpm-ide-common-5.3.0.Final.jar"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/droolsjbpm-ide-common-5.3.0.Final.jar"
           overwrite="true" />
     <copy file="${install.home}/target/jbpm-gwt-core-${jBPM.version}.jar"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-gwt-core-${jBPM.version}.jar"
@@ -393,6 +442,11 @@
     <copy file="${install.home}/db/persistence_jboss7.xml"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
           overwrite="true" />
+    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
+      <fileset dir="${install.home}/runtime/lib">
+        <include name="hibernate*.jar" />
+      </fileset>
+    </copy>
     <copy file="${install.home}/auth/users.properties"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/users.properties"
           overwrite="true" />
@@ -402,12 +456,11 @@
     <copy file="${install.home}/jbpm-tm.jar"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/jbpm-tm.jar"
           overwrite="true" />
-    <copy file="${install.home}/model/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/emergency-service-model-0.4-SNAPSHOT-guvnor.jar"
-          overwrite="true" />
-    <copy file="${install.home}/model/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/hospital-entity-0.4-SNAPSHOT-guvnor.jar"
-          overwrite="true" />
+    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
+      <fileset dir="${install.home}/model">
+        <include name="*.jar" />
+      </fileset>
+    </copy>
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
@@ -422,7 +475,7 @@
     <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
           tofile="${jboss.server.deploy.dir}/jbpm-gwt-console-server.war"
           overwrite="true" />
-    <copy file="${install.home}/target/jbpm-gwt-console-${jBPM.version}.war"
+    <copy file="${install.home}/lib/jbpm-gwt-console-${jBPM.version}.war"
           tofile="${jboss.server.deploy.dir}/jbpm-gwt-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
@@ -537,9 +590,13 @@
       <fileset dir="${install.home}/runtime/lib" includes="drools-compiler-*.jar" />
       <fileset dir="${install.home}/runtime/lib" includes="drools-core-*.jar" />
       <fileset dir="${install.home}/runtime/lib" includes="drools-persistence-jpa-*.jar" />
+      <fileset dir="${install.home}/runtime/lib" includes="knowledge-api-*.jar" />
     </delete>
     <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
           tofile="${install.home}/runtime/lib/drools-core-5.3.0.Final.jar"
+          overwrite="true" />
+    <copy file="${install.home}/lib/knowledge-api-5.3.0.Final.jar"
+          tofile="${install.home}/runtime/lib/knowledge-api-5.3.0.Final.jar"
           overwrite="true" />
     <copy file="${install.home}/lib/drools-core-5.3.0.Final.jar"
           tofile="${install.home}/runtime/lib/drools-core-5.3.0.Final.jar"
@@ -570,13 +627,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM.runtime,install.jBPM-gwt-console.into.jboss,install.eclipse,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-form-builder.into.jboss,install.jBPM.runtime,install.jBPM-gwt-console.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
 
