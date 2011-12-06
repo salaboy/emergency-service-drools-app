@@ -40,29 +40,11 @@
     <property id="checkinresults_notified" itemSubjectRef="_checkinresults_notifiedItem"/>
     <property id="checkinresults_time" itemSubjectRef="_checkinresults_timeItem"/>
     <!-- nodes -->
-    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="">
-        <extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <script>
-                System.out.println(" - ID: "+kcontext.getVariable("bedrequest_id"));
-                System.out.println(" - DATE : "+kcontext.getVariable("bedrequest_date"));
-                System.out.println(" - ENTITY : "+kcontext.getVariable("bedrequest_entity"));
-                System.out.println(" - PATIENT AGE : "+kcontext.getVariable("bedrequest_patientage"));
-                System.out.println(" - PATIENT NAME : "+kcontext.getVariable("bedrequest_patientname"));
-                System.out.println(" - PATIENT GENDER : "+kcontext.getVariable("bedrequest_patientgender"));
-                System.out.println(" - PATIENT STATUS : "+kcontext.getVariable("bedrequest_patientstatus"));
-                    
-                //System.out.println("Bed Request = "+kcontext.getVariable("bedRequest"));
-                //kcontext.getKnowledgeRuntime().insert();
-          </script>
-        </tns:onEntry-script>
-      </extensionElements>
-    </startEvent>
+    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="" />
     <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
     </businessRuleTask>
     <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate_Staff" >
       <ioSpecification>
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput" name="Content" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput" name="Comment" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput" name="Skippable" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput" name="TaskName" />
@@ -73,7 +55,6 @@
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="bedrequest_patientstatus" />
         <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="checkinresults_gate" />
         <inputSet>
-          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</dataInputRefs>
           <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</dataInputRefs>
@@ -87,10 +68,6 @@
           <dataOutputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
-      <dataInputAssociation>
-        <sourceRef>content</sourceRef>
-        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_ContentInput</targetRef>
-      </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</targetRef>
         <assignment>
@@ -144,7 +121,6 @@
     </userTask>
     <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check_In_Patient" >
       <ioSpecification>
-        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput" name="Content" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput" name="Comment" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput" name="Skippable" />
         <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput" name="TaskName" />
@@ -152,7 +128,6 @@
         <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput" name="checkinresults_checkedin" />
         <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput" name="checkinresults_time" />
         <inputSet>
-            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput</dataInputRefs>
             <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</dataInputRefs>
             <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</dataInputRefs>
 	    <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</dataInputRefs>
@@ -163,10 +138,6 @@
           <dataOutputRefs>_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
-      <dataInputAssociation>
-        <sourceRef>content</sourceRef>
-        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_ContentInput</targetRef>
-      </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</targetRef>
         <assignment>
