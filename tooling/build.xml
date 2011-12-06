@@ -593,7 +593,7 @@
       <fileset dir="${install.home}/runtime/lib" includes="knowledge-api-*.jar" />
     </delete>
     <copy file="${install.home}/lib/drools-compiler-5.3.0.Final.jar"
-          tofile="${install.home}/runtime/lib/drools-core-5.3.0.Final.jar"
+          tofile="${install.home}/runtime/lib/drools-compiler-5.3.0.Final.jar"
           overwrite="true" />
     <copy file="${install.home}/lib/knowledge-api-5.3.0.Final.jar"
           tofile="${install.home}/runtime/lib/knowledge-api-5.3.0.Final.jar"
