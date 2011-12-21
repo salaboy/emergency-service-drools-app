@@ -1,0 +1,37 @@
+package test;
+import com.wordpress.salaboy.hospital.*;
+import java.util.UUID;
+import com.wordpress.salaboy.model.roles.*;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+
+
+// You can use rules to get process variables that you want to use to make
+// inferences over, create the specific fact and insert it in the working memory
+// It is not mandatory, but usually the fact will contain a reference to the Process Instance ID. 
+
+
+rule "map variable to facts"
+    when
+        $pI: WorkflowProcessInstanceImpl( $entity: variables['bedrequest_entity'],
+                                          $date: variables['bedrequest_date'],  
+                                          $age: variables['bedrequest_patientage'],
+                                          $gender: variables['bedrequest_patientgender'],
+                                          $name: variables['bedrequest_patientname'],
+                                          $status: variables['bedrequest_patientstatus']  
+                                        )
+    then
+        BedRequest bedRequest = new BedRequest(UUID.randomUUID().toString());
+        bedRequest.setTimestamp(Long.parseLong((String)$date));
+        bedRequest.setRequestingEntity((String)$entity);
+        bedRequest.setPatientAge(Integer.valueOf((String)$age));
+        bedRequest.setPatientGender((String)$gender);
+        bedRequest.setPatientStatus((String)$status);
+        bedRequest.setPatientName((String)$name);
+        bedRequest.setProcessInstanceId($pI.getId());
+        insert(bedRequest);
+end
+
+
+
+
+

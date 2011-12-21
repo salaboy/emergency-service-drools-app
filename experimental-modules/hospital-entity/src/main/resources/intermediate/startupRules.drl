@@ -1,0 +1,31 @@
+package test;
+import com.wordpress.salaboy.hospital.*;
+import com.wordpress.salaboy.hospital.model.units.*;
+import com.wordpress.salaboy.hospital.model.*;
+import com.wordpress.salaboy.hospital.service.*;
+import com.wordpress.salaboy.model.roles.*;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+
+rule "Init Hospital"
+    when
+        not(Hospital())
+    then
+        System.out.println(">>> Initializing the Hospital ...");
+        Hospital hospital = new Hospital();
+        hospital.setAvailableBeds(30);
+        insert(hospital);
+end
+
+rule "Init Hospital Services"
+   when
+        $hospital: Hospital()
+    then
+        System.out.println(">>> Initializing Hospital Services...");
+        BedService bedService = new BedService($hospital);
+        bedService.put("Intensive Care", new IntensiveCare(5));
+        bedService.put("ER", new EmergencyRoom(5));
+        insert(bedService);
+        
+        
+        
+end 

@@ -25,6 +25,14 @@ public class Lab extends AbstractUnit{
     public void setActiveLabTests(int activeLabTests) {
         this.activeLabTests = activeLabTests;
     }
+
+    public int requestBed() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void returnBed(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     
 }

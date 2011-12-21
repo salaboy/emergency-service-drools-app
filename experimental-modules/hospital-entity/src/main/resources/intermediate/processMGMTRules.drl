@@ -1,0 +1,11 @@
+package test;
+
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+
+rule "Process NewPatientCheckIn Created"
+    when
+        $pi: WorkflowProcessInstanceImpl(processId == "NewPatientCheckIn")
+    then
+        System.out.println(">>> New NewPatientCheckIn Process Instance Created: "+$pi);
+        System.out.println(">>> New NewPatientCheckIn Process Instance ID: "+$pi.getId());
+end

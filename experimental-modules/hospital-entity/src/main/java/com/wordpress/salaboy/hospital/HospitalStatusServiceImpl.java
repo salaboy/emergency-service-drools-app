@@ -73,8 +73,8 @@ public class HospitalStatusServiceImpl implements HospitalStatusService {
     private void createKnowledgeBasedHospital() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add(new ClassPathResource("hospital.drl"), ResourceType.DRL);
-        kbuilder.add(new ClassPathResource("patientCheckIn.bpmn"), ResourceType.BPMN2);
+        kbuilder.add(new ClassPathResource("simple/hospital.drl"), ResourceType.DRL);
+        kbuilder.add(new ClassPathResource("simple/patientCheckIn.bpmn"), ResourceType.BPMN2);
         if (kbuilder.hasErrors()) {
             KnowledgeBuilderErrors errors = kbuilder.getErrors();
 

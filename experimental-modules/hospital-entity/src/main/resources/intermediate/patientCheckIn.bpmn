@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.omg.org/bpmn20"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_bedrequest_idItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_dateItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_entityItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientageItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientnameItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientgenderItem" structureRef="String" />
+  <itemDefinition id="_bedrequest_patientstatusItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_gateItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_checkedinItem" structureRef="String" />  
+  <itemDefinition id="_checkinresults_notifiedItem" structureRef="String" />
+  <itemDefinition id="_checkinresults_timeItem" structureRef="String" />
+    
+
+  <process processType="Private" isExecutable="true" id="NewPatientCheckIn" name="Patient Check In" tns:packageName="defaultPackage" >
+        
+
+    <!-- Imports -->
+    <extensionElements>
+     <tns:import name="com.wordpress.salaboy.hospital.BedRequest" />
+     <tns:import name="java.util.UUID" />
+    </extensionElements>
+
+    <!-- Globals --> 
+    <!--tns:global identifier="processHelper" type="com.wordpress.salaboy.service.helpers.ProcessHelper" /-->
+
+    <!-- process variables -->
+    <property id="bedrequest_id" itemSubjectRef="_bedrequest_idItem"/>
+    <property id="bedrequest_date" itemSubjectRef="_bedrequest_dateItem"/>
+    <property id="bedrequest_entity" itemSubjectRef="_bedrequest_entityItem"/>
+    <property id="bedrequest_patientage" itemSubjectRef="_bedrequest_patientageItem"/>
+    <property id="bedrequest_patientname" itemSubjectRef="_bedrequest_patientnameItem"/>
+    <property id="bedrequest_patientgender" itemSubjectRef="_bedrequest_patientgenderItem"/>
+    <property id="bedrequest_patientstatus" itemSubjectRef="_bedrequest_patientstatusItem"/>
+    <property id="checkinresults_gate" itemSubjectRef="_checkinresults_gateItem"/>
+    <property id="checkinresults_checkedin" itemSubjectRef="_checkinresults_checkedinItem"/>
+    <property id="checkinresults_notified" itemSubjectRef="_checkinresults_notifiedItem"/>
+    <property id="checkinresults_time" itemSubjectRef="_checkinresults_timeItem"/>
+    <!-- nodes -->
+    <startEvent id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" name="">
+        
+    </startEvent>
+    <businessRuleTask id="_88F9E7F2-D069-4312-8BB1-66257EB897A7" name="Assign Bed" g:ruleFlowGroup="assign-bed" >
+    </businessRuleTask>
+    <userTask id="_20DF2104-985A-4926-8D45-80A09FBDFAE8" name="Coordinate_Staff" >
+      <extensionElements>
+        <tns:onEntry-script>
+          <script>
+                System.out.println(">>> Before Coordinating Staff ... ");
+          </script>
+        </tns:onEntry-script> 
+        <tns:onExit-script scriptFormat="http://www.java.com/java">
+          <script>System.out.println(">>> After Coordinating Staff ... ");</script>
+        </tns:onExit-script>
+      </extensionElements>
+      <ioSpecification>
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput" name="Comment" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput" name="Skippable" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput" name="TaskName" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput" name="bedrequest_date" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput" name="bedrequest_patientage" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput" name="bedrequest_entity" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput" name="bedrequest_patientgender" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput" name="bedrequest_patientstatus" />
+        <dataOutput id="_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput" name="checkinresults_gate" />
+        <inputSet>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</dataInputRefs>
+          <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task for staff coordination.</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Coordinate_Staff</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAE8_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_date</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_timestampInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_patientage</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientAgeInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_entity</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_requestingEntityInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_patientgender</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientGenderInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>bedrequest_patientstatus</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_patientStatusInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_20DF2104-985A-4926-8D45-80A09FBDFAE8_gateOutput</sourceRef>
+        <targetRef>checkinresults_gate</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>hospital</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="_17906C7A-0495-412D-927C-E936977ADE6B" name="Check_In_Patient" >
+      <ioSpecification>
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput" name="Comment" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput" name="Skippable" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput" name="TaskName" />
+        <dataInput id="_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput" name="checkinresults_notified" />
+        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput" name="checkinresults_checkedin" />
+        <dataOutput id="_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput" name="checkinresults_time" />
+        <inputSet>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</dataInputRefs>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</dataInputRefs>
+	    <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</dataInputRefs>
+            <dataInputRefs>_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput</dataOutputRefs>
+          <dataOutputRefs>_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task for checking in patient.</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Check_In_Patient</from>
+          <to xsi:type="tFormalExpression">_20DF2104-985A-4926-8D45-80A09FBDFAEA_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>checkinresults_notified</sourceRef>
+        <targetRef>_20DF2104-985A-4926-8D45-80A09FBDFAEA_notifiedInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_17906C7A-0495-412D-927C-E936977ADE6B_checkedinOutput</sourceRef>
+        <targetRef>checkinresults_checkedin</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_17906C7A-0495-412D-927C-E936977ADE6A_checkedintimeOutput</sourceRef>
+        <targetRef>checkinresults_time</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>nurse</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_EAAB750D-537B-447D-8D31-5BD33110F838" name="" />
+    <task id="_6" name="Notify Gate to Ambulance" tns:taskName="Notification System" >
+      <ioSpecification>
+        <dataInput id="_6_gateInput" name="checkinresults_gate" />
+        <dataOutput id="_6_resultsOutput" name="checkinresults_notified" />
+        <inputSet>
+          <dataInputRefs>_6_gateInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_6_resultsOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>checkinresults_gate</sourceRef>
+        <targetRef>_6_gateInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_6_resultsOutput</sourceRef>
+        <targetRef>checkinresults_notified</targetRef>
+      </dataOutputAssociation>
+    </task>
+
+    <!-- connections -->
+    <sequenceFlow id="_F452FF19-66B0-4D84-92E0-8AF0623B60CF-_88F9E7F2-D069-4312-8BB1-66257EB897A7" sourceRef="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" targetRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7" />
+    <sequenceFlow id="_88F9E7F2-D069-4312-8BB1-66257EB897A7-_20DF2104-985A-4926-8D45-80A09FBDFAE8" sourceRef="_88F9E7F2-D069-4312-8BB1-66257EB897A7" targetRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8" />
+    <sequenceFlow id="_6-_17906C7A-0495-412D-927C-E936977ADE6B" sourceRef="_6" targetRef="_17906C7A-0495-412D-927C-E936977ADE6B" />
+    <sequenceFlow id="_17906C7A-0495-412D-927C-E936977ADE6B-_EAAB750D-537B-447D-8D31-5BD33110F838" sourceRef="_17906C7A-0495-412D-927C-E936977ADE6B" targetRef="_EAAB750D-537B-447D-8D31-5BD33110F838" />
+    <sequenceFlow id="_20DF2104-985A-4926-8D45-80A09FBDFAE8-_6" sourceRef="_20DF2104-985A-4926-8D45-80A09FBDFAE8" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="NewPatientCheckIn" >
+      <bpmndi:BPMNShape bpmnElement="_F452FF19-66B0-4D84-92E0-8AF0623B60CF" >
+        <dc:Bounds x="16" y="17" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_88F9E7F2-D069-4312-8BB1-66257EB897A7" >
+        <dc:Bounds x="96" y="16" width="100" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_20DF2104-985A-4926-8D45-80A09FBDFAE8" >
+        <dc:Bounds x="228" y="16" width="136" height="51" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_17906C7A-0495-412D-927C-E936977ADE6B" >
+        <dc:Bounds x="615" y="16" width="157" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_EAAB750D-537B-447D-8D31-5BD33110F838" >
+        <dc:Bounds x="804" y="17" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="396" y="17" width="187" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_F452FF19-66B0-4D84-92E0-8AF0623B60CF-_88F9E7F2-D069-4312-8BB1-66257EB897A7" >
+        <di:waypoint x="40" y="41" />
+        <di:waypoint x="146" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_88F9E7F2-D069-4312-8BB1-66257EB897A7-_20DF2104-985A-4926-8D45-80A09FBDFAE8" >
+        <di:waypoint x="146" y="41" />
+        <di:waypoint x="296" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_17906C7A-0495-412D-927C-E936977ADE6B" >
+        <di:waypoint x="489" y="41" />
+        <di:waypoint x="693" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_17906C7A-0495-412D-927C-E936977ADE6B-_EAAB750D-537B-447D-8D31-5BD33110F838" >
+        <di:waypoint x="693" y="41" />
+        <di:waypoint x="828" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_20DF2104-985A-4926-8D45-80A09FBDFAE8-_6" >
+        <di:waypoint x="296" y="41" />
+        <di:waypoint x="489" y="41" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

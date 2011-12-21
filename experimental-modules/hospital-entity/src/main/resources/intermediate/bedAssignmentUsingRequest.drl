@@ -1,0 +1,70 @@
+package test;
+import com.wordpress.salaboy.hospital.*;
+import com.wordpress.salaboy.model.roles.*;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import com.wordpress.salaboy.hospital.service.*;
+
+
+
+rule "Assign an Adult Bed - Generic"
+    no-loop
+    ruleflow-group "assign-bed"
+    when
+        $hospital: Hospital(availableBeds > 0)
+        $bedService: BedService()
+        $bedRequest: BedRequest(requestingEntity == "911",
+                                patientAge > 20 , 
+                                assignedBed == 0 )
+        
+    then
+        System.out.println(" >>> Assigning an Adult Bed ...");
+        int assignedBed = $bedService.requestBed("ER");
+        System.out.println(" >>> Bed Assigned:  "+assignedBed);
+        $bedRequest.setAssignedBed(assignedBed);
+        update($bedRequest);
+        
+        
+end
+
+rule "Assign a Child Bed - Generic"
+    no-loop
+    ruleflow-group "assign-bed"
+    when
+        $hospital: Hospital(availableBeds > 0)
+        $bedService: BedService()
+        $bedRequest: BedRequest(requestingEntity == "911",
+                                patientAge < 20, 
+                                assignedBed == 0 )
+        
+        
+    then
+        System.out.println(" >>> Assigning a Child Bed ...");
+        int assignedBed = $bedService.requestBed("ER");
+        System.out.println(" >>> Bed Assigned:  "+assignedBed);
+        $bedRequest.setAssignedBed(assignedBed);
+        update($bedRequest);
+        
+end
+
+
+rule "Assign an Adult Bed - Heart Attack"
+    no-loop
+    salience 2
+    ruleflow-group "assign-bed"
+    when
+        $hospital: Hospital(availableBeds > 0)
+        $bedService: BedService()
+        $bedRequest: BedRequest(requestingEntity == "911",
+                                patientAge > 20 ,
+                                patientStatus == "heart attack",
+                                assignedBed == 0 )
+        
+    then
+        System.out.println(" >>> Assigning an Adult Bed in the Intensive Care Unit...");
+        int assignedBed = $bedService.requestBed("Intensive Care");
+        System.out.println(" >>> Bed Assigned:  "+assignedBed);
+        $bedRequest.setAssignedBed(assignedBed);
+        update($bedRequest);
+        
+        
+end

@@ -11,5 +11,6 @@ package com.wordpress.salaboy.hospital.model.units;
 public interface Unit {
     public String getId();
     public String getName();
-    
+    public int requestBed();
+    public void returnBed(int id);
 }

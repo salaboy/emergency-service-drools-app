@@ -18,6 +18,8 @@ public class BedRequest implements Serializable{
     private String patientName;
     private String patientGender;
     private String patientStatus;
+    private int assignedBed;
+    private long processInstanceId;
     
     public BedRequest(String id) {
         this.id = id;
@@ -90,6 +92,29 @@ public class BedRequest implements Serializable{
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public int getAssignedBed() {
+        return assignedBed;
+    }
+
+    public void setAssignedBed(int assignedBed) {
+        this.assignedBed = assignedBed;
+    }
+
+    public long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public String toString() {
+        return "BedRequest{" + "id=" + id + ", timestamp=" + timestamp + ", requestingEntity=" + requestingEntity + ", patientAge=" + patientAge + ", patientName=" + patientName + ", patientGender=" + patientGender + ", patientStatus=" + patientStatus + ", assignedBed=" + assignedBed + ", processInstanceId=" + processInstanceId + '}';
+    }
+    
+    
     
     
     

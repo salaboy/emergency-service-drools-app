@@ -1,7 +1,7 @@
 package test;
 import com.wordpress.salaboy.hospital.*;
 import com.wordpress.salaboy.model.roles.*;
-import org.drools.runtime.process.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 rule "init hospital"
     salience 1
@@ -20,6 +20,7 @@ rule "assign bed"
     no-loop
     ruleflow-group "assign-bed"
     when
+        $pI: WorkflowProcessInstanceImpl( variables['bedrequest_entity'] == "911")
         $hospital: Hospital(availableBeds > 0)
         
     then

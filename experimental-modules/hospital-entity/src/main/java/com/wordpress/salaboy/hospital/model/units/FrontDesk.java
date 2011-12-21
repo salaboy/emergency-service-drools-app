@@ -25,6 +25,14 @@ public class FrontDesk extends AbstractUnit{
     public void setActiveReceptionists(int activeReceptionists) {
         this.activeReceptionists = activeReceptionists;
     }
+
+    public int requestBed() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void returnBed(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     
    

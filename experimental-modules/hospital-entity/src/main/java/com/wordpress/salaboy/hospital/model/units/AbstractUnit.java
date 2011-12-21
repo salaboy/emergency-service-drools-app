@@ -4,15 +4,19 @@
  */
 package com.wordpress.salaboy.hospital.model.units;
 
+import com.wordpress.salaboy.hospital.Bed;
+import java.util.List;
+
 /**
  *
  * @author salaboy
  */
-public class AbstractUnit implements Unit {
+public abstract class AbstractUnit implements Unit {
 
     protected String id;
     protected String name;
-
+    protected List<Bed> beds;
+    
     public String getId() {
         return id;
     }
@@ -20,4 +24,7 @@ public class AbstractUnit implements Unit {
     public String getName() {
         return name;
     }
+
+    
+    
 }

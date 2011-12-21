@@ -1,0 +1,9 @@
+This package contains simple assets.
+The processes contained in this package uses very simple approaches to solve different issues.
+You will notice that all the process variables are String and the Rules uses these string to
+evaluate different situations. This approach is ok, but sometimes we need to handle more complex
+structures.
+
+Take a look at the intermediate package for different techniques that can be used to handle objects
+as process variables.
+
