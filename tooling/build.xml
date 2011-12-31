@@ -289,10 +289,19 @@
 
   <!-- Install designer -->
   <target name="install.designer.into.jboss" depends="download.designer,check.jboss.version">
-    <copy file="${install.home}/lib/designer-${designer.version}.war"
+    <mkdir dir="${install.home}/target" />
+    <mkdir dir="${install.home}/target/designer-war" />
+    <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${install.home}/target/designer-war" />
+    <copy file="${install.home}/jbpm.xml" 
+          tofile="${install.home}/target/designer-war/profiles/jbpm.xml" 
+          overwrite="true" />
+    <zip basedir="${install.home}/target/designer-war"
+         destfile="${install.home}/target/designer-${designer.version}.war" />
+    <copy file="${install.home}/target/designer-${designer.version}.war"
           tofile="${jboss.server.deploy.dir}/designer.war"
           overwrite="true" />
-  	<antcall target="created.designer.deployment.as7" />
+    <delete dir="${install.home}/target"/>
+    <antcall target="created.designer.deployment.as7" />
   </target>
 	
   <target name="created.designer.deployment.as7" depends="check.jboss.version" if="jboss.version.is.7">
@@ -303,6 +312,12 @@
   <target name="install.form-builder.into.jboss" depends="download.form-builder">
     <copy file="${install.home}/lib/jbpm-form-builder-${form.builder.version}.war" 
           tofile="${jboss.server.deploy.dir}/jbpm-form-builder.war"
+          overwrite="true" />
+    <copy file="${install.home}/auth/users.properties"
+          tofile="${jboss.server.conf.dir}/users.properties"
+          overwrite="true" />
+    <copy file="${install.home}/auth/roles.properties"
+          tofile="${jboss.server.conf.dir}/roles.properties"
           overwrite="true" />
   </target>
 		
